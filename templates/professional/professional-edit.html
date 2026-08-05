@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Edit Profile | Camcrew Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="/static/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="/static/css/styles.css">
+<style>
+  /* ── Tesla Cybertruck Theme System ──────────────────────────── */
+  :root, 
+    --pe-bg:     #16161e;
+    --pe-dark:   #0d0d16;
+    --pe-light:  #1f1f2c;
+    --pe-accent: #1a8aff;
+    --pe-accent-glow: rgba(26,138,255,0.28);
+    --pe-text:   #e4e8f6;
+    --pe-muted:  #7a8599;
+    --pe-border: rgba(255,255,255,0.1);
+    --pe-card:   rgba(22,22,30,0.8);
+  }
+  
+    --pe-bg:     #eef1f8;
+    --pe-dark:   #c5cad8;
+    --pe-light:  #ffffff;
+    --pe-accent: #0060cc;
+    --pe-accent-glow: rgba(0,96,204,0.2);
+    --pe-text:   #1a1a2e;
+    --pe-muted:  #5a6880;
+    --pe-border: rgba(0,0,0,0.1);
+    --pe-card:   rgba(238,241,248,0.9);
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  /* ── Dark mode accent update ── */
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  /* ── Theme-aware logo switching ── */
+  .cc-logo-dark  { display: block; }
+  .cc-logo-light { display: none;  }
+  
+  
+
+  /* Cleaned */
+/* ── Inputs ───────────────────────────────────────────────────── */
+  .cc-input {
+    width: 100%;
+    background: rgba(255,255,255,0.03) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 0.75rem !important;
+    box-shadow: none !important;
+    color: #dce4e5 !important;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    outline: none;
+    transition: all 0.2s ease;
+    -webkit-appearance: none;
+  }
+  .cc-input:focus {
+    border-color: #00dbe9 !important;
+    background: rgba(0,219,233,0.02) !important;
+    box-shadow: 0 0 0 2px rgba(0,219,233,0.1) !important;
+    outline: none !important;
+  }
+  .cc-input::placeholder { color: rgba(185,202,203,0.35) !important; }
+  .cc-input:read-only   { opacity: 0.5; cursor: not-allowed; }
+
+  .cc-label {
+    display: block;
+    font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: #849495; margin-bottom: 0.35rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .cc-textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 0.75rem;
+    color: #dce4e5;
+    padding: 0.85rem 1rem;
+    font-size: 1rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    outline: none; resize: none;
+    transition: border-color 0.2s ease;
+  }
+  .cc-textarea:focus { border-color: #00dbe9; }
+  .cc-textarea::placeholder { color: rgba(255,255,255,0.2); }
+
+  /* ── Section card ─────────────────────────────────────────────── */
+  .edit-section { background: rgba(22, 22, 24, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.5rem; padding: 2rem; }
+  .section-title {
+    font-size: 1rem; font-weight: 800; color: #dce4e5;
+    margin-bottom: 0.25rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .section-subtitle {
+    font-size: 0.88rem; color: #849495;
+    margin-bottom: 1.75rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .section-divider {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .section-divider-icon {
+    width: 2rem; height: 2rem; border-radius: 0.5rem;
+    background: rgba(0,219,233,0.08);
+    border: 1px solid rgba(0,219,233,0.2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ── Avatar upload ring ───────────────────────────────────────── */
+  #avatar-ring {
+    width: 7rem; height: 7rem; border-radius: 50%;
+    border: 2px dashed rgba(0,219,233,0.4);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; position: relative; overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: rgba(0,219,233,0.04);
+  }
+  #avatar-ring:hover { border-color: #00dbe9; box-shadow: 0 0 0 6px rgba(0,219,233,0.1); }
+  #avatar-preview { width: 100%; height: 100%; object-fit: cover; display: none; }
+
+  /* ── Category chip ────────────────────────────────────────────── */
+  .cat-chip {
+    padding: 0.45rem 0.9rem; border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #849495; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    font-family: 'Plus Jakarta Sans', sans-serif; background: none;
+  }
+  .cat-chip.selected {
+    background: rgba(0,219,233,0.1);
+    border-color: #00dbe9; color: #00dbe9;
+  }
+
+  /* ── Social row ───────────────────────────────────────────────── */
+  .social-row {
+    display: flex; align-items: center; gap: 0.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 0.75rem;
+  }
+  .social-icon-wrap {
+    width: 2.25rem; height: 2.25rem; border-radius: 0.5rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ── Portfolio grid ───────────────────────────────────────────── */
+  .media-thumb {
+    aspect-ratio: 1; border-radius: 0.65rem; overflow: hidden;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative; cursor: pointer;
+    transition: border-color 0.2s ease;
+  }
+  .media-thumb img, .media-thumb video { width: 100%; height: 100%; object-fit: cover; }
+  .media-thumb .remove-btn {
+    position: absolute; top: 0.4rem; right: 0.4rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%;
+    background: rgba(0,0,0,0.75); border: none;
+    color: #fff; font-size: 0.75rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .media-thumb:hover .remove-btn { opacity: 1; }
+  .drag-over { border-color: #00dbe9 !important; background: rgba(0,219,233,0.06) !important; }
+
+  /* ── Service item ─────────────────────────────────────────────── */
+  .service-item {
+    display: grid; grid-template-columns: 1fr auto auto;
+    align-items: center; gap: 0.75rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 0.75rem; padding: 0.85rem 1rem;
+    transition: border-color 0.2s;
+  }
+  .service-item:hover { border-color: rgba(0,219,233,0.25); }
+
+  /* ── Location tag ─────────────────────────────────────────────── */
+  .loc-tag {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0.85rem; border-radius: 999px;
+    background: rgba(0,219,233,0.08);
+    border: 1px solid rgba(0,219,233,0.25);
+    color: #00dbe9; font-size: 0.85rem; font-weight: 600;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .loc-tag button {
+    background: none; border: none; color: rgba(0,219,233,0.6);
+    cursor: pointer; line-height: 1; padding: 0; font-size: 1rem;
+    display: flex; align-items: center; transition: color 0.15s;
+  }
+  .loc-tag button:hover { color: #ff5252; }
+
+  /* ── Char counter ─────────────────────────────────────────────── */
+  .char-count { font-size: 0.72rem; color: #849495; text-align: right; }
+  .char-count.warn { color: #ffb4ab; }
+
+  /* ── Floating save bar ────────────────────────────────────────── */
+  #save-bar { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 100; background: rgba(22, 22, 24, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(0,219,233,0.3); border-radius: 999px; padding: 0.65rem 0.65rem 0.65rem 1.4rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,219,233,0.1); transition: opacity 0.3s, transform 0.3s; white-space: nowrap; }
+  #save-bar.hidden-bar {
+    opacity: 0; pointer-events: none;
+    transform: translateX(-50%) translateY(1rem);
+  }
+  #save-bar-text {
+    font-size: 0.88rem; font-weight: 700; color: #849495;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  #save-bar-text.dirty { color: #dce4e5; }
+
+  /* ── Unsaved indicator dot ────────────────────────────────────── */
+  .unsaved-dot {
+    display: inline-block; width: 7px; height: 7px;
+    border-radius: 50%; background: #00dbe9;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+    margin-right: 0.3rem;
+  }
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.5; transform: scale(0.7); }
+  }
+</style>
+</head>
+<body class="font-body-md antialiased min-h-screen flex flex-col" style="background-color: #0A0A0B;">
+
+<!-- Background -->
+<div class="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
+  <div class="hero-grid absolute inset-0 opacity-15"></div>
+  <div class="orb-1"></div>
+  <div class="orb-2"></div>
+</div>
+
+<!-- Header -->
+<div id="site-header"></div>
+
+<!-- Auth gate -->
+<div id="auth-gate" class="hidden flex-grow flex flex-col items-center justify-center py-32 px-8 text-center">
+  <span class="material-symbols-outlined text-6xl text-on-surface-variant mb-4 block">lock</span>
+  <p class="font-headline-md text-on-surface-variant mb-6">Sign in to edit your profile</p>
+  <a href="signin.html" class="shimmer-btn inline-block bg-gradient-to-r from-primary-container to-secondary-container text-on-primary font-bold py-4 px-8 rounded-full">Go to Sign In</a>
+</div>
+
+<!-- Main -->
+<main id="edit-main" class="hidden flex-grow px-margin-mobile md:px-margin-desktop pt-28 pb-40">
+  <div class="max-w-2xl mx-auto">
+
+    <!-- Page heading -->
+    <div class="mb-8">
+      <div class="flex items-center gap-3 mb-1">
+        <a href="professional-profile.html" class="flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors text-sm font-semibold">
+          <span class="material-symbols-outlined" style="font-size:1.1rem;">arrow_back</span> My Profile
+        </a>
+      </div>
+      <h1 class="font-display-lg text-display-lg-mobile md:text-[2.2rem] gradient-text mt-3">Edit Profile</h1>
+      <p class="text-on-surface-variant text-sm mt-1">All changes save to your profile. Keep your info fresh so clients can find you.</p>
+    </div>
+
+    <div class="space-y-5">
+
+      <!-- ══ SECTION 1 · PROFILE IDENTITY ═══════════════════════════ -->
+      <div class="edit-section reveal">
+        <div class="section-divider">
+          <div class="section-divider-icon">
+            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">person</span>
+          </div>
+          <div>
+            <div class="section-title">Profile Identity</div>
+            <div class="section-subtitle" style="margin-bottom:0;">Your public name, title, and bio</div>
+          </div>
+        </div>
+
+        <!-- Avatar -->
+        <div class="flex items-center gap-5 mb-7 mt-5">
+          <div id="avatar-ring" onclick="document.getElementById('avatar-file').click()" title="Click to change photo">
+            <img id="avatar-preview" alt="Profile photo">
+            <div id="avatar-placeholder" class="flex flex-col items-center gap-1 text-center px-2">
+              <span class="material-symbols-outlined" style="font-size:2rem;color:#00dbe9;">add_photo_alternate</span>
+              <span style="font-size:0.7rem;font-weight:700;color:#849495;line-height:1.3;">Upload photo</span>
+            </div>
+          </div>
+          <input type="file" id="avatar-file" accept="image/*" class="hidden">
+          <div>
+            <p style="font-size:0.9rem;font-weight:700;color:#dce4e5;" id="avatar-name-preview">—</p>
+            <p style="font-size:0.78rem;color:#849495;margin-top:0.25rem;">JPG · PNG · WEBP · Max 5 MB</p>
+            <button id="avatar-remove-btn" onclick="removeAvatar()" style="display:none;margin-top:0.5rem;font-size:0.78rem;font-weight:700;color:#ffb4ab;background:none;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;padding:0;">Remove photo</button>
+          </div>
+        </div>
+
+        <!-- Full Name -->
+        <div class="mb-6">
+          <label class="cc-label" for="inp-name">Full Name</label>
+          <input class="cc-input w-full" id="inp-name" type="text" placeholder="e.g. Jordan Rivera" maxlength="60" autocomplete="name" oninput="markDirty()">
+        </div>
+
+        <!-- Title -->
+        <div class="mb-6">
+          <label class="cc-label" for="inp-title">Professional Title</label>
+          <input class="cc-input w-full" id="inp-title" type="text" placeholder="e.g. Cinematic Videographer · Director of Photography" maxlength="80" oninput="markDirty()">
+          <p style="font-size:0.75rem;color:#849495;margin-top:0.35rem;">Shown under your name on your public profile.</p>
+        </div>
+
+        <!-- Categories -->
+        <div class="mb-6">
+          <label class="cc-label">Your Category</label>
+          <div class="flex flex-wrap gap-2 mt-2" id="cat-chips">
+            <button class="cat-chip" data-cat="Videographer">Videographer</button>
+            <button class="cat-chip" data-cat="Photographer">Photographer</button>
+            <button class="cat-chip" data-cat="Director">Director</button>
+            <button class="cat-chip" data-cat="Editor">Editor</button>
+            <button class="cat-chip" data-cat="Colorist">Colorist</button>
+            <button class="cat-chip" data-cat="Sound Designer">Sound Designer</button>
+            <button class="cat-chip" data-cat="Drone Pilot">Drone Pilot</button>
+            <button class="cat-chip" data-cat="Lighting Tech">Lighting Tech</button>
+            <button class="cat-chip" data-cat="Motion Designer">Motion Designer</button>
+            <button class="cat-chip" data-cat="Producer">Producer</button>
+          </div>
+        </div>
+
+        <!-- Bio -->
+        <div>
+          <label class="cc-label" for="inp-bio">Bio</label>
+          <textarea class="cc-textarea w-full" id="inp-bio" rows="4"
+            placeholder="Tell clients about your style, experience, and what makes your work unique…"
+            maxlength="300" oninput="updateCharCount(this,'bio-count',300);markDirty()"></textarea>
+          <p class="char-count mt-1" id="bio-count">0 / 300</p>
+        </div>
+      </div>
+
+      <!-- ══ SECTION 2 · CONTACT DETAILS ════════════════════════════ -->
+      <div class="edit-section reveal">
+        <div class="section-divider">
+          <div class="section-divider-icon">
+            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">contact_page</span>
+          </div>
+          <div>
+            <div class="section-title">Contact Details</div>
+            <div class="section-subtitle" style="margin-bottom:0;">How clients can reach you</div>
+          </div>
+        </div>
+        <div class="mt-5 space-y-6">
+
+          <!-- Email (read-only) -->
+          <div>
+            <label class="cc-label" for="inp-email">
+              Email Address
+              <span style="margin-left:0.5rem;font-size:0.65rem;padding:0.15rem 0.5rem;background:rgba(0,219,233,0.1);color:#00dbe9;border-radius:999px;letter-spacing:0.05em;text-transform:none;font-weight:700;">Verified</span>
+            </label>
+            <div style="position:relative;">
+              <span class="material-symbols-outlined" style="position:absolute;left: 0.75rem;top:50%;transform:translateY(-50%);color:#849495;font-size:1.1rem;">alternate_email</span>
+              <input class="cc-input w-full" style="padding-left: 2.25rem !important;" id="inp-email" type="email" readonly>
+            </div>
+          </div>
+
+          <!-- Mobile -->
+          <div>
+            <label class="cc-label" for="inp-phone">Mobile Number</label>
+            <div style="position:relative;">
+              <span class="material-symbols-outlined" style="position:absolute;left: 0.75rem;top:50%;transform:translateY(-50%);color:#849495;font-size:1.1rem;">phone_iphone</span>
+              <input class="cc-input w-full" style="padding-left: 2.25rem !important;" id="inp-phone" type="tel" placeholder="+1 (555) 000-0000" autocomplete="tel" oninput="markDirty()">
+            </div>
+          </div>
+
+          <!-- Website -->
+          <div>
+            <label class="cc-label" for="inp-website">Website / Portfolio URL</label>
+            <div style="position:relative;">
+              <span class="material-symbols-outlined" style="position:absolute;left: 0.75rem;top:50%;transform:translateY(-50%);color:#849495;font-size:1.1rem;">link</span>
+              <input class="cc-input w-full" style="padding-left: 2.25rem !important;" id="inp-website" type="url" placeholder="https://yourportfolio.com" oninput="markDirty()">
+            </div>
+          </div>
+
+          <!-- Social Links -->
+          <div>
+            <label class="cc-label" style="margin-bottom:0.75rem;">Social Profiles <span style="text-transform:none;letter-spacing:0;font-weight:400;color:#849495;">(optional)</span></label>
+            <div class="space-y-4">
+              <div class="social-row">
+                <div class="social-icon-wrap">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="5" fill="#E1306C"/><path d="M12 7.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zm0 7.4a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8zm4.65-7.6a1.05 1.05 0 1 1-2.1 0 1.05 1.05 0 0 1 2.1 0z" fill="#fff"/></svg>
+                </div>
+                <input class="cc-input w-full" id="inp-instagram" style="border-bottom-color:rgba(255,255,255,0.08);" type="text" placeholder="instagram.com/yourhandle" oninput="markDirty()">
+              </div>
+              <div class="social-row">
+                <div class="social-icon-wrap">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="5" fill="#1877F2"/><path d="M16 8h-2a1 1 0 0 0-1 1v2h3l-.5 3H13v7h-3v-7H8v-3h2V9a4 4 0 0 1 4-4h2v3z" fill="#fff"/></svg>
+                </div>
+                <input class="cc-input w-full" id="inp-facebook" style="border-bottom-color:rgba(255,255,255,0.08);" type="text" placeholder="facebook.com/yourpage" oninput="markDirty()">
+              </div>
+              <div class="social-row" style="border-bottom:none;">
+                <div class="social-icon-wrap">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.77 1.52V6.76a4.85 4.85 0 01-1-.07z"/></svg>
+                </div>
+                <input class="cc-input w-full" id="inp-tiktok" style="border-bottom:none;" type="text" placeholder="tiktok.com/@yourhandle" oninput="markDirty()">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SECTION 3 · PORTFOLIO ═══════════════════════════════════ -->
+      <div class="edit-section reveal">
+        <div class="section-divider">
+          <div class="section-divider-icon">
+            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">photo_library</span>
+          </div>
+          <div>
+            <div class="section-title">Portfolio</div>
+            <div class="section-subtitle" style="margin-bottom:0;">Up to 12 photos or videos. Best work first.</div>
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <!-- Drop zone -->
+          <div id="portfolio-drop-zone"
+            style="border:2px dashed rgba(0,219,233,0.25);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem;transition:all 0.2s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.5rem;cursor:pointer;"
+            onclick="document.getElementById('portfolio-file').click()"
+            ondragover="event.preventDefault();this.classList.add('drag-over')"
+            ondragleave="this.classList.remove('drag-over')"
+            ondrop="handlePortfolioDrop(event)">
+            <span class="material-symbols-outlined" style="font-size:2.25rem;color:#00dbe9;opacity:0.7;">cloud_upload</span>
+            <p style="font-size:0.92rem;font-weight:700;color:#dce4e5;">Drop files here or <span style="color:#00dbe9;">browse</span></p>
+            <p style="font-size:0.78rem;color:#849495;">JPG · PNG · WEBP · MP4 · MOV &nbsp;·&nbsp; Max 50 MB per file</p>
+          </div>
+          <input type="file" id="portfolio-file" accept="image/*,video/*" multiple class="hidden" onchange="handlePortfolioFiles(this.files)">
+
+          <div class="grid grid-cols-3 sm:grid-cols-4 gap-3" id="portfolio-grid"></div>
+
+          <p id="portfolio-count" style="font-size:0.78rem;color:#849495;margin-top:0.75rem;text-align:right;">
+            <span id="portfolio-count-num">0</span> / 12 items
+          </p>
+        </div>
+      </div>
+
+      <!-- ══ SECTION 4 · SERVICES & RATES ═══════════════════════════ -->
+      <div class="edit-section reveal">
+        <div class="section-divider">
+          <div class="section-divider-icon">
+            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">sell</span>
+          </div>
+          <div>
+            <div class="section-title">Services &amp; Rates</div>
+            <div class="section-subtitle" style="margin-bottom:0;">List services and what you charge</div>
+          </div>
+        </div>
+
+        <!-- Add service form -->
+        <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:1rem;padding:1.25rem;margin-top:1.25rem;margin-bottom:1.25rem;">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+            <div class="sm:col-span-2">
+              <label class="cc-label" for="svc-name">Service Name</label>
+              <input class="cc-input w-full" id="svc-name" type="text" placeholder="e.g. Full-Day Video Shoot" maxlength="60">
+            </div>
+            <div>
+              <label class="cc-label" for="svc-price">Rate</label>
+              <div style="position:relative;">
+                <span style="position:absolute;left: 0.75rem;top:50%;transform:translateY(-50%);color:#849495;font-weight:700;">$</span>
+                <input class="cc-input w-full" style="padding-left: 1.5rem !important;" id="svc-price" type="number" min="0" placeholder="0">
+              </div>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="cc-label">Pricing Unit</label>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.35rem;" id="svc-unit-chips">
+              <button class="cat-chip selected" data-unit="per day" onclick="selectUnit(this)">per day</button>
+              <button class="cat-chip" data-unit="per hour" onclick="selectUnit(this)">per hour</button>
+              <button class="cat-chip" data-unit="per project" onclick="selectUnit(this)">per project</button>
+              <button class="cat-chip" data-unit="per event" onclick="selectUnit(this)">per event</button>
+              <button class="cat-chip" data-unit="custom" onclick="selectUnit(this)">custom</button>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="cc-label">Service Category <span style="color:#ff6b6b;margin-left:2px;">*</span></label>
+            <p style="font-size:0.75rem;color:#849495;margin-bottom:0.4rem;">Select the category this service belongs to (required)</p>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.35rem;" id="svc-cat-chips">
+              <button class="cat-chip" data-svc-cat="Photography" onclick="selectSvcCat(this)">Photography</button>
+              <button class="cat-chip" data-svc-cat="Videography" onclick="selectSvcCat(this)">Videography</button>
+              <button class="cat-chip" data-svc-cat="Developer" onclick="selectSvcCat(this)">Developer</button>
+              <button class="cat-chip" data-svc-cat="Designer" onclick="selectSvcCat(this)">Designer</button>
+              <button class="cat-chip" data-svc-cat="Organiser" onclick="selectSvcCat(this)">Organiser</button>
+              <button class="cat-chip" data-svc-cat="Caterer" onclick="selectSvcCat(this)">Caterer</button>
+            </div>
+            <p id="svc-cat-error" style="display:none;font-size:0.75rem;color:#ffb4ab;margin-top:0.35rem;">Please select a service category.</p>
+          </div>
+          <div class="mb-4">
+            <label class="cc-label" for="svc-desc">Short Description <span style="text-transform:none;letter-spacing:0;font-weight:400;color:#849495;">(optional)</span></label>
+            <input class="cc-input w-full" id="svc-desc" type="text" placeholder="What's included in this service…" maxlength="120">
+          </div>
+          <button onclick="addService()" style="
+            display:inline-flex;align-items:center;gap:0.4rem;
+            padding:0.6rem 1.25rem;border-radius:0.65rem;border:1px solid rgba(0,219,233,0.4);
+            background:rgba(0,219,233,0.07);color:#00dbe9;
+            font-size:0.88rem;font-weight:700;cursor:pointer;
+            font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.15s;"
+            onmouseover="this.style.background='rgba(0,219,233,0.14)'" onmouseout="this.style.background='rgba(0,219,233,0.07)'">
+            <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Add Service
+          </button>
+        </div>
+
+        <div class="space-y-2" id="services-list"></div>
+        <p id="services-empty" style="font-size:0.88rem;color:#475569;text-align:center;padding:1.25rem 0;">No services added yet.</p>
+      </div>
+
+      <!-- ══ SECTION 5 · WORK LOCATIONS ═════════════════════════════ -->
+      <div class="edit-section reveal">
+        <div class="section-divider">
+          <div class="section-divider-icon">
+            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">location_on</span>
+          </div>
+          <div>
+            <div class="section-title">Work Locations</div>
+            <div class="section-subtitle" style="margin-bottom:0;">Cities or regions where you're available</div>
+          </div>
+        </div>
+
+        <div class="mt-5">
+          <!-- Search input -->
+          <div style="position:relative;margin-bottom:1rem;">
+            <span class="material-symbols-outlined" style="position:absolute;left: 0.75rem;top:50%;transform:translateY(-50%);color:#849495;font-size:1.1rem;">location_on</span>
+            <input id="loc-input" class="cc-input w-full"
+              style="border:1px solid rgba(255,255,255,0.1) !important;border-radius:0.75rem !important;padding: 0.75rem 1rem 0.75rem 2.5rem !important;background:rgba(255,255,255,0.03) !important;"
+              type="text" placeholder="Type a city or region and press Enter…"
+              onkeydown="if(event.key==='Enter'){event.preventDefault();addLocation();}">
+            <div id="loc-suggestions" style="display:none;position:absolute;top:calc(100% + 4px);left: 0.75rem;right:0;z-index:20;background:#161618;border:1px solid rgba(255,255,255,0.12);border-radius:0.75rem;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.4);"></div>
+          </div>
+
+          <!-- Quick-add -->
+          <div class="mb-5">
+            <p style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;color:#475569;text-transform:uppercase;margin-bottom:0.6rem;">Quick Add</p>
+            <div class="flex flex-wrap gap-2">
+              <button class="cat-chip" onclick="quickAddLoc('Los Angeles, CA')">Los Angeles</button>
+              <button class="cat-chip" onclick="quickAddLoc('New York, NY')">New York</button>
+              <button class="cat-chip" onclick="quickAddLoc('Chicago, IL')">Chicago</button>
+              <button class="cat-chip" onclick="quickAddLoc('Miami, FL')">Miami</button>
+              <button class="cat-chip" onclick="quickAddLoc('Austin, TX')">Austin</button>
+              <button class="cat-chip" onclick="quickAddLoc('Atlanta, GA')">Atlanta</button>
+              <button class="cat-chip" onclick="quickAddLoc('Las Vegas, NV')">Las Vegas</button>
+              <button class="cat-chip" onclick="quickAddLoc('London, UK')">London</button>
+              <button class="cat-chip" onclick="quickAddLoc('Toronto, CA')">Toronto</button>
+              <button class="cat-chip" onclick="quickAddLoc('Remote / Virtual')">Remote</button>
+            </div>
+          </div>
+
+          <!-- Travel toggle -->
+          <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:1rem;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+            <div>
+              <p style="font-size:0.92rem;font-weight:700;color:#dce4e5;">Willing to travel internationally</p>
+              <p style="font-size:0.82rem;color:#849495;margin-top:2px;">Additional travel fees may apply</p>
+            </div>
+            <button id="travel-toggle" onclick="toggleTravel()" role="switch" aria-checked="false"
+              style="width:3rem;height:1.75rem;border-radius:999px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);position:relative;cursor:pointer;transition:all 0.25s;flex-shrink:0;">
+              <span id="travel-thumb" style="position:absolute;top:3px;left:3px;width:1.25rem;height:1.25rem;border-radius:50%;background:#849495;transition:all 0.25s;"></span>
+            </button>
+          </div>
+
+          <!-- Tags -->
+          <div class="flex flex-wrap gap-2 min-h-[2.5rem]" id="loc-tags"></div>
+          <p id="loc-empty" style="font-size:0.88rem;color:#475569;text-align:center;padding:1rem 0;">No locations added yet.</p>
+        </div>
+      </div>
+
+    </div><!-- /space-y-5 -->
+  </div>
+</main>
+
+<!-- ── Floating save bar ──────────────────────────────────────────── -->
+<div id="save-bar" class="hidden-bar">
+  <span id="save-bar-text">All changes saved</span>
+  <button onclick="saveChanges()" id="save-btn"
+    style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.6rem 1.4rem;border-radius:999px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;font-weight:800;letter-spacing:0.01em;color:#001f22;background:#00dbe9;transition:all 0.2s;position:relative;overflow:hidden;"
+    onmouseover="this.style.background='#00f0ff';this.style.boxShadow='0 0 20px rgba(0,240,255,0.4)'"
+    onmouseout="this.style.background='#00dbe9';this.style.boxShadow='none'">
+    <span class="material-symbols-outlined" style="font-size:1rem;">save</span> Save Changes
+  </button>
+  <a href="professional-profile.html"
+    style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.6rem 1rem;border-radius:999px;border:1px solid rgba(255,255,255,0.12);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.85rem;font-weight:700;color:#849495;background:none;text-decoration:none;transition:all 0.2s;"
+    onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='#dce4e5'"
+    onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='#849495'">
+    Cancel
+  </a>
+</div>
+
+<!-- Toast -->
+<div id="success-toast" class="fixed bottom-28 left-1/2 -translate-x-1/2 glass-panel px-8 py-4 rounded-full border border-primary/50 flex items-center space-x-3 opacity-0 translate-y-10 transition-all duration-500 pointer-events-none z-[200]">
+  <span id="toast-icon" class="material-symbols-outlined text-primary">check_circle</span>
+  <span id="toast-text" class="font-body-md text-primary text-sm font-semibold"></span>
+</div>
+
+<!-- Unsaved-changes warning -->
+<script>
+  window.addEventListener('beforeunload', e => {
+    if (window._isDirty) { e.preventDefault(); e.returnValue = ''; }
+  });
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   Edit profile — state + logic
+═══════════════════════════════════════════════════════════════════ */
+let services    = [];
+let locations   = [];
+let mediaFiles  = [];   // { id, url, type, file|null, name, isExisting }
+let travelIntl  = false;
+let selectedUnit = 'per day';
+let avatarUrl    = null;   // current avatar (blob or persisted URL)
+window._isDirty  = false;
+
+const CITY_SUGGESTIONS = [
+  'Los Angeles, CA','New York, NY','Chicago, IL','Houston, TX','Phoenix, AZ',
+  'San Diego, CA','Dallas, TX','San Jose, CA','Austin, TX','Jacksonville, FL',
+  'San Francisco, CA','Seattle, WA','Denver, CO','Nashville, TN','Miami, FL',
+  'Atlanta, GA','Las Vegas, NV','Portland, OR','Minneapolis, MN','Boston, MA',
+  'Detroit, MI','Louisville, KY','Baltimore, MD','Milwaukee, WI',
+  'London, UK','Manchester, UK','Toronto, CA','Vancouver, CA','Montreal, CA',
+  'Sydney, AU','Melbourne, AU','Dubai, UAE','Singapore','Tokyo, JP',
+  'Remote / Virtual'
+];
+
+/* ── Dirty tracking ─────────────────────────────────────────────── */
+function markDirty() {
+  window._isDirty = true;
+  const bar  = document.getElementById('save-bar');
+  const text = document.getElementById('save-bar-text');
+  bar.classList.remove('hidden-bar');
+  text.innerHTML = '<span class="unsaved-dot"></span>Unsaved changes';
+  text.classList.add('dirty');
+}
+
+/* ── Char counter ────────────────────────────────────────────────── */
+function updateCharCount(el, countId, max) {
+  const c = document.getElementById(countId);
+  c.textContent = `${el.value.length} / ${max}`;
+  c.classList.toggle('warn', el.value.length > max * 0.9);
+}
+
+/* ── Avatar ──────────────────────────────────────────────────────── */
+document.getElementById('avatar-file').addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { showToast('Photo must be under 5 MB', 'error', '#ffb4ab'); return; }
+  avatarUrl = URL.createObjectURL(file);
+  showAvatarPreview(avatarUrl, file.name);
+  markDirty();
+});
+
+function showAvatarPreview(url, name) {
+  const preview     = document.getElementById('avatar-preview');
+  const placeholder = document.getElementById('avatar-placeholder');
+  const removeBtn   = document.getElementById('avatar-remove-btn');
+  const namePreview = document.getElementById('avatar-name-preview');
+  preview.src = url;
+  preview.style.display = 'block';
+  placeholder.style.display = 'none';
+  removeBtn.style.display = 'inline';
+  namePreview.textContent = name || 'Photo uploaded';
+}
+
+function removeAvatar() {
+  avatarUrl = null;
+  const preview     = document.getElementById('avatar-preview');
+  const placeholder = document.getElementById('avatar-placeholder');
+  const removeBtn   = document.getElementById('avatar-remove-btn');
+  const namePreview = document.getElementById('avatar-name-preview');
+  preview.src = ''; preview.style.display = 'none';
+  placeholder.style.display = 'flex';
+  removeBtn.style.display = 'none';
+  namePreview.textContent = '—';
+  markDirty();
+}
+
+/* ── Category chips ──────────────────────────────────────────────── */
+document.getElementById('cat-chips').addEventListener('click', e => {
+  const btn = e.target.closest('.cat-chip');
+  if (!btn) return;
+  btn.classList.toggle('selected');
+  markDirty();
+});
+
+/* ── Portfolio ───────────────────────────────────────────────────── */
+function handlePortfolioFiles(files) {
+  Array.from(files).forEach(file => {
+    if (mediaFiles.length >= 12) { showToast('Max 12 files reached', 'warning', '#ffb4ab'); return; }
+    const id  = Date.now() + Math.random();
+    const url = URL.createObjectURL(file);
+    const isVideo = file.type.startsWith('video');
+    mediaFiles.push({ id, url, type: isVideo ? 'video' : 'image', file, name: file.name, isExisting: false });
+    appendThumb({ id, url, isVideo });
+    markDirty();
+  });
+  updatePortfolioCount();
+}
+
+function handlePortfolioDrop(e) {
+  e.preventDefault();
+  document.getElementById('portfolio-drop-zone').classList.remove('drag-over');
+  handlePortfolioFiles(e.dataTransfer.files);
+}
+
+function appendThumb({ id, url, isVideo }) {
+  const grid  = document.getElementById('portfolio-grid');
+  const thumb = document.createElement('div');
+  thumb.className = 'media-thumb';
+  thumb.dataset.id = id;
+  thumb.innerHTML = isVideo
+    ? `<video src="${url}" muted playsinline></video>
+       <div style="position:absolute;bottom:0.4rem;left:0.4rem;background:rgba(0,0,0,0.7);border-radius:0.3rem;padding:1px 5px;font-size:0.62rem;font-weight:800;color:#fff;">VIDEO</div>`
+    : `<img src="${url}" alt="portfolio item">`;
+  thumb.innerHTML += `<button class="remove-btn" onclick="removeMedia(${id}, this.closest('.media-thumb'))">
+    <span class="material-symbols-outlined" style="font-size:0.85rem;">close</span></button>`;
+  grid.appendChild(thumb);
+}
+
+function removeMedia(id, el) {
+  mediaFiles = mediaFiles.filter(m => m.id !== id);
+  el.remove();
+  updatePortfolioCount();
+  markDirty();
+}
+
+function updatePortfolioCount() {
+  document.getElementById('portfolio-count-num').textContent = mediaFiles.length;
+}
+
+/* ── Services ────────────────────────────────────────────────────── */
+function selectUnit(btn) {
+  document.querySelectorAll('#svc-unit-chips .cat-chip').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedUnit = btn.dataset.unit;
+}
+
+function selectSvcCat(btn) {
+  const already = btn.classList.contains('selected');
+  document.querySelectorAll('#svc-cat-chips .cat-chip').forEach(b => b.classList.remove('selected'));
+  if (!already) btn.classList.add('selected'); // clicking same chip deselects it
+}
+
+function addService() {
+  const name  = document.getElementById('svc-name').value.trim();
+  const price = document.getElementById('svc-price').value.trim();
+  const desc  = document.getElementById('svc-desc').value.trim();
+  const catBtn = document.querySelector('#svc-cat-chips .cat-chip.selected');
+  const category = catBtn ? catBtn.dataset.svcCat : '';
+  if (!name)  { showToast('Enter a service name', 'error', '#ffb4ab'); return; }
+  if (!price) { showToast('Enter a rate', 'error', '#ffb4ab'); return; }
+  if (!category) {
+    const errEl = document.getElementById('svc-cat-error');
+    if (errEl) errEl.style.display = 'block';
+    showToast('Select a service category', 'error', '#ffb4ab');
+    return;
+  }
+  const errEl = document.getElementById('svc-cat-error');
+  if (errEl) errEl.style.display = 'none';
+  const id = Date.now();
+  services.push({ id, name, price, unit: selectedUnit, desc, category });
+  renderServices();
+  document.getElementById('svc-name').value  = '';
+  document.getElementById('svc-price').value = '';
+  document.getElementById('svc-desc').value  = '';
+  document.querySelectorAll('#svc-cat-chips .cat-chip').forEach(b => b.classList.remove('selected'));
+  showToast('Service added', 'check_circle', '#00dbe9');
+  markDirty();
+}
+
+function removeService(id) {
+  services = services.filter(s => s.id !== id);
+  renderServices();
+  markDirty();
+}
+
+function renderServices() {
+  const list  = document.getElementById('services-list');
+  const empty = document.getElementById('services-empty');
+  list.innerHTML = '';
+  empty.style.display = services.length ? 'none' : 'block';
+  services.forEach(s => {
+    const el = document.createElement('div');
+    el.className = 'service-item';
+    el.innerHTML = `
+      <div style="min-width:0;">
+        <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.15rem;">
+          <p style="font-size:0.95rem;font-weight:700;color:#dce4e5;margin:0;">${esc(s.name)}</p>
+          ${s.category ? `<span style="display:inline-flex;align-items:center;padding:0.15rem 0.55rem;border-radius:999px;font-size:0.66rem;font-weight:700;letter-spacing:0.05em;background:rgba(0,219,233,0.1);color:#00dbe9;border:1px solid rgba(0,219,233,0.2);">${esc(s.category)}</span>` : ''}
+        </div>
+        ${s.desc ? `<p style="font-size:0.8rem;color:#849495;margin:0;">${esc(s.desc)}</p>` : ''}
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <p style="font-size:0.95rem;font-weight:800;color:#00dbe9;">$${Number(s.price).toLocaleString()}</p>
+        <p style="font-size:0.72rem;color:#849495;">${esc(s.unit)}</p>
+      </div>
+      <button onclick="removeService(${s.id})" style="background:none;border:none;cursor:pointer;color:#475569;display:flex;align-items:center;transition:color 0.15s;flex-shrink:0;"
+        onmouseover="this.style.color='#ffb4ab'" onmouseout="this.style.color='#475569'">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;">delete</span>
+      </button>`;
+    list.appendChild(el);
+  });
+}
+
+/* ── Locations ───────────────────────────────────────────────────── */
+const locInput = document.getElementById('loc-input');
+const locSugg  = document.getElementById('loc-suggestions');
+
+locInput.addEventListener('input', () => {
+  const q = locInput.value.trim().toLowerCase();
+  if (!q) { locSugg.style.display = 'none'; return; }
+  const matches = CITY_SUGGESTIONS.filter(c => c.toLowerCase().includes(q) && !locations.includes(c)).slice(0, 6);
+  if (!matches.length) { locSugg.style.display = 'none'; return; }
+  locSugg.innerHTML = matches.map(c =>
+    `<button onclick="pickSuggestion('${c.replace(/'/g,"\\'")}');return false;"
+      style="display:block;width:100%;text-align:left;padding:0.7rem 1rem;font-size:0.92rem;font-weight:500;color:#dce4e5;background:none;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:background 0.15s;"
+      onmouseover="this.style.background='rgba(0,219,233,0.08)'" onmouseout="this.style.background='none'">
+      <span class="material-symbols-outlined" style="font-size:0.95rem;vertical-align:middle;color:#849495;margin-right:6px;">location_on</span>${c}
+    </button>`).join('');
+  locSugg.style.display = 'block';
+});
+document.addEventListener('click', e => {
+  if (!locSugg.contains(e.target) && e.target !== locInput) locSugg.style.display = 'none';
+});
+
+function pickSuggestion(city) {
+  locInput.value = ''; locSugg.style.display = 'none';
+  addLocTag(city);
+}
+function addLocation() {
+  const v = locInput.value.trim(); if (!v) return;
+  addLocTag(v); locInput.value = ''; locSugg.style.display = 'none';
+}
+function quickAddLoc(city) { addLocTag(city); }
+function addLocTag(city) {
+  if (locations.includes(city)) { showToast('Already added', 'info', '#849495'); return; }
+  locations.push(city); renderLocations(); markDirty();
+}
+function removeLocation(city) {
+  locations = locations.filter(l => l !== city); renderLocations(); markDirty();
+}
+function renderLocations() {
+  const wrap  = document.getElementById('loc-tags');
+  const empty = document.getElementById('loc-empty');
+  wrap.innerHTML = '';
+  empty.style.display = locations.length ? 'none' : 'block';
+  locations.forEach(loc => {
+    const tag = document.createElement('div');
+    tag.className = 'loc-tag';
+    tag.innerHTML = `
+      <span class="material-symbols-outlined" style="font-size:0.9rem;">location_on</span>
+      ${esc(loc)}
+      <button onclick="removeLocation('${loc.replace(/'/g,"\\'")}')">
+        <span class="material-symbols-outlined" style="font-size:0.9rem;">close</span>
+      </button>`;
+    wrap.appendChild(tag);
+  });
+}
+
+/* ── Travel toggle ───────────────────────────────────────────────── */
+function toggleTravel(forceTo) {
+  travelIntl = (forceTo !== undefined) ? forceTo : !travelIntl;
+  const thumb = document.getElementById('travel-thumb');
+  const btn   = document.getElementById('travel-toggle');
+  btn.setAttribute('aria-checked', travelIntl);
+  if (travelIntl) {
+    btn.style.background = 'rgba(0,219,233,0.2)'; btn.style.borderColor = '#00dbe9';
+    thumb.style.background = '#00dbe9'; thumb.style.left = 'calc(100% - 1.5rem)';
+  } else {
+    btn.style.background = 'rgba(255,255,255,0.1)'; btn.style.borderColor = 'rgba(255,255,255,0.15)';
+    thumb.style.background = '#849495'; thumb.style.left = '3px';
+  }
+  if (forceTo === undefined) markDirty();
+}
+
+/* ── Pre-fill from localStorage ──────────────────────────────────── */
+function prefillFromStorage(pro) {
+  if (!pro) return;
+
+  // Name + title
+  document.getElementById('inp-name').value  = pro.name  || '';
+  document.getElementById('inp-title').value = pro.title || '';
+
+  // Bio
+  const bioEl = document.getElementById('inp-bio');
+  bioEl.value = pro.bio || '';
+  updateCharCount(bioEl, 'bio-count', 300);
+
+  // Avatar
+  if (pro.avatarUrl) {
+    avatarUrl = pro.avatarUrl;
+    showAvatarPreview(pro.avatarUrl, 'Current photo');
+  } else {
+    document.getElementById('avatar-name-preview').textContent = '—';
+  }
+
+  // Avatar display name fallback
+  if (!pro.avatarUrl) {
+    const initials = (pro.name || '?').charAt(0).toUpperCase();
+    document.getElementById('avatar-name-preview').textContent = pro.name || '—';
+  }
+
+  // Categories
+  const selected = new Set(pro.categories || []);
+  document.querySelectorAll('#cat-chips .cat-chip').forEach(btn => {
+    btn.classList.toggle('selected', selected.has(btn.dataset.cat));
+  });
+
+  // Phone / website
+  document.getElementById('inp-phone').value   = pro.phone   || '';
+  document.getElementById('inp-website').value = pro.website || '';
+
+  // Socials
+  document.getElementById('inp-instagram').value = (pro.socials && pro.socials.instagram) || '';
+  document.getElementById('inp-facebook').value  = (pro.socials && pro.socials.facebook)  || '';
+  document.getElementById('inp-tiktok').value    = (pro.socials && pro.socials.tiktok)    || '';
+
+  // Portfolio — restore existing items (URL only, no File object)
+  mediaFiles = [];
+  const grid = document.getElementById('portfolio-grid');
+  grid.innerHTML = '';
+  (pro.portfolio || []).forEach(item => {
+    const id = Date.now() + Math.random();
+    mediaFiles.push({ id, url: item.url, type: item.type, file: null, name: item.name || '', isExisting: true });
+    appendThumb({ id, url: item.url, isVideo: item.type === 'video' });
+  });
+  updatePortfolioCount();
+
+  // Services
+  services = (pro.services || []).map(s => ({ ...s, id: s.id || Date.now() + Math.random() }));
+  renderServices();
+
+  // Locations
+  locations = [...(pro.locations || [])];
+  renderLocations();
+
+  // Travel
+  toggleTravel(!!pro.travelIntl);
+}
+
+/* ── Save ────────────────────────────────────────────────────────── */
+async function saveChanges() {
+  const name = document.getElementById('inp-name').value.trim();
+  if (!name) { showToast('Please enter your full name', 'error', '#ffb4ab'); return; }
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:1rem;animation:spin 0.8s linear infinite;">progress_activity</span> Saving…`;
+
+  const selectedCats = Array.from(document.querySelectorAll('#cat-chips .cat-chip.selected'))
+    .map(b => b.dataset.cat);
+
+  const proData = {
+    name,
+    title:      document.getElementById('inp-title').value.trim(),
+    categories: selectedCats,
+    bio:        document.getElementById('inp-bio').value.trim(),
+    phone:      document.getElementById('inp-phone').value.trim(),
+    website:    document.getElementById('inp-website').value.trim(),
+    socials: {
+      instagram: document.getElementById('inp-instagram').value.trim(),
+      facebook:  document.getElementById('inp-facebook').value.trim(),
+      tiktok:    document.getElementById('inp-tiktok').value.trim(),
+    },
+    avatarUrl,
+    portfolio:  mediaFiles.map(m => ({ url: m.url, type: m.type, name: m.name || '' })),
+    services,
+    locations,
+    travelIntl,
+    savedAt: new Date().toISOString(),
+  };
+
+  // Persist to localStorage
+  try { localStorage.setItem('cc_pro_profile', JSON.stringify(proData)); } catch(_) {}
+
+  // Save full profile (services, categories, bio, etc.) via API
+  try {
+    const payload = { ...proData, display_name: name, travel_international: travelIntl };
+    const res  = await fetch('/api/profile', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error);
+  } catch(err) { console.error('Profile save error:', err); }
+
+  // Reset dirty state
+  window._isDirty = false;
+  btn.disabled = false;
+  btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:1rem;">save</span> Save Changes`;
+  const bar  = document.getElementById('save-bar');
+  const text = document.getElementById('save-bar-text');
+  text.innerHTML = 'All changes saved';
+  text.classList.remove('dirty');
+
+  showToast('Profile saved successfully!', 'check_circle', '#00dbe9');
+
+  // Redirect to profile after a short delay
+  setTimeout(() => { window.location.href = 'professional-profile.html'; }, 1400);
+}
+
+/* ── Boot ────────────────────────────────────────────────────────── */
+async function boot() {
+  // Auth check
+  let apiProfile = null;
+  try {
+    const res  = await fetch('/api/profile');
+    const data = await res.json();
+    if (!data.ok) {
+      document.getElementById('auth-gate').classList.remove('hidden');
+      document.getElementById('auth-gate').style.display = 'flex';
+      return;
+    }
+    apiProfile = data.profile;
+  } catch(_) {
+    document.getElementById('auth-gate').classList.remove('hidden');
+    document.getElementById('auth-gate').style.display = 'flex';
+    return;
+  }
+
+  // Show main content
+  const main = document.getElementById('edit-main');
+  main.classList.remove('hidden');
+  main.style.display = 'block';
+
+  // Show save bar
+  document.getElementById('save-bar').classList.remove('hidden-bar');
+  document.getElementById('save-bar-text').textContent = 'All changes saved';
+
+  // Set email (read-only)
+  document.getElementById('inp-email').value = apiProfile.email;
+
+  // Pre-fill from localStorage
+  const raw = localStorage.getItem('cc_pro_profile');
+  const pro  = raw ? JSON.parse(raw) : null;
+  prefillFromStorage(pro);
+
+  // Trigger reveal animations
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+  });
+}
+
+/* ── Toast ───────────────────────────────────────────────────────── */
+function showToast(msg, icon, color) {
+  const toast = document.getElementById('success-toast');
+  document.getElementById('toast-text').textContent = msg;
+  const ico = document.getElementById('toast-icon');
+  ico.textContent = icon; ico.style.color = color;
+  document.getElementById('toast-text').style.color = color;
+  toast.style.borderColor = color + '80';
+  toast.classList.remove('opacity-0', 'translate-y-10');
+  toast.classList.add('opacity-100', 'translate-y-0');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => {
+    toast.classList.remove('opacity-100', 'translate-y-0');
+    toast.classList.add('opacity-0', 'translate-y-10');
+  }, 3000);
+}
+
+/* ── Util ────────────────────────────────────────────────────────── */
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── Spin keyframe ───────────────────────────────────────────────── */
+const spinStyle = document.createElement('style');
+spinStyle.textContent = `@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`;
+document.head.appendChild(spinStyle);
+
+/* ── Scroll reveal ───────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  const obs = new IntersectionObserver(entries =>
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }), { threshold: 0.05 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+});
+
+boot();
+</script>
+
+<script src="/static/js/header-loader.js"></script>
+<script src="/static/js/footer-loader.js"></script>
+<script>
+</script>
+</body>
+</html>
+
+

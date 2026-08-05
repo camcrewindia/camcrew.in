@@ -1,0 +1,1995 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Account | Camcrew Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="/static/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="/static/css/styles.css"/>
+<style>
+  /* ══════════════════════════════════════════════════════
+     DARK NEUMORPHISM — matches professional-profile
+     Base: #141414  |  Dark shadow: #000  |  Light shadow: #1e1e1e
+  ══════════════════════════════════════════════════════ */
+  :root {
+    --nb:  #141414;
+    --ns:  #000000;
+    --nl:  #1e1e1e;
+    --nr:  6px 6px 14px var(--ns), -6px -6px 14px var(--nl);
+    --nr-s:3px 3px 8px  var(--ns), -3px -3px 8px  var(--nl);
+    --ni:  inset 4px 4px 10px var(--ns), inset -4px -4px 10px var(--nl);
+    --ni-s:inset 2px 2px 6px  var(--ns), inset -2px -2px 6px  var(--nl);
+    --ac:  #00dbe9;
+    --ac2: #ebb2ff;
+  }
+
+  /* ── Layout ── */
+  #dashboard { display:none; min-height:100vh; }
+  .cp-sidebar {
+    width:272px; flex-shrink:0; background:var(--nb);
+    box-shadow: 4px 0 18px var(--ns), 1px 0 0 var(--nl);
+    position:sticky; top:0; height:100vh;
+    overflow-y:auto; display:flex; flex-direction:column;
+    scrollbar-width:thin; scrollbar-color:rgba(0,219,233,0.2) transparent;
+  }
+  .cp-content { flex:1; overflow-y:auto; padding:2rem 2.5rem 2rem 2rem; min-width:0; background:var(--nb); }
+
+  /* ── Nav Items ── */
+  .nav-item {
+    display:flex; align-items:center; gap:0.75rem;
+    padding:0.65rem 1.1rem; border-radius:0.75rem; cursor:pointer;
+    color:#849495; font-size:0.9rem; font-weight:600;
+    transition:all 0.2s; margin:0.15rem 0.6rem;
+    background:var(--nb); box-shadow:none; border:none;
+  }
+  .nav-item:hover { color:#dce4e5; box-shadow: var(--nr-s); }
+  .nav-item.active { color:var(--ac); box-shadow: var(--ni-s); background:var(--nb); }
+  .nav-item .material-symbols-outlined { font-size:1.2rem; }
+
+  /* ── Divider ── */
+  .nav-divider { height:1px; background:var(--ns); margin:0.5rem 1rem; box-shadow:0 1px 0 var(--nl); }
+
+  /* ── Section titles ── */
+  .sec-title { font-size:1.35rem; font-weight:800; color:#dce4e5; margin-bottom:0.25rem; }
+  .sec-sub   { font-size:0.87rem; color:#849495; margin-bottom:1.5rem; }
+
+  /* ── Badges ── */
+  .badge {
+    display:inline-flex; align-items:center; gap:0.3rem;
+    padding:0.22rem 0.7rem; border-radius:999px;
+    font-size:0.73rem; font-weight:700; letter-spacing:0.04em;
+    text-transform:uppercase;
+    box-shadow: 2px 2px 5px var(--ns), -1px -1px 3px var(--nl);
+  }
+  .badge-processing { background:#0e1f20; color:#00dbe9; }
+  .badge-confirmed  { background:#0e1f1e; color:#63cab7; }
+  .badge-delivered  { background:#0d1f16; color:#4ade80; }
+  .badge-completed  { background:#0d1f16; color:#4ade80; }
+  .badge-cancelled  { background:#1f0e0e; color:#ff6464; }
+  .badge-pending    { background:#1f1a0d; color:#fbbf24; }
+  .badge-in_transit { background:#160d1f; color:#a855f7; }
+  .badge-rejected   { background:#1f100e; color:#ffb4ab; }
+  .badge-bronze     { background:#1a1108; color:#cd7f32; }
+  .badge-silver     { background:#151820; color:#c0c0d0; }
+  .badge-gold       { background:#1c1a07; color:#ffd700; }
+
+  /* ── Data Cards ── */
+  .data-card {
+    background:var(--nb); border:none;
+    border-radius:1.1rem; padding:1.3rem 1.4rem;
+    box-shadow: var(--nr);
+    transition:box-shadow 0.25s;
+  }
+  .data-card:hover {
+    box-shadow: 8px 8px 20px var(--ns), -8px -8px 20px var(--nl),
+                inset 0 0 0 1px rgba(0,219,233,0.12);
+  }
+  button.data-card:active, a.data-card:active { box-shadow: var(--ni); }
+
+  /* ── Stat Cards ── */
+  .stat-card {
+    background:var(--nb); border:none;
+    border-radius:1rem; padding:1.2rem;
+    box-shadow: var(--nr);
+    display:flex; flex-direction:column; gap:0.5rem;
+    transition:box-shadow 0.25s;
+  }
+  .stat-card:hover { box-shadow: 8px 8px 20px var(--ns), -8px -8px 20px var(--nl); }
+
+  /* ── Timeline ── */
+  .timeline-step { display:flex; align-items:flex-start; gap:1rem; padding-bottom:1.5rem; position:relative; }
+  .timeline-step:not(:last-child)::after {
+    content:''; position:absolute; left:14px; top:32px;
+    width:2px; height:calc(100% - 16px);
+    background:var(--ns); box-shadow:1px 0 0 var(--nl);
+  }
+  .timeline-step.done::after   { background:rgba(74,222,128,0.35); box-shadow:none; }
+  .timeline-step.active::after { background:rgba(0,219,233,0.3);   box-shadow:none; }
+  .t-icon {
+    width:30px; height:30px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.85rem; background:var(--nb); z-index:1;
+    box-shadow: var(--nr-s);
+  }
+  .t-icon.done   { box-shadow:inset 2px 2px 6px #04180f, inset -2px -2px 6px #163023; color:#4ade80; }
+  .t-icon.active { box-shadow:inset 2px 2px 6px #04181c, inset -2px -2px 6px #12323a; color:#00dbe9; }
+
+  /* ── Progress bar ── */
+  .progress-bar {
+    height:7px; border-radius:999px; overflow:hidden;
+    box-shadow: var(--ni-s); background:var(--nb);
+  }
+  .progress-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,#00dbe9,#ebb2ff); transition:width 0.6s ease; }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    position:fixed; inset:0; z-index:200;
+    background:rgba(0,0,0,0.78); backdrop-filter:blur(6px);
+    display:none; align-items:center; justify-content:center; padding:1rem;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal-box {
+    background:var(--nb);
+    border-radius:1.5rem; padding:2rem; width:100%; max-width:480px;
+    max-height:90vh; overflow-y:auto;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* ── Form inputs ── */
+  .fi {
+    width:100%; background-color:var(--nb) !important; border:none !important;
+    border-radius:0.75rem !important; padding:0.75rem 1.2rem !important; color:#dce4e5 !important;
+    font-size:0.9rem !important; outline:none !important;
+    box-shadow: var(--ni-s) !important;
+    transition:box-shadow 0.2s;
+    font-family:'Plus Jakarta Sans',sans-serif;
+    color-scheme: dark;
+    -webkit-text-fill-color: #dce4e5;
+  }
+  .fi::placeholder {
+    font-size: 0.8rem;
+    opacity: 0.5;
+    color: #849495;
+    -webkit-text-fill-color: #849495;
+  }
+  .fi:focus {
+    box-shadow: inset 3px 3px 8px var(--ns), inset -3px -3px 8px var(--nl),
+                0 0 0 2px rgba(0,219,233,0.3);
+  }
+  .fi:-webkit-autofill,
+  .fi:-webkit-autofill:hover,
+  .fi:-webkit-autofill:focus,
+  .fi:-webkit-autofill:active {
+    -webkit-box-shadow: inset 2px 2px 6px var(--ns), inset -2px -2px 6px var(--nl),
+                        0 0 0 9999px var(--nb) inset !important;
+    -webkit-text-fill-color: #dce4e5 !important;
+    caret-color: #dce4e5;
+  }
+  .fi.opacity-60 { -webkit-text-fill-color: rgba(220,228,229,0.6) !important; }
+  .fi-label { font-size:0.78rem; font-weight:700; letter-spacing:0.08em; color:#849495; text-transform:uppercase; margin-bottom:0.4rem; display:block; }
+
+  /* ── Empty state ── */
+  .empty-state { text-align:center; padding:3rem 2rem; }
+  .empty-icon  { font-size:3rem; color:rgba(255,255,255,0.1); margin-bottom:1rem; display:block; }
+
+  /* ── Action buttons ── */
+  .btn-sm {
+    display:inline-flex; align-items:center; gap:0.35rem;
+    padding:0.42rem 0.95rem; border-radius:0.6rem; font-size:0.78rem; font-weight:700;
+    cursor:pointer; transition:all 0.18s; border:none;
+    background:var(--nb);
+    box-shadow: var(--nr-s);
+    font-family:inherit;
+  }
+  .btn-sm:active { box-shadow: var(--ni-s); }
+  .btn-sm-cyan  { color:var(--ac); }
+  .btn-sm-cyan:hover  { box-shadow: 4px 4px 10px var(--ns), -4px -4px 10px var(--nl), 0 0 8px rgba(0,219,233,0.2); }
+  .btn-sm-red   { color:#ff6464; }
+  .btn-sm-red:hover   { box-shadow: 4px 4px 10px var(--ns), -4px -4px 10px var(--nl), 0 0 8px rgba(255,100,100,0.2); }
+  .btn-sm-ghost { color:#849495; }
+  .btn-sm-ghost:hover { color:#dce4e5; }
+
+  /* ── Primary CTA override ── */
+  .cc-btn-primary {
+    background: linear-gradient(135deg, #007d87, #00dbe9) !important;
+    box-shadow: 4px 4px 12px var(--ns), -2px -2px 8px var(--nl), 0 4px 20px rgba(0,219,233,0.25) !important;
+    border:none !important;
+    transition: box-shadow 0.2s, transform 0.15s !important;
+    display:inline-flex; align-items:center; justify-content:center; gap:0.45rem;
+    padding:0.75rem 1.75rem; border-radius:0.85rem; font-weight:800; cursor:pointer;
+    color:#001f22; font-size:0.9rem; font-family:inherit; width:100%;
+  }
+  .cc-btn-primary:hover {
+    box-shadow: 6px 6px 16px var(--ns), -3px -3px 10px var(--nl), 0 6px 28px rgba(0,219,233,0.35) !important;
+    transform: translateY(-1px) !important;
+  }
+  .cc-btn-primary:active {
+    box-shadow: inset 3px 3px 8px rgba(0,0,0,0.4), 0 2px 10px rgba(0,219,233,0.2) !important;
+    transform: translateY(0) !important;
+  }
+
+  /* ── Sign-out button ── */
+  .nm-signout {
+    width:100%; display:flex; align-items:center; justify-content:center; gap:0.5rem;
+    padding:0.65rem; border-radius:0.75rem; font-size:0.88rem; font-weight:700;
+    color:#849495; cursor:pointer; background:var(--nb); border:none;
+    box-shadow: var(--nr-s);
+    transition:all 0.2s;
+  }
+  .nm-signout:hover { color:#ff6464; box-shadow:4px 4px 10px var(--ns),-4px -4px 10px var(--nl),0 0 8px rgba(255,100,100,0.15); }
+  .nm-signout:active { box-shadow: var(--ni-s); }
+
+  /* ── Mobile header bar ── */
+  .mobile-header {
+    display:none; align-items:center; justify-content:space-between;
+    padding:0.75rem 1rem;
+    background:var(--nb);
+    box-shadow:0 2px 10px var(--ns), 0 1px 0 var(--nl);
+    position:sticky; top:0; z-index:100; flex-shrink:0;
+  }
+  .mobile-header-back {
+    width:2.2rem; height:2.2rem; border-radius:50%; background:var(--nb);
+    display:flex; align-items:center; justify-content:center;
+    color:#849495; cursor:pointer; border:none;
+    box-shadow: var(--nr-s); flex-shrink:0;
+    transition:all 0.18s;
+  }
+  .mobile-header-back:hover { color:#dce4e5; }
+  .mobile-header-back:active { box-shadow: var(--ni-s); }
+
+  /* ── Mobile user pill ── */
+  .mobile-user-pill {
+    display:flex; align-items:center; gap:0.55rem;
+    background:var(--nb); border-radius:999px; padding:0.3rem 0.75rem 0.3rem 0.3rem;
+    box-shadow: var(--nr-s);
+  }
+  .mobile-user-pill-avatar {
+    width:1.65rem; height:1.65rem; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.75rem; font-weight:900; color:#111d1e; flex-shrink:0;
+    background:linear-gradient(135deg,#00dbe9,#ebb2ff);
+  }
+
+  /* ── Mobile tabs ── */
+  .mobile-tabs {
+    display:none; overflow-x:auto; gap:0.4rem; padding:0.65rem 1rem;
+    background:var(--nb);
+    border-bottom:1px solid var(--ns);
+    scrollbar-width:none; flex-shrink:0;
+  }
+  .mobile-tabs::-webkit-scrollbar { display:none; }
+  .mobile-tab {
+    display:inline-flex; align-items:center; gap:0.35rem; white-space:nowrap;
+    padding:0.45rem 0.85rem; border-radius:999px; font-size:0.77rem; font-weight:700;
+    color:#849495; cursor:pointer; background:var(--nb);
+    box-shadow: var(--nr-s);
+    transition:all 0.2s; border:none;
+  }
+  .mobile-tab.active {
+    color:var(--ac);
+    box-shadow: var(--ni-s);
+  }
+  .mobile-tab .material-symbols-outlined { font-size:0.95rem; }
+
+  /* ── Auth-gate card ── */
+  .nm-auth-card {
+    background:var(--nb); border-radius:1.5rem; padding:2.5rem;
+    box-shadow: var(--nr); text-align:center; max-width:360px; width:100%;
+  }
+
+  /* ── Auth-gate icon circle ── */
+  .nm-icon-circle {
+    width:4rem; height:4rem; border-radius:50%; background:var(--nb);
+    display:inline-flex; align-items:center; justify-content:center; margin-bottom:1rem;
+    box-shadow: var(--nr);
+  }
+
+  /* ── Coupon icon ── */
+  .coupon-icon {
+    width:2.6rem; height:2.6rem; border-radius:0.7rem; background:var(--nb);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    box-shadow: var(--nr-s);
+  }
+
+  /* ── Rewards trophy ── */
+  .nm-trophy {
+    box-shadow: none;
+    filter: drop-shadow(0 4px 16px rgba(255,215,0,0.2));
+  }
+
+  /* ── Theme toggle button ── */
+  .theme-toggle {
+    display:flex; align-items:center; justify-content:center;
+    width:2rem; height:2rem; border-radius:50%;
+    background:var(--nb); border:none; cursor:pointer;
+    box-shadow: var(--nr-s);
+    color:#849495; transition:all 0.2s;
+    flex-shrink:0;
+  }
+  .theme-toggle:hover { color:#dce4e5; box-shadow: 4px 4px 10px var(--ns), -4px -4px 10px var(--nl); }
+  .theme-toggle:active { box-shadow: var(--ni-s); }
+
+  /* ── Sidebar logo ── */
+  .cp-sidebar-logo {
+    padding:1.1rem 1.2rem 0.9rem;
+    display:flex; align-items:center;
+    border-bottom:1px solid var(--ns);
+    flex-shrink:0;
+  }
+  .cp-sidebar-logo img { width:140px; height:auto; display:block; }
+
+  /* ── Modal close button ── */
+  .modal-close-btn {
+    background:none; border:none; cursor:pointer;
+    color:#849495; display:flex; align-items:center;
+    transition:color 0.15s; padding:0;
+  }
+  .modal-close-btn:hover { color:#dce4e5; }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width:5px; }
+  ::-webkit-scrollbar-track { background:var(--nb); }
+  ::-webkit-scrollbar-thumb { background:var(--ns); border-radius:999px; }
+
+  /* ══════════════════════════════════════════════════════
+     LIGHT NEUMORPHISM — matches professional-profile
+     Base: #e3e8ec  |  Dark shadow: #a2adb8  |  Light shadow: #ffffff
+  ══════════════════════════════════════════════════════ */
+  html.light {
+    --nb:  #e3e8ec;
+    --ns:  #a2adb8;
+    --nl:  #ffffff;
+    --nr:  8px 8px 18px var(--ns), -8px -8px 18px var(--nl);
+    --nr-s:4px 4px 10px var(--ns), -4px -4px 10px var(--nl);
+    --ni:  inset 5px 5px 12px var(--ns), inset -5px -5px 12px var(--nl);
+    --ni-s:inset 3px 3px 8px  var(--ns), inset -3px -3px 8px  var(--nl);
+    --ac:  #007d8e;
+    --ac2: #a855f7;
+  }
+  html.light body { background:#e3e8ec !important; }
+
+  /* ── Light sidebar separator ── */
+  html.light .cp-sidebar { box-shadow: 4px 0 20px var(--ns), 1px 0 0 var(--nl); }
+
+  /* ── Text — primary ── */
+  html.light .sec-title,
+  html.light #ov-name,
+  html.light #sb-name,
+  html.light #cp-hdr-title { color:#0a1618 !important; }
+  html.light .sec-sub       { color:#1e3a3c !important; }
+  html.light #sb-email      { color:#2a5052 !important; }
+
+  /* ── Inline-style overrides ── */
+  html.light [style*="color:#dce4e5"] { color:#0a1618 !important; }
+  html.light [style*="color:#849495"] { color:#1e3a3c !important; }
+  html.light [style*="color:#5a7475"] { color:#2a5052 !important; }
+  html.light [style*="color:#001f22"] { color:#0a1618 !important; }
+
+  /* ── Stat cards ── */
+  html.light .stat-card p { color:#0a1618 !important; }
+  html.light .stat-card .text-xs { color:#1e3a3c !important; }
+
+  /* ── Data cards ── */
+  html.light .data-card p,
+  html.light .data-card span { color:#0a1618 !important; }
+  html.light .data-card:hover {
+    box-shadow: 10px 10px 22px var(--ns), -10px -10px 22px var(--nl),
+                inset 0 0 0 1px rgba(0,125,142,0.12);
+  }
+
+  /* ── Section nav labels ── */
+  html.light nav p { color:#2a5052 !important; }
+
+  /* ── fi-label ── */
+  html.light .fi-label { color:#1e3a3c !important; }
+
+  /* ── Nav items ── */
+  html.light .nav-item           { color:#1e3a3c; }
+  html.light .nav-item:hover     { color:#0a1618; box-shadow: var(--nr-s); }
+  html.light .nav-item.active    { color:var(--ac); }
+  html.light .nav-divider        { background:var(--ns); box-shadow:0 1px 0 var(--nl); opacity:0.45; }
+  html.light .mobile-tabs        { border-bottom-color:var(--ns); }
+  html.light .mobile-tab         { color:#1e3a3c; }
+  html.light .mobile-tab.active  { color:var(--ac); }
+  html.light .mobile-tab:hover   { color:#0a1618; }
+  html.light .nav-item:hover     { color:#0a1618; }
+  html.light .mobile-header-back:hover { color:#0a1618; }
+
+  /* Badges — light variants */
+  html.light .badge-processing { background:#cffafe; color:#0e7490; }
+  html.light .badge-confirmed  { background:#d1fae5; color:#065f46; }
+  html.light .badge-delivered  { background:#dcfce7; color:#15803d; }
+  html.light .badge-completed  { background:#dcfce7; color:#15803d; }
+  html.light .badge-cancelled  { background:#fee2e2; color:#b91c1c; }
+  html.light .badge-pending    { background:#fef3c7; color:#b45309; }
+  html.light .badge-in_transit { background:#f3e8ff; color:#7c3aed; }
+  html.light .badge-rejected   { background:#fee2e2; color:#b91c1c; }
+  html.light .badge-bronze     { background:#fef3c7; color:#92400e; }
+  html.light .badge-silver     { background:#f1f5f9; color:#475569; }
+  html.light .badge-gold       { background:#fef9c3; color:#854d0e; }
+
+  /* ── Empty icon ── */
+  html.light .empty-icon { color:rgba(0,0,0,0.15) !important; }
+
+  /* Form inputs */
+  html.light .fi {
+    color:#1a2a2b !important;
+    -webkit-text-fill-color:#1a2a2b !important;
+    color-scheme:light !important;
+  }
+  html.light .fi::placeholder {
+    color: #5a7475 !important;
+    -webkit-text-fill-color: #5a7475 !important;
+    opacity: 0.6;
+    font-size: 0.8rem;
+  }
+  html.light .fi:-webkit-autofill,
+  html.light .fi:-webkit-autofill:hover,
+  html.light .fi:-webkit-autofill:focus {
+    -webkit-box-shadow: inset 2px 2px 6px var(--ns), inset -2px -2px 6px var(--nl), 0 0 0 9999px var(--nb) inset !important;
+    -webkit-text-fill-color:#1a2a2b !important;
+  }
+  html.light .fi-label { color:#5a7475; }
+  html.light .fi.opacity-60 { -webkit-text-fill-color: rgba(26,42,43,0.6) !important; }
+
+  /* ── Sign-out ── */
+  html.light .nm-signout { color:#2a5052; }
+  html.light .nm-signout:hover { color:#b91c1c; }
+
+  /* ── Buttons ── */
+  html.light .btn-sm-ghost       { color:#2a5052; }
+  html.light .btn-sm-ghost:hover { color:#0a1618; }
+  html.light .btn-sm-cyan        { color:#007d8e; }
+  html.light .btn-sm-cyan:hover  { box-shadow: 4px 4px 10px var(--ns), -4px -4px 10px var(--nl), 0 0 8px rgba(0,125,142,0.28); }
+  html.light .btn-sm-red         { color:#b91c1c; }
+  html.light .btn-sm-red:hover   { box-shadow: 4px 4px 10px var(--ns), -4px -4px 10px var(--nl), 0 0 8px rgba(185,28,28,0.22); }
+
+  /* ── Primary CTA — light shadows ── */
+  html.light .cc-btn-primary {
+    background: linear-gradient(135deg, #006b78, #009aad) !important;
+    color:#ffffff !important;
+    box-shadow: 5px 5px 14px var(--ns), -3px -3px 10px var(--nl), 0 4px 18px rgba(0,125,142,0.32) !important;
+  }
+  html.light .cc-btn-primary:hover {
+    box-shadow: 7px 7px 18px var(--ns), -4px -4px 12px var(--nl), 0 6px 24px rgba(0,125,142,0.42) !important;
+  }
+  html.light .cc-btn-primary:active {
+    box-shadow: inset 3px 3px 8px rgba(0,0,0,0.18), 0 2px 10px rgba(0,125,142,0.2) !important;
+  }
+
+  /* ── Timeline — light shadows & colors ── */
+  html.light .t-icon                  { box-shadow: var(--nr-s); }
+  html.light .t-icon.done   { box-shadow: inset 2px 2px 6px var(--ns), inset -2px -2px 6px var(--nl); color:#15803d; }
+  html.light .t-icon.active { box-shadow: inset 2px 2px 6px var(--ns), inset -2px -2px 6px var(--nl); color:#007d8e; }
+  html.light .timeline-step:not(:last-child)::after { background:var(--ns); box-shadow:none; opacity:0.35; }
+  html.light .timeline-step.done::after   { background:rgba(21,128,61,0.4);  box-shadow:none; opacity:1; }
+  html.light .timeline-step.active::after { background:rgba(0,125,142,0.38); box-shadow:none; opacity:1; }
+
+  /* ── Error text ── */
+  html.light [style*="color:#ffb4ab"] { color:#b91c1c !important; }
+
+  /* ── Auth-gate ── */
+  html.light .nm-auth-card h2 { color:#0a1618 !important; }
+  html.light .nm-auth-card p  { color:#1e3a3c !important; }
+
+  /* ── Modal ── */
+  html.light .modal-overlay { background:rgba(0,0,0,0.45); }
+  html.light .modal-box { border-color:rgba(0,0,0,0.08); }
+  html.light .modal-box h3,
+  html.light .modal-box p,
+  html.light .modal-box label { color:#0a1618 !important; }
+  html.light .modal-close-btn       { color:#2a5052; }
+  html.light .modal-close-btn:hover { color:#0a1618; }
+
+  /* ── Progress bar track ── */
+  html.light .progress-bar { background:var(--nb); box-shadow: var(--ni-s); }
+  html.light .progress-fill { background: linear-gradient(90deg, var(--ac), #7c3aed); }
+
+  /* ── Avatar label ── */
+  html.light #sb-avatar { color:#001f22 !important; }
+
+  /* ── Theme toggle ── */
+  html.light .theme-toggle { color:#2a5052; }
+  html.light .theme-toggle:hover { color:#0a1618; }
+
+  /* ── Toast ── */
+  html.light #toast-msg  { color:#0a1618 !important; }
+
+  /* ── Inline bold color overrides ── */
+  html.light [style*="font-weight:700;color:#dce4e5"] { color:#0a1618 !important; }
+  html.light [style*="font-weight:800;color:#dce4e5"] { color:#0a1618 !important; }
+
+  @media (max-width:768px) {
+    .cp-sidebar    { display:none; }
+    .mobile-header { display:flex; }
+    .mobile-tabs   { display:flex; }
+    .cp-content    { padding:1.1rem; }
+    #close-btn     { display:none !important; }
+  }
+</style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md antialiased" style="background:#141414;">
+
+<!-- Auth Gate -->
+<div id="auth-gate" style="display:none" class="flex-1 flex items-center justify-center px-4">
+  <div class="nm-auth-card">
+    <div class="mb-5">
+      <a href="index.html">
+        <img class="site-logo" src="attached_assets/camcrew_studio_logo_cop_y_1785515916927.png"
+             alt="Camcrew Studio" style="height:1.5rem;width:auto;"/>
+      </a>
+    </div>
+    <div class="nm-icon-circle mx-auto">
+      <span class="material-symbols-outlined" style="font-size:2rem;color:var(--ac);">account_circle</span>
+    </div>
+    <h2 style="color:#dce4e5;font-weight:800;font-size:1.2rem;margin-bottom:0.4rem;">Sign in to view your account</h2>
+    <p style="color:#849495;font-size:0.88rem;margin-bottom:1.5rem;">Manage orders, bookings, addresses and more.</p>
+    <a href="signin.html" class="cc-btn-primary" style="text-decoration:none;">Sign In</a>
+    <p style="font-size:0.85rem;color:#849495;margin-top:1rem;">No account? <a href="signup.html" style="color:var(--ac);font-weight:700;">Sign up</a></p>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard" class="flex flex-1" style="display:none">
+
+  <!-- Sidebar -->
+  <aside class="cp-sidebar">
+    <!-- Logo -->
+    <div class="cp-sidebar-logo">
+      <a href="index.html">
+        <img class="site-logo" src="attached_assets/camcrew_studio_logo_cop_y_1785515916927.png"
+             alt="Camcrew Studio" style="width:140px;height:auto;display:block;"/>
+      </a>
+    </div>
+
+    <!-- Profile summary -->
+    <div class="p-5 pb-3">
+      <div class="flex items-center gap-3 mb-4">
+        <div id="sb-avatar" style="width:2.75rem;height:2.75rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:#001f22;flex-shrink:0;background:linear-gradient(135deg,#00dbe9,#ebb2ff);box-shadow:var(--nr-s);">?</div>
+        <div class="min-w-0">
+          <p id="sb-name"  style="color:#dce4e5;font-weight:800;font-size:0.9rem;" class="truncate">Loading…</p>
+          <p id="sb-email" style="color:#849495;font-size:0.75rem;" class="truncate">…</p>
+        </div>
+      </div>
+    </div>
+    <div class="nav-divider"></div>
+
+    <!-- Nav -->
+    <nav class="py-2 flex-1">
+      <div class="nav-item active" data-section="overview"  onclick="showSection('overview')">
+        <span class="material-symbols-outlined">dashboard</span> Overview
+      </div>
+      <div class="nav-divider" style="margin:0.4rem 1rem 0.3rem;"></div>
+      <p style="font-size:0.68rem;font-weight:700;letter-spacing:0.12em;color:#5a7475;text-transform:uppercase;padding:0 1.2rem 0.3rem;">Orders & Bookings</p>
+      <div class="nav-item" data-section="orders"   onclick="showSection('orders')">
+        <span class="material-symbols-outlined">inventory_2</span> My Orders
+      </div>
+      <div class="nav-item" data-section="bookings" onclick="showSection('bookings')">
+        <span class="material-symbols-outlined">calendar_month</span> Bookings
+      </div>
+      <div class="nav-item" data-section="tracking" onclick="showSection('tracking')">
+        <span class="material-symbols-outlined">local_shipping</span> Order Tracking
+      </div>
+      <div class="nav-item" data-section="refunds"  onclick="showSection('refunds')">
+        <span class="material-symbols-outlined">currency_rupee</span> Refunds
+      </div>
+      <div class="nav-divider" style="margin:0.4rem 1rem 0.3rem;"></div>
+      <p style="font-size:0.68rem;font-weight:700;letter-spacing:0.12em;color:#5a7475;text-transform:uppercase;padding:0 1.2rem 0.3rem;">Account</p>
+      <div class="nav-item" data-section="payments"  onclick="showSection('payments')">
+        <span class="material-symbols-outlined">credit_card</span> Payment Methods
+      </div>
+      <div class="nav-item" data-section="addresses" onclick="showSection('addresses')">
+        <span class="material-symbols-outlined">location_on</span> Addresses
+      </div>
+      <div class="nav-item" data-section="rewards"   onclick="showSection('rewards')">
+        <span class="material-symbols-outlined">redeem</span> Rewards & Coupons
+      </div>
+      <div class="nav-item" data-section="account"   onclick="showSection('account')">
+        <span class="material-symbols-outlined">manage_accounts</span> Account Settings
+      </div>
+    </nav>
+
+    <!-- Theme toggle + Sign out -->
+    <div class="p-4 pt-2" style="display:flex;flex-direction:column;gap:0.6rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
+        <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#849495;">Theme</span>
+        <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark theme">
+          <span class="material-symbols-outlined" id="theme-icon" style="font-size:1.1rem;">light_mode</span>
+        </button>
+      </div>
+      <button onclick="window.signOut && window.signOut()" class="nm-signout">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;">logout</span> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <div class="flex-1 flex flex-col min-w-0">
+
+    <!-- Mobile header -->
+    <div class="mobile-header">
+      <a href="index.html">
+        <img class="site-logo" src="attached_assets/camcrew_studio_logo_cop_y_1785515916927.png"
+             alt="Camcrew Studio" style="height:1.5rem;width:auto;"/>
+      </a>
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        <div id="mob-user-pill" class="mobile-user-pill" style="display:none">
+          <div id="mob-avatar" class="mobile-user-pill-avatar">?</div>
+          <span id="mob-name" style="font-size:0.75rem;font-weight:700;color:#dce4e5;max-width:90px;" class="truncate"></span>
+        </div>
+        <!-- Mobile theme toggle -->
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+          <span class="material-symbols-outlined theme-icon-mobile" style="font-size:1.1rem;">light_mode</span>
+        </button>
+        <button class="mobile-header-back"
+                onclick="history.length > 1 ? history.back() : window.location.href='index.html'"
+                title="Back">
+          <span class="material-symbols-outlined" style="font-size:1.15rem;">arrow_back</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile tab bar -->
+    <div class="mobile-tabs">
+      <div class="mobile-tab active" data-section="overview"  onclick="showSection('overview')"><span class="material-symbols-outlined">dashboard</span>Overview</div>
+      <div class="mobile-tab" data-section="orders"   onclick="showSection('orders')"><span class="material-symbols-outlined">inventory_2</span>Orders</div>
+      <div class="mobile-tab" data-section="bookings" onclick="showSection('bookings')"><span class="material-symbols-outlined">calendar_month</span>Bookings</div>
+      <div class="mobile-tab" data-section="tracking" onclick="showSection('tracking')"><span class="material-symbols-outlined">local_shipping</span>Tracking</div>
+      <div class="mobile-tab" data-section="refunds"  onclick="showSection('refunds')"><span class="material-symbols-outlined">currency_rupee</span>Refunds</div>
+      <div class="mobile-tab" data-section="payments"  onclick="showSection('payments')"><span class="material-symbols-outlined">credit_card</span>Payments</div>
+      <div class="mobile-tab" data-section="addresses" onclick="showSection('addresses')"><span class="material-symbols-outlined">location_on</span>Addresses</div>
+      <div class="mobile-tab" data-section="rewards"   onclick="showSection('rewards')"><span class="material-symbols-outlined">redeem</span>Rewards</div>
+      <div class="mobile-tab" data-section="account"   onclick="showSection('account')"><span class="material-symbols-outlined">manage_accounts</span>Account</div>
+    </div>
+
+    <div class="cp-content">
+
+      <!-- ═══ STICKY CONTENT HEADER ═════════════════════════════════ -->
+      <div id="cp-hdr" style="position:sticky;top:0;z-index:90;background:var(--nb);
+                               display:flex;align-items:center;justify-content:space-between;
+                               gap:1rem;padding-bottom:1rem;margin-bottom:0.25rem;">
+        <p id="cp-hdr-title" class="sec-title" style="margin:0;">Overview</p>
+        <div style="display:flex;align-items:center;gap:0.5rem;flex-shrink:0;flex-wrap:nowrap;">
+          <button class="btn-sm btn-sm-ghost" onclick="toggleTheme()" title="Toggle theme">
+            <span class="material-symbols-outlined theme-icon-mobile" style="font-size:1rem;">light_mode</span>
+          </button>
+          <button id="close-btn" class="btn-sm btn-sm-ghost" title="Close"
+            onclick="window.location.href = sessionStorage.getItem('cc_return_url') || 'index.html'">
+            <span class="material-symbols-outlined" style="font-size:1rem;">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══ OVERVIEW ═══════════════════════════════════════════════ -->
+      <div id="sec-overview">
+        <p class="sec-sub">Welcome back, <span id="ov-name" style="color:#dce4e5;font-weight:700;">…</span> 👋 Here's a snapshot of your Camcrew account.</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+          <div class="stat-card">
+            <span class="material-symbols-outlined" style="font-size:1.6rem;color:var(--ac);">inventory_2</span>
+            <p id="ov-orders" style="font-size:1.5rem;font-weight:900;color:#dce4e5;">—</p>
+            <p style="font-size:0.75rem;color:#849495;font-weight:600;">Total Orders</p>
+          </div>
+          <div class="stat-card">
+            <span class="material-symbols-outlined" style="font-size:1.6rem;color:#ebb2ff;">calendar_month</span>
+            <p id="ov-bookings" style="font-size:1.5rem;font-weight:900;color:#dce4e5;">—</p>
+            <p style="font-size:0.75rem;color:#849495;font-weight:600;">Active Bookings</p>
+          </div>
+          <div class="stat-card">
+            <span class="material-symbols-outlined" style="font-size:1.6rem;color:#fbbf24;">redeem</span>
+            <p id="ov-points" style="font-size:1.5rem;font-weight:900;color:#dce4e5;">—</p>
+            <p style="font-size:0.75rem;color:#849495;font-weight:600;">Reward Points</p>
+          </div>
+          <div class="stat-card">
+            <span class="material-symbols-outlined" style="font-size:1.6rem;color:#a78bfa;">location_on</span>
+            <p id="ov-addr" style="font-size:1.5rem;font-weight:900;color:#dce4e5;">—</p>
+            <p style="font-size:0.75rem;color:#849495;font-weight:600;">Saved Addresses</p>
+          </div>
+        </div>
+        <!-- Quick links -->
+        <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#849495;margin-bottom:0.75rem;">Quick Actions</p>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <button onclick="showSection('orders')" class="data-card flex flex-col items-center gap-2 py-4 text-center cursor-pointer">
+            <span class="material-symbols-outlined" style="font-size:1.8rem;color:var(--ac);">inventory_2</span>
+            <span style="font-size:0.78rem;font-weight:700;color:#849495;">My Orders</span>
+          </button>
+          <button onclick="showSection('bookings')" class="data-card flex flex-col items-center gap-2 py-4 text-center cursor-pointer">
+            <span class="material-symbols-outlined" style="font-size:1.8rem;color:#ebb2ff;">calendar_month</span>
+            <span style="font-size:0.78rem;font-weight:700;color:#849495;">Bookings</span>
+          </button>
+          <button onclick="showSection('addresses')" class="data-card flex flex-col items-center gap-2 py-4 text-center cursor-pointer">
+            <span class="material-symbols-outlined" style="font-size:1.8rem;color:#a78bfa;">location_on</span>
+            <span style="font-size:0.78rem;font-weight:700;color:#849495;">Addresses</span>
+          </button>
+          <button onclick="showSection('rewards')" class="data-card flex flex-col items-center gap-2 py-4 text-center cursor-pointer">
+            <span class="material-symbols-outlined" style="font-size:1.8rem;color:#fbbf24;">redeem</span>
+            <span style="font-size:0.78rem;font-weight:700;color:#849495;">Rewards</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══ ORDERS ═══════════════════════════════════════════════ -->
+      <div id="sec-orders" class="hidden">
+        <p class="sec-sub">Track, cancel, or request refunds on your purchases.</p>
+        <div id="orders-list"></div>
+      </div>
+
+      <!-- ═══ BOOKINGS ════════════════════════════════════════════ -->
+      <div id="sec-bookings" class="hidden">
+        <p class="sec-sub">Professional service bookings and their current status.</p>
+        <div id="bookings-list"></div>
+      </div>
+
+      <!-- ═══ TRACKING ════════════════════════════════════════════ -->
+      <div id="sec-tracking" class="hidden">
+        <p class="sec-sub">Follow your shipment in real-time.</p>
+        <div id="tracking-selector" class="mb-6"></div>
+        <div id="tracking-timeline"></div>
+      </div>
+
+      <!-- ═══ REFUNDS ═════════════════════════════════════════════ -->
+      <div id="sec-refunds" class="hidden">
+        <div class="flex items-center justify-between mb-1">
+          <p class="sec-sub" style="margin:0">Request and track refunds for cancelled or delivered orders.</p>
+          <button onclick="openRefundModal()" class="btn-sm btn-sm-cyan">
+            <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Request Refund
+          </button>
+        </div>
+        <div style="margin-bottom:1.5rem;"></div>
+        <div id="refunds-list"></div>
+      </div>
+
+      <!-- ═══ PAYMENT METHODS ═════════════════════════════════════ -->
+      <div id="sec-payments" class="hidden">
+        <div class="flex items-center justify-between mb-1">
+          <p class="sec-sub" style="margin:0">Manage your saved cards, UPI IDs, and wallets.</p>
+          <button onclick="openAddPaymentModal()" class="btn-sm btn-sm-cyan">
+            <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Add Method
+          </button>
+        </div>
+        <div style="margin-bottom:1.5rem;"></div>
+        <div id="payments-list"></div>
+      </div>
+
+      <!-- ═══ ADDRESSES ═══════════════════════════════════════════ -->
+      <div id="sec-addresses" class="hidden">
+        <div class="flex items-center justify-between mb-1">
+          <p class="sec-sub" style="margin:0">Add or edit addresses used for your orders.</p>
+          <button onclick="openAddAddressModal()" class="btn-sm btn-sm-cyan">
+            <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Add Address
+          </button>
+        </div>
+        <div style="margin-bottom:1.5rem;"></div>
+        <div id="addresses-list"></div>
+      </div>
+
+      <!-- ═══ REWARDS ═════════════════════════════════════════════ -->
+      <div id="sec-rewards" class="hidden">
+        <p class="sec-sub">Your points balance, membership tier, and available discount codes.</p>
+        <div id="rewards-content"></div>
+      </div>
+
+      <!-- ═══ ACCOUNT ═════════════════════════════════════════════ -->
+      <div id="sec-account" class="hidden">
+        <div class="flex justify-between items-center mb-6">
+          <p class="sec-sub m-0">Update your profile details and manage account security.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Left Column: Avatar & Quick Info -->
+          <div class="col-span-1 space-y-5">
+            <div class="data-card text-center flex flex-col items-center justify-center p-6">
+              <div class="avatar-ring mb-4" style="width:100px; height:100px;">
+                <div class="avatar-inner flex items-center justify-center" style="font-size:2.5rem; font-weight:900; color:var(--ac);">
+                  <span id="ac-initial">?</span>
+                </div>
+              </div>
+              <h4 id="ac-display-title" style="font-size:1.1rem; font-weight:800; color:#dce4e5; margin-bottom:0.2rem;">Your Name</h4>
+              <p id="ac-role-badge" style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--ac); font-weight:700;">CUSTOMER</p>
+              
+              <div class="mt-6 w-full pt-4" style="border-top:1px solid var(--ns); text-align:left;">
+                <div class="flex justify-between items-center mb-2">
+                  <span style="font-size:0.75rem; color:#849495;">Member Since</span>
+                  <span style="font-size:0.8rem; font-weight:600;">Aug 2026</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span style="font-size:0.75rem; color:#849495;">Status</span>
+                  <span style="padding:0.2rem 0.5rem; font-size:0.7rem; font-weight:700; border-radius:999px; background:rgba(74,222,128,0.1); color:#4ade80; border:1px solid rgba(74,222,128,0.2);">Active</span>
+                </div>
+              </div>
+            </div>
+            
+            <a href="forgot-password.html" class="data-card flex items-center justify-between" style="text-decoration:none; padding:1.25rem; cursor:pointer; transition:all 0.2s;">
+              <div class="flex items-center gap-3">
+                <div style="width:2.5rem; height:2.5rem; border-radius:50%; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; color:var(--ac);">
+                  <span class="material-symbols-outlined" style="font-size:1.25rem;">lock_reset</span>
+                </div>
+                <div>
+                  <h5 style="font-weight:700; font-size:0.9rem; color:#dce4e5; margin:0; line-height:1.2;">Security</h5>
+                  <p style="font-size:0.75rem; color:#849495; margin:0; margin-top:0.2rem;">Change your password</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined" style="color:#849495; font-size:1.2rem;">chevron_right</span>
+            </a>
+          </div>
+
+          <!-- Right Column: Form Fields -->
+          <div class="col-span-1 md:col-span-2">
+            <div class="data-card">
+              <h3 style="font-size:1.1rem; font-weight:800; color:#dce4e5; margin-bottom:1.5rem;">Personal Information</h3>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div class="col-span-1 sm:col-span-2">
+                  <label class="fi-label">Display Name</label>
+                  <input id="ac-name" class="fi" type="text" placeholder="Your display name"/>
+                </div>
+                
+                <div>
+                  <label class="fi-label" style="display:flex; align-items:center; gap:0.4rem;">
+                    Email Address
+                    <span style="color:#4ade80; font-size:0.7rem; font-weight:800; display:flex; align-items:center; gap:0.1rem; background:rgba(74,222,128,0.1); padding:0.1rem 0.4rem; border-radius:999px;">
+                      <span class="material-symbols-outlined" style="font-size:0.8rem;">verified</span> Verified
+                    </span>
+                  </label>
+                  <input id="ac-email" class="fi opacity-60 cursor-not-allowed" type="email" readonly/>
+                </div>
+
+                <div>
+                  <label class="fi-label">Phone Number</label>
+                  <input id="ac-phone" class="fi" type="tel" placeholder="+91 00000 00000"/>
+                </div>
+
+                <div class="col-span-1 sm:col-span-2">
+                  <label class="fi-label">Account Role</label>
+                  <input id="ac-role" class="fi opacity-60 cursor-not-allowed" type="text" readonly/>
+                </div>
+              </div>
+
+              <div id="ac-msg" class="hidden text-sm" style="margin-top:1rem;"></div>
+              
+              <div class="flex justify-end gap-3 mt-8 pt-6" style="border-top:1px solid var(--ns);">
+                <button type="button" class="btn-sm btn-sm-ghost" onclick="loadAccount()" style="padding:0.75rem 1.5rem; border-radius:0.75rem;">Discard</button>
+                <button onclick="saveAccount()" class="btn-sm btn-sm-cyan" id="ac-save" style="padding:0.75rem 1.5rem; border-radius:0.75rem; background:rgba(0,219,233,0.1); border:1px solid rgba(0,219,233,0.3);">Save Changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /cp-content -->
+  </div><!-- /flex-1 -->
+</div><!-- /dashboard -->
+
+<!-- ═══ MODALS ═════════════════════════════════════════════════════════ -->
+
+<!-- Add Address Modal -->
+<div id="modal-address" class="modal-overlay" onclick="closeModal('modal-address',event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-5">
+      <h3 style="color:#dce4e5;font-weight:700;font-size:1.1rem;" id="addr-modal-title">Add Address</h3>
+      <button onclick="closeModal('modal-address')" class="modal-close-btn"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <form id="addr-form" onsubmit="submitAddress(event)" class="space-y-4">
+      <input type="hidden" id="addr-edit-id" value=""/>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="fi-label">Label</label>
+          <select id="addr-label" class="fi">
+            <option>Home</option><option>Work</option><option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="fi-label">Phone</label>
+          <input id="addr-phone" class="fi" type="tel" placeholder="+91 98765 43210"/>
+        </div>
+      </div>
+      <div>
+        <label class="fi-label">Full Name *</label>
+        <input id="addr-name" class="fi" type="text" required placeholder="As on ID"/>
+      </div>
+      <div>
+        <label class="fi-label">Address Line 1 *</label>
+        <input id="addr-line1" class="fi" type="text" required placeholder="Flat / House No., Street"/>
+      </div>
+      <div>
+        <label class="fi-label">Address Line 2</label>
+        <input id="addr-line2" class="fi" type="text" placeholder="Area, Landmark (optional)"/>
+      </div>
+      <div class="grid grid-cols-3 gap-3">
+        <div>
+          <label class="fi-label">City *</label>
+          <input id="addr-city" class="fi" type="text" required placeholder="Mumbai"/>
+        </div>
+        <div>
+          <label class="fi-label">State *</label>
+          <input id="addr-state" class="fi" type="text" required placeholder="Maharashtra"/>
+        </div>
+        <div>
+          <label class="fi-label">Pincode *</label>
+          <input id="addr-pin" class="fi" type="text" required placeholder="400001" maxlength="6"/>
+        </div>
+      </div>
+      <div id="addr-err" class="hidden text-sm" style="color:#ffb4ab;"></div>
+      <div style="margin-top:2rem;"></div>
+      <div class="flex justify-end gap-3">
+        <button type="button" class="btn-sm btn-sm-ghost" onclick="closeModal('modal-address')" style="padding:0.75rem 1.5rem; border-radius:0.75rem;">Cancel</button>
+        <button type="submit" class="btn-sm btn-sm-cyan" id="addr-submit" style="padding:0.75rem 1.5rem; border-radius:0.75rem; background:rgba(0,219,233,0.1); border:1px solid rgba(0,219,233,0.3);">Save Address</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Add Payment Method Modal -->
+<style>
+  .pm-type-selector { display:flex; gap:0.5rem; margin-bottom:1.5rem; overflow-x:auto; padding-bottom:0.25rem; scrollbar-width:none; }
+  .pm-type-selector::-webkit-scrollbar { display:none; }
+  .pm-type-btn { 
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:0.4rem; 
+    padding:0.75rem 0.5rem; border-radius:0.75rem; 
+    background:rgba(255,255,255,0.05); border:1px solid var(--ns); 
+    color:#dce4e5; opacity:0.6; cursor:pointer; font-size:0.75rem; font-weight:700; transition:all 0.2s; white-space:nowrap;
+  }
+  html.light .pm-type-btn { background:rgba(0,0,0,0.04); color:#0f172a; opacity:0.6; border-color:rgba(0,0,0,0.1); }
+  .pm-type-btn:hover { opacity:0.8; }
+  .pm-type-btn.active { 
+    background:rgba(0,219,233,0.1); border-color:#00dbe9; color:#00dbe9; opacity:1;
+    box-shadow:inset 0 0 10px rgba(0,219,233,0.1);
+  }
+  .pm-type-btn .material-symbols-outlined { font-size:1.5rem; }
+  .pm-section { display:none; animation:fadeIn 0.3s ease; }
+  .pm-section.active { display:block; }
+  
+  /* Card visual */
+  .pm-card-visual {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    border-radius: 1rem; padding: 1.25rem; color: #fff;
+    margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    position: relative; overflow: hidden;
+  }
+  .pm-card-visual::after {
+    content:''; position:absolute; top:-50%; right:-20%;
+    width:200px; height:200px; background:radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    border-radius:50%; pointer-events:none;
+  }
+
+
+</style>
+<div id="modal-payment" class="modal-overlay" onclick="closeModal('modal-payment',event)">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:450px;">
+    <div class="flex items-center justify-between mb-5">
+      <h3 style="color:#dce4e5;font-weight:800;font-size:1.2rem;">Add New Payment</h3>
+      <button onclick="closeModal('modal-payment')" class="modal-close-btn"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    
+    <div class="pm-type-selector">
+      <div class="pm-type-btn active" id="btn-pm-card" onclick="setPaymentType('card')">
+        <span class="material-symbols-outlined">credit_card</span> Card
+      </div>
+      <div class="pm-type-btn" id="btn-pm-upi" onclick="setPaymentType('upi')">
+        <span class="material-symbols-outlined">account_balance</span> UPI
+      </div>
+      <div class="pm-type-btn" id="btn-pm-netbanking" onclick="setPaymentType('netbanking')">
+        <span class="material-symbols-outlined">museum</span> Net Banking
+      </div>
+      <div class="pm-type-btn" id="btn-pm-wallet" onclick="setPaymentType('wallet')">
+        <span class="material-symbols-outlined">account_balance_wallet</span> Wallet
+      </div>
+    </div>
+
+    <form id="pay-form" onsubmit="submitPayment(event)">
+      <input type="hidden" id="pay-type" value="card">
+
+      <!-- CARD SECTION -->
+      <div id="sec-card" class="pm-section active space-y-4">
+        <div class="pm-card-visual">
+          <div class="flex justify-between items-start mb-6">
+            <span class="material-symbols-outlined">contactless</span>
+            <div style="font-style:italic;font-weight:800;opacity:0.9;">VISA</div>
+          </div>
+          <div id="card-preview-num" style="font-family:monospace;font-size:1.25rem;letter-spacing:0.15em;margin-bottom:1rem;text-shadow:0 2px 4px rgba(0,0,0,0.5);">•••• •••• •••• ••••</div>
+          <div class="flex justify-between">
+            <div>
+              <div style="font-size:0.55rem;text-transform:uppercase;opacity:0.7;letter-spacing:0.1em;margin-bottom:0.2rem;">Cardholder Name</div>
+              <div id="card-preview-name" style="font-size:0.85rem;font-weight:600;text-transform:uppercase;">YOUR NAME</div>
+            </div>
+            <div>
+              <div style="font-size:0.55rem;text-transform:uppercase;opacity:0.7;letter-spacing:0.1em;margin-bottom:0.2rem;">Expires</div>
+              <div id="card-preview-exp" style="font-size:0.85rem;font-weight:600;">MM/YY</div>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <label class="fi-label">Cardholder Name *</label>
+          <input id="pay-card-name" class="fi" type="text" placeholder="e.g. John Doe" oninput="document.getElementById('card-preview-name').textContent = this.value || 'YOUR NAME';"/>
+        </div>
+        <div>
+          <label class="fi-label">Card Number *</label>
+          <input id="pay-card-num" class="fi" type="text" maxlength="19" placeholder="0000 0000 0000 0000" inputmode="numeric" oninput="this.value = this.value.replace(/\D/g,'').replace(/(.{4})/g, '$1 ').trim(); document.getElementById('card-preview-num').textContent = this.value || '•••• •••• •••• ••••';"/>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="fi-label">Expiry Date *</label>
+            <input id="pay-card-exp" class="fi" type="text" maxlength="5" placeholder="MM/YY" inputmode="numeric" oninput="this.value = this.value.replace(/^(\d{2})(\d{1,2})/, '$1/$2'); document.getElementById('card-preview-exp').textContent = this.value || 'MM/YY';"/>
+          </div>
+          <div>
+            <label class="fi-label">CVV *</label>
+            <input id="pay-card-cvv" class="fi" type="password" maxlength="4" placeholder="123" inputmode="numeric"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPI SECTION -->
+      <div id="sec-upi" class="pm-section space-y-4">
+        <div>
+          <label class="fi-label">UPI ID / VPA *</label>
+          <div style="display:flex;gap:0.5rem;">
+            <input id="pay-upi-id" class="fi" type="text" placeholder="e.g. yourname@okicici" style="flex:1;"/>
+            <button type="button" class="btn-sm btn-sm-cyan" onclick="verifyUPI()">Verify</button>
+          </div>
+          <div id="upi-verify-msg" style="font-size:0.75rem;margin-top:0.5rem;color:#4ade80;display:none;font-weight:700;">✓ Verified Successfully</div>
+        </div>
+      </div>
+
+      <!-- NET BANKING SECTION -->
+      <div id="sec-netbanking" class="pm-section space-y-4">
+        <div>
+          <label class="fi-label">Select Bank *</label>
+          <select id="pay-nb-bank" class="fi">
+            <option value="">-- Choose your bank --</option>
+            <option value="HDFC Bank">HDFC Bank</option>
+            <option value="SBI">State Bank of India (SBI)</option>
+            <option value="ICICI Bank">ICICI Bank</option>
+            <option value="Axis Bank">Axis Bank</option>
+            <option value="Kotak Mahindra Bank">Kotak Mahindra Bank</option>
+            <option value="Other Bank">Other Bank...</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- WALLET SECTION -->
+      <div id="sec-wallet" class="pm-section space-y-4">
+        <div>
+          <label class="fi-label">Select Wallet *</label>
+          <select id="pay-wallet-name" class="fi">
+            <option value="">-- Choose wallet --</option>
+            <option value="Paytm">Paytm</option>
+            <option value="Amazon Pay">Amazon Pay</option>
+            <option value="PhonePe">PhonePe Wallet</option>
+            <option value="Mobikwik">Mobikwik</option>
+            <option value="Freecharge">Freecharge</option>
+          </select>
+        </div>
+        <div>
+          <label class="fi-label">Linked Mobile Number *</label>
+          <input id="pay-wallet-num" class="fi" type="text" maxlength="10" placeholder="10-digit mobile number" inputmode="numeric"/>
+        </div>
+      </div>
+
+      <div id="pay-err" class="hidden text-sm" style="color:#ffb4ab;margin-top:1rem;"></div>
+
+      <div class="mt-6 flex justify-end gap-3">
+        <button type="button" class="btn-sm btn-sm-ghost" onclick="closeModal('modal-payment')" style="padding:0.7rem 1.5rem;">Cancel</button>
+        <button type="submit" class="btn-sm btn-sm-cyan" style="padding:0.7rem 1.5rem;">Save Payment</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Order Tracking Modal -->
+<div id="modal-tracking" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="track-modal-title">
+  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:520px;">
+    <div class="flex items-center justify-between mb-5">
+      <h3 id="track-modal-title" style="color:#dce4e5;font-weight:700;font-size:1.1rem;">Order Tracking</h3>
+      <button id="track-modal-close" onclick="closeTrackModal()" class="modal-close-btn" aria-label="Close">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div id="track-modal-body"></div>
+  </div>
+</div>
+
+<!-- Request Refund Modal -->
+<div id="modal-refund" class="modal-overlay" onclick="closeModal('modal-refund',event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-5">
+      <h3 style="color:#dce4e5;font-weight:700;font-size:1.1rem;">Request Refund</h3>
+      <button onclick="closeModal('modal-refund')" class="modal-close-btn"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <form id="refund-form" onsubmit="submitRefund(event)" class="space-y-4">
+      <div>
+        <label class="fi-label">Select Order</label>
+        <select id="refund-order-id" class="fi" required></select>
+      </div>
+      <div>
+        <label class="fi-label">Reason</label>
+        <textarea id="refund-reason" class="fi" rows="3" placeholder="Briefly describe why you're requesting a refund…"></textarea>
+      </div>
+      <div id="refund-err" class="hidden text-sm" style="color:#ffb4ab;"></div>
+      <button type="submit" class="cc-btn-primary">Submit Request</button>
+    </form>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[300] glass-panel px-6 py-3 rounded-full border flex items-center gap-2 opacity-0 translate-y-6 transition-all duration-400 pointer-events-none">
+  <span id="toast-icon" class="material-symbols-outlined" style="font-size:1.1rem;color:var(--ac);">check_circle</span>
+  <span id="toast-msg" class="text-sm font-semibold" style="color:var(--ac);"></span>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════════
+// State & helpers
+// ════════════════════════════════════════════════════════════════════
+const S = { profile: null, orders: [], activeSection: 'overview' };
+
+function fmt_date(str) {
+  if (!str) return '—';
+  return new Date(str).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+}
+function fmt_inr(n) {
+  return '₹' + Number(n).toLocaleString('en-IN');
+}
+function badge(status) {
+  return `<span class="badge badge-${status}">${status.replace('_',' ')}</span>`;
+}
+function empty(icon, msg, sub='') {
+  return `<div class="empty-state"><span class="material-symbols-outlined empty-icon">${icon}</span>
+    <p style="color:#dce4e5;font-weight:700;">${msg}</p>
+    ${sub ? `<p style="color:#849495;font-size:0.85rem;margin-top:0.25rem;">${sub}</p>` : ''}</div>`;
+}
+function showToast(msg, isError=false) {
+  const t = document.getElementById('toast');
+  const icon = document.getElementById('toast-icon');
+  const txt  = document.getElementById('toast-msg');
+  icon.textContent = isError ? 'error' : 'check_circle';
+  icon.style.color = isError ? '#ffb4ab' : '#00dbe9';
+  txt.textContent  = msg;
+  txt.style.color  = isError ? '#ffb4ab' : '#00dbe9';
+  t.style.borderColor = (isError ? '#ffb4ab' : '#00dbe9') + '60';
+  t.classList.remove('opacity-0','translate-y-6');
+  t.classList.add('opacity-100','translate-y-0');
+  setTimeout(() => { t.classList.remove('opacity-100','translate-y-0'); t.classList.add('opacity-0','translate-y-6'); }, 3000);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Navigation
+// ════════════════════════════════════════════════════════════════════
+const SECTION_TITLES = {
+  overview: 'Overview', orders: 'My Orders', bookings: 'Bookings',
+  tracking: 'Order Tracking', refunds: 'Refunds', payments: 'Payment Methods',
+  addresses: 'Delivery Addresses', rewards: 'Rewards & Coupons', account: 'Account Settings',
+};
+
+function showSection(name) {
+  S.activeSection = name;
+  // Hide all content sections
+  document.querySelectorAll('[id^="sec-"]').forEach(el => el.classList.add('hidden'));
+  document.getElementById('sec-' + name)?.classList.remove('hidden');
+  // Update sticky header title
+  const hdrTitle = document.getElementById('cp-hdr-title');
+  if (hdrTitle) hdrTitle.textContent = SECTION_TITLES[name] || name;
+  // Update sidebar nav
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.section === name);
+  });
+  // Update mobile tabs
+  document.querySelectorAll('.mobile-tab').forEach(el => {
+    el.classList.toggle('active', el.dataset.section === name);
+  });
+  // Load data lazily
+  const loaders = {
+    overview: loadOverview, orders: loadOrders, bookings: loadBookings,
+    tracking: loadTrackingSelector, refunds: loadRefunds,
+    payments: loadPayments, addresses: loadAddresses,
+    rewards: loadRewards, account: loadAccount,
+  };
+  loaders[name]?.();
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Overview
+// ════════════════════════════════════════════════════════════════════
+async function loadOverview() {
+  try {
+    const res  = await fetch('/api/customer/overview');
+    const data = await res.json();
+    if (!data.ok) return;
+    const o = data.overview;
+    document.getElementById('ov-orders').textContent   = o.orders;
+    document.getElementById('ov-bookings').textContent = o.active_bookings;
+    document.getElementById('ov-points').textContent   = o.points.toLocaleString();
+    document.getElementById('ov-addr').textContent     = o.addresses;
+  } catch(_) {}
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Orders
+// ════════════════════════════════════════════════════════════════════
+async function loadOrders() {
+  const el = document.getElementById('orders-list');
+  el.innerHTML = '<p style="color:#849495;font-size:0.85rem;">Loading…</p>';
+  const res  = await fetch('/api/customer/orders');
+  const data = await res.json();
+  S.orders = data.orders || [];
+  if (!S.orders.length) { el.innerHTML = empty('inventory_2','No orders yet','Your orders will appear here once you make a purchase.'); return; }
+  el.innerHTML = S.orders.map(o => `
+    <div class="data-card mb-3" id="order-card-${o.id}">
+      <div class="flex flex-wrap items-start justify-between gap-2 mb-3">
+        <div>
+          <span style="color:var(--ac);font-weight:700;font-size:0.9rem;">${o.order_ref}</span>
+          <span style="color:#849495;font-size:0.78rem;margin-left:0.5rem;">${fmt_date(o.created_at)}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          ${badge(o.status)}
+          ${o.tracking_status && o.status !== 'cancelled' ? badge(o.tracking_status) : ''}
+        </div>
+      </div>
+      <div class="space-y-1 mb-3">
+        ${(o.items||[]).map(it=>`
+          <div class="flex justify-between" style="font-size:0.875rem;">
+            <span style="color:#849495;">${it.name} × ${it.qty}</span>
+            <span style="color:#dce4e5;font-weight:600;">${fmt_inr(it.price * it.qty)}</span>
+          </div>`).join('')}
+      </div>
+      <div class="flex flex-wrap items-center justify-between gap-2 pt-3" style="border-top:1px solid var(--ns);">
+        <span style="color:#dce4e5;font-weight:900;">Total: ${fmt_inr(o.total_amount)}</span>
+        <div class="flex gap-2 flex-wrap">
+          ${o.tracking_number && o.status !== 'cancelled' ? `
+            <button class="btn-sm btn-sm-cyan" id="track-btn-${o.id}" onclick="openTrackModal(${o.id})">
+              <span class="material-symbols-outlined" style="font-size:0.95rem;">local_shipping</span> Track
+            </button>` : ''}
+          ${['processing','confirmed'].includes(o.status) ? `
+            <button class="btn-sm btn-sm-red" onclick="cancelOrder(${o.id})">
+              <span class="material-symbols-outlined" style="font-size:0.95rem;">cancel</span> Cancel
+            </button>` : ''}
+          ${['cancelled','delivered'].includes(o.status) ? `
+            <button class="btn-sm btn-sm-ghost" onclick="prefillRefund(${o.id},'${o.order_ref}')">
+              <span class="material-symbols-outlined" style="font-size:0.95rem;">currency_rupee</span> Refund
+            </button>` : ''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function cancelOrder(id) {
+  if (!confirm('Cancel this order?')) return;
+  const res  = await fetch(`/api/customer/orders/${id}/cancel`, { method:'POST' });
+  const data = await res.json();
+  if (data.ok) { showToast('Order cancelled.'); loadOrders(); loadOverview(); }
+  else showToast(data.error || 'Failed to cancel.', true);
+}
+
+// ── Track modal ──────────────────────────────────────────────────────
+let _trackLastFocus = null;
+
+function openTrackModal(orderId) {
+  _trackLastFocus = document.getElementById('track-btn-' + orderId) || document.activeElement;
+  const modal = document.getElementById('modal-tracking');
+  const body  = document.getElementById('track-modal-body');
+
+  // Loading state
+  body.innerHTML = `
+    <div class="flex flex-col items-center gap-4 py-8">
+      <span class="material-symbols-outlined" style="font-size:2.5rem;color:var(--ac);animation:spin 1s linear infinite;">progress_activity</span>
+      <p style="color:#849495;font-size:0.88rem;">Loading tracking information…</p>
+    </div>`;
+  modal.classList.add('open');
+
+  // Move focus into modal
+  const closeBtn = document.getElementById('track-modal-close');
+  if (closeBtn) closeBtn.focus();
+
+  // Fetch from API
+  fetch(`/api/customer/orders/${orderId}/track`, { credentials: 'include' })
+    .then(res => {
+      if (res.status === 401) throw Object.assign(new Error('auth'), { status: 401 });
+      if (res.status === 404) throw Object.assign(new Error('notfound'), { status: 404 });
+      if (!res.ok) throw new Error('unknown');
+      return res.json();
+    })
+    .then(data => {
+      if (!data.ok) throw new Error('unknown');
+      renderTrackModal(data.tracking);
+    })
+    .catch(err => {
+      let msg = 'Unable to load tracking information.<br>Please try again.';
+      if (err.status === 401) msg = 'Please sign in again.';
+      if (err.status === 404) msg = 'Tracking information could not be found.';
+      body.innerHTML = `
+        <div class="flex flex-col items-center gap-3 py-8 text-center">
+          <span class="material-symbols-outlined" style="font-size:2.5rem;color:#ffb4ab;">error_outline</span>
+          <p style="color:#ffb4ab;font-size:0.88rem;line-height:1.5;">${msg}</p>
+        </div>`;
+    });
+}
+
+function renderTrackModal(t) {
+  const body  = document.getElementById('track-modal-body');
+  const cur   = t.tracking_status || t.order_status;
+  const curI  = TRACK_ORDER.indexOf(cur);
+
+  const metaRows = [
+    ['Order Ref',        t.order_ref || '—'],
+    ['Status',           t.order_status || '—'],
+    ['Tracking Number',  t.tracking_number || '—'],
+    ['Courier',          t.courier || '—'],
+  ];
+
+  const timelineHTML = TRACK_STEPS.map((step, i) => {
+    const idx    = TRACK_ORDER.indexOf(step.key);
+    const done   = idx < curI;
+    const active = idx === curI;
+    const color  = active ? 'var(--ac)' : done ? '#4ade80' : '#849495';
+    return `
+      <div class="flex items-start gap-3 mb-4">
+        <div style="
+          width:2rem; height:2rem; border-radius:50%; flex-shrink:0;
+          display:flex; align-items:center; justify-content:center;
+          background:${active ? 'rgba(0,219,233,0.15)' : done ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.05)'};
+          border:2px solid ${color};
+        ">
+          <span class="material-symbols-outlined" style="font-size:0.9rem;color:${color};">${step.icon}</span>
+        </div>
+        <div class="pt-0.5 flex-1">
+          <p style="font-size:0.875rem;font-weight:700;color:${color};">${step.label}</p>
+          ${active ? '<p style="font-size:0.75rem;color:#849495;margin-top:0.1rem;">Currently here</p>' : ''}
+        </div>
+        <div style="padding-top:0.45rem;">
+          <span class="material-symbols-outlined" style="font-size:1.1rem;color:${done || active ? color : 'rgba(255,255,255,0.1)'};">
+            ${done ? 'check_circle' : active ? 'radio_button_checked' : 'radio_button_unchecked'}
+          </span>
+        </div>
+      </div>`;
+  }).join('');
+
+  const hasTimeline = curI >= 0;
+
+  body.innerHTML = `
+    <div class="space-y-4 mb-5" style="font-size:0.875rem;">
+      ${metaRows.map(([label, val]) => `
+        <div class="flex justify-between items-center gap-4">
+          <span style="color:#849495;">${label}</span>
+          <span style="color:#dce4e5;font-weight:700;font-family:${label === 'Tracking Number' ? 'monospace' : 'inherit'};">${val}</span>
+        </div>`).join('')}
+    </div>
+    <div style="border-top:1px solid var(--ns);margin-bottom:1.25rem;"></div>
+    ${hasTimeline
+      ? `<div>${timelineHTML}</div>`
+      : `<div class="flex flex-col items-center gap-2 py-6 text-center">
+           <span class="material-symbols-outlined" style="font-size:2rem;color:rgba(255,255,255,0.1);">local_shipping</span>
+           <p style="color:#849495;font-size:0.85rem;">Tracking information is not yet available.</p>
+         </div>`}`;
+}
+
+function closeTrackModal() {
+  document.getElementById('modal-tracking').classList.remove('open');
+  if (_trackLastFocus) { _trackLastFocus.focus(); _trackLastFocus = null; }
+}
+
+// Close tracking modal on backdrop click
+document.getElementById('modal-tracking').addEventListener('click', function(e) {
+  if (e.target === this) closeTrackModal();
+});
+
+// Keyboard: Escape closes, Tab traps focus inside tracking modal
+document.addEventListener('keydown', function(e) {
+  const modal = document.getElementById('modal-tracking');
+  if (!modal.classList.contains('open')) return;
+  if (e.key === 'Escape') { e.preventDefault(); closeTrackModal(); return; }
+  if (e.key === 'Tab') {
+    const focusable = Array.from(modal.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )).filter(el => !el.disabled);
+    if (!focusable.length) { e.preventDefault(); return; }
+    const first = focusable[0], last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault(); last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault(); first.focus();
+    }
+  }
+});
+
+// Keep goTrack for the sidebar Tracking nav (navigates to the tracking section as before)
+function goTrack(orderId) {
+  showSection('tracking');
+  setTimeout(() => selectTrackOrder(orderId), 100);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Bookings
+// ════════════════════════════════════════════════════════════════════
+async function loadBookings() {
+  const el = document.getElementById('bookings-list');
+  el.innerHTML = '<p style="color:#849495;font-size:0.85rem;">Loading…</p>';
+  const res  = await fetch('/api/customer/bookings');
+  const data = await res.json();
+  const bks  = data.bookings || [];
+  if (!bks.length) { el.innerHTML = empty('calendar_month','No bookings yet','Your professional bookings will appear here.'); return; }
+  el.innerHTML = bks.map(b => `
+    <div class="data-card mb-3">
+      <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+        <div>
+          <p style="color:#dce4e5;font-weight:700;">${b.professional_name}</p>
+          <p style="color:#849495;font-size:0.875rem;">${b.service}</p>
+        </div>
+        ${badge(b.status)}
+      </div>
+      <div class="flex flex-wrap gap-4 mb-3" style="font-size:0.875rem;color:#849495;">
+        <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;">event</span> ${fmt_date(b.booking_date)}</span>
+        <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;">payments</span> ${fmt_inr(b.amount)}</span>
+      </div>
+      ${b.note ? `<p style="font-size:0.78rem;color:#849495;font-style:italic;border-left:2px solid rgba(0,219,233,0.3);padding-left:0.75rem;margin-bottom:0.75rem;">"${b.note}"</p>` : ''}
+      <div class="flex justify-end">
+        ${['pending','confirmed'].includes(b.status) ? `
+          <button class="btn-sm btn-sm-red" onclick="cancelBooking(${b.id})">
+            <span class="material-symbols-outlined" style="font-size:0.95rem;">cancel</span> Cancel Booking
+          </button>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+async function cancelBooking(id) {
+  if (!confirm('Cancel this booking?')) return;
+  const res  = await fetch(`/api/customer/bookings/${id}/cancel`, { method:'POST' });
+  const data = await res.json();
+  if (data.ok) { showToast('Booking cancelled.'); loadBookings(); loadOverview(); }
+  else showToast(data.error || 'Failed to cancel.', true);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Order Tracking
+// ════════════════════════════════════════════════════════════════════
+const TRACK_STEPS = [
+  { key:'ordered',    label:'Order Placed',   icon:'shopping_cart' },
+  { key:'confirmed',  label:'Confirmed',      icon:'verified' },
+  { key:'processing', label:'Packed',         icon:'inventory' },
+  { key:'in_transit', label:'In Transit',     icon:'local_shipping' },
+  { key:'delivered',  label:'Delivered',      icon:'check_circle' },
+];
+const TRACK_ORDER = ['ordered','confirmed','processing','in_transit','delivered'];
+
+async function loadTrackingSelector() {
+  if (!S.orders.length) {
+    const res  = await fetch('/api/customer/orders');
+    const data = await res.json();
+    S.orders = data.orders || [];
+  }
+  const trackable = S.orders.filter(o => o.tracking_number && o.status !== 'cancelled');
+  const sel = document.getElementById('tracking-selector');
+  if (!trackable.length) {
+    sel.innerHTML = empty('local_shipping','No trackable orders','Orders with a tracking number will appear here.');
+    document.getElementById('tracking-timeline').innerHTML = '';
+    return;
+  }
+  sel.innerHTML = `
+    <label class="fi-label">Select Order to Track</label>
+    <select id="track-select" class="fi max-w-sm" onchange="selectTrackOrder(this.value)">
+      <option value="">— Choose an order —</option>
+      ${trackable.map(o=>`<option value="${o.id}">${o.order_ref} · ${fmt_inr(o.total_amount)} · ${o.tracking_status||o.status}</option>`).join('')}
+    </select>`;
+}
+
+function selectTrackOrder(id) {
+  const sel = document.getElementById('track-select');
+  if (sel) sel.value = id;
+  const order = S.orders.find(o => o.id == id);
+  if (!order) return;
+  renderTimeline(order);
+}
+
+function renderTimeline(order) {
+  const tl   = document.getElementById('tracking-timeline');
+  const cur  = order.tracking_status || order.status;
+  const curI = TRACK_ORDER.indexOf(cur);
+  tl.innerHTML = `
+    <div class="data-card max-w-lg">
+      <div class="flex justify-between mb-4" style="font-size:0.875rem;">
+        <span style="color:#849495;">Tracking #</span>
+        <span style="color:var(--ac);font-weight:700;font-family:monospace;">${order.tracking_number}</span>
+      </div>
+      ${TRACK_STEPS.map((step, i) => {
+        const idx   = TRACK_ORDER.indexOf(step.key);
+        const done  = idx < curI;
+        const active= idx === curI;
+        return `<div class="timeline-step ${done?'done':''} ${active?'active':''}">
+          <div class="t-icon ${done?'done':''} ${active?'active':''}">
+            <span class="material-symbols-outlined" style="font-size:1rem;">${step.icon}</span>
+          </div>
+          <div class="pt-1">
+            <p style="font-size:0.875rem;font-weight:700;color:${active?'var(--ac)':done?'#4ade80':'#849495'}">${step.label}</p>
+            ${active?'<p style="font-size:0.75rem;color:#849495;margin-top:0.1rem;">Currently here</p>':''}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Refunds
+// ════════════════════════════════════════════════════════════════════
+async function loadRefunds() {
+  const el = document.getElementById('refunds-list');
+  el.innerHTML = '<p style="color:#849495;font-size:0.85rem;">Loading…</p>';
+  const res  = await fetch('/api/customer/refunds');
+  const data = await res.json();
+  const rfds = data.refunds || [];
+  if (!rfds.length) { el.innerHTML = empty('currency_rupee','No refund requests','Refund requests for your orders will appear here.'); return; }
+  el.innerHTML = rfds.map(r => `
+    <div class="data-card mb-3">
+      <div class="flex flex-wrap justify-between items-start gap-2 mb-2">
+        <div>
+          <p style="color:var(--ac);font-weight:700;font-size:0.875rem;">${r.order_ref || 'Order #' + r.order_id}</p>
+          <p style="color:#dce4e5;font-weight:700;">${fmt_inr(r.amount)}</p>
+        </div>
+        ${badge(r.status)}
+      </div>
+      ${r.reason ? `<p style="font-size:0.875rem;color:#849495;margin-bottom:0.25rem;">Reason: ${r.reason}</p>` : ''}
+      <p style="font-size:0.75rem;color:#849495;">Requested on ${fmt_date(r.created_at)}</p>
+    </div>`).join('');
+}
+
+function openRefundModal() {
+  const sel = document.getElementById('refund-order-id');
+  const eligible = S.orders.filter(o => ['cancelled','delivered'].includes(o.status));
+  if (!eligible.length) { showToast('No eligible orders for a refund.', true); return; }
+  sel.innerHTML = eligible.map(o=>`<option value="${o.id}">${o.order_ref} · ${fmt_inr(o.total_amount)} · ${o.status}</option>`).join('');
+  document.getElementById('refund-err').classList.add('hidden');
+  document.getElementById('modal-refund').classList.add('open');
+}
+
+function prefillRefund(orderId, orderRef) {
+  showSection('refunds');
+  setTimeout(() => {
+    openRefundModal();
+    const sel = document.getElementById('refund-order-id');
+    if (sel) sel.value = orderId;
+  }, 100);
+}
+
+async function submitRefund(e) {
+  e.preventDefault();
+  const orderId = document.getElementById('refund-order-id').value;
+  const reason  = document.getElementById('refund-reason').value.trim();
+  const errEl   = document.getElementById('refund-err');
+  errEl.classList.add('hidden');
+  const res  = await fetch('/api/customer/refunds', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ order_id: parseInt(orderId), reason }),
+  });
+  const data = await res.json();
+  if (data.ok) {
+    closeModal('modal-refund');
+    showToast('Refund request submitted!');
+    loadRefunds();
+  } else {
+    errEl.textContent = data.error || 'Failed to submit refund.';
+    errEl.classList.remove('hidden');
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Payment Methods
+// ════════════════════════════════════════════════════════════════════
+const PAY_ICONS = { card:'credit_card', upi:'account_balance', wallet:'account_balance_wallet', netbanking:'account_balance' };
+
+async function loadPayments() {
+  const el = document.getElementById('payments-list');
+  el.innerHTML = '<p style="color:#849495;font-size:0.85rem;">Loading…</p>';
+  const res  = await fetch('/api/customer/payment-methods');
+  const data = await res.json();
+  const mths = data.methods || [];
+  if (!mths.length) {
+    el.innerHTML = empty('credit_card','No payment methods saved','Add a card, UPI ID, or wallet for faster checkout.'); return;
+  }
+  el.innerHTML = mths.map(m => `
+    <div class="data-card mb-3 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-4">
+        <div style="width:2.5rem;height:2.5rem;border-radius:0.7rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(0,219,233,0.08);border:1px solid rgba(0,219,233,0.18);">
+          <span class="material-symbols-outlined" style="color:var(--ac);font-size:1.3rem;">${PAY_ICONS[m.type]||'payment'}</span>
+        </div>
+        <div>
+          <p style="color:#dce4e5;font-weight:700;font-size:0.875rem;">${m.label}${m.last4?' ···· '+m.last4:''}</p>
+          <p style="color:#849495;font-size:0.75rem;text-transform:capitalize;">${m.type}${m.is_default?' · <span style="color:#4ade80">Default</span>':''}</p>
+        </div>
+      </div>
+      <div class="flex gap-2 flex-wrap justify-end">
+        ${!m.is_default ? `<button onclick="setDefaultPayment(${m.id})" class="btn-sm btn-sm-cyan">Set Default</button>` : ''}
+        <button onclick="deletePayment(${m.id})" class="btn-sm btn-sm-red">Remove</button>
+      </div>
+    </div>`).join('');
+}
+
+function openAddPaymentModal() {
+  document.getElementById('pay-form').reset();
+  document.getElementById('pay-err').classList.add('hidden');
+  document.getElementById('card-preview-name').textContent = 'YOUR NAME';
+  document.getElementById('card-preview-num').textContent = '•••• •••• •••• ••••';
+  document.getElementById('card-preview-exp').textContent = 'MM/YY';
+  document.getElementById('upi-verify-msg').style.display = 'none';
+  setPaymentType('card');
+  document.getElementById('modal-payment').classList.add('open');
+}
+
+function setPaymentType(type) {
+  document.getElementById('pay-type').value = type;
+  document.querySelectorAll('.pm-type-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-pm-' + type).classList.add('active');
+  
+  document.querySelectorAll('.pm-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + type).classList.add('active');
+}
+
+function verifyUPI() {
+  const upi = document.getElementById('pay-upi-id').value.trim();
+  if (!upi) return showToast('Enter UPI ID first', true);
+  document.getElementById('upi-verify-msg').style.display = 'block';
+  document.getElementById('upi-verify-msg').textContent = '✓ Verified ' + upi;
+}
+
+async function submitPayment(e) {
+  e.preventDefault();
+  const type  = document.getElementById('pay-type').value;
+  let label = '';
+  let last4 = '';
+
+  if (type === 'card') {
+    const cName = document.getElementById('pay-card-name').value.trim();
+    const cNum = document.getElementById('pay-card-num').value.replace(/\D/g, '');
+    const cExp = document.getElementById('pay-card-exp').value.trim();
+    const cCvv = document.getElementById('pay-card-cvv').value.trim();
+    if (!cName || cNum.length < 15 || !cExp || !cCvv) return showToast('Please fill all card details', true);
+    label = cName + ' Card';
+    last4 = cNum.slice(-4);
+  } else if (type === 'upi') {
+    const upi = document.getElementById('pay-upi-id').value.trim();
+    if (!upi) return showToast('Please enter UPI ID', true);
+    label = upi;
+  } else if (type === 'netbanking') {
+    const nb = document.getElementById('pay-nb-bank').value;
+    if (!nb) return showToast('Please select a bank', true);
+    label = nb;
+  } else if (type === 'wallet') {
+    const wn = document.getElementById('pay-wallet-name').value;
+    const wnum = document.getElementById('pay-wallet-num').value.trim();
+    if (!wn || !wnum) return showToast('Please fill wallet details', true);
+    label = wn;
+  }
+
+  const errEl = document.getElementById('pay-err');
+  errEl.classList.add('hidden');
+  const res  = await fetch('/api/customer/payment-methods', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ type, label, last4 }),
+  });
+  const data = await res.json();
+  if (data.ok) {
+    closeModal('modal-payment');
+    showToast('Payment method added!');
+    loadPayments();
+  } else {
+    errEl.textContent = data.error || 'Failed to add.';
+    errEl.classList.remove('hidden');
+  }
+}
+
+async function deletePayment(id) {
+  if (!confirm('Remove this payment method?')) return;
+  const res  = await fetch(`/api/customer/payment-methods/${id}`, { method:'DELETE' });
+  const data = await res.json();
+  if (data.ok) { showToast('Payment method removed.'); loadPayments(); }
+  else showToast(data.error || 'Failed to remove.', true);
+}
+
+async function setDefaultPayment(id) {
+  const res  = await fetch(`/api/customer/payment-methods/${id}/default`, { method:'PATCH' });
+  const data = await res.json();
+  if (data.ok) { showToast('Default payment method updated.'); loadPayments(); }
+  else showToast(data.error || 'Failed.', true);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Addresses
+// ════════════════════════════════════════════════════════════════════
+let editAddressId = null;
+
+async function loadAddresses() {
+  const el = document.getElementById('addresses-list');
+  el.innerHTML = '<p style="color:#849495;font-size:0.85rem;">Loading…</p>';
+  const res  = await fetch('/api/customer/addresses');
+  const data = await res.json();
+  const addrs = data.addresses || [];
+  if (!addrs.length) {
+    el.innerHTML = empty('location_on','No addresses saved','Add a delivery address to speed up checkout.'); return;
+  }
+  el.innerHTML = addrs.map(a => `
+    <div class="data-card mb-3">
+      <div class="flex items-start justify-between gap-2 mb-2">
+        <div class="flex items-center gap-2">
+          <span class="badge badge-processing" style="font-size:0.7rem;">${a.label}</span>
+          ${a.is_default ? '<span class="badge badge-completed" style="font-size:0.7rem;">Default</span>' : ''}
+        </div>
+        <div class="flex gap-2">
+          ${!a.is_default ? `<button onclick="setDefaultAddress(${a.id})" class="btn-sm btn-sm-cyan">Set Default</button>` : ''}
+          <button onclick="openEditAddressModal(${a.id})" class="btn-sm btn-sm-ghost"><span class="material-symbols-outlined" style="font-size:0.9rem;">edit</span></button>
+          <button onclick="deleteAddress(${a.id})" class="btn-sm btn-sm-red"><span class="material-symbols-outlined" style="font-size:0.9rem;">delete</span></button>
+        </div>
+      </div>
+      <p style="color:#dce4e5;font-weight:700;font-size:0.875rem;">${a.full_name}</p>
+      <p style="color:#849495;font-size:0.875rem;">${a.line1}${a.line2 ? ', '+a.line2 : ''}</p>
+      <p style="color:#849495;font-size:0.875rem;">${a.city}, ${a.state} – ${a.pincode}</p>
+      ${a.phone ? `<p style="color:#849495;font-size:0.75rem;margin-top:0.25rem;"><span class="material-symbols-outlined" style="font-size:0.85rem;vertical-align:middle;">call</span> ${a.phone}</p>` : ''}
+    </div>`).join('');
+}
+
+function openAddAddressModal() {
+  editAddressId = null;
+  document.getElementById('addr-form').reset();
+  document.getElementById('addr-edit-id').value = '';
+  document.getElementById('addr-err').classList.add('hidden');
+  document.getElementById('addr-modal-title').textContent = 'Add Address';
+  document.getElementById('modal-address').classList.add('open');
+}
+
+async function openEditAddressModal(id) {
+  const res  = await fetch('/api/customer/addresses');
+  const data = await res.json();
+  const addr = (data.addresses||[]).find(a => a.id === id);
+  if (!addr) return;
+  editAddressId = id;
+  document.getElementById('addr-edit-id').value = id;
+  document.getElementById('addr-label').value   = addr.label;
+  document.getElementById('addr-name').value    = addr.full_name;
+  document.getElementById('addr-line1').value   = addr.line1;
+  document.getElementById('addr-line2').value   = addr.line2 || '';
+  document.getElementById('addr-city').value    = addr.city;
+  document.getElementById('addr-state').value   = addr.state;
+  document.getElementById('addr-pin').value     = addr.pincode;
+  document.getElementById('addr-phone').value   = addr.phone || '';
+  document.getElementById('addr-err').classList.add('hidden');
+  document.getElementById('addr-modal-title').textContent = 'Edit Address';
+  document.getElementById('modal-address').classList.add('open');
+}
+
+async function submitAddress(e) {
+  e.preventDefault();
+  const id    = document.getElementById('addr-edit-id').value;
+  const body  = {
+    label:     document.getElementById('addr-label').value,
+    full_name: document.getElementById('addr-name').value.trim(),
+    line1:     document.getElementById('addr-line1').value.trim(),
+    line2:     document.getElementById('addr-line2').value.trim(),
+    city:      document.getElementById('addr-city').value.trim(),
+    state:     document.getElementById('addr-state').value.trim(),
+    pincode:   document.getElementById('addr-pin').value.trim(),
+    phone:     document.getElementById('addr-phone').value.trim(),
+  };
+  const url    = id ? `/api/customer/addresses/${id}` : '/api/customer/addresses';
+  const method = id ? 'PATCH' : 'POST';
+  const errEl  = document.getElementById('addr-err');
+  errEl.classList.add('hidden');
+  const res  = await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  const data = await res.json();
+  if (data.ok) {
+    closeModal('modal-address');
+    showToast(id ? 'Address updated.' : 'Address added.');
+    loadAddresses(); loadOverview();
+  } else {
+    errEl.textContent = data.error || 'Failed to save address.';
+    errEl.classList.remove('hidden');
+  }
+}
+
+async function deleteAddress(id) {
+  if (!confirm('Delete this address?')) return;
+  const res  = await fetch(`/api/customer/addresses/${id}`, { method:'DELETE' });
+  const data = await res.json();
+  if (data.ok) { showToast('Address deleted.'); loadAddresses(); loadOverview(); }
+  else showToast(data.error || 'Failed.', true);
+}
+
+async function setDefaultAddress(id) {
+  const res  = await fetch(`/api/customer/addresses/${id}/default`, { method:'PATCH' });
+  const data = await res.json();
+  if (data.ok) { showToast('Default address updated.'); loadAddresses(); }
+  else showToast(data.error || 'Failed.', true);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Rewards & Coupons
+// ════════════════════════════════════════════════════════════════════
+async function loadRewards() {
+  const el = document.getElementById('rewards-content');
+  el.innerHTML = '<p style="color:#849495;font-size:0.85rem;">Loading…</p>';
+  const res  = await fetch('/api/customer/rewards');
+  const data = await res.json();
+  if (!data.ok) { el.innerHTML = empty('redeem','Could not load rewards.'); return; }
+  const r = data.rewards;
+  const tierBadge = `<span class="badge badge-${r.tier.toLowerCase()}">${r.tier}</span>`;
+  const progressBar = r.next_tier
+    ? `<div class="mt-3">
+        <div class="flex justify-between mb-1.5" style="font-size:0.75rem;color:#849495;">
+          <span>${r.points.toLocaleString()} pts</span>
+          <span>${r.next_tier_points?.toLocaleString()} pts to ${r.next_tier}</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${r.progress}%"></div></div>
+      </div>`
+    : '<p style="font-size:0.75rem;color:#ffd700;margin-top:0.5rem;">🏆 You\'ve reached the highest tier!</p>';
+
+  el.innerHTML = `
+    <!-- Points card -->
+    <div class="data-card mb-5 flex items-center justify-between gap-4 flex-wrap">
+      <div>
+        <p style="color:#849495;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:0.25rem;">Reward Points</p>
+        <p style="font-size:2.5rem;font-weight:900;color:#dce4e5;">${r.points.toLocaleString()}</p>
+        <div style="margin-top:0.25rem;">${tierBadge}</div>
+        ${progressBar}
+      </div>
+      <span class="material-symbols-outlined" style="font-size:4rem;color:rgba(255,215,0,0.25);">emoji_events</span>
+    </div>
+
+    <!-- Coupons -->
+    <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#849495;margin-bottom:0.75rem;">Available Coupons</p>
+    ${r.coupons.length === 0
+      ? empty('local_offer','No coupons available','Complete orders to earn discount coupons.')
+      : r.coupons.map(c => `
+        <div class="data-card mb-3 flex items-center justify-between gap-3 flex-wrap">
+          <div class="flex items-center gap-3">
+            <div style="width:2.5rem;height:2.5rem;border-radius:0.7rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.18);">
+              <span class="material-symbols-outlined" style="color:#ffd700;font-size:1.3rem;">local_offer</span>
+            </div>
+            <div>
+              <p style="color:var(--ac);font-weight:900;font-family:monospace;font-size:0.875rem;">${c.code}</p>
+              <p style="color:#849495;font-size:0.75rem;">
+                ${c.discount_type === 'percent' ? c.discount_value+'% off' : fmt_inr(c.discount_value)+' flat off'}
+                ${c.min_order > 0 ? ' · Min order '+fmt_inr(c.min_order) : ''}
+              </p>
+            </div>
+          </div>
+          <div class="text-right">
+            ${c.expires_at ? `<p style="font-size:0.75rem;color:#849495;">Expires ${fmt_date(c.expires_at)}</p>` : ''}
+            <button onclick="copyCode('${c.code}')" class="btn-sm btn-sm-cyan mt-1">
+              <span class="material-symbols-outlined" style="font-size:0.9rem;">content_copy</span> Copy
+            </button>
+          </div>
+        </div>`).join('')}`;
+}
+
+function copyCode(code) {
+  navigator.clipboard.writeText(code).then(() => showToast(`Coupon code "${code}" copied!`));
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Account Settings
+// ════════════════════════════════════════════════════════════════════
+function loadAccount() {
+  if (!S.profile) return;
+  document.getElementById('ac-name').value  = S.profile.display_name || '';
+  document.getElementById('ac-email').value = S.profile.email;
+  document.getElementById('ac-role').value  = S.profile.role.charAt(0).toUpperCase() + S.profile.role.slice(1);
+  
+  // Hydrate visual elements
+  const displayName = S.profile.display_name || S.profile.email.split('@')[0];
+  document.getElementById('ac-display-title').textContent = displayName;
+  document.getElementById('ac-initial').textContent = displayName.charAt(0).toUpperCase();
+  document.getElementById('ac-role-badge').textContent = S.profile.role.toUpperCase();
+  
+  // Reset message
+  document.getElementById('ac-msg').classList.add('hidden');
+}
+
+async function saveAccount() {
+  const name = document.getElementById('ac-name').value.trim();
+  const msgEl = document.getElementById('ac-msg');
+  const btn   = document.getElementById('ac-save');
+  msgEl.classList.add('hidden');
+  btn.disabled = true; btn.style.opacity='0.7';
+  const res  = await fetch('/api/profile', {
+    method:'PATCH', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ display_name: name }),
+  });
+  const data = await res.json();
+  btn.disabled = false; btn.style.opacity='1';
+  if (data.ok) {
+    S.profile.display_name = name;
+    document.getElementById('ac-display-title').textContent = name;
+    document.getElementById('ac-initial').textContent = name.charAt(0).toUpperCase();
+    populateSidebar();
+    showToast('Profile saved!');
+  } else {
+    msgEl.textContent = data.error || 'Could not save.';
+    msgEl.style.color = '#ffb4ab';
+    msgEl.classList.remove('hidden');
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Modals
+// ════════════════════════════════════════════════════════════════════
+function closeModal(id, event) {
+  if (event && event.target.id !== id) return;
+  document.getElementById(id).classList.remove('open');
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Bootstrap
+// ════════════════════════════════════════════════════════════════════
+function populateSidebar() {
+  if (!S.profile) return;
+  const p = S.profile;
+  const displayName = p.display_name || p.email.split('@')[0];
+  const initial     = displayName.charAt(0).toUpperCase();
+  // Desktop sidebar
+  document.getElementById('sb-avatar').textContent = initial;
+  document.getElementById('sb-name').textContent   = displayName;
+  document.getElementById('sb-email').textContent  = p.email;
+  document.getElementById('ov-name').textContent   = displayName;
+  // Mobile header pill
+  const pill   = document.getElementById('mob-user-pill');
+  const avatar = document.getElementById('mob-avatar');
+  const name   = document.getElementById('mob-name');
+  if (pill && avatar && name) {
+    avatar.textContent  = initial;
+    name.textContent    = displayName;
+    pill.style.display  = 'flex';
+  }
+}
+
+async function init() {
+  const res  = await fetch('/api/profile');
+  const data = await res.json();
+  if (!data.ok) {
+    document.getElementById('auth-gate').style.display = 'flex';
+    return;
+  }
+  S.profile = data.profile;
+  document.getElementById('dashboard').style.display = 'flex';
+  populateSidebar();
+
+  // Seed demo data for new users then show overview
+  await fetch('/api/customer/seed', { method:'POST' });
+  showSection('overview');
+}
+
+init();
+</script>
+<script>
+// ════════════════════════════════════════════════════════════════════
+// Theme Toggle — matches professional-profile pattern
+// ════════════════════════════════════════════════════════════════════
+const LOGO_DARK  = 'attached_assets/camcrew_studio_logo_cop_y_1785515916927.png'; // white logo
+const LOGO_LIGHT = 'attached_assets/camcrew_studio_logo_cop_1785515916927.png';   // dark logo
+
+function applyTheme(theme) {
+  const isLight = theme === 'light';
+  document.documentElement.classList.toggle('light', isLight);
+  document.documentElement.classList.toggle('dark',  !isLight);
+  document.body.style.background = isLight ? '#e3e8ec' : '#141414';
+
+  // Toggle icon on all theme buttons
+  const icon = isLight ? 'dark_mode' : 'light_mode';
+  const themeIconEl = document.getElementById('theme-icon');
+  if (themeIconEl) themeIconEl.textContent = icon;
+  document.querySelectorAll('.theme-icon-mobile').forEach(el => el.textContent = icon);
+
+  // Swap logos
+  const logoSrc = isLight ? LOGO_LIGHT : LOGO_DARK;
+  document.querySelectorAll('.site-logo').forEach(img => img.src = logoSrc);
+}
+
+function toggleTheme() {
+  const current = localStorage.getItem('cp_theme') || 'dark';
+  const next    = current === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('cp_theme', next);
+  applyTheme(next);
+}
+
+// Apply saved theme immediately
+(function() {
+  const saved = localStorage.getItem('cp_theme') || 'dark';
+  applyTheme(saved);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,475 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Camcrew Studio — Shared Stylesheet
+   Edit here and every page reflects the change automatically.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Google Fonts ───────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
+
+/* ── Theme-aware logo switching ──────────────────────────────────── */
+/* White logo shown by default (dark backgrounds) */
+.cc-logo-dark  { display: block; }
+.cc-logo-light { display: none;  }
+/* Black logo shown in light mode */
+[data-theme="light"] .cc-logo-dark  { display: none;  }
+[data-theme="light"] .cc-logo-light { display: block; }
+
+/* ── Base ────────────────────────────────────────────────────────── */
+body {
+    background-color: #0A0A0B;
+    color: #dce4e5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── Material Symbols ────────────────────────────────────────────── */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+/* ── Glass Components ────────────────────────────────────────────── */
+.glass-panel {
+    background: rgba(22, 22, 24, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.glass-card {
+    background: rgba(22, 22, 24, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: #00f0ff;
+    box-shadow: 0 10px 30px rgba(0, 240, 255, 0.15);
+}
+
+/* ── Neon Text ───────────────────────────────────────────────────── */
+.neon-text-blue {
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+}
+
+.neon-text-glow {
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+/* ── Neon Glow Effects ───────────────────────────────────────────── */
+.neon-glow-blue {
+    box-shadow: 0px 10px 30px rgba(0, 240, 255, 0.2);
+}
+
+.neon-glow-purple {
+    box-shadow: 0px 10px 30px rgba(188, 19, 254, 0.2);
+}
+
+.neon-glow-hover:hover {
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+    border-color: rgba(0, 240, 255, 0.4);
+}
+
+.neon-glow-blue-hover:hover {
+    box-shadow: 0px 10px 40px rgba(0, 240, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.neon-border-glow:hover {
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+    border-color: rgba(0, 240, 255, 0.5);
+}
+
+.glow-hover:hover {
+    box-shadow: 0px 0px 30px rgba(0, 240, 255, 0.3);
+    border-color: rgba(0, 240, 255, 0.5);
+}
+
+/* ── Neon Focus Borders ──────────────────────────────────────────── */
+.neon-border-focus:focus-within {
+    border-bottom-color: #00dbe9;
+    box-shadow: 0 4px 12px -2px rgba(0, 240, 255, 0.3);
+}
+
+.neon-border-glow-blue:focus-within {
+    border-color: #00f0ff;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+}
+
+.neon-input:focus {
+    outline: none;
+    border-bottom-color: #00dbe9;
+    box-shadow: 0 4px 12px -2px rgba(0, 240, 255, 0.3);
+}
+
+/* ── Text Gradients ──────────────────────────────────────────────── */
+.gradient-text {
+    background: linear-gradient(to right, #dbfcff, #ebb2ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.text-gradient {
+    background: linear-gradient(to right, #dbfcff, #00f0ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ── Shimmer Animations ──────────────────────────────────────────── */
+@keyframes shimmer {
+    0%   { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%)  rotate(45deg); }
+}
+
+/* shimmer-btn: hover-triggered shimmer (used in header, index, etc.) */
+.shimmer-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.shimmer-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: rotate(45deg);
+    transition: 0.5s;
+}
+
+.shimmer-btn:hover::after {
+    animation: shimmer 0.8s forwards;
+}
+
+/* shimmer: slide-on-hover variant (About, studioreq) */
+.shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.shimmer::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: rotate(45deg);
+    transition: 0.5s;
+}
+
+.shimmer:hover::after {
+    left: 120%;
+}
+
+/* shimmer-effect: continuous auto-shimmer (service pages) */
+.shimmer-effect {
+    position: relative;
+    overflow: hidden;
+}
+
+.shimmer-effect::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(219, 252, 255, 0.1), transparent);
+    transform: rotate(45deg);
+    animation: shimmer 4s infinite;
+}
+
+/* ── Scroll Reveal ───────────────────────────────────────────────── */
+.reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ── Float Animation ─────────────────────────────────────────────── */
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50%       { transform: translateY(-10px) rotate(1deg); }
+}
+
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+/* ── Scrollbar Utilities ─────────────────────────────────────────── */
+.hide-scrollbar::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+.hide-scrollbar,
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.obsidian-scroll::-webkit-scrollbar       { width: 6px; }
+.obsidian-scroll::-webkit-scrollbar-track { background: #0A0A0B; }
+.obsidian-scroll::-webkit-scrollbar-thumb { background: #2e3637; border-radius: 10px; }
+
+.custom-scrollbar::-webkit-scrollbar       { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: #0A0A0B; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #2e3637; border-radius: 10px; }
+
+/* ── Form / Input Utilities ──────────────────────────────────────── */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* ── Autofill override — prevent browser from forcing a white background ── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 9999px #080f10 inset !important;
+    box-shadow: 0 0 0 9999px #080f10 inset !important;
+    -webkit-text-fill-color: #dce4e5 !important;
+    caret-color: #dce4e5;
+    transition: background-color 9999s ease-in-out 0s;
+}
+
+.floating-label { transition: all 0.2s ease; }
+
+input:focus ~ .floating-label,
+input:not(:placeholder-shown) ~ .floating-label {
+    transform: translateY(-1.5rem) scale(0.85);
+    color: #dbfcff;
+}
+
+/* ── Filter Chips ────────────────────────────────────────────────── */
+.active-filter {
+    background: #dbfcff;
+    color: #00363a;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+}
+
+.filter-chip { transition: all 0.3s ease; }
+
+.filter-chip:hover {
+    border-color: #00dbe9;
+    background: rgba(0, 219, 233, 0.05);
+}
+
+/* ── Profile Page ────────────────────────────────────────────────── */
+@keyframes spin-ring {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+.avatar-ring {
+    background: conic-gradient(#00f0ff, #b600f8, #00f0ff);
+    border-radius: 50%;
+    padding: 3px;
+    animation: spin-ring 6s linear infinite;
+}
+
+.avatar-inner {
+    background: #0A0A0B;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-card {
+    background: rgba(22, 22, 24, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    border-color: rgba(0, 240, 255, 0.3);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.08);
+}
+
+/* ── Header Sign In Button ───────────────────────────────────────── */
+.header-signin-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 1.1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 219, 233, 0.45);
+    background: linear-gradient(135deg, rgba(0, 219, 233, 0.18) 0%, rgba(0, 240, 255, 0.08) 100%);
+    color: #00dbe9;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 0 12px rgba(0, 219, 233, 0.18), inset 0 1px 0 rgba(255,255,255,0.07);
+    transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.18s ease, color 0.18s ease;
+    backdrop-filter: blur(6px);
+}
+.header-signin-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent);
+    transform: rotate(45deg);
+    transition: 0.5s;
+}
+.header-signin-btn:hover {
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.28) 0%, rgba(0, 219, 233, 0.18) 100%);
+    border-color: rgba(0, 240, 255, 0.8);
+    color: #ffffff;
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.35), 0 0 6px rgba(0,240,255,0.15), inset 0 1px 0 rgba(255,255,255,0.12);
+    transform: translateY(-1px);
+}
+.header-signin-btn:hover::after {
+    animation: shimmer 0.8s forwards;
+}
+.header-signin-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 0 10px rgba(0, 219, 233, 0.2);
+}
+
+/* ── Primary CTA Button (dark theme) ────────────────────────────── */
+.cc-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.9rem 2rem;
+    border-radius: 0.75rem;
+    border: none;
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: #001f22;
+    background: #00dbe9;
+    box-shadow: 0 0 0 1px rgba(0,219,233,0.3), 0 4px 20px rgba(0,219,233,0.18);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+    text-decoration: none;
+
+      position: relative;
+      overflow: hidden;}
+.cc-btn-primary::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.18), transparent);
+    transform: rotate(45deg);
+    transition: 0.5s;
+}
+.cc-btn-primary:hover {
+    background: #00f0ff;
+    box-shadow: 0 0 0 1px rgba(0,240,255,0.5), 0 6px 28px rgba(0,240,255,0.3);
+    transform: translateY(-1px);
+}
+.cc-btn-primary:hover::after {
+    animation: shimmer 0.7s forwards;
+}
+.cc-btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 0 0 1px rgba(0,219,233,0.3), 0 2px 10px rgba(0,219,233,0.15);
+}
+.cc-btn-primary:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ── Ghost / Secondary Button (dark theme) ───────────────────────── */
+.cc-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.9rem 2rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255,255,255,0.14);
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: #dce4e5;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(8px);
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+    text-decoration: none;
+}
+.cc-btn-ghost:hover {
+    border-color: rgba(0,240,255,0.5);
+    background: rgba(0,240,255,0.06);
+    color: #00f0ff;
+}
+
+/* ── Sign-in Page ────────────────────────────────────────────────── */
+.role-card.active {
+    border-color: #00f0ff;
+    background: rgba(0, 240, 255, 0.05);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+}
+
+/* ── Admin / Login Page ──────────────────────────────────────────── */
+.perspective-lg { perspective: 1000px; }
+.rotate-y-12    { transform: rotateY(12deg); }
+
+/* ── Developer Network Page ──────────────────────────────────────── */
+.orbit-bg {
+    background: radial-gradient(circle at 50% 50%, rgba(0, 219, 233, 0.05) 0%, transparent 70%);
+}
+
+/* ── Studio Request Page ─────────────────────────────────────────── */
+.particle-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* "?"? Ambient animations (Shared) "?"?"?"?"?"?"?"?"?"?"?"?"?"?"?"?"?"?"?"?"?"?"?"?"?"?"?"?"?"? */
+@keyframes float-slow  { 0%,100%{transform:translateY(0)}   50%{transform:translateY(-24px)} }
+@keyframes float-mid   { 0%,100%{transform:translateY(0)}   50%{transform:translateY(-16px)} }
+@keyframes pulse-glow  { 0%,100%{opacity:.3} 50%{opacity:.6} }
+@keyframes scan-line   { 0%{transform:translateY(-100%)} 100%{transform:translateY(100vh)} }
+
+.orb-1 { animation: float-slow 9s ease-in-out infinite, pulse-glow 5s ease-in-out infinite; }
+.orb-2 { animation: float-mid  7s ease-in-out infinite 1.5s, pulse-glow 7s ease-in-out infinite 2s; }
+.orb-3 { animation: float-slow 11s ease-in-out infinite 3s, pulse-glow 6s ease-in-out infinite 1s; }
+.scan-line {
+  position:absolute; inset-x:0; height:2px;
+  background: linear-gradient(90deg, transparent, rgba(0,240,255,.15), transparent);
+  animation: scan-line 9s linear infinite;
+  pointer-events:none;
+}
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(0,240,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,240,255,0.04) 1px, transparent 1px);
+  background-size: 52px 52px;
+}

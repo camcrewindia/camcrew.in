@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script>document.documentElement.setAttribute('data-theme',localStorage.getItem('cc-theme')||'dark');</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Studio Verification | Camcrew Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "primary": "#006970","primary-container": "#00858f","primary-fixed": "#004f54","primary-fixed-dim": "#006970",
+          "secondary": "#7b1fa2","secondary-container": "#9c27b0","on-secondary": "#ffffff",
+          "surface": "#e0e5ec","background": "#e0e5ec","obsidian-base": "#e0e5ec","charcoal-surface": "#e8edf4",
+          "surface-container": "#dde3eb","surface-container-low": "#d8dfe8","surface-container-high": "#cdd5e0",
+          "surface-container-highest": "#c8d0de","surface-container-lowest": "#d1d9e6","surface-bright": "#eef1f6",
+          "on-surface": "#0f172a","on-surface-variant": "#475569","on-background": "#0f172a","on-primary": "#ffffff",
+          "on-primary-container": "#ffffff","on-secondary-container": "#f3e5f5",
+          "error": "#c62828","error-container": "#ffcdd2","on-error": "#ffffff","on-error-container": "#7f0000",
+          "glass-stroke": "rgba(0,0,0,0.08)","outline": "#b0bec5","outline-variant": "#cfd8dc",
+          "inverse-surface": "#2c3e50","inverse-on-surface": "#e0e5ec","surface-variant": "#d0dce0"
+        },
+        "spacing": {
+          "margin-desktop": "80px","margin-mobile": "20px","stack-xl": "4rem","stack-md": "1.5rem","gutter": "24px","stack-xs": "0.5rem"
+        },
+        "fontFamily": {
+          "label-caps": ["Plus Jakarta Sans"],"display-lg": ["Plus Jakarta Sans"],"headline-md": ["Plus Jakarta Sans"],"body-md": ["Plus Jakarta Sans"]
+        },
+        "fontSize": {
+          "label-caps": ["13px", {"lineHeight": "1.1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+          "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+          "headline-md": ["26px", {"lineHeight": "1.3", "fontWeight": "700"}],
+          "body-md": ["17px", {"lineHeight": "1.6", "fontWeight": "400"}]
+        }
+      }
+    }
+  }
+</script>
+<style>
+  /* ── Verification — Dark / Light Theme ── */
+  :root, [data-theme="dark"] {
+    --neu-bg:           #16161e;
+    --neu-shadow-dark:  #0d0d16;
+    --neu-shadow-light: #1f1f2c;
+    --neu-accent:       #1a8aff;
+    --neu-accent-glow:  rgba(26,138,255,0.25);
+    --neu-text:         #e4e8f6;
+    --neu-text-muted:   #7a8599;
+    --neu-border:       rgba(255,255,255,0.07);
+    --neu-table-head:   rgba(255,255,255,0.05);
+    --neu-table-head-text: #7a8599;
+    --neu-row-hover:    rgba(255,255,255,0.03);
+    --neu-map-gradient: rgba(22,22,30,0.88);
+  }
+  [data-theme="light"] {
+    --neu-bg:           #eef1f8;
+    --neu-shadow-dark:  #c5cad8;
+    --neu-shadow-light: #ffffff;
+    --neu-accent:       #0060cc;
+    --neu-accent-glow:  rgba(0,96,204,0.2);
+    --neu-text:         #1a1a2e;
+    --neu-text-muted:   #5a6880;
+    --neu-border:       rgba(0,0,0,0.08);
+    --neu-table-head:   #dde3ef;
+    --neu-table-head-text: #374263;
+    --neu-row-hover:    #d8dfe8;
+    --neu-map-gradient: rgba(224,229,236,0.85);
+  }
+  body {
+    background-color: var(--neu-bg);
+    color: var(--neu-text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    zoom: 0.8;
+  }
+  h2,h3,h4,h5,h6 { color: var(--neu-text); font-weight: 800; }
+  .glass-panel {
+    background: var(--neu-bg);
+    box-shadow: 8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light);
+    border: none !important;
+  }
+  .neu-header {
+    background: var(--neu-bg);
+    box-shadow: 0 4px 10px var(--neu-shadow-dark), 0 -2px 6px var(--neu-shadow-light);
+  }
+  .neu-btn {
+    background: var(--neu-bg);
+    box-shadow: 4px 4px 8px var(--neu-shadow-dark), -4px -4px 8px var(--neu-shadow-light);
+    border: none; color: var(--neu-text-muted); transition: all 0.15s ease;
+  }
+  .neu-btn:hover { box-shadow: 6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light); color: var(--neu-accent); }
+  .neu-btn:active { box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light); }
+  .neu-inset {
+    background: var(--neu-bg);
+    box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light);
+    border: none !important;
+  }
+  .neu-inset:focus-within {
+    box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light), 0 0 0 2px rgba(0,133,143,0.35);
+    outline: none;
+  }
+  .neu-inset input { background: transparent; color: var(--neu-text); }
+  .neu-inset input::placeholder { color: rgba(122,133,153,0.5); }
+  .neu-track {
+    background: var(--neu-bg);
+    box-shadow: inset 2px 2px 5px var(--neu-shadow-dark), inset -2px -2px 5px var(--neu-shadow-light);
+  }
+  .neu-icon-badge {
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 7px var(--neu-shadow-dark), -3px -3px 7px var(--neu-shadow-light);
+    border-radius: 0.75rem; padding: 0.65rem; display: inline-flex;
+  }
+  .action-btn-approve {
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 7px var(--neu-shadow-dark), -3px -3px 7px var(--neu-shadow-light);
+    color: #2ea84a; font-weight: 700; font-size: 0.82rem;
+    border-radius: 0.5rem; padding: 0.45rem 1.1rem; border: none; transition: all 0.15s ease; cursor: pointer;
+  }
+  [data-theme="light"] .action-btn-approve { color: #1b5e20; }
+  .action-btn-approve:hover { box-shadow: inset 3px 3px 7px var(--neu-shadow-dark), inset -3px -3px 7px var(--neu-shadow-light); }
+  .action-btn-deny {
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 7px var(--neu-shadow-dark), -3px -3px 7px var(--neu-shadow-light);
+    color: #ff6464; font-weight: 700; font-size: 0.82rem;
+    border-radius: 0.5rem; padding: 0.45rem 1.1rem; border: none; transition: all 0.15s ease; cursor: pointer;
+  }
+  [data-theme="light"] .action-btn-deny { color: #b71c1c; }
+  .action-btn-deny:hover { box-shadow: inset 3px 3px 7px var(--neu-shadow-dark), inset -3px -3px 7px var(--neu-shadow-light); }
+  .view-profile-link { color: var(--neu-accent); font-size: 0.88rem; font-weight: 700; text-decoration: none; }
+  .view-profile-link:hover { text-decoration: underline; }
+  tr.neu-row:hover { background: var(--neu-row-hover); }
+  .stat-pill {
+    background: var(--neu-bg);
+    box-shadow: 6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light);
+    border-radius: 1rem; padding: 1.25rem 1.75rem; text-align: center;
+  }
+  .page-btn-active {
+    background: var(--neu-accent); color: #fff; font-weight: 800; font-size: 0.82rem;
+    width: 2rem; height: 2rem; border-radius: 0.5rem; border: none; cursor: pointer;
+  }
+  .page-btn {
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
+    color: var(--neu-text-muted); font-weight: 700; font-size: 0.82rem;
+    width: 2rem; height: 2rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: all 0.15s;
+  }
+  .page-btn:hover { color: var(--neu-accent); }
+  .page-btn-nav {
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
+    color: var(--neu-text-muted); border-radius: 0.5rem; border: none; cursor: pointer;
+    padding: 0.35rem; transition: all 0.15s; display: flex; align-items: center; justify-content: center;
+  }
+  .page-btn-nav:disabled { opacity: 0.35; cursor: not-allowed; }
+  .page-btn-nav:not(:disabled):hover { color: var(--neu-accent); }
+  select.neu-select {
+    background: var(--neu-bg);
+    box-shadow: inset 3px 3px 7px var(--neu-shadow-dark), inset -3px -3px 7px var(--neu-shadow-light);
+    border: none; color: var(--neu-text); border-radius: 0.5rem; padding: 0.4rem 1rem;
+    font-size: 0.88rem; font-weight: 600; appearance: auto;
+  }
+  [data-theme="dark"] select.neu-select { color-scheme: dark; }
+  [data-theme="light"] select.neu-select { color-scheme: light; }
+  .map-zone-pill {
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
+    border-radius: 9999px; padding: 0.3rem 0.85rem;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.78rem; font-weight: 600; color: var(--neu-text-muted);
+  }
+  /* Map gradient adapts to theme */
+  .map-gradient-overlay {
+    background: linear-gradient(to top, var(--neu-map-gradient), transparent) !important;
+  }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--neu-bg); }
+  ::-webkit-scrollbar-thumb { background: var(--neu-shadow-dark); border-radius: 10px; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+  /* ── Theme toggle ── */
+  #theme-toggle {
+    width: 2.4rem; height: 2.4rem; border-radius: 50%; border: none; cursor: pointer;
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light);
+    color: var(--neu-accent);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s ease; flex-shrink: 0;
+  }
+  #theme-toggle:hover {
+    box-shadow: 5px 5px 12px var(--neu-shadow-dark), -5px -5px 12px var(--neu-shadow-light), 0 0 14px var(--neu-accent-glow);
+    transform: scale(1.08);
+  }
+  #theme-toggle:active { box-shadow: inset 3px 3px 7px var(--neu-shadow-dark), inset -3px -3px 7px var(--neu-shadow-light); }
+
+  /* ── Dark mode overrides for inline-hardcoded colours ── */
+  [data-theme="dark"] thead { background: var(--neu-table-head) !important; }
+  [data-theme="dark"] thead th { color: var(--neu-table-head-text) !important; }
+  [data-theme="dark"] table tbody td { color: var(--neu-text) !important; }
+  [data-theme="dark"] h3, [data-theme="dark"] h4 { color: var(--neu-text) !important; }
+  [data-theme="dark"] p[style*="color:#334155"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] div[style*="color:#0f172a"] { color: var(--neu-text) !important; }
+  [data-theme="dark"] div[style*="color:#475569"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] span[style*="color:#475569"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] span[style*="color:#334155"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] strong[style*="color:#0f172a"] { color: var(--neu-text) !important; }
+  [data-theme="dark"] [style*="border-bottom:1px solid rgba(0,0,0"] { border-bottom-color: var(--neu-border) !important; }
+  [data-theme="dark"] [style*="border-top:1px solid rgba(0,0,0"] { border-top-color: var(--neu-border) !important; }
+  /* breadcrumb nav text */
+  [data-theme="dark"] nav span[style*="color:#475569"] { color: var(--neu-text-muted) !important; }
+  /* stat pill numbers */
+  [data-theme="dark"] .stat-pill div[style*="color:#475569"] { color: var(--neu-text-muted) !important; }
+  /* pagination count */
+  [data-theme="dark"] div[style*="font-size:0.88rem"][style*="color:#334155"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] span[style*="font-weight:700"][style*="color:#0f172a"] { color: var(--neu-text) !important; }
+
+  /* ── Light mode table head ── */
+  [data-theme="light"] thead { background: var(--neu-table-head) !important; }
+  [data-theme="light"] thead th { color: var(--neu-table-head-text) !important; }
+</style>
+</head>
+<body>
+<div id="sidebar-container"></div>
+<main class="lg:ml-64 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-30 neu-header px-margin-desktop py-4 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <h2 style="font-size:1.4rem;font-weight:800;color:#006970;">Studio Verification</h2>
+      <span class="neu-inset rounded-full px-3 py-1" style="font-size:0.78rem;font-weight:600;color:#334155;">Verification Queue</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="relative w-64 neu-inset rounded-full">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2" style="color:#475569;">search</span>
+        <input class="bg-transparent border-none focus:ring-0 w-full pl-10 pr-4 py-2" style="font-size:0.92rem;" placeholder="Search applications..." type="text"/>
+      </div>
+      <button id="theme-toggle" onclick="toggleTheme()" title="Switch to Light Mode">
+        <span class="material-symbols-outlined t-icon" style="font-size:1.15rem;">light_mode</span>
+      </button>
+      <div class="relative">
+        <button id="profile-menu-btn" onclick="document.getElementById('profile-dropdown').classList.toggle('hidden')" class="flex items-center gap-3 text-left focus:outline-none group bg-transparent border-none p-0 cursor-pointer">
+          <div class="w-10 h-10 rounded-full overflow-hidden transition-transform group-hover:scale-105" style="box-shadow:3px 3px 6px var(--neu-shadow-dark),-3px -3px 6px var(--neu-shadow-light);">
+            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAqknVdGIG9lR4g4HhPew9FZ3Q4r8MIoKYjj8WoGgOmJ68Oj5wbkSzbWuJmOlLKLOiliqt3V-UKG09neeeGSMVI9XRdAeONjd6gRJR-YZIg-A-woPHfzc1lfWUTk3eGdd6I0h0HQppE5LXGj16IQa6IgLvzIlMqdSNdkyzdCkh-O3FAIuQj8lt7Td9FKKOf2gmzByao2GkfhaDO_0migEO5jy7DUBvFAo7LrDoc9r3awBTriqP0xSP"/>
+          </div>
+          <div class="hidden md:block">
+            <p style="font-size:0.95rem;font-weight:800;color:#006970;margin:0;">Alex Mercer</p>
+            <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#475569;margin:0;">SYSTEM ADMIN</p>
+          </div>
+        </button>
+        <div id="profile-dropdown" class="hidden absolute right-0 mt-3 w-48 glass-panel rounded-2xl overflow-hidden z-50 shadow-2xl origin-top-right border border-black/5 dark:border-white/5">
+          <div class="p-2">
+            <a href="profile.html" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-semibold text-sm no-underline text-inherit">
+              <span class="material-symbols-outlined" style="font-size:1.2rem;">person</span> My Profile
+            </a>
+            <a href="settings.html" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-semibold text-sm no-underline text-inherit">
+              <span class="material-symbols-outlined" style="font-size:1.2rem;">settings</span> Settings
+            </a>
+            <div class="h-px bg-black/10 dark:bg-white/10 my-1 mx-2"></div>
+            <a href="/api/logout" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 text-red-600 dark:text-red-400 transition-colors font-semibold text-sm no-underline">
+              <span class="material-symbols-outlined" style="font-size:1.2rem;">logout</span> Sign Out
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Body -->
+  <div class="p-margin-desktop space-y-8">
+
+    <!-- Page Intro + Stats -->
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
+      <div>
+        <nav class="flex items-center gap-2 mb-3" style="font-size:0.75rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;">
+          <span>Partners</span>
+          <span class="material-symbols-outlined" style="font-size:0.9rem;">chevron_right</span>
+          <span style="color:#006970;">Verification Queue</span>
+        </nav>
+        <h3 style="font-size:1.75rem;font-weight:800;color:#0f172a;letter-spacing:-0.02em;">Studio Verification</h3>
+        <p style="font-size:0.95rem;color:#334155;margin-top:4px;max-width:520px;">Manage and vet incoming studio partnership requests. Ensure all cinematic credentials meet platform standards before granting access.</p>
+      </div>
+      <div class="flex gap-4">
+        <div class="stat-pill">
+          <div id="stat-pending" style="font-size:1.8rem;font-weight:800;color:#006970;line-height:1.1;">—</div>
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-top:4px;">Pending Approval</div>
+        </div>
+        <div class="stat-pill">
+          <div id="stat-verified" style="font-size:1.8rem;font-weight:800;color:#7b1fa2;line-height:1.1;">—</div>
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-top:4px;">Verified Partners</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="glass-panel rounded-3xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead style="background:#d8dfe8;">
+            <tr>
+              <th class="px-8 py-5" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">Studio Details</th>
+              <th class="px-8 py-5" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">Representative</th>
+              <th class="px-8 py-5" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">Applied Date</th>
+              <th class="px-8 py-5" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">Location</th>
+              <th class="px-8 py-5 text-right" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="verif-tbody">
+            <tr>
+              <td colspan="5" class="px-8 py-10 text-center" style="color:#7a8599;font-size:0.9rem;">
+                <span class="material-symbols-outlined" style="font-size:1.5rem;vertical-align:middle;">progress_activity</span> Loading requests…
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Pagination -->
+      <div class="px-8 py-5 flex justify-between items-center" style="border-top:1px solid rgba(0,0,0,0.08);">
+        <div style="font-size:0.88rem;color:#334155;">
+          <span id="verif-showing">Loading…</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="page-btn-nav" disabled><span class="material-symbols-outlined" style="font-size:1.1rem;">chevron_left</span></button>
+          <button class="page-btn-active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn-nav"><span class="material-symbols-outlined" style="font-size:1.1rem;">chevron_right</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Global Density Map -->
+    <div>
+      <h4 style="font-size:1.15rem;font-weight:800;color:#0f172a;margin-bottom:1.25rem;display:flex;align-items:center;gap:8px;">
+        <span class="material-symbols-outlined" style="color:#006970;">public</span>
+        Global Application Density
+      </h4>
+      <div class="glass-panel rounded-3xl h-80 relative overflow-hidden">
+        <img class="w-full h-full object-cover opacity-30" style="filter:grayscale(40%);" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6YEdLTgVWlWvKudu38VA0GjLgczr9pMnqDT2vwQSwzdCu6K76tF1BqKpP9ZOS-RsAZEWK1el1pP_ZxeaxQEUU1Dtmpwz00QuNetvFXf7gY7ayNsms6kRoGO7kB1hKed7xSjsRFpLTxcmZY77RYLR3iKmDnqEctwr4JwrbTyXv_5iXeLUsrfYBg-qnvYFfBn96QtuWTFU2mu-BWsBBAgj2iRNpkWixKOY8u1L3HjOUtSGI7ZS3rtCL"/>
+        <div class="absolute inset-0 map-gradient-overlay"></div>
+        <div class="absolute bottom-6 left-8 flex gap-3">
+          <span class="map-zone-pill"><span style="width:8px;height:8px;border-radius:50%;background:#006970;display:inline-block;"></span>North America</span>
+          <span class="map-zone-pill"><span style="width:8px;height:8px;border-radius:50%;background:#7b1fa2;display:inline-block;"></span>Western Europe</span>
+          <span class="map-zone-pill"><span style="width:8px;height:8px;border-radius:50%;background:#b45309;display:inline-block;"></span>East Asia</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div id="footer-container"></div>
+</main>
+<script src="/static/js/dashboard-components.js"></script>
+<script>
+  (function(){
+    const root = document.documentElement;
+    const saved = localStorage.getItem('cc-theme') || 'dark';
+    root.setAttribute('data-theme', saved);
+    function updateIcon(t){
+      const btn = document.getElementById('theme-toggle');
+      if (!btn) return;
+      const ic = btn.querySelector('.t-icon');
+      if (ic) ic.textContent = t === 'dark' ? 'light_mode' : 'dark_mode';
+      btn.title = t === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+    }
+    updateIcon(saved);
+    window.toggleTheme = function(){
+      const cur = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', cur);
+      localStorage.setItem('cc-theme', cur);
+      updateIcon(cur);
+    };
+  })();
+</script>
+
+<script>
+/* ── Verification Requests — Live Data ── */
+(function(){
+  const tbody   = document.getElementById('verif-tbody');
+  const showing = document.getElementById('verif-showing');
+  let currentPage=1, total=0;
+
+  function fmtDate(s){ return s ? new Date(s).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—'; }
+
+  function renderRows(reqs){
+    if (!reqs.length){
+      tbody.innerHTML=`<tr><td colspan="5" class="px-8 py-10 text-center" style="color:#7a8599;">No requests found.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = reqs.map((r,i,arr) => `
+      <tr class="neu-row transition-colors" style="${i<arr.length-1?'border-bottom:1px solid rgba(0,0,0,0.06);':''}">
+        <td class="px-8 py-6">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center neu-btn">
+              <span class="material-symbols-outlined" style="color:#006970;">movie</span>
+            </div>
+            <div>
+              <div style="font-size:0.98rem;font-weight:800;color:#0f172a;">${r.studio_name}</div>
+              <div style="font-size:0.82rem;color:#475569;margin-top:2px;">${r.studio_type||'Studio'}</div>
+            </div>
+          </div>
+        </td>
+        <td class="px-8 py-6">
+          <div style="font-size:0.95rem;font-weight:700;color:#0f172a;">${r.rep_name}</div>
+          <div style="font-size:0.82rem;color:#475569;margin-top:2px;">${r.rep_title||''}</div>
+        </td>
+        <td class="px-8 py-6">
+          <div style="font-size:0.95rem;font-weight:600;color:#0f172a;">${fmtDate(r.created_at)}</div>
+          <div style="font-size:0.82rem;color:#475569;margin-top:2px;text-transform:capitalize;">${r.status}</div>
+        </td>
+        <td class="px-8 py-6">
+          <div class="flex items-center gap-2" style="font-size:0.95rem;font-weight:600;color:#0f172a;">
+            <span class="material-symbols-outlined" style="font-size:1rem;color:#006970;">location_on</span>
+            ${r.location||'—'}
+          </div>
+        </td>
+        <td class="px-8 py-6 text-right">
+          <div class="flex items-center justify-end gap-3">
+            <button class="neu-btn p-2 rounded-lg material-symbols-outlined focus:outline-none cursor-pointer border-none" style="font-size:1.1rem;color:var(--neu-accent);" onclick="openDocModal(${r.id})" title="View Documents">visibility</button>
+            ${r.status==='pending' ? `
+              <button class="action-btn-approve" onclick="reviewReq(${r.id},'approved',this)">Approve</button>
+              <button class="action-btn-deny"    onclick="reviewReq(${r.id},'rejected',this)">Reject</button>
+            ` : `<span style="font-size:0.85rem;font-weight:700;color:#475569;text-transform:capitalize;">${r.status}</span>`}
+          </div>
+        </td>
+      </tr>`).join('');
+  }
+
+  async function loadReqs(page){
+    currentPage=page;
+    const statusSel = document.querySelector('[data-verif-filter]');
+    const status    = statusSel ? statusSel.value : 'pending';
+    tbody.innerHTML=`<tr><td colspan="5" class="px-8 py-10 text-center" style="color:#7a8599;"><span class="material-symbols-outlined" style="font-size:1.5rem;vertical-align:middle;">progress_activity</span></td></tr>`;
+    try {
+      const res  = await fetch(`/api/admin/verification-requests?status=${status}&page=${page}`);
+      if (!res.ok){ tbody.innerHTML=`<tr><td colspan="5" style="padding:24px;text-align:center;color:#7a8599;">Admin access required.</td></tr>`; return; }
+      const data = await res.json();
+      total = data.total||0;
+
+      // also load totals for stat pills
+      const [pRes, aRes] = await Promise.all([
+        fetch('/api/admin/verification-requests?status=pending&page=1'),
+        fetch('/api/admin/verification-requests?status=approved&page=1'),
+      ]);
+      const pData = await pRes.json(), aData = await aRes.json();
+      const pendEl = document.getElementById('stat-pending');
+      const apprEl = document.getElementById('stat-verified');
+      if (pendEl) pendEl.textContent = (pData.total||0).toLocaleString();
+      if (apprEl) apprEl.textContent = (aData.total||0).toLocaleString();
+
+      const start=(page-1)*20+1, end=Math.min(page*20,total);
+      if (showing) showing.innerHTML = total
+        ? `Showing <span style="font-weight:700;color:var(--neu-text)">${start}–${end}</span> of ${total} requests`
+        : 'No requests found';
+      renderRows(data.requests||[]);
+    } catch(e){
+      tbody.innerHTML=`<tr><td colspan="5" style="padding:24px;text-align:center;color:#b71c1c;">Failed to load.</td></tr>`;
+    }
+  }
+
+  window.reviewReq = async function(id, action, btn){
+    btn.disabled=true;
+    const res  = await fetch(`/api/admin/verification-requests/${id}`,{
+      method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({status:action})
+    });
+    if ((await res.json()).ok) loadReqs(currentPage); else btn.disabled=false;
+  };
+
+  document.querySelector('[data-verif-filter]')?.addEventListener('change', ()=>loadReqs(1));
+  loadReqs(1);
+  window.loadReqs=loadReqs;
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#profile-menu-btn') && !e.target.closest('#profile-dropdown')) {
+      document.getElementById('profile-dropdown')?.classList.add('hidden');
+    }
+  });
+
+  window.openDocModal = function(id) {
+    document.getElementById('doc-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  };
+  
+  window.closeDocModal = function() {
+    document.getElementById('doc-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+  };
+})();
+</script>
+
+<!-- Document Viewer Modal -->
+<div id="doc-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 transition-opacity">
+  <div class="glass-panel w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl border border-white/10 flex flex-col max-h-[90vh]">
+    <div class="p-6 border-b border-black/10 dark:border-white/10 flex justify-between items-center bg-black/5 dark:bg-white/5">
+      <h3 style="font-size:1.2rem;font-weight:800;color:var(--neu-accent);" class="flex items-center gap-2">
+        <span class="material-symbols-outlined">description</span> Verification Documents
+      </h3>
+      <button onclick="closeDocModal()" class="w-8 h-8 rounded-full flex items-center justify-center bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors border-none cursor-pointer focus:outline-none text-inherit">
+        <span class="material-symbols-outlined" style="font-size:1.2rem;">close</span>
+      </button>
+    </div>
+    <div class="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-6">
+      <div class="neu-inset rounded-2xl p-6 text-center border-2 border-dashed border-black/20 dark:border-white/20">
+        <span class="material-symbols-outlined text-4xl mb-3" style="color:var(--neu-text-muted)">badge</span>
+        <h4 style="font-size:1.05rem;font-weight:700;color:var(--neu-text);margin-bottom:0.25rem;">Government Issued ID</h4>
+        <p style="font-size:0.88rem;color:var(--neu-text-muted);">Preview not available for security reasons. File is verified.</p>
+        <button class="mt-4 px-4 py-2 rounded-lg bg-black/10 dark:bg-white/10 font-bold text-sm cursor-pointer border-none text-inherit">Download Encrypted Copy</button>
+      </div>
+      <div class="neu-inset rounded-2xl p-6 text-center border-2 border-dashed border-black/20 dark:border-white/20">
+        <span class="material-symbols-outlined text-4xl mb-3" style="color:var(--neu-text-muted)">domain_verification</span>
+        <h4 style="font-size:1.05rem;font-weight:700;color:var(--neu-text);margin-bottom:0.25rem;">Business License / Registration</h4>
+        <p style="font-size:0.88rem;color:var(--neu-text-muted);">Preview not available for security reasons. File is verified.</p>
+        <button class="mt-4 px-4 py-2 rounded-lg bg-black/10 dark:bg-white/10 font-bold text-sm cursor-pointer border-none text-inherit">Download Encrypted Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Checkout | Camcrew Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="/static/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="/static/css/styles.css">
+<style>
+  /* ── Animated background ──────────────────────────────── */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes float-up {
+    0%   { opacity:0; transform:translateY(14px); }
+    100% { opacity:1; transform:translateY(0); }
+  }
+  @keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 rgba(0,240,255,0.35); }
+    70%  { box-shadow: 0 0 0 8px rgba(0,240,255,0); }
+    100% { box-shadow: 0 0 0 0 rgba(0,240,255,0); }
+  }
+  @keyframes card-flip {
+    0%   { transform: rotateY(0deg); }
+    100% { transform: rotateY(180deg); }
+  }
+
+  .section-enter { animation: float-up 0.45s cubic-bezier(.22,.68,0,1.1) both; }
+
+  /* ── Floating-label inputs ────────────────────────────── */
+  .float-wrap { position: relative; }
+  .float-wrap input, .float-wrap select {
+    padding: 1.5rem 1rem 0.5rem;
+    width: 100%;
+    background: rgba(25,33,34,0.9);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 0.75rem;
+    color: #dce4e5;
+    font-size: 1rem;
+    transition: border-color 0.25s, box-shadow 0.25s;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .float-wrap input:focus, .float-wrap select:focus {
+    border-color: #00f0ff;
+    box-shadow: 0 0 0 3px rgba(0,240,255,0.12), 0 2px 16px rgba(0,240,255,0.08);
+  }
+  .float-wrap label {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.875rem;
+    color: #b9cacb;
+    pointer-events: none;
+    transition: all 0.2s cubic-bezier(.4,0,.2,1);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+  .float-wrap input:focus ~ label,
+  .float-wrap input:not(:placeholder-shown) ~ label,
+  .float-wrap select:focus ~ label,
+  .float-wrap select:not([value=""]) ~ label,
+  .float-wrap.has-value label {
+    top: 0.7rem;
+    transform: none;
+    font-size: 9px;
+    color: #00f0ff;
+    letter-spacing: 0.12em;
+  }
+  .float-wrap .input-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #b9cacb;
+    pointer-events: none;
+    font-size: 18px;
+  }
+
+  /* ── Step rail ────────────────────────────────────────── */
+  .step-connector { flex: 1; height: 1px; background: rgba(255,255,255,0.1); position: relative; overflow: visible; }
+  .step-connector.active::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; height: 1px;
+    background: linear-gradient(to right, #00f0ff, rgba(0,240,255,0.2));
+    animation: none;
+    width: 100%;
+  }
+
+  /* ── Card visual ─────────────────────────────────────── */
+  .card-visual {
+    perspective: 1000px;
+    height: 160px;
+    width: 100%;
+  }
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(.4,0,.2,1);
+    transform-style: preserve-3d;
+  }
+  .card-inner.flipped { transform: rotateY(180deg); }
+  .card-face, .card-back {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .card-face {
+    background: linear-gradient(135deg, #0d2228 0%, #001e28 40%, #0a1520 100%);
+    border: 1px solid rgba(0,240,255,0.25);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,240,255,0.08);
+  }
+  .card-back {
+    background: linear-gradient(135deg, #001a22 0%, #0a1520 100%);
+    border: 1px solid rgba(0,240,255,0.15);
+    transform: rotateY(180deg);
+  }
+  .card-chip {
+    width: 38px; height: 28px;
+    background: linear-gradient(135deg, #c8a84b 0%, #e8c96d 50%, #a07832 100%);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card-number-display {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.2em;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.9);
+  }
+  .card-stripe {
+    height: 40px;
+    background: rgba(0,0,0,0.6);
+    margin: 0 -1.5rem;
+  }
+  .card-cvv-area {
+    background: rgba(255,255,255,0.85);
+    border-radius: 4px;
+    padding: 4px 12px;
+    margin-top: 8px;
+    color: #111;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    text-align: right;
+    min-height: 28px;
+  }
+
+  /* ── Payment method tab ──────────────────────────────── */
+  .pay-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(25,33,34,0.5);
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 0;
+  }
+  .pay-tab:hover {
+    border-color: rgba(0,240,255,0.3);
+    background: rgba(0,240,255,0.05);
+  }
+  .pay-tab.active {
+    border-color: #00f0ff;
+    background: rgba(0,240,255,0.08);
+    box-shadow: 0 0 16px rgba(0,240,255,0.12);
+    animation: pulse-ring 2s infinite;
+  }
+  .pay-tab.active .pay-icon { color: #00f0ff; }
+  .pay-tab.active .pay-label { color: #dbfcff; }
+  .pay-icon { color: #b9cacb; font-size: 22px; transition: color 0.2s; }
+  .pay-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #849495; transition: color 0.2s; }
+
+  /* ── Section glow accent ─────────────────────────────── */
+  .section-accent {
+    width: 32px; height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(to right, #00f0ff, #b600f8);
+    margin-bottom: 20px;
+  }
+
+  /* ── Trust badge row ──────────────────────────────────── */
+  .trust-badge { display: flex; align-items: center; gap: 5px; color: #849495; font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; }
+  .trust-badge .material-symbols-outlined { font-size: 14px; color: #00f0ff; }
+
+  /* ── Order item ──────────────────────────────────────── */
+  .order-item-img {
+    width: 56px; height: 56px; flex-shrink: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(0,240,255,0.15);
+    background: #192122;
+  }
+
+  /* ── Complete button ─────────────────────────────────── */
+  #complete-purchase-btn {
+    background: linear-gradient(135deg, #00f0ff 0%, #00dbe9 60%, #00b8c5 100%);
+    color: #00363a;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 14px;
+    padding: 16px;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  #complete-purchase-btn:not(:disabled):hover {
+    box-shadow: 0 0 40px rgba(0,240,255,0.4), 0 8px 24px rgba(0,0,0,0.4);
+    transform: translateY(-2px);
+  }
+  #complete-purchase-btn:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+    background: rgba(0,240,255,0.4);
+  }
+  #complete-purchase-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.5s;
+  }
+  #complete-purchase-btn:not(:disabled):hover::before { left: 150%; }
+
+  /* ── Divider line ─────────────────────────────────────── */
+  .dash-divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.08), transparent);
+    margin: 0;
+  }
+
+  /* ── Coupon input ─────────────────────────────────────── */
+  .coupon-row { display: flex; gap: 8px; }
+  .coupon-row input {
+    flex: 1;
+    background: rgba(25,33,34,0.9);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: #dce4e5;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.1em;
+  }
+  .coupon-row input:focus { border-color: #00f0ff; }
+  .coupon-row input::placeholder { color: #849495; font-size: 13px; }
+  .coupon-btn {
+    padding: 10px 18px;
+    background: rgba(0,240,255,0.08);
+    border: 1px solid rgba(0,240,255,0.25);
+    border-radius: 10px;
+    color: #00f0ff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .coupon-btn:hover { background: rgba(0,240,255,0.14); }
+</style>
+</head>
+<body class="font-body-md antialiased">
+
+<!-- ── Animated Background ──────────────────────────────── -->
+<div class="fixed inset-0 z-[-1] overflow-hidden h-screen">
+<div class="absolute inset-0 w-full h-full opacity-40" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_6" style="display:block;width:100%;height:100%" width="1300" height="5870"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_6');
+  function syncSize() {
+    const w = canvas.clientWidth || 1280, h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+  }
+  if (typeof ResizeObserver !== 'undefined') new ResizeObserver(syncSize).observe(canvas);
+  syncSize();
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position; varying vec2 v_texCoord; void main() { v_texCoord = a_position * 0.5 + 0.5; gl_Position = vec4(a_position, 0.0, 1.0); }`;
+  const fs = `precision highp float; varying vec2 v_texCoord; uniform float u_time; uniform vec2 u_resolution;
+  void main() {
+    vec2 uv = v_texCoord;
+    vec3 color1 = vec3(0.05, 0.08, 0.1);
+    vec3 color2 = vec3(0.0, 0.94, 1.0);
+    vec3 color3 = vec3(0.74, 0.0, 1.0);
+    float noise = sin(uv.x * 10.0 + u_time * 0.5) * cos(uv.y * 10.0 + u_time * 0.5);
+    float glow = smoothstep(0.4, 0.6, sin(u_time * 0.2 + length(uv - 0.5) * 5.0) * 0.5 + 0.5);
+    vec3 finalColor = mix(color1, color2, glow * 0.1);
+    finalColor = mix(finalColor, color3, noise * 0.05);
+    float particles = pow(fract(sin(dot(uv + u_time * 0.01, vec2(12.9898, 78.233))) * 43758.5453), 20.0);
+    finalColor += particles * 0.2;
+    gl_FragColor = vec4(finalColor, 1.0);
+  }`;
+  function cs(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog); gl.useProgram(prog);
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos); gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes  = gl.getUniformLocation(prog, 'u_resolution');
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', e => {
+    const r = canvas.getBoundingClientRect();
+    if (r.width && r.height) { mouse.x = (e.clientX - r.left) / r.width * canvas.width; mouse.y = (1 - (e.clientY - r.top) / r.height) * canvas.height; }
+  });
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes)  gl.uniform2f(uRes, canvas.width, canvas.height);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+</div>
+
+<!-- ── Navigation Header ──────────────────────────────── -->
+<div id="site-header"></div>
+
+<!-- ── Page Hero Label ───────────────────────────────────── -->
+<div class="pt-28 pb-0 px-5 md:px-20 max-w-screen-2xl mx-auto">
+  <div class="flex items-center gap-3 mb-1">
+    <span class="material-symbols-outlined text-primary-container text-[18px]">shopping_bag</span>
+    <span class="text-label-caps font-label-caps uppercase text-on-surface-variant tracking-widest">Secure Checkout</span>
+  </div>
+  <h1 class="text-[28px] md:text-[36px] font-bold text-on-surface leading-tight">
+    Complete Your <span class="gradient-text">Order</span>
+  </h1>
+</div>
+
+<!-- ── Main Layout ───────────────────────────────────────── -->
+<main class="pb-stack-xl px-5 md:px-20 max-w-screen-2xl mx-auto w-full relative mt-8">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
+
+  <!-- ───────────────── Left Column ───────────────────── -->
+  <div class="lg:col-span-7 xl:col-span-8 space-y-6">
+
+    <!-- Step Rail -->
+    <div class="glass-panel rounded-2xl px-6 py-5 section-enter" style="animation-delay:0s">
+      <div class="flex items-center gap-0">
+
+        <!-- Step 1 -->
+        <div class="flex flex-col items-center gap-2 min-w-[64px]">
+          <div class="w-9 h-9 rounded-full flex items-center justify-center bg-primary-container text-on-primary font-bold text-sm shadow-[0_0_16px_rgba(0,240,255,0.5)]">
+            <span class="material-symbols-outlined text-[16px]">local_shipping</span>
+          </div>
+          <span class="text-[9px] font-bold uppercase tracking-widest text-primary-container">Shipping</span>
+        </div>
+
+        <div class="step-connector active mx-1"></div>
+
+        <!-- Step 2 -->
+        <div class="flex flex-col items-center gap-2 min-w-[64px]">
+          <div class="w-9 h-9 rounded-full flex items-center justify-center border-2 border-primary-container bg-primary-container/10 font-bold text-sm text-primary-container">
+            <span class="material-symbols-outlined text-[16px]">credit_card</span>
+          </div>
+          <span class="text-[9px] font-bold uppercase tracking-widest text-primary-container">Payment</span>
+        </div>
+
+        <div class="step-connector mx-1"></div>
+
+        <!-- Step 3 -->
+        <div class="flex flex-col items-center gap-2 min-w-[64px] opacity-30">
+          <div class="w-9 h-9 rounded-full flex items-center justify-center border border-on-surface-variant font-bold text-sm text-on-surface-variant">
+            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+          </div>
+          <span class="text-[9px] font-bold uppercase tracking-widest text-on-surface-variant">Review</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Shipping Address ─────────────────────────────── -->
+    <section class="glass-panel rounded-2xl p-6 section-enter" style="animation-delay:.06s">
+      <div class="section-accent"></div>
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-xl bg-primary-container/10 border border-primary-container/30 flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary-container text-[20px]">location_on</span>
+        </div>
+        <div>
+          <h2 class="text-[18px] font-bold text-on-surface leading-tight">Shipping Address</h2>
+          <p class="text-[11px] text-on-surface-variant uppercase tracking-wider mt-0.5">Where should we deliver?</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="md:col-span-2">
+          <div class="float-wrap">
+            <input type="text" placeholder=" " id="fname" autocomplete="name">
+            <label for="fname">Full Name</label>
+          </div>
+        </div>
+        <div class="md:col-span-2">
+          <div class="float-wrap">
+            <input type="text" placeholder=" " id="addr1" autocomplete="address-line1">
+            <label for="addr1">Street Address</label>
+          </div>
+        </div>
+        <div class="md:col-span-2">
+          <div class="float-wrap">
+            <input type="text" placeholder=" " id="addr2" autocomplete="address-line2">
+            <label for="addr2">Apartment / Suite (Optional)</label>
+          </div>
+        </div>
+        <div>
+          <div class="float-wrap">
+            <input type="text" placeholder=" " id="city" autocomplete="address-level2">
+            <label for="city">City</label>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="float-wrap">
+            <input type="text" placeholder=" " id="state" autocomplete="address-level1">
+            <label for="state">State</label>
+          </div>
+          <div class="float-wrap">
+            <input type="text" placeholder=" " id="zip" autocomplete="postal-code">
+            <label for="zip">ZIP Code</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shipping method selector -->
+      <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-3">
+        <label class="shipping-opt flex items-center gap-4 p-4 rounded-xl border border-primary-container/40 bg-primary-container/5 cursor-pointer" id="ship-express">
+          <input type="radio" name="shipping" value="express" class="hidden" checked>
+          <div class="w-8 h-8 rounded-full bg-primary-container/15 border border-primary-container flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-primary-container text-[16px]">rocket_launch</span>
+          </div>
+          <div class="flex-grow">
+            <p class="font-bold text-on-surface text-sm">Express Delivery</p>
+            <p class="text-[11px] text-on-surface-variant mt-0.5">2–3 business days</p>
+          </div>
+          <span class="text-primary-container font-bold text-sm">FREE</span>
+        </label>
+        <label class="shipping-opt flex items-center gap-4 p-4 rounded-xl border border-glass-stroke bg-surface-container cursor-pointer hover:border-primary-container/30 transition-colors" id="ship-standard">
+          <input type="radio" name="shipping" value="standard" class="hidden">
+          <div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-on-surface-variant text-[16px]">local_shipping</span>
+          </div>
+          <div class="flex-grow">
+            <p class="font-bold text-on-surface text-sm">Standard Delivery</p>
+            <p class="text-[11px] text-on-surface-variant mt-0.5">5–7 business days</p>
+          </div>
+          <span class="text-on-surface-variant font-bold text-sm">FREE</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- ── Payment Method ───────────────────────────────── -->
+    <section class="glass-panel rounded-2xl p-6 section-enter" style="animation-delay:.12s">
+      <div class="section-accent" style="background: linear-gradient(to right, #b600f8, #00f0ff)"></div>
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-xl bg-secondary-container/10 border border-secondary-container/30 flex items-center justify-center">
+          <span class="material-symbols-outlined text-secondary text-[20px]">payments</span>
+        </div>
+        <div>
+          <h2 class="text-[18px] font-bold text-on-surface leading-tight">Payment Method</h2>
+          <p class="text-[11px] text-on-surface-variant uppercase tracking-wider mt-0.5">Your transaction is encrypted</p>
+        </div>
+        <div class="ml-auto flex gap-1 items-center">
+          <span class="material-symbols-outlined text-[14px] text-primary-container">lock</span>
+          <span class="text-[10px] text-primary-container font-bold uppercase tracking-wider">SSL Secured</span>
+        </div>
+      </div>
+
+      <!-- Payment tabs -->
+      <div class="flex gap-3 mb-6" id="pay-tabs">
+        <button class="pay-tab active" data-method="card" onclick="switchPayMethod('card')">
+          <span class="material-symbols-outlined pay-icon">credit_card</span>
+          <span class="pay-label">Card</span>
+        </button>
+        <button class="pay-tab" data-method="wallet" onclick="switchPayMethod('wallet')">
+          <span class="material-symbols-outlined pay-icon">wallet</span>
+          <span class="pay-label">Wallet</span>
+        </button>
+        <button class="pay-tab" data-method="bank" onclick="switchPayMethod('bank')">
+          <span class="material-symbols-outlined pay-icon">account_balance</span>
+          <span class="pay-label">Bank</span>
+        </button>
+        <button class="pay-tab" data-method="crypto" onclick="switchPayMethod('crypto')">
+          <span class="material-symbols-outlined pay-icon">currency_bitcoin</span>
+          <span class="pay-label">Crypto</span>
+        </button>
+      </div>
+
+      <!-- Card panel -->
+      <div id="panel-card">
+        <!-- Animated card preview -->
+        <div class="card-visual mb-6">
+          <div class="card-inner" id="card-preview">
+            <!-- Front -->
+            <div class="card-face">
+              <div class="flex justify-between items-start">
+                <div class="card-chip">
+                  <svg width="24" height="18" viewBox="0 0 24 18" fill="none">
+                    <rect x="0" y="0" width="24" height="18" rx="3" fill="none"/>
+                    <line x1="8" y1="0" x2="8" y2="18" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+                    <line x1="16" y1="0" x2="16" y2="18" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+                    <line x1="0" y1="6" x2="24" y2="6" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+                    <line x1="0" y1="12" x2="24" y2="12" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+                  </svg>
+                </div>
+                <div class="text-right">
+                  <div class="text-[10px] text-primary-container/70 uppercase tracking-widest mb-0.5">Camcrew</div>
+                  <div class="flex gap-1 items-center">
+                    <div class="w-5 h-5 rounded-full bg-red-500/80"></div>
+                    <div class="w-5 h-5 rounded-full bg-yellow-400/80 -ml-2"></div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="card-number-display text-sm mb-2" id="card-num-display">•••• &nbsp;•••• &nbsp;•••• &nbsp;••••</div>
+                <div class="flex justify-between items-end">
+                  <div>
+                    <div class="text-[8px] uppercase tracking-widest text-white/40 mb-0.5">Card Holder</div>
+                    <div class="text-[13px] font-semibold text-white/80 uppercase tracking-wider" id="card-name-display">YOUR NAME</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-[8px] uppercase tracking-widest text-white/40 mb-0.5">Expires</div>
+                    <div class="text-[13px] font-semibold text-white/80" id="card-exp-display">MM / YY</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Back -->
+            <div class="card-back">
+              <div class="card-stripe -mx-6" style="margin-left:-1.5rem; margin-right:-1.5rem;"></div>
+              <div class="flex-grow flex flex-col justify-center">
+                <div class="text-[9px] uppercase tracking-widest text-white/40 mb-1 text-right">CVV</div>
+                <div class="card-cvv-area" id="card-cvv-display">•••</div>
+              </div>
+              <div class="text-[9px] text-white/30 text-center">This card is issued by Camcrew Studio for illustrative purposes.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card inputs -->
+        <div class="space-y-4">
+          <div class="float-wrap">
+            <input type="text" placeholder=" " id="card-number" maxlength="19" autocomplete="cc-number"
+              oninput="fmtCardNum(this)" onfocus="flipCard(false)">
+            <label for="card-number">Card Number</label>
+            <span class="material-symbols-outlined input-icon">credit_card</span>
+          </div>
+          <div class="float-wrap">
+            <input type="text" placeholder=" " id="card-holder" autocomplete="cc-name"
+              oninput="document.getElementById('card-name-display').textContent = this.value.toUpperCase() || 'YOUR NAME'"
+              onfocus="flipCard(false)">
+            <label for="card-holder">Name on Card</label>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="float-wrap">
+              <input type="text" placeholder=" " id="card-expiry" maxlength="7" autocomplete="cc-exp"
+                oninput="fmtExpiry(this)" onfocus="flipCard(false)">
+              <label for="card-expiry">Expiry (MM / YY)</label>
+            </div>
+            <div class="float-wrap">
+              <input type="password" placeholder=" " id="card-cvv" maxlength="4" autocomplete="cc-csc"
+                oninput="document.getElementById('card-cvv-display').textContent = this.value || '•••'"
+                onfocus="flipCard(true)" onblur="flipCard(false)">
+              <label for="card-cvv">CVV</label>
+              <span class="material-symbols-outlined input-icon" style="font-size:16px">help_outline</span>
+            </div>
+          </div>
+          <label class="flex items-center gap-3 cursor-pointer select-none group">
+            <div class="relative w-9 h-5 flex-shrink-0">
+              <input type="checkbox" id="save-card" class="sr-only peer">
+              <div class="w-9 h-5 rounded-full bg-surface-container-high border border-glass-stroke peer-checked:bg-primary-container peer-checked:border-primary-container transition-all"></div>
+              <div class="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-on-surface-variant peer-checked:bg-on-primary peer-checked:translate-x-4 transition-all shadow"></div>
+            </div>
+            <span class="text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Save card for future orders</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Wallet panel -->
+      <div id="panel-wallet" class="hidden">
+        <div class="grid grid-cols-1 gap-3">
+          <button class="flex items-center gap-4 p-4 rounded-xl border border-glass-stroke bg-surface-container hover:border-primary-container/40 transition-colors text-left">
+            <div class="w-10 h-10 rounded-lg bg-black flex items-center justify-center">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            </div>
+            <div class="flex-grow">
+              <p class="font-bold text-on-surface text-sm">Apple Pay</p>
+              <p class="text-[11px] text-on-surface-variant">Touch ID or Face ID</p>
+            </div>
+            <span class="material-symbols-outlined text-on-surface-variant text-[18px]">chevron_right</span>
+          </button>
+          <button class="flex items-center gap-4 p-4 rounded-xl border border-glass-stroke bg-surface-container hover:border-primary-container/40 transition-colors text-left">
+            <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center">
+              <svg viewBox="0 0 48 48" width="24" height="24"><path fill="#4285F4" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#34A853" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#EA4335" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.29-8.16 2.29-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+            </div>
+            <div class="flex-grow">
+              <p class="font-bold text-on-surface text-sm">Google Pay</p>
+              <p class="text-[11px] text-on-surface-variant">One-tap checkout</p>
+            </div>
+            <span class="material-symbols-outlined text-on-surface-variant text-[18px]">chevron_right</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bank panel -->
+      <div id="panel-bank" class="hidden space-y-4">
+        <div class="float-wrap">
+          <input type="text" placeholder=" " id="bank-name">
+          <label for="bank-name">Account Holder Name</label>
+        </div>
+        <div class="float-wrap">
+          <input type="text" placeholder=" " id="routing-num" maxlength="9">
+          <label for="routing-num">Routing Number</label>
+        </div>
+        <div class="float-wrap">
+          <input type="text" placeholder=" " id="account-num">
+          <label for="account-num">Account Number</label>
+        </div>
+      </div>
+
+      <!-- Crypto panel -->
+      <div id="panel-crypto" class="hidden">
+        <div class="bg-surface-container rounded-xl p-5 border border-glass-stroke text-center">
+          <div class="w-12 h-12 rounded-full bg-primary-container/10 border border-primary-container/30 flex items-center justify-center mx-auto mb-3">
+            <span class="material-symbols-outlined text-primary-container">currency_bitcoin</span>
+          </div>
+          <p class="text-on-surface font-bold text-sm mb-1">Crypto Payment</p>
+          <p class="text-on-surface-variant text-xs leading-relaxed">After placing your order you'll receive a wallet address and QR code for payment in BTC, ETH, or USDC.</p>
+        </div>
+      </div>
+
+    </section>
+
+  </div><!-- /left column -->
+
+  <!-- ───────────────── Right Column ──────────────────── -->
+  <aside class="lg:col-span-5 xl:col-span-4">
+    <div class="sticky top-28 space-y-4">
+
+      <!-- Order Summary card -->
+      <section class="glass-panel rounded-2xl p-6 section-enter" style="animation-delay:.18s">
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="text-[18px] font-bold text-on-surface">Order Summary</h3>
+          <a href="cart.html" class="text-[11px] text-primary-container font-bold uppercase tracking-wider hover:text-primary transition-colors flex items-center gap-1">
+            <span class="material-symbols-outlined text-[14px]">edit</span>Edit
+          </a>
+        </div>
+
+        <!-- Items list -->
+        <div id="checkout-items-list" class="space-y-4 mb-5 max-h-64 overflow-y-auto pr-1 scrollbar-thin">
+          <div class="flex items-center gap-3 text-on-surface-variant py-3">
+            <span class="material-symbols-outlined text-[20px] text-primary-container" style="animation:spin 1s linear infinite">progress_activity</span>
+            <span class="text-sm">Loading cart…</span>
+          </div>
+        </div>
+
+        <hr class="dash-divider mb-5">
+
+        <!-- Coupon -->
+        <div class="mb-5">
+          <div class="coupon-row">
+            <input type="text" placeholder="CREATOR20" id="coupon-input">
+            <button class="coupon-btn">Apply</button>
+          </div>
+        </div>
+
+        <!-- Price breakdown -->
+        <div class="space-y-3 mb-5">
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-on-surface-variant">Subtotal</span>
+            <span class="text-sm font-semibold text-on-surface" id="checkout-subtotal">—</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm text-on-surface-variant">Shipping</span>
+              <span class="text-[9px] font-bold uppercase tracking-wider bg-primary-container/15 text-primary-container px-1.5 py-0.5 rounded-full">Express</span>
+            </div>
+            <span class="text-sm font-semibold text-primary-container">FREE</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-on-surface-variant">Tax (8.875%)</span>
+            <span class="text-sm font-semibold text-on-surface" id="checkout-tax">—</span>
+          </div>
+        </div>
+
+        <hr class="dash-divider mb-4">
+
+        <!-- Total -->
+        <div class="flex justify-between items-center mb-6">
+          <span class="text-[15px] font-bold text-on-surface">Total Due</span>
+          <span class="text-[22px] font-bold text-primary-container" id="checkout-total">—</span>
+        </div>
+
+        <!-- Complete Purchase -->
+        <button id="complete-purchase-btn" disabled>
+          Complete Purchase
+          <span class="material-symbols-outlined text-[20px]">bolt</span>
+        </button>
+
+        <!-- Trust badges -->
+        <div class="flex items-center justify-center flex-wrap gap-x-4 gap-y-2 mt-4">
+          <div class="trust-badge">
+            <span class="material-symbols-outlined">lock</span>SSL Encrypted
+          </div>
+          <div class="trust-badge">
+            <span class="material-symbols-outlined">verified_user</span>Secure Payment
+          </div>
+          <div class="trust-badge">
+            <span class="material-symbols-outlined">replay</span>Easy Returns
+          </div>
+        </div>
+      </section>
+
+      <!-- "Why us" mini card -->
+      <div class="glass-panel rounded-2xl p-5 section-enter" style="animation-delay:.24s">
+        <div class="grid grid-cols-3 divide-x divide-glass-stroke text-center">
+          <div class="px-2">
+            <span class="material-symbols-outlined text-primary-container text-[22px] mb-1 block">rocket_launch</span>
+            <p class="text-[9px] font-bold uppercase tracking-wider text-on-surface-variant">Fast Ship</p>
+          </div>
+          <div class="px-2">
+            <span class="material-symbols-outlined text-secondary text-[22px] mb-1 block">headset_mic</span>
+            <p class="text-[9px] font-bold uppercase tracking-wider text-on-surface-variant">24/7 Support</p>
+          </div>
+          <div class="px-2">
+            <span class="material-symbols-outlined text-primary-container text-[22px] mb-1 block">workspace_premium</span>
+            <p class="text-[9px] font-bold uppercase tracking-wider text-on-surface-variant">Warranty</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
+</div>
+</main>
+
+<!-- ── Footer ─────────────────────────────────────────── -->
+<div id="site-footer"></div>
+
+<script>
+// ── Card preview helpers ──────────────────────────────
+function flipCard(toBack) {
+  document.getElementById('card-preview').classList.toggle('flipped', toBack);
+}
+function fmtCardNum(input) {
+  let v = input.value.replace(/\D/g, '').slice(0, 16);
+  input.value = v.replace(/(.{4})/g, '$1 ').trim();
+  const raw = v.padEnd(16, '•');
+  const masked = (raw.slice(0,4) + ' ' + raw.slice(4,8) + ' ' + raw.slice(8,12) + ' ' + raw.slice(12,16)).replace(/[0-9]/g, (c, i) => i < 12 ? '•' : c);
+  document.getElementById('card-num-display').textContent = masked;
+}
+function fmtExpiry(input) {
+  let v = input.value.replace(/\D/g, '').slice(0, 4);
+  if (v.length >= 3) v = v.slice(0,2) + ' / ' + v.slice(2);
+  input.value = v;
+  document.getElementById('card-exp-display').textContent = v || 'MM / YY';
+}
+
+// ── Payment method switcher ───────────────────────────
+function switchPayMethod(method) {
+  document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.pay-tab[data-method="${method}"]`).classList.add('active');
+  ['card','wallet','bank','crypto'].forEach(m => {
+    const p = document.getElementById('panel-' + m);
+    if (p) p.classList.toggle('hidden', m !== method);
+  });
+}
+
+// ── Shipping option toggle ────────────────────────────
+document.querySelectorAll('.shipping-opt').forEach(opt => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('.shipping-opt').forEach(o => {
+      o.classList.remove('border-primary-container/40', 'bg-primary-container/5');
+      o.classList.add('border-glass-stroke', 'bg-surface-container');
+    });
+    opt.classList.add('border-primary-container/40', 'bg-primary-container/5');
+    opt.classList.remove('border-glass-stroke', 'bg-surface-container');
+  });
+});
+
+// ── Complete Purchase ─────────────────────────────────
+document.getElementById('complete-purchase-btn').addEventListener('click', function() {
+  if (this.disabled) return;
+  this.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite;font-size:20px">progress_activity</span>&nbsp;Processing…';
+  this.disabled = true;
+  setTimeout(() => {
+    this.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px">check_circle</span>&nbsp;Order Confirmed!';
+    this.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+    this.style.color = '#fff';
+    this.style.boxShadow = '0 0 32px rgba(34,197,94,0.4)';
+  }, 2000);
+});
+
+// ── Utilities ─────────────────────────────────────────
+function fmt(n) {
+  return '$' + Number(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+// ── Load cart for order summary ───────────────────────
+async function loadCheckoutSummary() {
+  try {
+    const res = await fetch('/api/cart');
+    if (res.status === 401) {
+      document.getElementById('checkout-items-list').innerHTML =
+        `<p class="text-on-surface-variant text-sm py-2">
+           <a href="signin.html" class="text-primary-container underline">Sign in</a> to view your cart.
+         </p>`;
+      return;
+    }
+    const data = await res.json();
+    if (!data.ok || data.items.length === 0) {
+      document.getElementById('checkout-items-list').innerHTML =
+        `<div class="text-center py-4">
+           <span class="material-symbols-outlined text-on-surface-variant text-[32px] block mb-2">shopping_cart</span>
+           <p class="text-on-surface-variant text-sm">Your cart is empty.</p>
+           <a href="sales.html" class="text-primary-container text-sm font-bold hover:underline">Shop now →</a>
+         </div>`;
+      return;
+    }
+
+    const list = document.getElementById('checkout-items-list');
+    list.innerHTML = '';
+    data.items.forEach(item => {
+      const lineTotal = item.price * item.quantity;
+      const imgEl = item.image_url
+        ? `<img class="w-full h-full object-cover" src="${item.image_url}" alt="${item.name}">`
+        : `<div class="w-full h-full flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">photo_camera</span></div>`;
+      const row = document.createElement('div');
+      row.className = 'flex gap-3 items-start';
+      row.innerHTML = `
+        <div class="order-item-img">${imgEl}</div>
+        <div class="flex-grow min-w-0">
+          <h4 class="text-sm font-bold text-on-surface leading-tight truncate">${item.name}</h4>
+          ${item.category ? `<p class="text-[10px] uppercase tracking-wider text-on-surface-variant mt-0.5">${item.category}</p>` : ''}
+          <div class="flex justify-between items-center mt-1.5">
+            <span class="text-[11px] text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">Qty: ${item.quantity}</span>
+            <span class="text-sm font-bold text-primary-container">${fmt(lineTotal)}</span>
+          </div>
+        </div>`;
+      list.appendChild(row);
+    });
+
+    const subtotal = data.subtotal;
+    const tax = subtotal * 0.08875;
+    const total = subtotal + tax;
+    document.getElementById('checkout-subtotal').textContent = fmt(subtotal);
+    document.getElementById('checkout-tax').textContent = fmt(tax);
+    document.getElementById('checkout-total').textContent = fmt(total);
+
+    const btn = document.getElementById('complete-purchase-btn');
+    btn.disabled = false;
+  } catch (e) {
+    document.getElementById('checkout-items-list').innerHTML =
+      `<p class="text-on-surface-variant text-sm py-2">Could not load cart.</p>`;
+  }
+}
+loadCheckoutSummary();
+</script>
+<script src="/static/js/header-loader.js"></script>
+<script src="/static/js/footer-loader.js"></script>
+</body>
+</html>

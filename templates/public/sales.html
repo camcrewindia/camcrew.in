@@ -1,0 +1,791 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Camcrew Studio | Obsidian Orbit</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="/static/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="/static/css/styles.css">
+<style>
+  /* ── Hero ambient grid ─────────────────────────────────── */
+  .hero-grid {
+    background-image:
+      linear-gradient(rgba(0,240,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,240,255,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* ── Animated gradient orbs ───────────────────────────── */
+  @keyframes float-slow  { 0%,100%{transform:translateY(0)   rotate(0deg)}   50%{transform:translateY(-28px) rotate(3deg)}  }
+  @keyframes float-mid   { 0%,100%{transform:translateY(0)   rotate(0deg)}   50%{transform:translateY(-18px) rotate(-2deg)} }
+  @keyframes pulse-glow  { 0%,100%{opacity:.35} 50%{opacity:.65} }
+  @keyframes scan-line   { 0%{transform:translateY(-100%)} 100%{transform:translateY(100vh)} }
+  @keyframes ticker-ltr  { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  @keyframes border-spin { 0%{--angle:0deg} 100%{--angle:360deg} }
+  @keyframes count-up    { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  .orb-1 { animation: float-slow 9s ease-in-out infinite, pulse-glow 5s ease-in-out infinite; }
+  .orb-2 { animation: float-mid  7s ease-in-out infinite 1.5s, pulse-glow 7s ease-in-out infinite 2s; }
+  .orb-3 { animation: float-slow 11s ease-in-out infinite 3s, pulse-glow 6s ease-in-out infinite 1s; }
+
+  .scan-line {
+    position:absolute; inset-x:0; height:2px;
+    background: linear-gradient(90deg, transparent, rgba(0,240,255,.18), transparent);
+    animation: scan-line 8s linear infinite;
+    pointer-events:none;
+  }
+
+  /* ── Product card reveal ──────────────────────────────── */
+  .product-card .card-cta { transition: opacity .3s, transform .3s; opacity:0; transform:translateY(8px); }
+  .product-card:hover .card-cta { opacity:1; transform:translateY(0); }
+  .product-card .card-img  { transition: transform .7s cubic-bezier(.4,0,.2,1); }
+  .product-card:hover .card-img { transform: scale(1.08); }
+
+  /* ── Ticker tape ─────────────────────────────────────── */
+  .ticker-inner { display:flex; width:max-content; animation: ticker-ltr 28s linear infinite; }
+  .ticker-inner:hover { animation-play-state: paused; }
+
+  /* ── Neon pill badge ─────────────────────────────────── */
+  .badge-hot   { background: rgba(255,60,100,.15); border-color: rgba(255,60,100,.4);  color: #ff6b8a; }
+  .badge-new   { background: rgba(0,240,255,.12);  border-color: rgba(0,240,255,.4);   color: #00f0ff; }
+  .badge-sale  { background: rgba(182,0,248,.15);  border-color: rgba(182,0,248,.4);   color: #d96fff; }
+
+  /* ── Cat card background image ──────────────────────── */
+  .cat-bg { transition: opacity .4s, transform .5s; }
+  .cat-card:hover .cat-bg { opacity:.55 !important; transform: scale(1.06); }
+  .cat-card:hover .cat-icon { background: rgba(0,240,255,.18); border-color: rgba(0,240,255,.6); }
+
+  /* ── Filter chip active ─────────────────────────────── */
+  .filter-chip.active {
+    background: rgba(0,240,255,.15);
+    border-color: rgba(0,240,255,.6);
+    color: #00f0ff;
+  }
+
+  /* ── Reveal animation ──────────────────────────────── */
+  .reveal { opacity:0; transform:translateY(40px); transition: opacity .8s cubic-bezier(.5,0,0,1), transform .8s cubic-bezier(.5,0,0,1); }
+  .reveal.active { opacity:1; transform:none; }
+
+  /* ── Stats counter ──────────────────────────────────── */
+  .stat-num { animation: count-up .6s ease-out both; }
+
+  /* ── Spotlight glow line ─────────────────────────────── */
+  .spotlight-line {
+    background: linear-gradient(90deg, transparent, #00f0ff, transparent);
+    height: 1px;
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  /* ── Card shimmer on hover ──────────────────────────── */
+  .shimmer-card {
+    position: relative; overflow: hidden;
+  }
+  .shimmer-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(0,240,255,.06) 50%, transparent 60%);
+    transform: translateX(-100%);
+    transition: transform .6s;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .shimmer-card:hover::before { transform: translateX(100%); }
+</style>
+</head>
+<body class="overflow-x-hidden">
+<!-- TopNavBar -->
+<div id="site-header"></div>
+
+<main class="relative">
+
+  <!-- ═══════════════════════════════════════
+       HERO SECTION
+  ═══════════════════════════════════════ -->
+  <section class="relative min-h-[88vh] flex flex-col justify-center overflow-hidden hero-grid pt-24 md:pt-40 pb-16">
+    <!-- Ambient orbs -->
+    <div class="orb-1 absolute top-[-10%] right-[5%]  w-[500px] h-[500px] rounded-full bg-primary-container/10 blur-[120px] pointer-events-none"></div>
+    <div class="orb-2 absolute bottom-[5%]  left-[-5%] w-[400px] h-[400px] rounded-full bg-secondary-container/10 blur-[100px] pointer-events-none"></div>
+    <div class="orb-3 absolute top-[40%]   left-[30%] w-[300px] h-[300px] rounded-full bg-primary-container/6  blur-[80px]  pointer-events-none"></div>
+    <!-- Scan line -->
+    <div class="scan-line"></div>
+
+    <div class="relative z-10 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto w-full">
+      <!-- Eyebrow -->
+      <div class="inline-flex items-center gap-2 bg-surface-container-high border border-glass-stroke rounded-full px-4 py-2 mb-8 reveal">
+        <span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+        <span class="font-label-caps text-label-caps text-primary-container tracking-widest uppercase">New Arrivals — Season Drop 2026</span>
+      </div>
+
+      <!-- Headline -->
+      <h1 class="font-display-lg text-display-lg-mobile md:text-[72px] lg:text-[88px] leading-[.95] font-black text-on-surface mb-6 max-w-5xl reveal" style="letter-spacing:-0.03em">
+        Gear Built for
+        <span class="block gradient-text">Serious Creators.</span>
+      </h1>
+      <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mb-10 leading-relaxed reveal">
+        Professional cameras, cinema lighting, studio audio, and workspace essentials — curated for the modern visual artist.
+      </p>
+
+      <!-- Hero CTA row -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-16 reveal">
+        <a href="#product-listings" class="shimmer-btn bg-primary-container text-on-primary-fixed font-label-caps text-label-caps px-10 py-4 rounded-full inline-flex items-center gap-2 group hover:scale-105 transition-transform active:scale-95">
+          Shop All Gear
+          <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+        </a>
+        <button class="glass-panel font-label-caps text-label-caps text-on-surface px-8 py-4 rounded-full inline-flex items-center gap-2 hover:border-primary-container/50 transition-colors">
+          <span class="material-symbols-outlined text-primary-container text-sm">play_circle</span>
+          Watch Gear Review
+        </button>
+      </div>
+
+      <!-- Stats bar -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-gutter reveal">
+        <div class="glass-panel rounded-2xl p-5 text-center border border-glass-stroke">
+          <div class="font-display-lg text-[28px] font-black gradient-text stat-num">500+</div>
+          <div class="font-label-caps text-label-caps text-on-surface-variant mt-1">SKUs in stock</div>
+        </div>
+        <div class="glass-panel rounded-2xl p-5 text-center border border-glass-stroke">
+          <div class="font-display-lg text-[28px] font-black gradient-text stat-num">4.9★</div>
+          <div class="font-label-caps text-label-caps text-on-surface-variant mt-1">Avg. rating</div>
+        </div>
+        <div class="glass-panel rounded-2xl p-5 text-center border border-glass-stroke">
+          <div class="font-display-lg text-[28px] font-black gradient-text stat-num">48hr</div>
+          <div class="font-label-caps text-label-caps text-on-surface-variant mt-1">Express ship</div>
+        </div>
+        <div class="glass-panel rounded-2xl p-5 text-center border border-glass-stroke">
+          <div class="font-display-lg text-[28px] font-black gradient-text stat-num">1yr</div>
+          <div class="font-label-caps text-label-caps text-on-surface-variant mt-1">Pro warranty</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       TICKER TAPE
+  ═══════════════════════════════════════ -->
+  <div class="py-3 border-y border-glass-stroke overflow-hidden bg-surface-container-low relative">
+    <div class="ticker-inner">
+      <span class="ticker-item" id="ticker-src"></span>
+      <span class="ticker-item" id="ticker-clone"></span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       CURATED CATEGORIES
+  ═══════════════════════════════════════ -->
+  <section class="px-margin-mobile md:px-margin-desktop py-stack-xl">
+    <div class="flex justify-between items-end mb-12 reveal">
+      <div>
+        <p class="font-label-caps text-label-caps text-primary-container uppercase tracking-widest mb-2">Browse by type</p>
+        <h2 class="font-display-lg text-display-lg-mobile md:text-[40px] text-on-surface font-bold">Curated Categories</h2>
+      </div>
+      <button class="hidden md:flex items-center text-primary-container font-label-caps text-label-caps gap-2 hover:translate-x-2 transition-transform group">
+        View All <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+      <!-- Cat 1 -->
+      <div class="cat-card glass-panel rounded-2xl group cursor-pointer relative overflow-hidden h-[340px] flex flex-col justify-end shimmer-card reveal" style="transition-delay:.05s">
+        <div class="cat-icon absolute top-6 left-6 w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center border border-glass-stroke transition-colors duration-300 z-10">
+          <span class="material-symbols-outlined text-primary-container">camera</span>
+        </div>
+        <div class="cat-bg absolute inset-0 z-0 opacity-25 bg-cover bg-center" style="background-image:url('https://lh3.googleusercontent.com/aida-public/AB6AXuBTSz00tC8vfmUosja3vZJvZkhZ1Q0eaxxMv2o9k5CkbRaoCKZFj5PUEV5q59UU5ifXhh_RuFKPsN4PYWz1nsTpWS0WqQOoXmo3rQLKED7BlEkpFW2NpqIC-V4q7gVaJ0LkXxdfDUluGsD6ogWUeFGa3vhoxLLgmRenpNbmgRpuRyOqond_HMJV_PTU5gODSvdyB1ghTFxSNLn0qjBaNmtYktMEnA1Z7mgspZPM3AhCyMlTQ-yzQDay')"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-charcoal-surface via-charcoal-surface/40 to-transparent z-[1]"></div>
+        <div class="relative z-10 p-8">
+          <span class="font-label-caps text-label-caps text-primary-container uppercase tracking-widest text-[10px]">4 subcategories</span>
+          <h3 class="font-headline-md text-headline-md text-on-surface mt-1 mb-1">Camera Bodies &amp; Lenses</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant opacity-0 group-hover:opacity-100 translate-y-3 group-hover:translate-y-0 transition-all duration-300">Industry-leading optics and sensors.</p>
+          <div class="mt-4 inline-flex items-center gap-1 text-primary-container text-[12px] font-semibold opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 delay-75">
+            Explore <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cat 2 -->
+      <div class="cat-card glass-panel rounded-2xl group cursor-pointer relative overflow-hidden h-[340px] flex flex-col justify-end shimmer-card reveal" style="transition-delay:.1s">
+        <div class="cat-icon absolute top-6 left-6 w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center border border-glass-stroke transition-colors duration-300 z-10">
+          <span class="material-symbols-outlined text-primary-container">mic</span>
+        </div>
+        <div class="cat-bg absolute inset-0 z-0 opacity-25 bg-cover bg-center" style="background-image:url('https://lh3.googleusercontent.com/aida-public/AB6AXuCse0MueJwutTcBI0wZOwjlBny5ZIAiuip2_7xZsKhc8ohzO6FZfTmer-1L5x4zBjJJeqqQppNerRBLolIpZNil6Eny0V5Cfk0hPMP8HIj19xf48S6ameW8pP-B5OCby7YbHqJ8NwJ7u0RT4ajAy68N0e-xrVcPm72w1zvADCF2jOkNlqCJ40rGbn3QbuXoBkHTKxX1OrybHygreDih0_G2ulq-HkPD7f3u6g-WZcIaheCWCHP08sV')"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-charcoal-surface via-charcoal-surface/40 to-transparent z-[1]"></div>
+        <div class="relative z-10 p-8">
+          <span class="font-label-caps text-label-caps text-primary-container uppercase tracking-widest text-[10px]">3 subcategories</span>
+          <h3 class="font-headline-md text-headline-md text-on-surface mt-1 mb-1">Lighting &amp; Audio Rigs</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant opacity-0 group-hover:opacity-100 translate-y-3 group-hover:translate-y-0 transition-all duration-300">Crystal clear capture and illumination.</p>
+          <div class="mt-4 inline-flex items-center gap-1 text-primary-container text-[12px] font-semibold opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 delay-75">
+            Explore <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cat 3 -->
+      <div class="cat-card glass-panel rounded-2xl group cursor-pointer relative overflow-hidden h-[340px] flex flex-col justify-end shimmer-card reveal" style="transition-delay:.15s">
+        <div class="cat-icon absolute top-6 left-6 w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center border border-glass-stroke transition-colors duration-300 z-10">
+          <span class="material-symbols-outlined text-primary-container">code</span>
+        </div>
+        <div class="cat-bg absolute inset-0 z-0 opacity-25 bg-cover bg-center" style="background-image:url('https://lh3.googleusercontent.com/aida-public/AB6AXuCeHYZPdrmNCv5tZ8uqhc3O13mm56AWEUyuEV7ufWs61C_Mnc5P3ln4DcLqX8ORn8naXsWX9cbVhRQTnrhV1J2eXWUW-LZfrGGLxwjOSmW83_vlHUuyQqpq_xgdbDkd7nIiqGKxOQoalIYmdtncCeKJT_biSoxbc42WOruEIrUTib9DCdsZjfe8M5WaEeYbKaMfDZAYov4tiDmsvDw4wyAA7E5iJBJilol2FHrotYA2bAbHrmzdujj5')"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-charcoal-surface via-charcoal-surface/40 to-transparent z-[1]"></div>
+        <div class="relative z-10 p-8">
+          <span class="font-label-caps text-label-caps text-primary-container uppercase tracking-widest text-[10px]">6 subcategories</span>
+          <h3 class="font-headline-md text-headline-md text-on-surface mt-1 mb-1">Developer Assets &amp; UI Kits</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant opacity-0 group-hover:opacity-100 translate-y-3 group-hover:translate-y-0 transition-all duration-300">Clean code for premium experiences.</p>
+          <div class="mt-4 inline-flex items-center gap-1 text-primary-container text-[12px] font-semibold opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 delay-75">
+            Explore <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cat 4 -->
+      <div class="cat-card glass-panel rounded-2xl group cursor-pointer relative overflow-hidden h-[340px] flex flex-col justify-end shimmer-card reveal" style="transition-delay:.2s">
+        <div class="cat-icon absolute top-6 left-6 w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center border border-glass-stroke transition-colors duration-300 z-10">
+          <span class="material-symbols-outlined text-primary-container">desk</span>
+        </div>
+        <div class="cat-bg absolute inset-0 z-0 opacity-25 bg-cover bg-center" style="background-image:url('https://lh3.googleusercontent.com/aida-public/AB6AXuA0Rf4a8ZAf3w3NPokG5jwcWZoqFPSY-KqwgOLS9YAgUxWVtN6YaCuo4UbCflIqB9MNECqmn2VDPfzRmpoXdMWCFWBsI09JGRC5hm64a454NS9arqjAcSV-Sb9_w06faEuOBV4X7LEUqigivEU7zta7QYes5M80vdkbLK8mw0oftqyN5pJT8r3cgMGbkKPztJoP5MxEOQg9wWY8dE9lNnJaXf8U-GfuZHksgaBO69G-3CuW066KvpDH')"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-charcoal-surface via-charcoal-surface/40 to-transparent z-[1]"></div>
+        <div class="relative z-10 p-8">
+          <span class="font-label-caps text-label-caps text-primary-container uppercase tracking-widest text-[10px]">2 subcategories</span>
+          <h3 class="font-headline-md text-headline-md text-on-surface mt-1 mb-1">Workspace &amp; Storage</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant opacity-0 group-hover:opacity-100 translate-y-3 group-hover:translate-y-0 transition-all duration-300">Foundation for your creative flow.</p>
+          <div class="mt-4 inline-flex items-center gap-1 text-primary-container text-[12px] font-semibold opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 delay-75">
+            Explore <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       PRODUCT LISTINGS
+  ═══════════════════════════════════════ -->
+  <section class="px-margin-mobile md:px-margin-desktop py-stack-xl relative" id="product-listings">
+    <!-- Section divider -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-glass-stroke to-transparent"></div>
+
+    <!-- Header + Filters -->
+    <div class="flex flex-col gap-6 mb-12 reveal">
+      <div class="flex justify-between items-end">
+        <div>
+          <p class="font-label-caps text-label-caps text-primary-container uppercase tracking-widest mb-2">The full catalogue</p>
+          <h2 class="font-display-lg text-display-lg-mobile md:text-[40px] text-on-surface font-bold">Browse Professional Gear</h2>
+        </div>
+        <p id="product-count" class="hidden md:block text-on-surface-variant text-sm">Loading…</p>
+      </div>
+
+      <!-- Filter chips -->
+      <div class="flex flex-wrap items-center gap-3">
+        <button class="filter-chip active glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50" data-category="">
+          <span class="material-symbols-outlined text-sm">grid_view</span> All
+        </button>
+        <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Cameras">
+          <span class="material-symbols-outlined text-sm">camera</span> Cameras
+        </button>
+        <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Lighting">
+          <span class="material-symbols-outlined text-sm">light_mode</span> Lighting
+        </button>
+        <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Audio">
+          <span class="material-symbols-outlined text-sm">mic</span> Audio
+        </button>
+        <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Lenses">
+          <span class="material-symbols-outlined text-sm">lens</span> Lenses
+        </button>
+        <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Storage">
+          <span class="material-symbols-outlined text-sm">storage</span> Storage
+        </button>
+        <div class="ml-auto flex items-center gap-2">
+          <button id="sort-btn" class="glass-panel px-4 py-2 rounded-full flex items-center gap-2 border border-glass-stroke text-on-surface-variant hover:text-on-surface hover:border-primary-container/40 transition-all text-sm">
+            <span class="material-symbols-outlined text-sm">sort</span> <span id="sort-label">Price: High–Low</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-gutter">
+      <!-- Skeleton loaders -->
+      <div class="glass-panel rounded-2xl overflow-hidden animate-pulse"><div class="h-60 bg-surface-container-high"></div><div class="p-5 space-y-3"><div class="h-3 bg-surface-container-high rounded w-3/4"></div><div class="h-4 bg-surface-container-high rounded w-1/2"></div></div></div>
+      <div class="glass-panel rounded-2xl overflow-hidden animate-pulse"><div class="h-60 bg-surface-container-high"></div><div class="p-5 space-y-3"><div class="h-3 bg-surface-container-high rounded w-3/4"></div><div class="h-4 bg-surface-container-high rounded w-1/2"></div></div></div>
+      <div class="glass-panel rounded-2xl overflow-hidden animate-pulse"><div class="h-60 bg-surface-container-high"></div><div class="p-5 space-y-3"><div class="h-3 bg-surface-container-high rounded w-3/4"></div><div class="h-4 bg-surface-container-high rounded w-1/2"></div></div></div>
+      <div class="glass-panel rounded-2xl overflow-hidden animate-pulse"><div class="h-60 bg-surface-container-high"></div><div class="p-5 space-y-3"><div class="h-3 bg-surface-container-high rounded w-3/4"></div><div class="h-4 bg-surface-container-high rounded w-1/2"></div></div></div>
+    </div>
+
+    <!-- Empty state (hidden by default) -->
+    <div id="empty-state" class="hidden text-center py-24">
+      <span class="material-symbols-outlined text-on-surface-variant text-6xl mb-4 block">inventory_2</span>
+      <p class="text-on-surface-variant text-lg font-semibold">No products found</p>
+      <p class="text-on-surface-variant text-sm mt-1">The admin hasn't added any products in this category yet.</p>
+    </div>
+
+    <!-- dynamic cards end -->
+
+    </div>
+
+    <!-- Load more -->
+    <div id="load-more-wrap" class="mt-16 text-center hidden">
+      <button id="load-more-btn" class="shimmer-btn glass-panel px-14 py-4 rounded-full font-label-caps text-label-caps text-on-surface hover:border-primary-container/40 hover:text-primary-container transition-colors inline-flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">expand_more</span>
+        Load More Products
+      </button>
+    </div>
+  </section>
+
+  <script>
+  /* ── Sales catalogue — dynamic product loader ─────────────────── */
+  (function () {
+    const grid      = document.getElementById('product-grid');
+    const emptyEl   = document.getElementById('empty-state');
+    const countEl   = document.getElementById('product-count');
+    const loadWrap  = document.getElementById('load-more-wrap');
+    const loadBtn   = document.getElementById('load-more-btn');
+    const sortBtn   = document.getElementById('sort-btn');
+    const sortLabel = document.getElementById('sort-label');
+
+    let allProducts = [];   // full list from API
+    let filtered    = [];   // after category filter
+    let sortDir     = 'desc'; // 'desc' = high→low, 'asc' = low→high
+    let page        = 0;
+    const PAGE_SIZE = 8;
+
+    /* Badge colour class */
+    function badgeClass(badge) {
+      if (!badge) return '';
+      if (badge.includes('Hot'))    return 'badge-hot';
+      if (badge.includes('Seller') || badge.includes('Rated')) return 'badge-new';
+      return 'badge-sale';
+    }
+
+    /* Stars HTML */
+    function starsHtml(rating, count) {
+      const r = parseFloat(rating) || 5;
+      let html = '';
+      for (let i = 1; i <= 5; i++) {
+        const fill = i <= Math.floor(r) ? 1 : (i - r < 1 ? r - Math.floor(r) : 0);
+        html += `<span class="material-symbols-outlined text-primary-container text-xs" style="font-variation-settings:'FILL' ${fill}">star</span>`;
+      }
+      if (count) html += `<span class="text-[11px] text-on-surface-variant ml-1.5">(${count})</span>`;
+      return html;
+    }
+
+    /* Build one card */
+    function cardHtml(p, delay) {
+      const price   = parseFloat(p.price) || 0;
+      const imgBg   = p.image_url
+        ? `background-image:url('${p.image_url}')`
+        : 'background:linear-gradient(135deg,#161618,#1f2937)';
+      const badge   = p.badge
+        ? `<div class="absolute top-3 left-3 ${badgeClass(p.badge)} border text-[10px] font-label-caps tracking-widest px-2.5 py-1 rounded-full uppercase">${p.badge}</div>`
+        : '';
+      return `
+        <div class="product-card glass-panel rounded-2xl overflow-hidden group shimmer-card reveal" data-product-id="${p.id}" style="transition-delay:${delay}s">
+          <div class="relative h-60 overflow-hidden bg-surface-container">
+            <div class="card-img absolute inset-0 bg-cover bg-center" style="${imgBg}"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-charcoal-surface/80 to-transparent"></div>
+            ${badge}
+            <button class="absolute top-3 right-3 w-8 h-8 bg-surface-container/80 backdrop-blur-sm border border-glass-stroke rounded-full flex items-center justify-center hover:border-primary-container/50 transition-colors group/wish">
+              <span class="material-symbols-outlined text-sm text-on-surface-variant group-hover/wish:text-primary-container transition-colors">favorite</span>
+            </button>
+            <div class="card-cta absolute inset-x-0 bottom-0 p-4 flex gap-2">
+              <button data-cart-btn data-pid="${p.id}" class="flex-1 bg-primary-container text-on-primary-fixed font-label-caps text-[11px] py-2.5 rounded-xl flex items-center justify-center gap-1 hover:scale-[1.03] active:scale-95 transition-transform shadow-lg">
+                <span class="material-symbols-outlined text-sm">add_shopping_cart</span> Add to Cart
+              </button>
+            </div>
+          </div>
+          <div class="p-5">
+            <div class="flex items-center gap-0.5 mb-1.5">${starsHtml(p.rating, p.review_count)}</div>
+            <p class="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">${p.category || ''}</p>
+            <h3 class="font-semibold text-on-surface text-base leading-snug mb-3">${p.name}</h3>
+            <div class="flex items-center justify-between">
+              <span class="text-on-surface font-bold text-xl">$${price.toLocaleString('en-US', {minimumFractionDigits: 0})}</span>
+              <button data-cart-btn data-pid="${p.id}" class="w-9 h-9 rounded-full bg-primary-container/10 border border-primary-container/30 text-primary-container flex items-center justify-center hover:bg-primary-container hover:text-on-primary transition-colors active:scale-90">
+                <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+              </button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    /* Render a page of cards */
+    function renderPage(reset) {
+      if (reset) { page = 0; grid.innerHTML = ''; }
+      const start  = page * PAGE_SIZE;
+      const slice  = filtered.slice(start, start + PAGE_SIZE);
+      if (reset && slice.length === 0) {
+        emptyEl.classList.remove('hidden');
+        loadWrap.classList.add('hidden');
+        return;
+      }
+      emptyEl.classList.add('hidden');
+      slice.forEach((p, i) => {
+        const delay = ((i % 4) * 0.05).toFixed(2);
+        grid.insertAdjacentHTML('beforeend', cardHtml(p, delay));
+      });
+      // Re-observe reveal elements
+      grid.querySelectorAll('.reveal:not(.active)').forEach(el => revealObserver.observe(el));
+      page++;
+      loadWrap.classList.toggle('hidden', page * PAGE_SIZE >= filtered.length);
+    }
+
+    /* Sorting */
+    function applySort() {
+      filtered.sort((a, b) => sortDir === 'desc' ? b.price - a.price : a.price - b.price);
+    }
+
+    /* Count label */
+    function updateCount() {
+      countEl.textContent = `Showing ${Math.min(page * PAGE_SIZE, filtered.length)} of ${filtered.length} item${filtered.length !== 1 ? 's' : ''}`;
+    }
+
+    /* Reveal observer (reused) */
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('active'); revealObserver.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+
+    /* Fetch products */
+    async function loadProducts(category) {
+      grid.innerHTML = `
+        <div class="glass-panel rounded-2xl overflow-hidden animate-pulse"><div class="h-60 bg-surface-container-high"></div><div class="p-5 space-y-3"><div class="h-3 bg-surface-container-high rounded w-3/4"></div><div class="h-4 bg-surface-container-high rounded w-1/2"></div></div></div>
+        <div class="glass-panel rounded-2xl overflow-hidden animate-pulse"><div class="h-60 bg-surface-container-high"></div><div class="p-5 space-y-3"><div class="h-3 bg-surface-container-high rounded w-3/4"></div><div class="h-4 bg-surface-container-high rounded w-1/2"></div></div></div>
+        <div class="glass-panel rounded-2xl overflow-hidden animate-pulse"><div class="h-60 bg-surface-container-high"></div><div class="p-5 space-y-3"><div class="h-3 bg-surface-container-high rounded w-3/4"></div><div class="h-4 bg-surface-container-high rounded w-1/2"></div></div></div>
+        <div class="glass-panel rounded-2xl overflow-hidden animate-pulse"><div class="h-60 bg-surface-container-high"></div><div class="p-5 space-y-3"><div class="h-3 bg-surface-container-high rounded w-3/4"></div><div class="h-4 bg-surface-container-high rounded w-1/2"></div></div></div>`;
+      try {
+        const url  = category ? `/api/products?category=${encodeURIComponent(category)}` : '/api/products';
+        const res  = await fetch(url);
+        const json = await res.json();
+        allProducts = json.products || [];
+        filtered    = [...allProducts];
+        applySort();
+        renderPage(true);
+        updateCount();
+      } catch (err) {
+        grid.innerHTML = `<div class="col-span-4 text-center py-16 text-on-surface-variant">Failed to load products. Please refresh.</div>`;
+      }
+    }
+
+    /* Filter chips */
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        loadProducts(chip.dataset.category || '');
+      });
+    });
+
+    /* Sort toggle */
+    if (sortBtn) {
+      sortBtn.addEventListener('click', () => {
+        sortDir = sortDir === 'desc' ? 'asc' : 'desc';
+        sortLabel.textContent = sortDir === 'desc' ? 'Price: High–Low' : 'Price: Low–High';
+        filtered.sort((a, b) => sortDir === 'desc' ? b.price - a.price : a.price - b.price);
+        renderPage(true);
+        updateCount();
+      });
+    }
+
+    /* Load more */
+    if (loadBtn) {
+      loadBtn.addEventListener('click', () => {
+        renderPage(false);
+        updateCount();
+      });
+    }
+
+    /* Initial load */
+    loadProducts('');
+
+    /* ── Add to Cart ──────────────────────────────────────────── */
+    // Toast notification
+    function showToast(msg, ok) {
+      const t = document.createElement('div');
+      t.textContent = msg;
+      t.style.cssText = `position:fixed;bottom:28px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:999px;
+        background:${ok ? '#006970' : '#b71c1c'};color:#fff;font-weight:700;font-size:0.88rem;
+        z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.3);transition:opacity 0.4s;`;
+      document.body.appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 2200);
+    }
+
+    document.getElementById('product-grid').addEventListener('click', async function (e) {
+      const btn = e.target.closest('[data-cart-btn]');
+      if (!btn) return;
+      const productId = parseInt(btn.dataset.pid);
+      if (!productId) return;
+
+      const icon = btn.querySelector('.material-symbols-outlined');
+      const origText = btn.innerHTML;
+      btn.disabled = true;
+      if (icon) icon.textContent = 'progress_activity';
+
+      try {
+        const res  = await fetch('/api/cart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ product_id: productId, quantity: 1 })
+        });
+        if (res.status === 401) {
+          window.location.href = 'signin.html';
+          return;
+        }
+        const data = await res.json();
+        if (data.ok) {
+          showToast('Added to cart!', true);
+          if (window.updateCartBadge && data.item) {
+            // Refresh badge count
+            fetch('/api/cart').then(r => r.json()).then(d => { if (d.ok && window.updateCartBadge) window.updateCartBadge(d.count); });
+          }
+          btn.innerHTML = '<span class="material-symbols-outlined text-sm">check</span> Added';
+          setTimeout(() => { btn.innerHTML = origText; btn.disabled = false; }, 1500);
+        } else {
+          showToast(data.error || 'Could not add to cart.', false);
+          btn.innerHTML = origText; btn.disabled = false;
+        }
+      } catch (err) {
+        showToast('Network error.', false);
+        btn.innerHTML = origText; btn.disabled = false;
+      }
+    });
+  })();
+  </script>
+
+  <!-- ═══════════════════════════════════════
+       FEATURED PRODUCT SPOTLIGHT
+  ═══════════════════════════════════════ -->
+  <section class="py-stack-xl relative overflow-hidden" id="featured-spotlight">
+    <!-- Ambient glow behind section -->
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute right-0 top-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary-container/6 blur-[120px]"></div>
+      <div class="absolute left-0 top-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-secondary-container/6 blur-[100px]"></div>
+    </div>
+
+    <div class="max-w-[1440px] mx-auto md:px-margin-desktop relative" id="featured-inner">
+      <!-- Populated dynamically from /api/products -->
+    </div>
+  </section>
+
+  <script>
+  /* ── Featured Product Spotlight — loads top product from admin ── */
+  (function () {
+    fetch('/api/products')
+      .then(r => r.json())
+      .then(data => {
+        const products = data.products || [];
+        if (!products.length) {
+          document.getElementById('featured-spotlight').style.display = 'none';
+          return;
+        }
+        // Pick the highest-priced product as featured
+        const p = [...products].sort((a, b) => b.price - a.price)[0];
+        const price = parseFloat(p.price) || 0;
+        const imgStyle = p.image_url
+          ? `background-image:url('${p.image_url}')`
+          : 'background:linear-gradient(135deg,#161618,#1f2937)';
+        const badge = p.badge || 'Editor\'s Pick';
+        const desc  = p.description || `Premium ${p.category || 'gear'} for professional creators. Added to our catalogue and available for immediate purchase.`;
+
+        document.getElementById('featured-inner').innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-2 bg-charcoal-surface rounded-3xl overflow-hidden border border-glass-stroke shadow-2xl">
+            <!-- Image side -->
+            <div class="relative h-[480px] md:h-auto overflow-hidden">
+              <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105" style="${imgStyle}"></div>
+              <div class="absolute inset-0 bg-gradient-to-r from-charcoal-surface/60 via-transparent to-transparent"></div>
+              <div class="absolute top-8 left-8 badge-sale border font-label-caps text-[11px] tracking-widest px-3 py-1.5 rounded-full uppercase backdrop-blur-sm">
+                ${p.stock <= 3 ? 'Low Stock' : 'Featured'}
+              </div>
+            </div>
+            <!-- Content side -->
+            <div class="p-8 md:p-16 flex flex-col justify-center relative">
+              <div class="spotlight-line w-24 mb-8"></div>
+              <span class="font-label-caps text-label-caps text-primary-container mb-3 tracking-widest uppercase">${badge} — ${p.category || 'Equipment'}</span>
+              <h2 class="font-display-lg text-display-lg-mobile md:text-[44px] text-on-surface font-black mb-6 leading-tight" style="letter-spacing:-0.02em">
+                ${p.name}
+              </h2>
+              <p class="font-body-lg text-body-lg text-on-surface-variant mb-8 leading-relaxed">${desc}</p>
+              <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <button data-cart-btn data-pid="${p.id}" class="shimmer-btn bg-primary-container text-on-primary-fixed font-label-caps text-label-caps px-10 py-4 rounded-full hover:scale-105 transition-transform active:scale-95 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">add_shopping_cart</span> Add to Cart
+                </button>
+                <div class="text-center sm:text-left">
+                  <div class="font-label-caps text-label-caps text-on-surface-variant">${p.sku ? 'SKU: ' + p.sku : 'In stock'}</div>
+                  <div class="font-display-lg text-[32px] font-black gradient-text leading-tight">$${price.toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+                </div>
+              </div>
+            </div>
+          </div>`;
+
+        // Wire up Add to Cart for the featured product
+        const btn = document.getElementById('featured-inner').querySelector('[data-cart-btn]');
+        if (btn) {
+          btn.addEventListener('click', async function () {
+            const productId = parseInt(this.dataset.pid);
+            const origHtml  = this.innerHTML;
+            this.disabled   = true;
+            this.innerHTML  = '<span class="material-symbols-outlined text-sm">progress_activity</span> Adding…';
+            try {
+              const res  = await fetch('/api/cart', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ product_id: productId, quantity: 1 }) });
+              if (res.status === 401) { window.location.href = 'signin.html'; return; }
+              const d = await res.json();
+              if (d.ok) {
+                this.innerHTML = '<span class="material-symbols-outlined text-sm">check</span> Added';
+                setTimeout(() => { this.innerHTML = origHtml; this.disabled = false; }, 1500);
+              } else {
+                this.innerHTML = origHtml; this.disabled = false;
+              }
+            } catch { this.innerHTML = origHtml; this.disabled = false; }
+          });
+        }
+      })
+      .catch(() => { document.getElementById('featured-spotlight').style.display = 'none'; });
+  })();
+  </script>
+
+  <!-- ═══════════════════════════════════════
+       PROFESSIONAL GUARANTEE
+  ═══════════════════════════════════════ -->
+  <section class="px-margin-mobile md:px-margin-desktop py-stack-xl relative">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-glass-stroke to-transparent"></div>
+
+    <div class="text-center mb-12 reveal">
+      <p class="font-label-caps text-label-caps text-primary-container uppercase tracking-widest mb-2">Our commitment</p>
+      <h2 class="font-display-lg text-display-lg-mobile md:text-[40px] text-on-surface font-bold">The Professional Guarantee</h2>
+    </div>
+
+    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-gutter">
+      <div class="glass-panel rounded-2xl p-8 text-center group hover:border-primary-container/30 hover:-translate-y-2 transition-all duration-300 shimmer-card reveal" style="transition-delay:.05s">
+        <div class="relative w-16 h-16 mx-auto mb-6">
+          <div class="absolute inset-0 rounded-full bg-primary-container/10 group-hover:bg-primary-container/20 transition-colors border border-primary-container/20 group-hover:border-primary-container/50"></div>
+          <div class="absolute inset-0 rounded-full bg-primary-container/5 blur-xl group-hover:opacity-100 opacity-0 transition-opacity"></div>
+          <div class="relative flex items-center justify-center w-full h-full">
+            <span class="material-symbols-outlined text-primary-container text-2xl" style="font-variation-settings:'FILL' 1">verified</span>
+          </div>
+        </div>
+        <h4 class="font-headline-md text-headline-md text-on-surface mb-3">Rigorous Inspection</h4>
+        <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">Every item is fully inspected and every digital asset is clean-coded for peak performance.</p>
+      </div>
+
+      <div class="glass-panel rounded-2xl p-8 text-center group hover:border-primary-container/30 hover:-translate-y-2 transition-all duration-300 shimmer-card reveal" style="transition-delay:.1s">
+        <div class="relative w-16 h-16 mx-auto mb-6">
+          <div class="absolute inset-0 rounded-full bg-primary-container/10 group-hover:bg-primary-container/20 transition-colors border border-primary-container/20 group-hover:border-primary-container/50"></div>
+          <div class="relative flex items-center justify-center w-full h-full">
+            <span class="material-symbols-outlined text-primary-container text-2xl" style="font-variation-settings:'FILL' 1">gavel</span>
+          </div>
+        </div>
+        <h4 class="font-headline-md text-headline-md text-on-surface mb-3">Professional Warranty</h4>
+        <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">1-year warranty on all professional gear. We stand behind the tools that power your creativity.</p>
+      </div>
+
+      <div class="glass-panel rounded-2xl p-8 text-center group hover:border-primary-container/30 hover:-translate-y-2 transition-all duration-300 shimmer-card reveal" style="transition-delay:.15s">
+        <div class="relative w-16 h-16 mx-auto mb-6">
+          <div class="absolute inset-0 rounded-full bg-primary-container/10 group-hover:bg-primary-container/20 transition-colors border border-primary-container/20 group-hover:border-primary-container/50"></div>
+          <div class="relative flex items-center justify-center w-full h-full">
+            <span class="material-symbols-outlined text-primary-container text-2xl" style="font-variation-settings:'FILL' 1">local_shipping</span>
+          </div>
+        </div>
+        <h4 class="font-headline-md text-headline-md text-on-surface mb-3">Insured Shipping</h4>
+        <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">Fast, insured shipping directly to your studio. Global logistics handled with white-glove care.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       NEWSLETTER CTA
+  ═══════════════════════════════════════ -->
+  <section class="px-margin-mobile md:px-margin-desktop py-stack-xl">
+    <div class="glass-panel rounded-[40px] relative overflow-hidden">
+      <!-- Background orbs -->
+      <div class="absolute -top-32 -right-32 w-80 h-80 bg-secondary-container/20 rounded-full blur-[100px] pointer-events-none"></div>
+      <div class="absolute -bottom-32 -left-32 w-80 h-80 bg-primary-container/15 rounded-full blur-[100px] pointer-events-none"></div>
+      <!-- Grid overlay -->
+      <div class="absolute inset-0 hero-grid opacity-40 pointer-events-none"></div>
+
+      <div class="relative z-10 p-12 md:p-20 text-center">
+        <div class="inline-flex items-center gap-2 bg-surface-container-high border border-glass-stroke rounded-full px-4 py-2 mb-6">
+          <span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
+          <span class="font-label-caps text-label-caps text-primary-container tracking-widest uppercase">Exclusive access</span>
+        </div>
+        <h2 class="font-display-lg text-display-lg-mobile md:text-[56px] text-on-surface font-black mb-4" style="letter-spacing:-0.02em">Join the Orbit.</h2>
+        <p class="font-body-lg text-body-lg text-on-surface-variant mb-10 max-w-xl mx-auto leading-relaxed">
+          Get exclusive access to new hardware drops and premium UI kits before they hit the public market.
+        </p>
+        <form class="flex flex-col md:flex-row items-center justify-center gap-3 max-w-lg mx-auto">
+          <input
+            class="w-full bg-surface-container-high border border-glass-stroke rounded-full px-6 py-4 focus:ring-2 focus:ring-primary-container focus:border-transparent outline-none transition-all text-on-surface placeholder:text-on-surface-variant"
+            placeholder="Enter your studio email"
+            type="email"
+          >
+          <button
+            class="shimmer-btn w-full md:w-auto bg-primary-container text-on-primary-fixed px-8 py-4 rounded-full font-label-caps text-label-caps whitespace-nowrap hover:scale-105 transition-transform active:scale-95 shadow-lg"
+            type="submit"
+          >
+            Subscribe Now
+          </button>
+        </form>
+        <p class="text-on-surface-variant text-sm mt-4">No spam. Unsubscribe anytime. Pro members only.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<div id="site-footer"></div>
+
+<script>
+  /* ── Scroll-reveal ───────────────────────── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('active'); observer.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  /* ── Filter chips ────────────────────────── */
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+
+  /* ── Ticker tape — loads from live product catalogue ── */
+  const catEmoji = { Cameras:'📸', Lenses:'🔭', Lighting:'💡', Audio:'🎙️', Storage:'💾', Accessories:'🎧', Other:'🛒' };
+  fetch('/api/products')
+    .then(r => r.json())
+    .then(data => {
+      const products = data.products || [];
+      const items = products.length
+        ? products.map(p => {
+            const price = parseFloat(p.price) || 0;
+            const emoji = catEmoji[p.category] || '🎯';
+            return `${emoji} ${p.name} — $${price.toLocaleString('en-US', {minimumFractionDigits: 0})}`;
+          })
+        : ['🎯 No products yet — check back soon'];
+      const html = items.map(i => `<span class="inline-block mx-8 font-label-caps text-label-caps text-on-surface-variant whitespace-nowrap">${i}</span>`).join('');
+      document.getElementById('ticker-src').innerHTML   = html;
+      document.getElementById('ticker-clone').innerHTML = html;
+    })
+    .catch(() => {
+      const fallback = '<span class="inline-block mx-8 font-label-caps text-label-caps text-on-surface-variant whitespace-nowrap">🎯 Browse our catalogue below</span>';
+      document.getElementById('ticker-src').innerHTML   = fallback;
+      document.getElementById('ticker-clone').innerHTML = fallback;
+    });
+
+  /* ── Nav scroll blur ─────────────────────── */
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    if (!nav) return;
+    if (window.scrollY > 50) {
+      nav.classList.add('shadow-neon-blue-glow');
+      nav.style.background = 'rgba(22,22,24,0.95)';
+    } else {
+      nav.style.background = 'rgba(22,22,24,0.8)';
+    }
+  });
+
+  /* ── Parallax blur shapes ────────────────── */
+  window.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth)  - 0.5;
+    const y = (e.clientY / window.innerHeight) - 0.5;
+    document.querySelectorAll('.blur-bg-shape').forEach(s => {
+      s.style.transform = `translate(${x * 50}px, ${y * 50}px)`;
+    });
+  });
+</script>
+
+<script src="/static/js/header-loader.js"></script>
+<script src="/static/js/footer-loader.js"></script>
+</body></html>

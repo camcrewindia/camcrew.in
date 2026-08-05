@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Portfolio | CamCrew</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="/static/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="/static/css/styles.css"/>
+<style>
+  :root {
+    --nb:  #141414;
+    --ns:  #000000;
+    --nl:  #1e1e1e;
+    --nr:  6px 6px 14px var(--ns), -6px -6px 14px var(--nl);
+    --nr-s:3px 3px 8px  var(--ns), -3px -3px 8px  var(--nl);
+    --ni-s:inset 2px 2px 6px  var(--ns), inset -2px -2px 6px  var(--nl);
+    --ac:  #00dbe9;
+    --ac2: #ebb2ff;
+  }
+
+  body {
+    background: var(--nb);
+    color: #dce4e5;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Card ── */
+  .data-card {
+    background: var(--nb);
+    border-radius: 1.25rem;
+    padding: 1.75rem;
+    box-shadow: var(--nr);
+  }
+
+  /* ── Badge ── */
+  .type-badge {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    padding: 0.22rem 0.75rem; border-radius: 999px;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.07em;
+    text-transform: uppercase;
+    box-shadow: 2px 2px 5px var(--ns), -1px -1px 3px var(--nl);
+  }
+  .type-image { background: #0e1f20; color: #00dbe9; }
+  .type-video { background: #160d1f; color: #a855f7; }
+  .type-pdf   { background: #1f1a0d; color: #fbbf24; }
+  .type-zip   { background: #0e1f1e; color: #63cab7; }
+  .type-doc   { background: #0d1f16; color: #4ade80; }
+  .type-other { background: #1a1a1a; color: #849495; }
+
+  /* ── Media ── */
+  .media-container {
+    border-radius: 1rem; overflow: hidden;
+    box-shadow: var(--nr);
+    background: #0a0a0a;
+    max-height: 520px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .media-container img  { width: 100%; height: auto; max-height: 520px; object-fit: contain; display: block; }
+  .media-container video { width: 100%; max-height: 520px; display: block; }
+
+  /* ── Placeholder media ── */
+  .media-placeholder {
+    min-height: 220px; border-radius: 1rem;
+    background: linear-gradient(135deg, rgba(0,219,233,0.06), rgba(235,178,255,0.06));
+    border: 1px dashed rgba(255,255,255,0.08);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem;
+  }
+
+  /* ── CTA button ── */
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.75rem; border-radius: 0.85rem;
+    font-weight: 800; font-size: 0.9rem; cursor: pointer;
+    border: none; transition: all 0.2s;
+    background: linear-gradient(135deg, #00dbe9, #00b8c4);
+    color: #001f22;
+    box-shadow: var(--nr-s);
+    text-decoration: none;
+  }
+  .cta-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,219,233,0.35); }
+
+  /* ── Error/loading states ── */
+  .state-box {
+    min-height: 60vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 1rem; text-align: center;
+    padding: 2rem;
+  }
+
+  /* ── Divider ── */
+  .divider { height: 1px; background: var(--ns); box-shadow: 0 1px 0 var(--nl); margin: 1.5rem 0; }
+
+  /* ── Spinner ── */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner { animation: spin 1s linear infinite; }
+
+  /* ── Header ── */
+  .site-header {
+    background: var(--nb);
+    box-shadow: 0 2px 12px var(--ns), 0 1px 0 var(--nl);
+    padding: 1rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 50;
+  }
+
+  /* Light mode */
+  html.light {
+    --nb: #f0f4f5;
+    --ns: rgba(0,0,0,0.12);
+    --nl: rgba(255,255,255,0.9);
+  }
+  html.light body          { color: #0a1618; }
+  html.light .data-card    { background: #f0f4f5; }
+  html.light .type-image   { background: #d0f0f3; color: #007a85; }
+  html.light .type-video   { background: #e8d5f5; color: #7a2d9a; }
+  html.light .media-placeholder { background: linear-gradient(135deg, rgba(0,219,233,0.08), rgba(235,178,255,0.08)); }
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="site-header">
+  <a href="/" style="display:flex;align-items:center;gap:0.6rem;text-decoration:none;">
+    <img src="/attached_assets/camcrew_studio_logo_cop_y_1785515916927.png"
+         alt="CamCrew" style="height:2rem;" onerror="this.style.display='none'"/>
+    <span style="font-weight:900;font-size:1.1rem;color:var(--ac);letter-spacing:-0.01em;">CamCrew</span>
+  </a>
+  <a href="/" class="cta-btn" style="padding:0.5rem 1.2rem;font-size:0.82rem;">
+    <span class="material-symbols-outlined" style="font-size:0.95rem;">home</span>
+    Visit CamCrew
+  </a>
+</header>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+<!-- ── Main content ── -->
+<main style="flex:1; padding: 2.5rem 1rem 3rem; max-width: 680px; margin: 0 auto; width: 100%;">
+  <div id="app-root">
+    <!-- Loading state -->
+    <div class="state-box" id="state-loading">
+      <span class="material-symbols-outlined spinner" style="font-size:2.5rem;color:var(--ac);">progress_activity</span>
+      <p style="color:#849495;font-size:0.9rem;">Loading portfolio…</p>
+    </div>
+  </div>
+</main>
+
+<!-- ── Footer ── -->
+<footer style="text-align:center;padding:1.5rem;border-top:1px solid var(--ns);font-size:0.78rem;color:#849495;">
+  Shared via <a href="/" style="color:var(--ac);font-weight:700;text-decoration:none;">CamCrew</a>
+  &nbsp;·&nbsp; Read-only portfolio view
+</footer>
+
+<script>
+(async function () {
+  const root     = document.getElementById('app-root');
+  const shareId  = window.location.pathname.split('/').filter(Boolean).pop();
+
+  // ── Validate share_id format client-side ──
+  if (!shareId || !/^[A-Za-z0-9_\-]{4,64}$/.test(shareId)) {
+    root.innerHTML = errorState('link_off', 'Invalid share link.',
+      'This URL does not look like a valid CamCrew portfolio link.');
+    return;
+  }
+
+  // ── Fetch portfolio data ──
+  let data;
+  try {
+    const res = await fetch(`/api/shared/${encodeURIComponent(shareId)}`);
+    data = await res.json();
+  } catch (_) {
+    root.innerHTML = errorState('wifi_off', 'Unable to load portfolio.',
+      'Please check your connection and try again.');
+    return;
+  }
+
+  if (!data.ok) {
+    const icon = data.error?.includes('no longer') ? 'lock' : 'search_off';
+    root.innerHTML = errorState(icon, data.error || 'Portfolio not found.',
+      data.error?.includes('no longer')
+        ? 'The owner has made this portfolio private.'
+        : 'This link may have expired or the item was removed.');
+    return;
+  }
+
+  // ── Render portfolio ──
+  const item = data.item;
+  const pro  = data.professional;
+  const type = (item.file_type || 'other').toLowerCase();
+
+  document.title = `${item.title || 'Portfolio'} | CamCrew`;
+
+  const typeLabel = { image:'Image', video:'Video', pdf:'PDF', zip:'Archive', doc:'Document' };
+  const typeCls   = { image:'type-image', video:'type-video', pdf:'type-pdf', zip:'type-zip', doc:'type-doc' };
+
+  root.innerHTML = `
+    <!-- Pro byline -->
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.75rem;">
+      <div style="
+        width:2.75rem;height:2.75rem;border-radius:50%;
+        background:linear-gradient(135deg,#00dbe9,#ebb2ff);
+        display:flex;align-items:center;justify-content:center;
+        font-size:1.1rem;font-weight:900;color:#001f22;flex-shrink:0;
+        box-shadow:var(--nr-s);">
+        ${(pro.display_name||'P').charAt(0).toUpperCase()}
+      </div>
+      <div>
+        <p style="font-weight:700;font-size:0.95rem;">${escHtml(pro.display_name || 'CamCrew Professional')}</p>
+        <p style="color:#849495;font-size:0.78rem;">CamCrew Professional</p>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="data-card">
+      <!-- Title row -->
+      <div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:0.75rem;margin-bottom:1.25rem;">
+        <div style="flex:1;min-width:0;">
+          <h1 style="font-size:1.25rem;font-weight:800;word-break:break-word;margin-bottom:0.4rem;">
+            ${escHtml(item.title || 'Untitled Portfolio')}
+          </h1>
+          ${item.created_at ? `<p style="color:#849495;font-size:0.78rem;">${fmtDate(item.created_at)}</p>` : ''}
+        </div>
+        <span class="${typeCls[type]||'type-other'} type-badge">
+          <span class="material-symbols-outlined" style="font-size:0.85rem;">${typeIcon(type)}</span>
+          ${typeLabel[type] || type}
+        </span>
+      </div>
+
+      ${item.description ? `
+      <p style="color:#849495;font-size:0.875rem;line-height:1.65;margin-bottom:1.25rem;
+                border-left:3px solid rgba(0,219,233,0.35);padding-left:0.85rem;">
+        ${escHtml(item.description)}
+      </p>` : ''}
+
+      <!-- Media -->
+      <div style="margin-bottom:1.5rem;">${renderMedia(item)}</div>
+
+      <div class="divider"></div>
+
+      <!-- CTA -->
+      <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;">
+        <p style="color:#849495;font-size:0.8rem;flex:1;">
+          Shared by <strong style="color:#dce4e5;">${escHtml(pro.display_name || 'a CamCrew Professional')}</strong>
+          via CamCrew&nbsp;Studio
+        </p>
+        <a href="/" class="cta-btn">
+          <span class="material-symbols-outlined" style="font-size:1rem;">photo_camera</span>
+          Book on CamCrew
+        </a>
+      </div>
+    </div>
+  `;
+
+  // ── Helpers ──
+  function renderMedia(item) {
+    if (!item.file_url) {
+      return `<div class="media-placeholder">
+        <span class="material-symbols-outlined" style="font-size:3rem;color:rgba(255,255,255,0.12);">${typeIcon(type)}</span>
+        <p style="color:#849495;font-size:0.82rem;">Preview not available</p>
+      </div>`;
+    }
+    if (type === 'image') {
+      return `<div class="media-container">
+        <img src="${escAttr(item.file_url)}" alt="${escAttr(item.title||'Portfolio image')}"
+             onerror="this.parentElement.innerHTML='<div style=\\'padding:2rem;text-align:center;color:#849495;\\'>Image could not be loaded.</div>'"/>
+      </div>`;
+    }
+    if (type === 'video') {
+      return `<div class="media-container">
+        <video controls preload="metadata">
+          <source src="${escAttr(item.file_url)}"/>
+          Your browser does not support HTML5 video.
+        </video>
+      </div>`;
+    }
+    // Other file types — show a download-style card
+    return `<a href="${escAttr(item.file_url)}" target="_blank" rel="noopener noreferrer"
+       style="display:flex;align-items:center;gap:1rem;padding:1.25rem;border-radius:0.85rem;
+              background:rgba(0,219,233,0.06);border:1px solid rgba(0,219,233,0.15);
+              text-decoration:none;transition:background 0.2s;"
+       onmouseover="this.style.background='rgba(0,219,233,0.1)'"
+       onmouseout="this.style.background='rgba(0,219,233,0.06)'">
+      <span class="material-symbols-outlined" style="font-size:2rem;color:var(--ac);">${typeIcon(type)}</span>
+      <div>
+        <p style="color:#dce4e5;font-weight:700;font-size:0.9rem;">${escHtml(item.title||'Download file')}</p>
+        <p style="color:#849495;font-size:0.78rem;margin-top:0.1rem;">Click to open</p>
+      </div>
+      <span class="material-symbols-outlined" style="margin-left:auto;color:#849495;font-size:1.1rem;">open_in_new</span>
+    </a>`;
+  }
+})();
+
+// ── Pure helpers ──
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escAttr(s) { return escHtml(s); }
+
+function fmtDate(str) {
+  if (!str) return '';
+  try {
+    return new Date(str).toLocaleDateString('en-US', { day:'numeric', month:'short', year:'numeric' });
+  } catch (_) { return str; }
+}
+
+function typeIcon(t) {
+  return { image:'image', video:'movie', pdf:'picture_as_pdf',
+           zip:'folder_zip', doc:'description' }[t] || 'draft';
+}
+
+function errorState(icon, heading, sub) {
+  return `<div class="state-box">
+    <span class="material-symbols-outlined" style="font-size:3.5rem;color:rgba(255,255,255,0.12);">${icon}</span>
+    <h2 style="font-weight:800;font-size:1.15rem;">${escHtml(heading)}</h2>
+    ${sub ? `<p style="color:#849495;font-size:0.875rem;max-width:340px;">${escHtml(sub)}</p>` : ''}
+    <a href="/" class="cta-btn" style="margin-top:0.5rem;">
+      <span class="material-symbols-outlined" style="font-size:1rem;">home</span>
+      Go to CamCrew
+    </a>
+  </div>`;
+}
+</script>
+</body>
+</html>

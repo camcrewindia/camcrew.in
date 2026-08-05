@@ -1,0 +1,31 @@
+<!-- Shared Admin Dashboard Footer — theme-aware via CSS variables -->
+<style>
+  #admin-footer {
+    background: var(--neu-bg, #eef1f8);
+    border-top: 1px solid var(--neu-border, rgba(0,0,0,0.08));
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  #admin-footer .footer-brand    { color: var(--neu-accent, #006970); font-weight: 800; font-size: 1.1rem; letter-spacing: -0.01em; }
+  #admin-footer .footer-copy     { color: var(--neu-text-muted, #5a6880); font-size: 0.75rem; margin-top: 2px; }
+  #admin-footer .footer-link     { color: var(--neu-text-muted, #5a6880); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none; transition: color 0.15s; }
+  #admin-footer .footer-link:hover { color: var(--neu-accent, #006970); }
+  #admin-footer .footer-status   { color: var(--neu-text-muted, #5a6880); font-size: 0.75rem; }
+  #admin-footer .footer-version  { color: var(--neu-text-muted, #5a6880); font-size: 0.75rem; }
+</style>
+<footer id="admin-footer" class="mt-auto px-8 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+  <div class="flex flex-col items-center md:items-start">
+    <span class="footer-brand">Camcrew Studio</span>
+    <p class="footer-copy">© 2025 Camcrew Studio. Precision in Every Frame.</p>
+  </div>
+  <div class="flex flex-wrap justify-center gap-6">
+    <a class="footer-link" href="#">Privacy Policy</a>
+    <a class="footer-link" href="#">Terms of Service</a>
+    <a class="footer-link" href="#">Contact Support</a>
+    <a class="footer-link" href="#">Careers</a>
+  </div>
+  <div class="flex items-center gap-3">
+    <span class="footer-version">v2.4.1</span>
+    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+    <span class="footer-status" style="color:#4ade80;">Systems Operational</span>
+  </div>
+</footer>

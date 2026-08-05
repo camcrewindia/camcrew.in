@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script>document.documentElement.setAttribute('data-theme',localStorage.getItem('cc-theme')||'dark');</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Subscription Management | Camcrew Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "primary": "#006970","primary-container": "#00858f","primary-fixed": "#004f54","primary-fixed-dim": "#006970",
+          "secondary": "#7b1fa2","secondary-container": "#9c27b0","on-secondary": "#ffffff",
+          "surface": "#e0e5ec","background": "#e0e5ec","obsidian-base": "#e0e5ec","charcoal-surface": "#e8edf4",
+          "surface-container": "#dde3eb","surface-container-low": "#d8dfe8","surface-container-high": "#cdd5e0",
+          "surface-container-highest": "#c8d0de","surface-bright": "#eef1f6",
+          "on-surface": "#0f172a","on-surface-variant": "#475569","on-background": "#0f172a","on-primary": "#ffffff",
+          "on-primary-container": "#ffffff",
+          "error": "#c62828","error-container": "#ffcdd2","on-error": "#ffffff","on-error-container": "#7f0000",
+          "glass-stroke": "rgba(0,0,0,0.08)","outline": "#b0bec5","outline-variant": "#cfd8dc"
+        },
+        "spacing": {
+          "margin-desktop": "80px","margin-mobile": "20px","stack-xl": "4rem","stack-md": "1.5rem","gutter": "24px","stack-xs": "0.5rem"
+        },
+        "fontFamily": {
+          "label-caps": ["Plus Jakarta Sans"],"display-lg": ["Plus Jakarta Sans"],"headline-md": ["Plus Jakarta Sans"],"body-md": ["Plus Jakarta Sans"]
+        },
+        "fontSize": {
+          "label-caps": ["13px",{"lineHeight":"1.1","letterSpacing":"0.1em","fontWeight":"700"}],
+          "display-lg-mobile": ["34px",{"lineHeight":"1.2","letterSpacing":"-0.02em","fontWeight":"800"}],
+          "headline-md": ["26px",{"lineHeight":"1.3","fontWeight":"700"}],
+          "body-md": ["17px",{"lineHeight":"1.6","fontWeight":"400"}]
+        }
+      }
+    }
+  }
+</script>
+<style>
+  /* ── Subscription Management — Dark / Light Theme ── */
+  :root, [data-theme="dark"] {
+    --neu-bg:           #16161e;
+    --neu-shadow-dark:  #0d0d16;
+    --neu-shadow-light: #1f1f2c;
+    --neu-accent:       #1a8aff;
+    --neu-accent-glow:  rgba(26,138,255,0.25);
+    --neu-text:         #e4e8f6;
+    --neu-text-muted:   #7a8599;
+    --neu-border:       rgba(255,255,255,0.07);
+    --neu-table-head:   rgba(255,255,255,0.05);
+    --neu-table-head-text: #7a8599;
+    --neu-row-hover:    rgba(255,255,255,0.03);
+    --neu-badge-green-bg:   rgba(34,197,94,0.12);
+    --neu-badge-green-text: #4ade80;
+    --neu-badge-red-bg:     rgba(239,68,68,0.12);
+    --neu-badge-red-text:   #ff6464;
+  }
+  [data-theme="light"] {
+    --neu-bg:           #eef1f8;
+    --neu-shadow-dark:  #c5cad8;
+    --neu-shadow-light: #ffffff;
+    --neu-accent:       #0060cc;
+    --neu-accent-glow:  rgba(0,96,204,0.2);
+    --neu-text:         #1a1a2e;
+    --neu-text-muted:   #5a6880;
+    --neu-border:       rgba(0,0,0,0.08);
+    --neu-table-head:   #dde3ef;
+    --neu-table-head-text: #374263;
+    --neu-row-hover:    #d8dfe8;
+    --neu-badge-green-bg:   rgba(22,101,52,0.1);
+    --neu-badge-green-text: #166534;
+    --neu-badge-red-bg:     rgba(185,28,28,0.1);
+    --neu-badge-red-text:   #b91c1c;
+  }
+
+  body {
+    background-color: var(--neu-bg);
+    color: var(--neu-text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px; line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    zoom: 0.8;
+  }
+  h2,h3,h4,h5,h6 { color: var(--neu-text); font-weight: 800; }
+  .glass-panel {
+    background: var(--neu-bg);
+    box-shadow: 8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light);
+    border: none !important;
+  }
+  .neu-header {
+    background: var(--neu-bg);
+    box-shadow: 0 4px 10px var(--neu-shadow-dark), 0 -2px 6px var(--neu-shadow-light);
+  }
+  .neu-btn {
+    background: var(--neu-bg);
+    box-shadow: 4px 4px 8px var(--neu-shadow-dark), -4px -4px 8px var(--neu-shadow-light);
+    border: none; color: var(--neu-text-muted); transition: all 0.15s ease;
+  }
+  .neu-btn:hover { box-shadow: 6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light); color: var(--neu-accent); }
+  .neu-btn:active { box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light); }
+  .neu-inset {
+    background: var(--neu-bg);
+    box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light);
+    border: none !important;
+  }
+  .neu-inset:focus-within {
+    box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light), 0 0 0 2px rgba(0,133,143,0.35);
+    outline: none;
+  }
+  .neu-inset input { background: transparent; color: var(--neu-text); }
+  .neu-inset input::placeholder { color: rgba(122,133,153,0.5); }
+  .neu-track {
+    background: var(--neu-bg);
+    box-shadow: inset 2px 2px 5px var(--neu-shadow-dark), inset -2px -2px 5px var(--neu-shadow-light);
+  }
+  .neu-icon-badge {
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 7px var(--neu-shadow-dark), -3px -3px 7px var(--neu-shadow-light);
+    border-radius: 0.75rem; padding: 0.65rem; display: inline-flex;
+  }
+  .stat-card {
+    background: var(--neu-bg);
+    box-shadow: 8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light);
+    border-radius: 1rem; padding: 1.25rem; position: relative; overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  tr.neu-row:hover { background: var(--neu-row-hover); }
+  select.neu-select {
+    background: var(--neu-bg);
+    box-shadow: inset 3px 3px 7px var(--neu-shadow-dark), inset -3px -3px 7px var(--neu-shadow-light);
+    border: none; color: var(--neu-text); border-radius: 0.5rem; padding: 0.45rem 1rem;
+    font-size: 0.88rem; font-weight: 600; appearance: auto;
+  }
+  [data-theme="dark"] select.neu-select { color-scheme: dark; }
+  [data-theme="light"] select.neu-select { color-scheme: light; }
+  .filter-btn {
+    background: var(--neu-bg);
+    box-shadow: 4px 4px 8px var(--neu-shadow-dark), -4px -4px 8px var(--neu-shadow-light);
+    border: none; color: var(--neu-text-muted); border-radius: 0.5rem;
+    padding: 0.5rem 1.1rem; font-size: 0.85rem; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.15s;
+  }
+  .filter-btn:hover { color: var(--neu-accent); box-shadow: 5px 5px 10px var(--neu-shadow-dark), -5px -5px 10px var(--neu-shadow-light); }
+  .filter-btn:active { box-shadow: inset 3px 3px 6px var(--neu-shadow-dark), inset -3px -3px 6px var(--neu-shadow-light); }
+  .page-btn-active {
+    background: var(--neu-accent); color: #fff; font-weight: 800; font-size: 0.82rem;
+    padding: 0.35rem 0.75rem; border-radius: 0.4rem; border: none; cursor: pointer;
+  }
+  .page-btn {
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
+    color: var(--neu-text-muted); font-weight: 700; font-size: 0.82rem;
+    padding: 0.35rem 0.75rem; border-radius: 0.4rem; border: none; cursor: pointer; transition: all 0.15s;
+  }
+  .page-btn:hover { color: var(--neu-accent); }
+  .page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .neu-fab {
+    background: var(--neu-bg);
+    box-shadow: 6px 6px 14px var(--neu-shadow-dark), -6px -6px 14px var(--neu-shadow-light);
+    transition: all 0.2s ease;
+  }
+  .neu-fab:hover { box-shadow: 8px 8px 18px var(--neu-shadow-dark), -8px -8px 18px var(--neu-shadow-light), 0 0 20px var(--neu-accent-glow); transform: scale(1.08); }
+  .neu-fab:active { box-shadow: inset 4px 4px 10px var(--neu-shadow-dark), inset -4px -4px 10px var(--neu-shadow-light); }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--neu-bg); }
+  ::-webkit-scrollbar-thumb { background: var(--neu-shadow-dark); border-radius: 10px; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+  /* ── Theme toggle button ── */
+  #theme-toggle {
+    width: 2.4rem; height: 2.4rem; border-radius: 50%;
+    border: none; cursor: pointer;
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light);
+    color: var(--neu-accent);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s ease; flex-shrink: 0;
+  }
+  #theme-toggle:hover {
+    box-shadow: 5px 5px 12px var(--neu-shadow-dark), -5px -5px 12px var(--neu-shadow-light), 0 0 14px var(--neu-accent-glow);
+    transform: scale(1.08);
+  }
+  #theme-toggle:active {
+    box-shadow: inset 3px 3px 7px var(--neu-shadow-dark), inset -3px -3px 7px var(--neu-shadow-light);
+  }
+
+  /* ── Dark mode overrides for inline-hardcoded light colours ── */
+  [data-theme="dark"] thead { background: var(--neu-table-head) !important; }
+  [data-theme="dark"] thead th { color: var(--neu-table-head-text) !important; }
+  [data-theme="dark"] table tbody td { color: var(--neu-text) !important; }
+  [data-theme="dark"] h3 { color: var(--neu-text) !important; }
+  [data-theme="dark"] p[style*="color:#334155"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] p[style*="color:#475569"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] div[style*="color:#0f172a"] { color: var(--neu-text) !important; }
+  [data-theme="dark"] div[style*="color:#475569"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] div[style*="color:#1b5e20"] { color: var(--neu-badge-green-text) !important; }
+  [data-theme="dark"] span[style*="color:#1b5e20"] { color: var(--neu-badge-green-text) !important; }
+  [data-theme="dark"] span[style*="color:#b71c1c"] { color: var(--neu-badge-red-text) !important; }
+  [data-theme="dark"] span[style*="color:#6a1070"] { color: #c084fc !important; }
+  [data-theme="dark"] span[style*="color:#005662"] { color: rgba(26,138,255,0.85) !important; }
+  [data-theme="dark"] span[style*="color:#475569"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] .stat-card div[style*="font-size:2rem"] { color: var(--neu-text) !important; }
+  [data-theme="dark"] p[style*="color:#475569"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] [style*="border-top:1px solid rgba(0,0,0"] { border-top-color: rgba(255,255,255,0.07) !important; }
+  [data-theme="dark"] [style*="border-bottom:1px solid rgba(0,0,0"] { border-bottom-color: rgba(255,255,255,0.07) !important; }
+  [data-theme="dark"] span[style*="color:#0f172a"] { color: var(--neu-text) !important; }
+  [data-theme="dark"] .page-btn { color: var(--neu-text-muted); }
+
+  /* ── Light mode table head ── */
+  [data-theme="light"] thead { background: var(--neu-table-head) !important; }
+  [data-theme="light"] thead th { color: var(--neu-table-head-text) !important; }
+</style>
+</head>
+<body>
+<div id="sidebar-container"></div>
+<main class="lg:ml-64 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-30 neu-header px-margin-desktop py-4 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <h2 style="font-size:1.4rem;font-weight:800;color:var(--neu-accent);">Subscription Management</h2>
+      <span class="neu-inset rounded-full px-3 py-1" style="font-size:0.78rem;font-weight:600;color:var(--neu-text-muted);">Live Data</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="relative w-64 neu-inset rounded-full">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2" style="color:#475569;">search</span>
+        <input class="bg-transparent border-none focus:ring-0 w-full pl-10 pr-4 py-2" style="font-size:0.92rem;" placeholder="Search subscribers..." type="text"/>
+      </div>
+      <!-- Theme Toggle -->
+      <button id="theme-toggle" onclick="toggleTheme()" title="Switch to Light Mode">
+        <span class="material-symbols-outlined t-icon" style="font-size:1.15rem;">light_mode</span>
+      </button>
+      <div class="relative">
+        <button id="profile-menu-btn" onclick="document.getElementById('profile-dropdown').classList.toggle('hidden')" class="flex items-center gap-3 text-left focus:outline-none group bg-transparent border-none p-0 cursor-pointer">
+          <div class="w-10 h-10 rounded-full overflow-hidden transition-transform group-hover:scale-105" style="box-shadow:3px 3px 6px var(--neu-shadow-dark),-3px -3px 6px var(--neu-shadow-light);">
+            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAqknVdGIG9lR4g4HhPew9FZ3Q4r8MIoKYjj8WoGgOmJ68Oj5wbkSzbWuJmOlLKLOiliqt3V-UKG09neeeGSMVI9XRdAeONjd6gRJR-YZIg-A-woPHfzc1lfWUTk3eGdd6I0h0HQppE5LXGj16IQa6IgLvzIlMqdSNdkyzdCkh-O3FAIuQj8lt7Td9FKKOf2gmzByao2GkfhaDO_0migEO5jy7DUBvFAo7LrDoc9r3awBTriqP0xSP"/>
+          </div>
+          <div class="hidden md:block">
+            <p style="font-size:0.95rem;font-weight:800;color:#006970;margin:0;">Alex Mercer</p>
+            <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#475569;margin:0;">SYSTEM ADMIN</p>
+          </div>
+        </button>
+        <div id="profile-dropdown" class="hidden absolute right-0 mt-3 w-48 glass-panel rounded-2xl overflow-hidden z-50 shadow-2xl origin-top-right border border-black/5 dark:border-white/5">
+          <div class="p-2">
+            <a href="profile.html" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-semibold text-sm no-underline text-inherit">
+              <span class="material-symbols-outlined" style="font-size:1.2rem;">person</span> My Profile
+            </a>
+            <a href="settings.html" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-semibold text-sm no-underline text-inherit">
+              <span class="material-symbols-outlined" style="font-size:1.2rem;">settings</span> Settings
+            </a>
+            <div class="h-px bg-black/10 dark:bg-white/10 my-1 mx-2"></div>
+            <a href="/api/logout" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 text-red-600 dark:text-red-400 transition-colors font-semibold text-sm no-underline">
+              <span class="material-symbols-outlined" style="font-size:1.2rem;">logout</span> Sign Out
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Body -->
+  <div class="p-margin-desktop space-y-8">
+
+    <!-- Analytics Stat Cards -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+
+      <!-- MRR -->
+      <div class="stat-card">
+        <div class="flex justify-between items-start mb-4">
+          <span class="neu-icon-badge material-symbols-outlined" style="color:#006970;">payments</span>
+        </div>
+        <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#475569;text-transform:uppercase;">Monthly Recurring Revenue</p>
+        <div id="stat-mrr" style="font-size:2rem;font-weight:800;color:#0f172a;letter-spacing:-0.02em;margin-top:6px;line-height:1.1;">—</div>
+        <div class="mt-3 h-1 w-full rounded-full" style="background:linear-gradient(to right,#006970,transparent);opacity:0.4;"></div>
+      </div>
+
+      <!-- Churn -->
+      <div class="stat-card">
+        <div class="flex justify-between items-start mb-4">
+          <span class="neu-icon-badge material-symbols-outlined" style="color:#7b1fa2;">person_remove</span>
+        </div>
+        <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#475569;text-transform:uppercase;">Net Churn Rate</p>
+        <div id="stat-churn" style="font-size:2rem;font-weight:800;color:#0f172a;letter-spacing:-0.02em;margin-top:6px;line-height:1.1;">—</div>
+        <div class="mt-3 h-1 w-full rounded-full" style="background:linear-gradient(to right,#7b1fa2,transparent);opacity:0.4;"></div>
+      </div>
+
+      <!-- Active Subs -->
+      <div class="stat-card">
+        <div class="flex justify-between items-start mb-4">
+          <span class="neu-icon-badge material-symbols-outlined" style="color:#006970;">groups</span>
+        </div>
+        <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#475569;text-transform:uppercase;">Active Subscriptions</p>
+        <div id="stat-active-subs" style="font-size:2rem;font-weight:800;color:#0f172a;letter-spacing:-0.02em;margin-top:6px;line-height:1.1;">—</div>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="stat-card">
+        <div class="flex justify-between items-start mb-4">
+          <span class="neu-icon-badge material-symbols-outlined" style="color:#7b1fa2;">domain</span>
+        </div>
+        <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#475569;text-transform:uppercase;">Studio Enterprise Seats</p>
+        <div id="stat-enterprise" style="font-size:2rem;font-weight:800;color:#0f172a;letter-spacing:-0.02em;margin-top:6px;line-height:1.1;">—</div>
+      </div>
+
+    </section>
+
+    <!-- Subscription Table -->
+    <section class="space-y-4">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h3 style="font-size:1.35rem;font-weight:800;color:#0f172a;">Subscription Roster</h3>
+          <p style="font-size:0.92rem;color:#334155;margin-top:2px;">Detailed breakdown of active, pending, and studio contracts.</p>
+        </div>
+        <div class="flex gap-3">
+          <button class="filter-btn">
+            <span class="material-symbols-outlined" style="font-size:1rem;">filter_list</span> Filter
+          </button>
+          <button class="filter-btn" onclick="exportSubscribersCSV()">
+            <span class="material-symbols-outlined" style="font-size:1rem;">file_download</span> Export CSV
+          </button>
+        </div>
+      </div>
+
+      <div class="glass-panel rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead style="background:#d8dfe8;">
+              <tr>
+                <th class="px-6 py-4" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">User / Studio Name</th>
+                <th class="px-6 py-4" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">Tier</th>
+                <th class="px-6 py-4" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">Start Date</th>
+                <th class="px-6 py-4" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">Next Billing</th>
+                <th class="px-6 py-4" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">Status</th>
+                <th class="px-6 py-4 text-right" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="sub-tbody">
+              <tr>
+                <td colspan="6" class="px-6 py-10 text-center" style="color:#7a8599;font-size:0.9rem;">
+                  <span class="material-symbols-outlined" style="font-size:1.5rem;vertical-align:middle;">progress_activity</span> Loading users…
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Pagination -->
+        <div class="px-6 py-4 flex justify-between items-center" style="border-top:1px solid rgba(0,0,0,0.08);">
+          <span id="sub-showing" style="font-size:0.88rem;color:#334155;">Loading…</span>
+          <div class="flex gap-2">
+            <button class="page-btn" disabled>Previous</button>
+            <button class="page-btn" disabled>Next</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+  <div id="footer-container"></div>
+</main>
+
+<!-- FAB -->
+<button class="fixed bottom-8 right-8 z-50 w-14 h-14 rounded-full flex items-center justify-center neu-fab" style="color:#006970;">
+  <span class="material-symbols-outlined" style="font-size:1.5rem;">add</span>
+</button>
+
+<script src="/static/js/dashboard-components.js"></script>
+<script>
+/* ── Theme Toggle (shared with admindashboard) ── */
+(function () {
+  function initTheme() {
+    var t = localStorage.getItem('cc-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    updateBtn(t);
+  }
+  function updateBtn(t) {
+    var btns = document.querySelectorAll('#theme-toggle');
+    btns.forEach(function(btn) {
+      var ic = btn.querySelector('.t-icon');
+      if (ic) ic.textContent = t === 'dark' ? 'light_mode' : 'dark_mode';
+      btn.title = t === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+    });
+  }
+  window.toggleTheme = function () {
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('cc-theme', next);
+    updateBtn(next);
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTheme);
+  } else {
+    initTheme();
+  }
+})();
+</script>
+
+<script>
+/* ── Subscription Management — Live Data ── */
+(function(){
+  const tbody   = document.getElementById('sub-tbody');
+  const showing = document.getElementById('sub-showing');
+  let currentPage=1, total=0;
+
+  const ROLE_TIER = { studio:'Studio', professional:'Professional', customer:'Customer', admin:'Admin' };
+  const TIER_STYLE = {
+    'Studio':       'background:rgba(123,31,162,0.12);color:#6a1070;',
+    'Professional': 'background:rgba(0,133,143,0.12);color:#005662;',
+    'Customer':     'background:rgba(0,0,0,0.07);color:#334155;',
+    'Admin':        'background:rgba(183,28,28,0.1);color:#b71c1c;',
+  };
+
+  function initials(n){ return (n||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
+  function fmtDate(s){ return s ? new Date(s).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—'; }
+
+  async function loadStats(){
+    try {
+      const res  = await fetch('/api/admin/stats');
+      if (!res.ok) return;
+      const { stats } = await res.json();
+      const totalPaid = stats.professionals + stats.studios;
+      const set = (id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
+      set('stat-mrr',         '$' + (totalPaid * 29).toLocaleString());
+      set('stat-churn',       '—');
+      set('stat-active-subs', (stats.total_users - stats.customers).toLocaleString());
+      set('stat-enterprise',  stats.studios.toLocaleString());
+    } catch(e){}
+  }
+
+  async function loadUsers(page){
+    currentPage=page;
+    const roleEl   = document.querySelector('[data-role-filter]');
+    const searchEl = document.querySelector('input[placeholder="Search subscribers..."]');
+    const role     = roleEl ? roleEl.value.toLowerCase() : '';
+    const q        = searchEl ? searchEl.value.trim() : '';
+    tbody.innerHTML=`<tr><td colspan="6" class="px-6 py-10 text-center" style="color:#7a8599;"><span class="material-symbols-outlined" style="font-size:1.5rem;vertical-align:middle;">progress_activity</span></td></tr>`;
+    try {
+      const params = new URLSearchParams({page, ...(role&&role!=='all'&&{role}), ...(q&&{q})});
+      const res    = await fetch('/api/admin/users?' + params);
+      if (!res.ok){ tbody.innerHTML=`<tr><td colspan="6" style="padding:24px;text-align:center;color:#7a8599;">Admin access required.</td></tr>`; return; }
+      const data = await res.json();
+      total = data.total||0;
+      const users = data.users||[];
+      const start=(page-1)*20+1, end=Math.min(page*20,total);
+      if (showing) showing.innerHTML = total
+        ? `Showing <strong style="color:var(--neu-text)">${start}–${end}</strong> of ${total} users`
+        : 'No users found';
+
+      if (!users.length){ tbody.innerHTML=`<tr><td colspan="6" style="padding:24px;text-align:center;color:#7a8599;">No users found.</td></tr>`; return; }
+
+      tbody.innerHTML = users.map((u,i,arr) => {
+        const tier  = ROLE_TIER[u.role]||u.role;
+        const style = TIER_STYLE[tier]||'background:rgba(0,0,0,0.07);color:#334155;';
+        const ini   = initials(u.display_name||u.email);
+        return `<tr class="neu-row transition-colors" style="${i<arr.length-1?'border-bottom:1px solid rgba(0,0,0,0.06);':''}">
+          <td class="px-6 py-5">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg flex items-center justify-center neu-btn" style="font-size:0.8rem;font-weight:800;color:#006970;">${ini}</div>
+              <div>
+                <div style="font-size:0.95rem;font-weight:800;color:#0f172a;">${u.display_name||u.email}</div>
+                <div style="font-size:0.8rem;color:#475569;margin-top:1px;">${u.email}</div>
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-5"><span class="px-3 py-1 rounded-full" style="font-size:0.75rem;font-weight:700;${style}">${tier}</span></td>
+          <td class="px-6 py-5" style="font-size:0.92rem;color:#475569;">${fmtDate(u.created_at)}</td>
+          <td class="px-6 py-5" style="font-size:0.92rem;font-weight:600;color:#0f172a;">—</td>
+          <td class="px-6 py-5">
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full bg-emerald-600"></div>
+              <span style="font-size:0.85rem;font-weight:700;color:#1b5e20;text-transform:uppercase;letter-spacing:0.06em;">Active</span>
+            </div>
+          </td>
+          <td class="px-6 py-5 text-right relative">
+            <button onclick="document.getElementById('sub-menu-${u.id}').classList.toggle('hidden')" class="neu-btn p-2 rounded-lg material-symbols-outlined cursor-pointer border-none" style="color:#475569;">more_vert</button>
+            <div id="sub-menu-${u.id}" class="hidden absolute right-6 top-10 mt-1 w-48 glass-panel rounded-2xl overflow-hidden z-50 shadow-2xl origin-top-right border border-black/5 dark:border-white/5 text-left">
+              <div class="p-2 flex flex-col gap-1">
+                <button onclick="alert('Upgrade tier (Demo)'); document.getElementById('sub-menu-${u.id}').classList.add('hidden')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-semibold text-sm border-none bg-transparent w-full cursor-pointer text-inherit">
+                  <span class="material-symbols-outlined" style="font-size:1.2rem;">arrow_upward</span> Upgrade Tier
+                </button>
+                <button onclick="alert('Downgrade tier (Demo)'); document.getElementById('sub-menu-${u.id}').classList.add('hidden')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors font-semibold text-sm border-none bg-transparent w-full cursor-pointer text-inherit">
+                  <span class="material-symbols-outlined" style="font-size:1.2rem;">arrow_downward</span> Downgrade Tier
+                </button>
+                <div class="h-px bg-black/10 dark:bg-white/10 my-1 mx-2"></div>
+                <button onclick="alert('Cancel Subscription (Demo)'); document.getElementById('sub-menu-${u.id}').classList.add('hidden')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-red-500/10 text-red-600 dark:text-red-400 transition-colors font-semibold text-sm border-none bg-transparent w-full cursor-pointer">
+                  <span class="material-symbols-outlined" style="font-size:1.2rem;">cancel</span> Cancel Sub
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+    } catch(e){
+      tbody.innerHTML=`<tr><td colspan="6" style="padding:24px;text-align:center;color:#b71c1c;">Failed to load users.</td></tr>`;
+    }
+  }
+
+  document.querySelector('[data-role-filter]')?.addEventListener('change', ()=>loadUsers(1));
+  document.querySelector('input[placeholder="Search subscribers..."]')?.addEventListener('input', ()=>setTimeout(()=>loadUsers(1),400));
+
+  loadStats();
+  loadUsers(1);
+  window.loadUsers=loadUsers;
+
+  // Global click listener for dropdowns
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#profile-menu-btn') && !e.target.closest('#profile-dropdown')) {
+      document.getElementById('profile-dropdown')?.classList.add('hidden');
+    }
+    if (!e.target.closest('td.relative')) {
+      document.querySelectorAll('[id^="sub-menu-"]').forEach(menu => menu.classList.add('hidden'));
+    }
+  });
+
+  window.exportSubscribersCSV = function() {
+    const data = "Report Date,Active Subs,MRR,Studio Enterprise\n" + 
+                 new Date().toLocaleDateString() + "," +
+                 document.getElementById('stat-active-subs').textContent + "," +
+                 document.getElementById('stat-mrr').textContent + "," +
+                 document.getElementById('stat-enterprise').textContent;
+    const blob = new Blob([data], {type: 'text/csv'});
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "subscription_report.csv";
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+})();
+</script>
+</body></html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Camcrew Studio | Unified Auth Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="/static/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="bg-obsidian-base min-h-screen flex flex-col items-center justify-center p-margin-mobile md:p-margin-desktop">
+<!-- Atmospheric Background Shader -->
+<div class="fixed inset-0 -z-10 opacity-40"></div>
+<!-- Main Container -->
+<main class="w-full max-w-[1200px] grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
+<!-- Left Side: Branding & Identity -->
+<div class="lg:col-span-5 flex flex-col space-y-stack-md text-center lg:text-left">
+<div class="mb-stack-md flex justify-center lg:justify-start">
+<img alt="Camcrew Studio Logo" class="h-12 md:h-16 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlkv4p3-xwM3Hw5aMTs9BoerbdCTe3uMkEjwZepaiWL_JeSHyhfKxSuJRax30dT8JEUCtL4abPHgGlEh3PxWBy92dWLPANQGOEKIlbrD8CA-eK7U0YEfdvM1REMYj2Dm0H-5aGBDPWU0gGagYmkV6FaVnp15T-7H21eiZADm6C6a38dcV5qsWbdOz1TXDohts9ebYWXzfKMcuJCh1zE-xexYajBGD4gaw107zTjrboSimGft8lZSGdpfH5AqEMSQ_4l2bA9VHSNyKQuQ"/>
+</div>
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary leading-tight">
+                Empowering <span class="text-secondary">Cinematic</span> Vision.
+            </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-md mx-auto lg:mx-0">
+                The ultimate collaborative hub for creators, studios, and production professionals. Precision technology at your fingertips.
+            </p>
+</div>
+<!-- Right Side: Auth Portal -->
+<div class="lg:col-span-7">
+<div class="glass-panel rounded-3xl p-8 md:p-12 shadow-neon-blue-glow relative overflow-hidden transition-all duration-500">
+<!-- Auth Forms -->
+<div class="transition-all duration-300" id="auth-content">
+<form class="space-y-6" id="login-form">
+<div class="space-y-4">
+<!-- Email Input -->
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">mail</span>
+<input class="w-full bg-surface-container-lowest rounded-lg border-b border-glass-stroke py-4 pl-12 pr-4 text-on-surface focus:outline-none focus:border-primary-container transition-all placeholder:text-outline/50 font-body-md rounded-t-lg" placeholder="Email Address" required="" type="email"/>
+</div>
+<!-- Password Input -->
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">lock</span>
+<input id="password-input" class="w-full bg-surface-container-lowest rounded-lg border-b border-glass-stroke py-4 pl-12 pr-4 text-on-surface focus:outline-none focus:border-primary-container transition-all placeholder:text-outline/50 font-body-md rounded-t-lg" placeholder="Password" required="" type="password"/>
+</div>
+</div>
+<!-- Forgot Password -->
+<div class="flex justify-end">
+<a class="font-label-caps text-[11px] text-primary hover:text-primary-fixed transition-colors" href="forgot-password.html">Forgot Password?</a>
+</div>
+<!-- Submit Button -->
+<button class="cc-btn-primary" id="submit-auth" type="submit">
+  Sign In
+</button>
+<!-- Social Logins -->
+<div class="space-y-6 transition-opacity duration-300" id="social-auth-section">
+<div class="relative flex items-center py-2">
+<div class="flex-grow border-t border-glass-stroke"></div>
+<span style="font-size:0.78rem;font-weight:600;color:#849495;flex-shrink:0;margin:0 1rem;">or continue with</span>
+<div class="flex-grow border-t border-glass-stroke"></div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="cc-btn-ghost" type="button" style="gap:0.6rem;">
+<svg class="w-5 h-5" viewbox="0 0 24 24"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z" fill="currentColor"></path></svg>
+<span style="font-size:0.95rem;font-weight:600;">Google</span>
+</button>
+<button class="cc-btn-ghost" type="button" style="gap:0.6rem;">
+<svg class="w-5 h-5" viewbox="0 0 24 24"><path d="M12 2.04c-5.5 0-10 4.5-10 10 0 5 3.66 9.12 8.44 9.88v-6.99h-2.54v-2.89h2.54v-2.2c0-2.5 1.47-3.89 3.79-3.89 1.11 0 2.28.2 2.28.2v2.5h-1.28c-1.24 0-1.63.77-1.63 1.56v1.83h2.82l-.45 2.89h-2.37v6.99c4.78-.76 8.44-4.88 8.44-9.88 0-5.5-4.5-10-10-10z" fill="currentColor"></path></svg>
+<span style="font-size:0.95rem;font-weight:600;">Facebook</span>
+</button>
+</div>
+<!-- Mobile OTP option -->
+<button class="cc-btn-ghost" id="otp-btn" type="button">
+<span class="material-symbols-outlined" style="font-size:1.15rem;color:#00dbe9;">app_shortcut</span>
+<span style="font-size:0.95rem;font-weight:600;">Sign in with Mobile OTP</span>
+</button>
+</div>
+<!-- Switch Toggle -->
+<div class="pt-6 text-center transition-all duration-300" id="toggle-wrapper">
+<p style="font-size:0.95rem;color:#b9cacb;" id="toggle-container">
+  Don't have an account?
+  <button style="color:#00dbe9;font-weight:700;background:none;border:none;cursor:pointer;font-size:0.95rem;" id="auth-toggle" onclick="window.location.href='signup.html'" type="button">Sign up</button>
+</p>
+</div>
+</form>
+</div>
+<!-- Subtle Decorative Accents -->
+<div class="absolute -top-24 -right-24 w-48 h-48 bg-primary opacity-10 blur-[100px] rounded-full pointer-events-none"></div>
+<div class="absolute -bottom-24 -left-24 w-48 h-48 bg-secondary opacity-10 blur-[100px] rounded-full pointer-events-none"></div>
+</div>
+</div>
+</main>
+<!-- Success Message Popover (Hidden by default) -->
+<div class="fixed bottom-10 left-1/2 -translate-x-1/2 glass-panel px-8 py-4 rounded-full border border-primary/50 shadow-neon-blue-glow flex items-center space-x-3 opacity-0 translate-y-10 transition-all duration-500 pointer-events-none z-[100]" id="success-toast">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+<span class="font-body-md text-primary" id="toast-text">Successfully authenticated. Welcome back.</span>
+</div>
+<script>
+        // Sign In only — role selection has moved to the sign-up pages.
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email    = e.target.querySelector('input[type="email"]').value.trim();
+            const password = document.getElementById('password-input').value;
+
+            showError('');
+            const submitBtn = document.getElementById('submit-auth');
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+
+            try {
+                const res  = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+                const data = await res.json();
+
+                if (!data.ok) {
+                    showError(data.error || 'Something went wrong. Please try again.');
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                    return;
+                }
+
+                const toast    = document.getElementById('success-toast');
+                const toastText = document.getElementById('toast-text');
+                toastText.innerText = 'Successfully authenticated. Welcome back.';
+                toast.classList.remove('opacity-0', 'translate-y-10');
+                toast.classList.add('opacity-100', 'translate-y-0');
+
+                setTimeout(() => {
+                    const role = data.user && data.user.role;
+                    if (role === 'admin') {
+                        window.location.href = 'admindashboard.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                }, 1200);
+
+            } catch (err) {
+                showError('Network error. Please check your connection.');
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            }
+        });
+
+        function showError(msg) {
+            let el = document.getElementById('auth-error');
+            if (!el) {
+                el = document.createElement('p');
+                el.id = 'auth-error';
+                el.className = 'text-center text-sm font-body-md';
+                el.style.color = '#ffb4ab';
+                const btn = document.getElementById('submit-auth');
+                btn.parentNode.insertBefore(el, btn);
+            }
+            el.textContent = msg;
+        }
+
+        // OTP simulation
+        document.getElementById('otp-btn').addEventListener('click', () => {
+            const authContent = document.getElementById('auth-content');
+            authContent.innerHTML = `
+                <div class="space-y-6">
+                    <h3 class="text-on-surface font-headline-md text-center">Verification Required</h3>
+                    <p class="text-outline text-center text-sm">Enter the code sent to your mobile device.</p>
+                    <div class="flex justify-between gap-2">
+                        ${[1, 2, 3, 4, 5, 6].map(() => `<input type="text" maxlength="1" class="w-12 h-14 bg-surface-container-high rounded-lg border border-glass-stroke text-center text-primary font-bold text-xl focus:border-primary focus:outline-none">`).join('')}
+                    </div>
+                    <button onclick="handleOTPVerification()" class="cc-btn-primary">Verify Code</button>
+                    <button onclick="location.reload()" class="cc-btn-ghost" style="margin-top:0.5rem;">Cancel</button>
+                </div>
+            `;
+        });
+
+        function handleOTPVerification() {
+            const toast = document.getElementById('success-toast');
+            toast.classList.remove('opacity-0', 'translate-y-10');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+        }
+    </script>
+</body></html>

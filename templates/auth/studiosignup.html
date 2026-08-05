@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Studio Signup | Camcrew Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="/static/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="/static/css/styles.css">
+<style>
+  .stage { transition: opacity 0.4s ease, transform 0.4s ease; }
+  .stage.fade-out { opacity: 0; transform: translateY(8px); pointer-events: none; }
+  .stage.hidden { display: none; }
+</style>
+</head>
+<body class="bg-obsidian-base min-h-screen flex flex-col font-body-md text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+
+<!-- Ambient Background -->
+<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+  <div class="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] bg-primary-container/10 blur-[120px] rounded-full"></div>
+  <div class="absolute -bottom-[20%] -right-[10%] w-[50%] h-[50%] bg-secondary-container/10 blur-[100px] rounded-full"></div>
+</div>
+
+<!-- Header -->
+<header class="relative z-10 w-full flex justify-center py-8">
+  <div class="flex flex-col items-center gap-2">
+    <img alt="Camcrew Studio" class="h-10 md:h-12 w-auto object-contain brightness-110"
+      src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9q9WVugN54N0Fb7aRUtxhE8PbmbqbdZTbv95zqsIkJgOBvQ2YSnJM5eEsO75LaztJD6qmaVdCCWaQK1NbD62to1CGN4bTwFVAh0Ft0FSjBG7OyXa-YjEsUU5-I0GrNxLig8VzO6p5S1LtjayqZNGde8y20wt1McNqpRBosYLBLNj0kgRSdHZ_5LOyTRqkeyvgRRjPKTZheePKB1-DVbrI08U-IJyZt1ltAYIoPFOL746s8P3LdgMrT-EW-PkAJ3GufbpN8zUZIK-0lg">
+    <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-[0.2em]">Studio Registration</span>
+  </div>
+</header>
+
+<main class="relative z-10 flex-grow flex items-center justify-center px-margin-mobile md:px-margin-desktop py-stack-xl">
+  <div class="w-full max-w-lg">
+
+    <!-- Progress indicator -->
+    <div class="flex items-center justify-center gap-2 mb-8" id="progress-bar">
+      <div class="stage-dot w-2 h-2 rounded-full bg-primary transition-all duration-300" data-step="1"></div>
+      <div class="h-[1px] w-8 bg-glass-stroke transition-all duration-300" id="line-1-2"></div>
+      <div class="stage-dot w-2 h-2 rounded-full bg-surface-container-high transition-all duration-300" data-step="2"></div>
+      <div class="h-[1px] w-8 bg-glass-stroke transition-all duration-300" id="line-2-3"></div>
+      <div class="stage-dot w-2 h-2 rounded-full bg-surface-container-high transition-all duration-300" data-step="3"></div>
+    </div>
+
+    <!-- Card -->
+    <div class="glass-panel rounded-xl p-8 md:p-12 shadow-neon-blue-glow relative overflow-hidden" id="login-container">
+      <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent pointer-events-none"></div>
+      <div class="absolute top-0 left-0 w-[1px] h-full bg-gradient-to-b from-transparent via-primary/30 to-transparent pointer-events-none"></div>
+
+      <!-- ── Stage 1: Business Details ──────────────────────────── -->
+      <div class="stage" id="form-stage-1">
+        <div class="mb-8">
+          <h1 style="font-size:1.5rem;font-weight:800;color:#dce4e5;margin-bottom:0.5rem;">Business Details</h1>
+          <p style="font-size:1rem;color:#b9cacb;line-height:1.6;">Tell us about your studio. You'll set your password in the final step.</p>
+        </div>
+
+        <form class="space-y-5" id="stage1-form" onsubmit="handleStage1(event)" novalidate>
+
+          <!-- Business Name -->
+          <div class="group/input relative">
+            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 group-focus-within/input:text-primary transition-colors">BUSINESS NAME <span class="text-error">*</span></label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within/input:text-primary transition-colors">business</span>
+              <input id="s1-business-name" type="text" required placeholder="ABC Productions Pvt. Ltd."
+                class="w-full bg-transparent border-0 border-b border-glass-stroke pl-8 pb-3 text-on-surface focus:ring-0 focus:border-primary transition-all duration-300 placeholder:text-on-surface-variant/30" />
+            </div>
+          </div>
+
+          <!-- Owner Name -->
+          <div class="group/input relative">
+            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 group-focus-within/input:text-primary transition-colors">OWNER / CONTACT NAME <span class="text-error">*</span></label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within/input:text-primary transition-colors">person</span>
+              <input id="s1-owner-name" type="text" required placeholder="Ravi Kumar"
+                class="w-full bg-transparent border-0 border-b border-glass-stroke pl-8 pb-3 text-on-surface focus:ring-0 focus:border-primary transition-all duration-300 placeholder:text-on-surface-variant/30" />
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="group/input relative">
+            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 group-focus-within/input:text-primary transition-colors">EMAIL ADDRESS <span class="text-error">*</span></label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within/input:text-primary transition-colors">alternate_email</span>
+              <input id="s1-email" type="email" autocomplete="email" required placeholder="studio@example.com"
+                class="w-full bg-transparent border-0 border-b border-glass-stroke pl-8 pb-3 text-on-surface focus:ring-0 focus:border-primary transition-all duration-300 placeholder:text-on-surface-variant/30" />
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div class="group/input relative">
+            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 group-focus-within/input:text-primary transition-colors">PHONE NUMBER <span class="text-error">*</span></label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within/input:text-primary transition-colors">phone</span>
+              <input id="s1-phone" type="tel" required placeholder="+91 98765 43210"
+                class="w-full bg-transparent border-0 border-b border-glass-stroke pl-8 pb-3 text-on-surface focus:ring-0 focus:border-primary transition-all duration-300 placeholder:text-on-surface-variant/30" />
+            </div>
+          </div>
+
+          <!-- Business Address -->
+          <div class="group/input relative">
+            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 group-focus-within/input:text-primary transition-colors">BUSINESS ADDRESS <span class="text-error">*</span></label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-0 top-3 text-on-surface-variant group-focus-within/input:text-primary transition-colors">location_on</span>
+              <textarea id="s1-address" required rows="2" placeholder="123 Film Nagar, Hyderabad, Telangana 500033"
+                class="w-full bg-transparent border-0 border-b border-glass-stroke pl-8 pb-3 text-on-surface focus:ring-0 focus:border-primary transition-all duration-300 placeholder:text-on-surface-variant/30 resize-none"></textarea>
+            </div>
+          </div>
+
+          <!-- GST (optional) -->
+          <div class="group/input relative">
+            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 group-focus-within/input:text-primary transition-colors">GST NUMBER <span class="text-on-surface-variant/50">(OPTIONAL)</span></label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within/input:text-primary transition-colors">receipt_long</span>
+              <input id="s1-gst" type="text" placeholder="22AAAAA0000A1Z5"
+                class="w-full bg-transparent border-0 border-b border-glass-stroke pl-8 pb-3 text-on-surface focus:ring-0 focus:border-primary transition-all duration-300 placeholder:text-on-surface-variant/30 uppercase" />
+            </div>
+          </div>
+
+          <!-- Error -->
+          <div id="stage1-error" class="hidden rounded-lg px-4 py-3 text-sm font-medium" style="background:rgba(255,72,66,0.1);border:1px solid rgba(255,72,66,0.25);color:#ffb4ab;"></div>
+
+          <button class="cc-btn-primary" type="submit" id="stage1-submit-btn">
+            Continue to Verification
+            <span class="material-symbols-outlined" style="font-size:1.1rem;">arrow_forward</span>
+          </button>
+        </form>
+
+        <div class="mt-8 text-center">
+          <p style="font-size:0.95rem;color:#b9cacb;">
+            Already have an account?
+            <a href="signin.html" style="color:#00dbe9;font-weight:700;" class="hover:underline underline-offset-4 transition-colors">Sign in</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Stage 2: Email / OTP Verification ─────────────────── -->
+      <div class="stage hidden" id="form-stage-2">
+        <div class="mb-8">
+          <button class="group flex items-center gap-2 text-on-surface-variant hover:text-primary mb-6 transition-colors" onclick="goToStage(1)" type="button">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            <span class="font-label-caps text-label-caps">BACK</span>
+          </button>
+          <h1 style="font-size:1.5rem;font-weight:800;color:#dce4e5;margin-bottom:0.5rem;">Email Verification</h1>
+          <p style="font-size:1rem;color:#b9cacb;line-height:1.6;">
+            We've sent a 6-digit code to <span id="otp-email-display" style="color:#00dbe9;font-weight:700;"></span>
+          </p>
+        </div>
+
+        <form class="space-y-8" onsubmit="handleVerifyOtp(event)" novalidate>
+          <div class="flex justify-between gap-2 md:gap-3" id="otp-inputs-wrap">
+            <input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-bold text-xl bg-surface-container-low border border-glass-stroke rounded-lg focus:border-primary focus:ring-1 focus:ring-primary/30 focus:outline-none transition-all" maxlength="1" type="text" inputmode="numeric" autocomplete="one-time-code">
+            <input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-bold text-xl bg-surface-container-low border border-glass-stroke rounded-lg focus:border-primary focus:ring-1 focus:ring-primary/30 focus:outline-none transition-all" maxlength="1" type="text" inputmode="numeric">
+            <input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-bold text-xl bg-surface-container-low border border-glass-stroke rounded-lg focus:border-primary focus:ring-1 focus:ring-primary/30 focus:outline-none transition-all" maxlength="1" type="text" inputmode="numeric">
+            <input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-bold text-xl bg-surface-container-low border border-glass-stroke rounded-lg focus:border-primary focus:ring-1 focus:ring-primary/30 focus:outline-none transition-all" maxlength="1" type="text" inputmode="numeric">
+            <input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-bold text-xl bg-surface-container-low border border-glass-stroke rounded-lg focus:border-primary focus:ring-1 focus:ring-primary/30 focus:outline-none transition-all" maxlength="1" type="text" inputmode="numeric">
+            <input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center font-bold text-xl bg-surface-container-low border border-glass-stroke rounded-lg focus:border-primary focus:ring-1 focus:ring-primary/30 focus:outline-none transition-all" maxlength="1" type="text" inputmode="numeric">
+          </div>
+
+          <div class="text-center">
+            <p class="text-on-surface-variant" style="font-size:0.9rem;">
+              Didn't receive the code?
+              <button type="button" id="resend-btn" onclick="handleResend()" style="color:#00dbe9;font-weight:700;background:none;border:none;cursor:pointer;" class="hover:underline">
+                Resend
+              </button>
+              <span id="resend-timer" class="hidden" style="color:#849495;"></span>
+            </p>
+          </div>
+
+          <!-- Error -->
+          <div id="stage2-error" class="hidden rounded-lg px-4 py-3 text-sm font-medium" style="background:rgba(255,72,66,0.1);border:1px solid rgba(255,72,66,0.25);color:#ffb4ab;"></div>
+
+          <button type="submit" class="cc-btn-primary" id="verify-otp-btn">
+            Verify &amp; Continue
+            <span class="material-symbols-outlined" style="font-size:1.1rem;">verified_user</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- ── Stage 3: Create Password ───────────────────────────── -->
+      <div class="stage hidden" id="form-stage-3">
+        <div class="mb-8">
+          <button class="group flex items-center gap-2 text-on-surface-variant hover:text-primary mb-6 transition-colors" onclick="goToStage(2)" type="button">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            <span class="font-label-caps text-label-caps">BACK</span>
+          </button>
+          <h1 style="font-size:1.5rem;font-weight:800;color:#dce4e5;margin-bottom:0.5rem;">Create Password</h1>
+          <p style="font-size:1rem;color:#b9cacb;line-height:1.6;">Choose a strong password to secure your studio account.</p>
+        </div>
+
+        <form class="space-y-6" id="stage3-form" onsubmit="handleCreatePassword(event)" novalidate>
+
+          <!-- Password -->
+          <div class="group/input relative">
+            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 group-focus-within/input:text-primary transition-colors">PASSWORD <span class="text-error">*</span></label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within/input:text-primary transition-colors">lock</span>
+              <input id="s3-password" type="password" autocomplete="new-password" required
+                placeholder="Minimum 8 characters"
+                class="w-full bg-transparent border-0 border-b border-glass-stroke pl-8 pr-10 pb-3 text-on-surface focus:ring-0 focus:border-primary transition-all duration-300 placeholder:text-on-surface-variant/30" />
+              <button type="button" onclick="togglePw('s3-password','s3-eye')"
+                class="absolute right-0 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-[20px]" id="s3-eye">visibility</span>
+              </button>
+            </div>
+            <!-- Strength bar -->
+            <div class="mt-2 h-1 rounded-full bg-surface-container-high overflow-hidden">
+              <div id="pw-strength-bar" class="h-full rounded-full transition-all duration-300" style="width:0%;background:#849495;"></div>
+            </div>
+            <p id="pw-strength-label" class="text-[11px] mt-1" style="color:#849495;"></p>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="group/input relative">
+            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 group-focus-within/input:text-primary transition-colors">CONFIRM PASSWORD <span class="text-error">*</span></label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within/input:text-primary transition-colors">lock_reset</span>
+              <input id="s3-confirm" type="password" autocomplete="new-password" required
+                placeholder="Re-enter your password"
+                class="w-full bg-transparent border-0 border-b border-glass-stroke pl-8 pr-10 pb-3 text-on-surface focus:ring-0 focus:border-primary transition-all duration-300 placeholder:text-on-surface-variant/30" />
+              <button type="button" onclick="togglePw('s3-confirm','s3-eye2')"
+                class="absolute right-0 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-[20px]" id="s3-eye2">visibility</span>
+              </button>
+            </div>
+            <p id="pw-match-label" class="text-[11px] mt-1" style="color:transparent;">&#8203;</p>
+          </div>
+
+          <!-- Error -->
+          <div id="stage3-error" class="hidden rounded-lg px-4 py-3 text-sm font-medium" style="background:rgba(255,72,66,0.1);border:1px solid rgba(255,72,66,0.25);color:#ffb4ab;"></div>
+
+          <button class="cc-btn-primary" type="submit" id="stage3-submit-btn">
+            Create Studio Account
+            <span class="material-symbols-outlined" style="font-size:1.1rem;">check_circle</span>
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- Footer links -->
+    <div class="mt-8 text-center">
+      <p class="text-on-surface-variant/60 font-label-caps text-label-caps">ENCRYPTED SESSION • AES-256 COMPLIANT</p>
+      <div class="flex justify-center gap-6 mt-4">
+        <a class="text-on-surface-variant hover:text-primary transition-colors text-label-caps font-label-caps" href="#">Support</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors text-label-caps font-label-caps" href="#">Privacy Policy</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Success Toast -->
+<div class="fixed bottom-10 left-1/2 -translate-x-1/2 glass-panel px-8 py-4 rounded-full border border-primary/50 shadow-neon-blue-glow flex items-center space-x-3 opacity-0 translate-y-10 transition-all duration-500 pointer-events-none z-[100]" id="success-toast">
+  <span class="material-symbols-outlined text-primary">check_circle</span>
+  <span class="font-body-md text-primary" id="toast-text">Studio account created. Welcome aboard!</span>
+</div>
+
+<script>
+  /* ─────────────────────────────────────────────────────────────────────────
+     JS State — all data collected across stages, no passwords auto-generated.
+     Registration is submitted only after Stage 3 completes.
+  ──────────────────────────────────────────────────────────────────────────*/
+  let studioData = {
+    businessName: '',
+    ownerName:    '',
+    email:        '',
+    phone:        '',
+    address:      '',
+    gst:          '',
+  };
+
+  /* ─── Pre-fill email from ?email= URL param (backwards compat) ─── */
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    const email  = params.get('email');
+    if (email) document.getElementById('s1-email').value = decodeURIComponent(email);
+  })();
+
+  /* ─── Redirect if already logged in as studio ─── */
+  (async () => {
+    try {
+      const res  = await fetch('/api/me');
+      const data = await res.json();
+      if (data.ok && data.user && data.user.role === 'studio') {
+        window.location.href = 'studioreq.html';
+      }
+    } catch (_) {}
+  })();
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     Stage navigation
+  ──────────────────────────────────────────────────────────────────────────*/
+  function goToStage(n) {
+    [1, 2, 3].forEach(i => {
+      const el = document.getElementById('form-stage-' + i);
+      if (i === n) {
+        el.classList.remove('hidden');
+        requestAnimationFrame(() => el.classList.remove('fade-out'));
+      } else {
+        el.classList.add('fade-out');
+        setTimeout(() => el.classList.add('hidden'), 400);
+      }
+    });
+
+    // Update progress dots
+    document.querySelectorAll('.stage-dot').forEach(dot => {
+      const step = parseInt(dot.dataset.step);
+      dot.style.background = step <= n ? '#00f0ff' : '';
+      dot.style.width      = step === n ? '10px' : '8px';
+      dot.style.height     = step === n ? '10px' : '8px';
+      if (step > n) dot.classList.remove('bg-primary');
+    });
+    if (n >= 2) document.getElementById('line-1-2').style.background = '#00f0ff';
+    else        document.getElementById('line-1-2').style.background = '';
+    if (n >= 3) document.getElementById('line-2-3').style.background = '#00f0ff';
+    else        document.getElementById('line-2-3').style.background = '';
+  }
+
+  function showError(stageNum, msg) {
+    const el = document.getElementById('stage' + stageNum + '-error');
+    el.textContent = msg;
+    el.classList.toggle('hidden', !msg);
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     Stage 1 — Business Details
+     Validates and stores data in studioData. No API call yet.
+  ──────────────────────────────────────────────────────────────────────────*/
+  function handleStage1(e) {
+    e.preventDefault();
+    showError(1, '');
+
+    const businessName = document.getElementById('s1-business-name').value.trim();
+    const ownerName    = document.getElementById('s1-owner-name').value.trim();
+    const email        = document.getElementById('s1-email').value.trim().toLowerCase();
+    const phone        = document.getElementById('s1-phone').value.trim();
+    const address      = document.getElementById('s1-address').value.trim();
+    const gst          = document.getElementById('s1-gst').value.trim().toUpperCase();
+
+    if (!businessName) { showError(1, 'Business name is required.'); return; }
+    if (!ownerName)    { showError(1, 'Owner / contact name is required.'); return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showError(1, 'Please enter a valid email address.'); return;
+    }
+    if (!phone)        { showError(1, 'Phone number is required.'); return; }
+    if (!address)      { showError(1, 'Business address is required.'); return; }
+
+    // Store in state — account not created yet
+    studioData = { businessName, ownerName, email, phone, address, gst };
+
+    // Prepare OTP stage display
+    document.getElementById('otp-email-display').textContent = email;
+
+    // Future: POST /api/send-otp  →  { email }
+    // Structured for drop-in replacement:
+    //   await fetch('/api/send-otp', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email }) });
+    // Demo-safe: skip external call, go straight to OTP entry.
+
+    startResendTimer();
+    goToStage(2);
+
+    // Focus first OTP box
+    setTimeout(() => {
+      const first = document.querySelector('.otp-input');
+      if (first) first.focus();
+    }, 450);
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     Stage 2 — OTP Verification
+     Structured for real POST /api/verify-otp when ready.
+     Demo-safe: any 6-digit code is accepted.
+  ──────────────────────────────────────────────────────────────────────────*/
+  function handleVerifyOtp(e) {
+    e.preventDefault();
+    showError(2, '');
+
+    const inputs = document.querySelectorAll('.otp-input');
+    const code   = Array.from(inputs).map(i => i.value).join('');
+
+    if (code.length < 6 || !/^\d{6}$/.test(code)) {
+      showError(2, 'Please enter the complete 6-digit code.');
+      return;
+    }
+
+    const btn = document.getElementById('verify-otp-btn');
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+
+    // Future: POST /api/verify-otp  →  { email, code }
+    // Structured for drop-in replacement:
+    //   const res  = await fetch('/api/verify-otp', { method:'POST', ... });
+    //   const data = await res.json();
+    //   if (!data.ok) { showError(2, data.error); btn.disabled=false; return; }
+    // Demo-safe: any 6-digit code passes.
+
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    goToStage(3);
+    setTimeout(() => document.getElementById('s3-password').focus(), 450);
+  }
+
+  function handleResend() {
+    // Future: POST /api/send-otp  →  { email: studioData.email }
+    startResendTimer();
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     Stage 3 — Create Password
+     Validates password, then submits POST /api/register with all collected data.
+  ──────────────────────────────────────────────────────────────────────────*/
+  async function handleCreatePassword(e) {
+    e.preventDefault();
+    showError(3, '');
+
+    const password = document.getElementById('s3-password').value;
+    const confirm  = document.getElementById('s3-confirm').value;
+
+    if (!password)             { showError(3, 'Please enter a password.'); return; }
+    if (password.length < 8)   { showError(3, 'Password must be at least 8 characters.'); return; }
+    if (password.length > 128) { showError(3, 'Password must be 128 characters or fewer.'); return; }
+    if (password !== confirm)  { showError(3, 'Passwords do not match.'); return; }
+
+    const btn = document.getElementById('stage3-submit-btn');
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+
+    try {
+      const res  = await fetch('/api/register', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({
+          email:        studioData.email,
+          password:     password,           // always from user input, never generated
+          role:         'studio',
+          display_name: studioData.businessName,
+        }),
+      });
+      const data = await res.json();
+
+      if (!data.ok) {
+        showError(3, data.error || 'Registration failed. Please try again.');
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        return;
+      }
+
+      // Registered + auto-logged-in (Flask session set by /api/register)
+      showToast('Studio account created. Welcome aboard!');
+      setTimeout(() => { window.location.href = 'studioreq.html'; }, 1400);
+
+    } catch (_) {
+      showError(3, 'Network error. Please check your connection.');
+      btn.disabled = false;
+      btn.style.opacity = '1';
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     Password strength meter
+  ──────────────────────────────────────────────────────────────────────────*/
+  document.getElementById('s3-password').addEventListener('input', function () {
+    const pw  = this.value;
+    const bar = document.getElementById('pw-strength-bar');
+    const lbl = document.getElementById('pw-strength-label');
+
+    let score = 0;
+    if (pw.length >= 8)                    score++;
+    if (pw.length >= 12)                   score++;
+    if (/[A-Z]/.test(pw))                  score++;
+    if (/[0-9]/.test(pw))                  score++;
+    if (/[^A-Za-z0-9]/.test(pw))          score++;
+
+    const levels = [
+      { pct: '0%',   color: '#849495', label: '' },
+      { pct: '25%',  color: '#ff4842', label: 'Weak' },
+      { pct: '50%',  color: '#ffb300', label: 'Fair' },
+      { pct: '75%',  color: '#00dbe9', label: 'Good' },
+      { pct: '100%', color: '#00f0a0', label: 'Strong' },
+    ];
+    const lvl = pw.length === 0 ? levels[0] : levels[Math.min(score, 4)];
+    bar.style.width      = lvl.pct;
+    bar.style.background = lvl.color;
+    lbl.textContent      = lvl.label;
+    lbl.style.color      = lvl.color;
+  });
+
+  document.getElementById('s3-confirm').addEventListener('input', function () {
+    const pw  = document.getElementById('s3-password').value;
+    const lbl = document.getElementById('pw-match-label');
+    if (!this.value) { lbl.textContent = '​'; lbl.style.color = 'transparent'; return; }
+    if (this.value === pw) {
+      lbl.textContent = '✓ Passwords match';
+      lbl.style.color = '#00f0a0';
+    } else {
+      lbl.textContent = 'Passwords do not match';
+      lbl.style.color = '#ffb4ab';
+    }
+  });
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     OTP keyboard / paste helpers
+  ──────────────────────────────────────────────────────────────────────────*/
+  document.getElementById('otp-inputs-wrap').addEventListener('input', function (e) {
+    if (!e.target.classList.contains('otp-input')) return;
+    const inputs = Array.from(document.querySelectorAll('.otp-input'));
+    const idx    = inputs.indexOf(e.target);
+    e.target.value = e.target.value.slice(-1).replace(/\D/g, '');
+    if (e.target.value && idx < inputs.length - 1) inputs[idx + 1].focus();
+  });
+
+  document.getElementById('otp-inputs-wrap').addEventListener('keydown', function (e) {
+    if (!e.target.classList.contains('otp-input')) return;
+    const inputs = Array.from(document.querySelectorAll('.otp-input'));
+    const idx    = inputs.indexOf(e.target);
+    if (e.key === 'Backspace' && !e.target.value && idx > 0) inputs[idx - 1].focus();
+    if (e.key === 'ArrowLeft'  && idx > 0)                   inputs[idx - 1].focus();
+    if (e.key === 'ArrowRight' && idx < inputs.length - 1)   inputs[idx + 1].focus();
+  });
+
+  document.getElementById('otp-inputs-wrap').addEventListener('paste', function (e) {
+    e.preventDefault();
+    const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+    const inputs = document.querySelectorAll('.otp-input');
+    pasted.split('').forEach((ch, i) => { if (inputs[i]) inputs[i].value = ch; });
+    const last = inputs[Math.min(pasted.length, 5)];
+    if (last) last.focus();
+  });
+
+  /* ─────────────────────────────────────────────────────────────────────────
+     Resend timer
+  ──────────────────────────────────────────────────────────────────────────*/
+  let resendInterval = null;
+  function startResendTimer() {
+    const btn   = document.getElementById('resend-btn');
+    const timer = document.getElementById('resend-timer');
+    btn.classList.add('hidden');
+    timer.classList.remove('hidden');
+    let secs = 45;
+    timer.textContent = '(resend in 0:' + String(secs).padStart(2, '0') + ')';
+    clearInterval(resendInterval);
+    resendInterval = setInterval(() => {
+      secs--;
+      if (secs <= 0) {
+        clearInterval(resendInterval);
+        timer.classList.add('hidden');
+        btn.classList.remove('hidden');
+      } else {
+        timer.textContent = '(resend in 0:' + String(secs).padStart(2, '0') + ')';
+      }
+    }, 1000);
+  }
+
+  /* ─── Show/hide password toggle ─── */
+  function togglePw(inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon  = document.getElementById(iconId);
+    if (input.type === 'password') {
+      input.type  = 'text';
+      icon.textContent = 'visibility_off';
+    } else {
+      input.type  = 'password';
+      icon.textContent = 'visibility';
+    }
+  }
+
+  /* ─── Toast ─── */
+  function showToast(msg) {
+    const toast = document.getElementById('success-toast');
+    document.getElementById('toast-text').textContent = msg;
+    toast.classList.remove('opacity-0', 'translate-y-10');
+    toast.classList.add('opacity-100', 'translate-y-0');
+  }
+</script>
+
+<script src="/static/js/footer-loader.js"></script>
+</body>
+</html>

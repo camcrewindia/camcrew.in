@@ -1,0 +1,228 @@
+<!-- Mobile Overlay -->
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+<!-- Mobile Toggle -->
+<button id="sidebar-toggle" onclick="openSidebar()" class="fixed top-4 left-4 z-[60] lg:hidden p-2.5 rounded-xl transition-colors" style="background:var(--neu-bg);box-shadow:4px 4px 8px var(--neu-shadow-dark),-4px -4px 8px var(--neu-shadow-light);border:none;color:var(--neu-text-muted);cursor:pointer;">
+  <span class="material-symbols-outlined">menu</span>
+</button>
+
+<style>
+  /* ── Tesla Cybertruck sidebar — dark/light theme-aware ── */
+  /* Dark mode (default) */
+  :root, [data-theme="dark"] {
+    --neu-bg:         #16161e;
+    --neu-shadow-dark: #0d0d16;
+    --neu-shadow-light: #1f1f2c;
+    --neu-accent:     #1a8aff;
+    --neu-text:       #e4e8f6;
+    --neu-text-muted: #7a8599;
+    --sb-border:      rgba(255,255,255,0.07);
+    --sb-label:       #4a5568;
+    --sb-icon:        #7a8599;
+    --sb-badge-text:  #fff;
+  }
+  /* Light mode overrides */
+  [data-theme="light"] {
+    --neu-bg:         #eef1f8;
+    --neu-shadow-dark: #c5cad8;
+    --neu-shadow-light: #ffffff;
+    --neu-accent:     #0060cc;
+    --neu-text:       #1a1a2e;
+    --neu-text-muted: #5a6880;
+    --sb-border:      rgba(0,0,0,0.08);
+    --sb-label:       #64748b;
+    --sb-icon:        #64748b;
+    --sb-badge-text:  #fff;
+  }
+
+  #sidebar {
+    background: var(--neu-bg);
+    box-shadow: 6px 0 24px var(--neu-shadow-dark), -2px 0 8px var(--neu-shadow-light);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .sidebar-section-label {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sb-label);
+    padding: 1rem 0.85rem 0.4rem;
+    transition: color 0.3s;
+  }
+
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 0.85rem;
+    border-radius: 0.85rem;
+    text-decoration: none;
+    color: var(--neu-text-muted);
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.18s ease;
+    position: relative;
+    margin-bottom: 2px;
+  }
+  .sidebar-link:hover {
+    color: var(--neu-text);
+    box-shadow: 4px 4px 9px var(--neu-shadow-dark), -4px -4px 9px var(--neu-shadow-light);
+  }
+  .sidebar-link:hover .sidebar-icon { color: var(--neu-accent); }
+  .sidebar-link.active {
+    box-shadow: inset 3px 3px 7px var(--neu-shadow-dark), inset -3px -3px 7px var(--neu-shadow-light);
+    color: var(--neu-accent);
+    font-weight: 700;
+  }
+  .sidebar-link.active .sidebar-icon { color: var(--neu-accent); }
+  .sidebar-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 20%; bottom: 20%;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: var(--neu-accent);
+  }
+
+  .sidebar-icon {
+    font-size: 1.25rem;
+    color: var(--sb-icon);
+    transition: color 0.18s;
+    flex-shrink: 0;
+  }
+
+  .sidebar-bottom-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 0.85rem;
+    border-radius: 0.85rem;
+    text-decoration: none;
+    color: var(--neu-text-muted);
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.18s ease;
+    margin-bottom: 2px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .sidebar-bottom-link:hover {
+    box-shadow: 4px 4px 9px var(--neu-shadow-dark), -4px -4px 9px var(--neu-shadow-light);
+    color: var(--neu-text);
+  }
+  .sidebar-bottom-link:hover .sidebar-icon { color: var(--neu-accent); }
+  .sidebar-bottom-link.signout:hover { color: #ff6464; }
+  .sidebar-bottom-link.signout:hover .sidebar-icon { color: #ff6464; }
+
+  /* Sidebar logo area border */
+  .sb-logo-area { border-bottom: 1px solid var(--sb-border); }
+  .sb-badge-area { border-bottom: 1px solid var(--sb-border); }
+  .sb-bottom-area { border-top: 1px solid var(--sb-border); }
+
+  /* Admin name text inherits theme */
+  #sidebar-admin-name { color: var(--neu-text); }
+  .sb-admin-label { color: var(--neu-text-muted); }
+  .sb-panel-label { color: var(--neu-text-muted); }
+
+  #sidebar .custom-scrollbar::-webkit-scrollbar { width: 3px; }
+  #sidebar .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  #sidebar .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--neu-shadow-dark); border-radius: 10px; }
+
+  /* Mobile toggle button */
+  #sidebar-toggle { color: var(--neu-text-muted); }
+
+  /* ── Theme-aware logo switching ── */
+  .cc-logo-dark  { display: block; }
+  .cc-logo-light { display: none;  }
+  [data-theme="light"] .cc-logo-dark  { display: none;  }
+  [data-theme="light"] .cc-logo-light { display: block; }
+</style>
+
+<!-- Sidebar -->
+<aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 flex flex-col -translate-x-full lg:translate-x-0 transition-transform duration-300" style="font-family:'Plus Jakarta Sans',sans-serif;">
+
+  <!-- Logo -->
+  <div class="sb-logo-area" style="padding:1.35rem 1.25rem 1.1rem;display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <!-- White logo for dark bg, black logo for light bg -->
+      <img alt="Camcrew Studio" class="cc-logo-dark"  style="height:2rem;width:auto;object-fit:contain;" src="attached_assets/camcrew_studio_logo_cop_y_1785515916927.png">
+      <img alt="Camcrew Studio" class="cc-logo-light" style="height:2rem;width:auto;object-fit:contain;" src="attached_assets/camcrew_studio_logo_cop_1785515916927.png">
+      <p class="sb-panel-label" style="font-size:0.65rem;font-weight:800;letter-spacing:0.22em;margin-top:4px;text-transform:uppercase;">ADMIN PANEL</p>
+    </div>
+  </div>
+
+  <!-- Admin Badge -->
+  <div class="sb-badge-area" style="padding:0.9rem 1.25rem;">
+    <div style="
+      display:flex;align-items:center;gap:0.75rem;
+      background:var(--neu-bg);
+      box-shadow:4px 4px 9px var(--neu-shadow-dark),-4px -4px 9px var(--neu-shadow-light);
+      border-radius:1rem;padding:0.7rem 0.9rem;
+    ">
+      <div style="
+        width:2.5rem;height:2.5rem;border-radius:50%;flex-shrink:0;
+        background:var(--neu-bg);
+        box-shadow:3px 3px 7px var(--neu-shadow-dark),-3px -3px 7px var(--neu-shadow-light);
+        display:flex;align-items:center;justify-content:center;
+      ">
+        <span class="material-symbols-outlined" style="font-size:1.2rem;color:var(--neu-accent);">admin_panel_settings</span>
+      </div>
+      <div style="min-width:0;">
+        <p id="sidebar-admin-name" style="font-size:0.95rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Admin</p>
+        <p class="sb-admin-label" style="font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;margin-top:1px;">ADMINISTRATOR</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="flex-1 custom-scrollbar overflow-y-auto" style="padding:0.5rem 0.75rem;">
+
+    <p class="sidebar-section-label">OVERVIEW</p>
+    <a href="admindashboard.html" data-nav="dashboard" class="sidebar-link">
+      <span class="material-symbols-outlined sidebar-icon">grid_view</span>
+      <span>Dashboard</span>
+    </a>
+
+    <p class="sidebar-section-label">OPERATIONS</p>
+    <a href="inventory.html" data-nav="inventory" class="sidebar-link">
+      <span class="material-symbols-outlined sidebar-icon">inventory_2</span>
+      <span>Inventory</span>
+    </a>
+    <a href="orders.html" data-nav="orders" class="sidebar-link">
+      <span class="material-symbols-outlined sidebar-icon">receipt_long</span>
+      <span>Orders</span>
+    </a>
+
+    <p class="sidebar-section-label">MANAGEMENT</p>
+    <a href="verificationrequest.html" data-nav="verification" class="sidebar-link" style="justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:0.75rem;">
+        <span class="material-symbols-outlined sidebar-icon">verified_user</span>
+        <span>Verification</span>
+      </div>
+      <span id="sidebar-verification-badge" class="hidden" style="font-size:0.7rem;font-weight:800;background:var(--neu-accent);color:#fff;padding:1px 7px;border-radius:999px;">0</span>
+    </a>
+    <a href="subscriptionmanagement.html" data-nav="subscriptions" class="sidebar-link">
+      <span class="material-symbols-outlined sidebar-icon">loyalty</span>
+      <span>Subscriptions</span>
+    </a>
+
+  </nav>
+
+  <!-- Bottom -->
+  <div class="sb-bottom-area" style="padding:0.75rem;">
+    <a href="index.html" class="sidebar-bottom-link">
+      <span class="material-symbols-outlined sidebar-icon">public</span>
+      <span>View Site</span>
+    </a>
+    <button onclick="adminSignOut()" class="sidebar-bottom-link signout">
+      <span class="material-symbols-outlined sidebar-icon">logout</span>
+      <span>Sign Out</span>
+    </button>
+  </div>
+
+</aside>

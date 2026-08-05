@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script>document.documentElement.setAttribute('data-theme',localStorage.getItem('cc-theme')||'dark');</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Purchase Orders | Camcrew Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "primary": "#006970","primary-container": "#00858f","primary-fixed": "#004f54","primary-fixed-dim": "#006970",
+          "secondary": "#7b1fa2","secondary-container": "#9c27b0","on-secondary": "#ffffff",
+          "surface": "#e0e5ec","background": "#e0e5ec","obsidian-base": "#e0e5ec","charcoal-surface": "#e8edf4",
+          "surface-container": "#dde3eb","surface-container-low": "#d8dfe8","surface-container-high": "#cdd5e0",
+          "surface-container-highest": "#c8d0de","surface-bright": "#eef1f6",
+          "on-surface": "#0f172a","on-surface-variant": "#475569","on-background": "#0f172a","on-primary": "#ffffff",
+          "on-primary-container": "#ffffff",
+          "error": "#c62828","error-container": "#ffcdd2","on-error": "#ffffff","on-error-container": "#7f0000",
+          "glass-stroke": "rgba(0,0,0,0.08)","outline": "#b0bec5","outline-variant": "#cfd8dc"
+        },
+        "spacing": {
+          "margin-desktop": "80px","margin-mobile": "20px","stack-xl": "4rem","stack-md": "1.5rem","gutter": "24px","stack-xs": "0.5rem"
+        },
+        "fontFamily": {
+          "label-caps": ["Plus Jakarta Sans"],"display-lg": ["Plus Jakarta Sans"],"headline-md": ["Plus Jakarta Sans"],"body-md": ["Plus Jakarta Sans"]
+        },
+        "fontSize": {
+          "label-caps": ["13px",{"lineHeight":"1.1","letterSpacing":"0.1em","fontWeight":"700"}],
+          "headline-md": ["26px",{"lineHeight":"1.3","fontWeight":"700"}],
+          "body-md": ["17px",{"lineHeight":"1.6","fontWeight":"400"}]
+        }
+      }
+    }
+  }
+</script>
+<style>
+  /* ── Orders — Dark / Light Theme ── */
+  :root, [data-theme="dark"] {
+    --neu-bg:           #16161e;
+    --neu-shadow-dark:  #0d0d16;
+    --neu-shadow-light: #1f1f2c;
+    --neu-accent:       #1a8aff;
+    --neu-accent-glow:  rgba(26,138,255,0.25);
+    --neu-text:         #e4e8f6;
+    --neu-text-muted:   #7a8599;
+    --neu-border:       rgba(255,255,255,0.07);
+    --neu-table-head:   rgba(255,255,255,0.05);
+    --neu-table-head-text: #7a8599;
+    --neu-row-hover:    rgba(255,255,255,0.03);
+  }
+  [data-theme="light"] {
+    --neu-bg:           #eef1f8;
+    --neu-shadow-dark:  #c5cad8;
+    --neu-shadow-light: #ffffff;
+    --neu-accent:       #0060cc;
+    --neu-accent-glow:  rgba(0,96,204,0.2);
+    --neu-text:         #1a1a2e;
+    --neu-text-muted:   #5a6880;
+    --neu-border:       rgba(0,0,0,0.08);
+    --neu-table-head:   #dde3ef;
+    --neu-table-head-text: #374263;
+    --neu-row-hover:    #d8dfe8;
+  }
+  body {
+    background-color: var(--neu-bg);
+    color: var(--neu-text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px; line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    zoom: 0.8;
+  }
+  h2,h3,h4,h5,h6 { color: var(--neu-text); font-weight: 800; }
+  .glass-panel {
+    background: var(--neu-bg);
+    box-shadow: 8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light);
+    border: none !important;
+  }
+  .neu-header {
+    background: var(--neu-bg);
+    box-shadow: 0 4px 10px var(--neu-shadow-dark), 0 -2px 6px var(--neu-shadow-light);
+  }
+  .neu-btn {
+    background: var(--neu-bg);
+    box-shadow: 4px 4px 8px var(--neu-shadow-dark), -4px -4px 8px var(--neu-shadow-light);
+    border: none; color: var(--neu-text-muted); transition: all 0.15s ease; cursor: pointer;
+  }
+  .neu-btn:hover { box-shadow: 6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light); color: var(--neu-accent); }
+  .neu-btn:active { box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light); }
+  .neu-inset {
+    background: var(--neu-bg);
+    box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light);
+    border: none !important;
+  }
+  .neu-inset:focus-within {
+    box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light), 0 0 0 2px rgba(0,133,143,0.35);
+    outline: none;
+  }
+  .neu-inset input { background: transparent; color: var(--neu-text); }
+  .neu-inset input::placeholder { color: rgba(122,133,153,0.5); }
+  .neu-icon-badge {
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 7px var(--neu-shadow-dark), -3px -3px 7px var(--neu-shadow-light);
+    border-radius: 0.75rem; padding: 0.65rem; display: inline-flex;
+  }
+  .stat-card {
+    background: var(--neu-bg);
+    box-shadow: 8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light);
+    border-radius: 1rem; padding: 1.25rem; position: relative; overflow: hidden;
+  }
+  select.neu-select {
+    background: var(--neu-bg);
+    box-shadow: inset 3px 3px 7px var(--neu-shadow-dark), inset -3px -3px 7px var(--neu-shadow-light);
+    border: none; color: var(--neu-text); border-radius: 0.5rem; padding: 0.45rem 1rem;
+    font-size: 0.88rem; font-weight: 600; appearance: auto; width: 100%;
+  }
+  [data-theme="dark"] select.neu-select { color-scheme: dark; }
+  [data-theme="light"] select.neu-select { color-scheme: light; }
+  .filter-card {
+    background: var(--neu-bg);
+    box-shadow: 8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light);
+    border-radius: 1rem; padding: 1.1rem 1.25rem;
+  }
+  .action-btn {
+    background: var(--neu-bg);
+    box-shadow: 4px 4px 8px var(--neu-shadow-dark), -4px -4px 8px var(--neu-shadow-light);
+    border: none; border-radius: 0.6rem; padding: 0.55rem 1.25rem;
+    font-size: 0.88rem; font-weight: 700; color: var(--neu-text-muted);
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.15s;
+  }
+  .action-btn:hover { color: var(--neu-accent); box-shadow: 5px 5px 10px var(--neu-shadow-dark), -5px -5px 10px var(--neu-shadow-light); }
+  .action-btn:active { box-shadow: inset 3px 3px 6px var(--neu-shadow-dark), inset -3px -3px 6px var(--neu-shadow-light); }
+  .details-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 0.88rem; font-weight: 700; color: var(--neu-accent);
+    text-decoration: none; transition: opacity 0.15s;
+  }
+  .details-btn:hover { opacity: 0.75; text-decoration: underline; }
+  tr.neu-row:hover { background: var(--neu-row-hover); }
+  .page-btn-active {
+    background: var(--neu-accent); color: #fff; font-weight: 800;
+    width: 2rem; height: 2rem; border-radius: 0.5rem; border: none; cursor: pointer; font-size: 0.82rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .page-btn {
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
+    color: var(--neu-text-muted); font-weight: 700; font-size: 0.82rem;
+    width: 2rem; height: 2rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .page-btn:hover { color: var(--neu-accent); }
+  .avatar-bubble {
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
+    width: 2rem; height: 2rem; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 800; color: var(--neu-accent);
+  }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--neu-bg); }
+  ::-webkit-scrollbar-thumb { background: var(--neu-shadow-dark); border-radius: 10px; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+  /* ── Theme toggle ── */
+  #theme-toggle {
+    width: 2.4rem; height: 2.4rem; border-radius: 50%; border: none; cursor: pointer;
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light);
+    color: var(--neu-accent);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s ease; flex-shrink: 0;
+  }
+  #theme-toggle:hover {
+    box-shadow: 5px 5px 12px var(--neu-shadow-dark), -5px -5px 12px var(--neu-shadow-light), 0 0 14px var(--neu-accent-glow);
+    transform: scale(1.08);
+  }
+  #theme-toggle:active { box-shadow: inset 3px 3px 7px var(--neu-shadow-dark), inset -3px -3px 7px var(--neu-shadow-light); }
+
+  /* ── Dark mode overrides for inline-hardcoded colours ── */
+  [data-theme="dark"] thead { background: var(--neu-table-head) !important; }
+  [data-theme="dark"] thead th { color: var(--neu-table-head-text) !important; }
+  [data-theme="dark"] table tbody td { color: var(--neu-text) !important; }
+  [data-theme="dark"] h3, [data-theme="dark"] h4 { color: var(--neu-text) !important; }
+  [data-theme="dark"] p[style*="color:#334155"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] div[style*="color:#0f172a"] { color: var(--neu-text) !important; }
+  [data-theme="dark"] div[style*="color:#475569"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] span[style*="color:#334155"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] span[style*="color:#475569"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] strong[style*="color:#0f172a"] { color: var(--neu-text) !important; }
+  [data-theme="dark"] [style*="border-bottom:1px solid rgba(0,0,0"] { border-bottom-color: var(--neu-border) !important; }
+  [data-theme="dark"] [style*="border-top:1px solid rgba(0,0,0"] { border-top-color: var(--neu-border) !important; }
+  [data-theme="dark"] label[style*="color:#475569"] { color: var(--neu-text-muted) !important; }
+  /* filter card text */
+  [data-theme="dark"] .filter-card span[style*="font-size:1.6rem"] { color: var(--neu-text) !important; }
+
+  /* ── Light mode table head ── */
+  [data-theme="light"] thead { background: var(--neu-table-head) !important; }
+  [data-theme="light"] thead th { color: var(--neu-table-head-text) !important; }
+</style>
+</head>
+<body>
+<div id="sidebar-container"></div>
+<main class="lg:ml-64 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-30 neu-header px-margin-desktop py-4 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <h2 style="font-size:1.4rem;font-weight:800;color:#006970;">Purchase Orders</h2>
+      <span class="neu-inset rounded-full px-3 py-1" style="font-size:0.78rem;font-weight:600;color:#334155;">Live Stream</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="relative w-64 neu-inset rounded-full">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2" style="color:#475569;">search</span>
+        <input class="bg-transparent border-none focus:ring-0 w-full pl-10 pr-4 py-2" style="font-size:0.92rem;" placeholder="Search orders..." type="text"/>
+      </div>
+      <button id="theme-toggle" onclick="toggleTheme()" title="Switch to Light Mode">
+        <span class="material-symbols-outlined t-icon" style="font-size:1.15rem;">light_mode</span>
+      </button>
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full overflow-hidden" style="box-shadow:3px 3px 6px var(--neu-shadow-dark),-3px -3px 6px var(--neu-shadow-light);">
+          <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAqknVdGIG9lR4g4HhPew9FZ3Q4r8MIoKYjj8WoGgOmJ68Oj5wbkSzbWuJmOlLKLOiliqt3V-UKG09neeeGSMVI9XRdAeONjd6gRJR-YZIg-A-woPHfzc1lfWUTk3eGdd6I0h0HQppE5LXGj16IQa6IgLvzIlMqdSNdkyzdCkh-O3FAIuQj8lt7Td9FKKOf2gmzByao2GkfhaDO_0migEO5jy7DUBvFAo7LrDoc9r3awBTriqP0xSP"/>
+        </div>
+        <div class="hidden md:block">
+          <p style="font-size:0.95rem;font-weight:800;color:#006970;">Alex Mercer</p>
+          <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#475569;">SYSTEM ADMIN</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Body -->
+  <div class="p-margin-desktop space-y-8">
+
+    <!-- Page Title + Export -->
+    <div class="flex justify-between items-end">
+      <div>
+        <h3 style="font-size:1.75rem;font-weight:800;color:#0f172a;letter-spacing:-0.02em;">Purchase Orders</h3>
+        <p style="font-size:0.95rem;color:#334155;margin-top:4px;">Real-time marketplace transaction stream and management.</p>
+      </div>
+      <button class="action-btn" data-action="export">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;">file_download</span>
+        Export Data
+      </button>
+    </div>
+
+    <!-- Filter / Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+      <div class="filter-card flex flex-col gap-2">
+        <label style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#475569;text-transform:uppercase;">Date Range</label>
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined" style="font-size:1.1rem;color:#006970;">calendar_today</span>
+          <select class="neu-select" data-date-filter>
+            <option>Last 30 Days</option>
+            <option>This Quarter</option>
+            <option>Custom Range</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-card flex flex-col gap-2">
+        <label style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#475569;text-transform:uppercase;">Order Status</label>
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined" style="font-size:1.1rem;color:#7b1fa2;">filter_list</span>
+          <select class="neu-select" data-status-filter>
+            <option>All Statuses</option>
+            <option>Pending</option>
+            <option>Processing</option>
+            <option>Shipped</option>
+            <option>Delivered</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-card flex flex-col gap-2">
+        <label style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#475569;text-transform:uppercase;">Total Volume</label>
+        <div class="flex items-baseline gap-2">
+          <span id="stat-total-volume" style="font-size:1.6rem;font-weight:800;color:#0f172a;line-height:1.1;">—</span>
+        </div>
+      </div>
+      <div class="filter-card flex flex-col gap-2">
+        <label style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#475569;text-transform:uppercase;">Active Orders</label>
+        <div class="flex items-baseline gap-2">
+          <span id="stat-active-orders" style="font-size:1.6rem;font-weight:800;color:#0f172a;line-height:1.1;">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="glass-panel rounded-3xl overflow-hidden">
+      <table class="w-full text-left border-collapse">
+        <thead style="background:#d8dfe8;">
+          <tr>
+            <th class="px-6 py-4" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">Order ID</th>
+            <th class="px-6 py-4" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">Customer Name</th>
+            <th class="px-6 py-4" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">Date</th>
+            <th class="px-6 py-4" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">Amount</th>
+            <th class="px-6 py-4" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">Status</th>
+            <th class="px-6 py-4 text-right" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="orders-tbody">
+          <tr>
+            <td colspan="6" class="px-6 py-10 text-center" style="color:#7a8599;font-size:0.9rem;">
+              <span class="material-symbols-outlined" style="font-size:1.5rem;vertical-align:middle;margin-right:8px;">progress_activity</span>Loading orders…
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <div class="px-6 py-4 flex justify-between items-center" style="border-top:1px solid rgba(0,0,0,0.08);">
+        <span style="font-size:0.88rem;color:#334155;" id="orders-showing">Loading…</span>
+        <div class="flex gap-2">
+          <button class="page-btn" disabled><span class="material-symbols-outlined" style="font-size:1rem;">chevron_left</span></button>
+          <button class="page-btn" disabled><span class="material-symbols-outlined" style="font-size:1rem;">chevron_right</span></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div id="footer-container"></div>
+</main>
+<script src="/static/js/dashboard-components.js"></script>
+<script>
+  /* ── Theme Toggle ── */
+  (function(){
+    const root = document.documentElement;
+    const saved = localStorage.getItem('cc-theme') || 'dark';
+    root.setAttribute('data-theme', saved);
+    function updateIcon(t){
+      const btn = document.getElementById('theme-toggle');
+      if (!btn) return;
+      const ic = btn.querySelector('.t-icon');
+      if (ic) ic.textContent = t === 'dark' ? 'light_mode' : 'dark_mode';
+      btn.title = t === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+    }
+    updateIcon(saved);
+    window.toggleTheme = function(){
+      const cur = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', cur);
+      localStorage.setItem('cc-theme', cur);
+      updateIcon(cur);
+    };
+  })();
+
+  /* ── Orders — Live Data ── */
+  (function(){
+    const tbody    = document.getElementById('orders-tbody');
+    const showing  = document.getElementById('orders-showing');
+    let currentPage = 1, totalOrders = 0;
+
+    const STATUS_STYLES = {
+      delivered:  'background:rgba(0,133,143,0.12);color:#005662;',
+      processing: 'background:rgba(123,31,162,0.12);color:#6a1070;',
+      pending:    'background:rgba(180,83,9,0.12);color:#92400e;',
+      confirmed:  'background:rgba(180,83,9,0.12);color:#92400e;',
+      shipped:    'background:rgba(29,78,216,0.1);color:#1e40af;',
+      cancelled:  'background:rgba(183,28,28,0.1);color:#b71c1c;',
+    };
+
+    function statusBadge(s){
+      const style = STATUS_STYLES[s] || 'background:rgba(0,0,0,0.07);color:#334155;';
+      return `<span class="px-3 py-1 rounded-full" style="font-size:0.75rem;font-weight:700;${style}">${s.charAt(0).toUpperCase()+s.slice(1)}</span>`;
+    }
+
+    function initials(name){ return (name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
+    function fmtDate(s){ return s ? new Date(s).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—'; }
+    function fmtAmt(n){ return '$' + Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+    async function updateOrderStatus(id, current){
+      const next = prompt(`Change status for order #${id}.\nCurrent: ${current}\nEnter new status (pending / processing / confirmed / shipped / delivered / cancelled):`);
+      if (!next || next === current) return;
+      const res = await fetch(`/api/admin/orders/${id}`, {
+        method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({status:next.trim()})
+      });
+      const data = await res.json();
+      if (data.ok) loadOrders(currentPage); else alert(data.error||'Failed to update.');
+    }
+
+    async function loadOrders(page){
+      currentPage = page;
+      const statusEl = document.querySelector('[data-status-filter]');
+      const searchEl = document.querySelector('input[placeholder="Search orders..."]');
+      const status   = statusEl ? statusEl.value : '';
+      const q        = searchEl ? searchEl.value.trim() : '';
+
+      tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-10 text-center" style="color:#7a8599;">
+        <span class="material-symbols-outlined" style="font-size:1.5rem;vertical-align:middle;">progress_activity</span> Loading…
+      </td></tr>`;
+
+      try {
+        const params = new URLSearchParams({page, ...(status&&status!=='All Statuses'&&{status:status.toLowerCase()}), ...(q&&{q})});
+        const res  = await fetch('/api/admin/orders?' + params);
+        const data = await res.json();
+
+        if (res.status === 403) {
+          tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-10 text-center" style="color:#7a8599;">Admin access required.</td></tr>`;
+          return;
+        }
+
+        totalOrders = data.total || 0;
+        const orders = data.orders || [];
+
+        if (!orders.length) {
+          tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-10 text-center" style="color:#7a8599;">No orders found.</td></tr>`;
+          showing.innerHTML = `Showing <strong>0</strong> of 0 orders`;
+          return;
+        }
+
+        const start = (page-1)*20+1, end = Math.min(page*20, totalOrders);
+        showing.innerHTML = `Showing <strong style="color:var(--neu-text)">${start}–${end}</strong> of ${totalOrders} orders`;
+
+        tbody.innerHTML = orders.map((o,i) => `
+          <tr class="neu-row transition-colors" style="${i<orders.length-1?'border-bottom:1px solid rgba(0,0,0,0.06);':''}">
+            <td class="px-6 py-5" style="font-size:0.92rem;font-weight:800;color:#006970;font-family:monospace;">${o.order_ref}</td>
+            <td class="px-6 py-5">
+              <div class="flex items-center gap-3">
+                <div class="avatar-bubble">${initials(o.customer_name)}</div>
+                <div>
+                  <div style="font-size:0.95rem;font-weight:700;color:#0f172a;">${o.customer_name}</div>
+                  <div style="font-size:0.78rem;color:#475569;">${o.customer_email}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-5" style="font-size:0.92rem;color:#475569;">${fmtDate(o.created_at)}</td>
+            <td class="px-6 py-5" style="font-size:0.95rem;font-weight:800;color:#0f172a;">${fmtAmt(o.total_amount)}</td>
+            <td class="px-6 py-5">${statusBadge(o.status)}</td>
+            <td class="px-6 py-5 text-right">
+              <button class="details-btn" onclick="updateOrderStatus(${o.id},'${o.status}')">Update Status</button>
+            </td>
+          </tr>`).join('');
+
+        window.updateOrderStatus = updateOrderStatus;
+        renderPagination();
+      } catch(e){
+        tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-10 text-center" style="color:#b71c1c;">Failed to load orders.</td></tr>`;
+      }
+    }
+
+    function renderPagination(){
+      const totalPages = Math.ceil(totalOrders/20);
+      const pag = document.querySelector('.glass-panel .flex.gap-2');
+      if (!pag || totalPages <= 1) return;
+      pag.innerHTML = `
+        <button class="page-btn" onclick="loadOrders(${currentPage-1})" ${currentPage===1?'disabled':''}>
+          <span class="material-symbols-outlined" style="font-size:1rem;">chevron_left</span>
+        </button>
+        ${Array.from({length:Math.min(5,totalPages)},(_,i)=>{
+          const p=i+1;
+          return `<button class="${p===currentPage?'page-btn-active':'page-btn'}" onclick="loadOrders(${p})">${p}</button>`;
+        }).join('')}
+        <button class="page-btn" onclick="loadOrders(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>
+          <span class="material-symbols-outlined" style="font-size:1rem;">chevron_right</span>
+        </button>`;
+    }
+
+    // Live filter/search
+    document.querySelector('[data-status-filter]')?.addEventListener('change', ()=>loadOrders(1));
+    document.querySelector('input[placeholder="Search orders..."]')?.addEventListener('input', ()=>setTimeout(()=>loadOrders(1),400));
+
+    loadOrders(1);
+    window.loadOrders = loadOrders;
+  })();
+</script>
+</body></html>

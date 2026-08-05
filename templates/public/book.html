@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Book a Service | CamCrew Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="/static/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="/static/css/styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+/* ── Base ── */
+body { background: #06080a; }
+
+/* ── Ambient mesh ── */
+.ambient-mesh {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  overflow: hidden;
+}
+.ambient-mesh::before {
+  content: '';
+  position: absolute;
+  top: -30%; left: -20%;
+  width: 70vw; height: 70vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,240,255,0.07) 0%, transparent 70%);
+  filter: blur(60px);
+}
+.ambient-mesh::after {
+  content: '';
+  position: absolute;
+  bottom: -10%; right: -15%;
+  width: 55vw; height: 55vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139,92,246,0.09) 0%, transparent 70%);
+  filter: blur(80px);
+}
+.ambient-orb3 {
+  position: fixed; top: 40%; left: 50%;
+  width: 800px; height: 400px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0,240,255,0.03) 0%, transparent 70%);
+  filter: blur(40px);
+  pointer-events: none; z-index: 0;
+}
+
+/* ── Hero gradient bar ── */
+.hero-bar {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,240,255,0.3) 40%, rgba(139,92,246,0.3) 60%, transparent);
+}
+
+/* ── Step panel ── */
+.step-panel { display: none; animation: fadeSlideUp 0.4s cubic-bezier(.22,1,.36,1) both; }
+.step-panel.active { display: block; }
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Step indicator ── */
+.stepper-wrap { display: flex; align-items: flex-start; gap: 0; margin-bottom: 2.5rem; }
+.step-item { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+.step-dot {
+  width: 2.4rem; height: 2.4rem; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.78rem; font-weight: 900; flex-shrink: 0;
+  transition: all 0.35s cubic-bezier(.4,0,.2,1);
+  border: 2px solid rgba(255,255,255,0.08);
+  background: rgba(18,20,24,0.95);
+  color: #5a6b6c;
+  position: relative; z-index: 2;
+}
+.step-dot.done {
+  background: rgba(0,240,255,0.12);
+  border-color: rgba(0,240,255,0.5);
+  color: #00f0ff;
+  box-shadow: 0 0 20px rgba(0,240,255,0.25);
+}
+.step-dot.active {
+  background: linear-gradient(135deg, #00f0ff, #00b8d9);
+  border-color: #00f0ff;
+  color: #001f22;
+  box-shadow: 0 0 28px rgba(0,240,255,0.5), 0 0 8px rgba(0,240,255,0.8) inset;
+}
+.step-label {
+  font-size: 0.67rem; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; margin-top: 0.5rem; color: #4a5a5b;
+  transition: color 0.3s; text-align: center; line-height: 1.2;
+}
+.step-item.is-active .step-label { color: #00f0ff; }
+.step-item.is-done .step-label { color: rgba(0,240,255,0.6); }
+.step-connector {
+  position: absolute; top: 1.2rem;
+  left: calc(50% + 1.4rem); right: calc(-50% + 1.4rem);
+  height: 2px; background: rgba(255,255,255,0.06);
+  z-index: 0; transition: background 0.4s;
+}
+.step-item:last-child .step-connector { display: none; }
+.step-item.is-done .step-connector {
+  background: linear-gradient(90deg, rgba(0,240,255,0.5), rgba(0,240,255,0.15));
+}
+
+/* ── Service cards ── */
+.svc-check {
+  position: absolute; opacity: 0; width: 0; height: 0;
+  pointer-events: none; visibility: hidden;
+}
+.svc-label {
+  display: block; cursor: pointer;
+  border-radius: 1.25rem;
+  border: 1.5px solid rgba(255,255,255,0.07);
+  background: linear-gradient(135deg, rgba(14,17,21,0.97) 0%, rgba(10,13,17,0.95) 100%);
+  padding: 1.2rem 1.4rem;
+  transition: all 0.25s cubic-bezier(.4,0,.2,1);
+  position: relative; overflow: hidden;
+  user-select: none;
+  backdrop-filter: blur(10px);
+}
+.svc-label::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 0% 50%, rgba(0,240,255,0.04) 0%, transparent 60%);
+  opacity: 0; transition: opacity 0.25s;
+  border-radius: inherit;
+}
+.svc-label:hover { border-color: rgba(0,240,255,0.25); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,240,255,0.06); }
+.svc-label:hover::after { opacity: 1; }
+.svc-check:checked + .svc-label {
+  border-color: rgba(0,240,255,0.45);
+  background: linear-gradient(135deg, rgba(0,240,255,0.06) 0%, rgba(0,184,204,0.03) 100%);
+  box-shadow: 0 0 0 1px rgba(0,240,255,0.15), 0 8px 24px rgba(0,240,255,0.08);
+}
+.svc-check:checked + .svc-label::after { opacity: 1; }
+.svc-check:checked + .svc-label .svc-tick { opacity: 1; transform: scale(1); }
+.svc-tick {
+  width: 1.5rem; height: 1.5rem; border-radius: 50%;
+  background: linear-gradient(135deg, #00f0ff, #00b8d9);
+  color: #001f22;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 900;
+  opacity: 0; transform: scale(0.5);
+  transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,240,255,0.4);
+}
+
+/* ── Inline checkbox box inside card ── */
+.svc-box {
+  width: 1.2rem; height: 1.2rem; border-radius: 0.35rem; flex-shrink: 0;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.03);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s cubic-bezier(.4,0,.2,1);
+}
+.svc-box span { font-size: 0.72rem; opacity: 0; transform: scale(0.5); transition: all 0.2s cubic-bezier(.34,1.56,.64,1); color: #001f22; font-weight: 900; }
+.svc-check:checked + .svc-label .svc-box {
+  border-color: #00f0ff;
+  background: linear-gradient(135deg, #00f0ff, #00b8d9);
+  box-shadow: 0 0 12px rgba(0,240,255,0.35);
+}
+.svc-check:checked + .svc-label .svc-box span { opacity: 1; transform: scale(1); }
+
+/* ── Time slot pills ── */
+.time-pill {
+  position: absolute; opacity: 0; width: 0; height: 0;
+  pointer-events: none; visibility: hidden;
+}
+.time-label {
+  display: flex; align-items: center; justify-content: center; gap: 0.45rem;
+  padding: 0.6rem 0.7rem; border-radius: 0.75rem; cursor: pointer;
+  border: 1.5px solid rgba(255,255,255,0.07);
+  background: rgba(14,17,21,0.9);
+  font-size: 0.8rem; font-weight: 700; color: #5a6b6c;
+  transition: all 0.2s; white-space: nowrap; text-align: center;
+}
+/* Radio dot inside the pill */
+.time-label::before {
+  content: '';
+  width: 0.55rem; height: 0.55rem; border-radius: 50%; flex-shrink: 0;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  background: transparent;
+  transition: all 0.2s;
+}
+.time-label:hover { border-color: rgba(0,240,255,0.3); color: #00f0ff; background: rgba(0,240,255,0.05); transform: translateY(-1px); }
+.time-label:hover::before { border-color: rgba(0,240,255,0.5); }
+.time-pill:checked + .time-label {
+  border-color: #00f0ff;
+  background: linear-gradient(135deg, rgba(0,240,255,0.15), rgba(0,184,204,0.08));
+  color: #00f0ff;
+  box-shadow: 0 0 16px rgba(0,240,255,0.2), 0 0 0 1px rgba(0,240,255,0.1);
+}
+.time-pill:checked + .time-label::before {
+  background: #00f0ff;
+  border-color: #00f0ff;
+  box-shadow: 0 0 6px rgba(0,240,255,0.6);
+}
+
+/* ── Dark date input override ── */
+input[type="date"] {
+  color-scheme: dark;
+  background: rgba(10,13,17,0.9) !important;
+  color: #dce4e5 !important;
+}
+input[type="date"]::-webkit-datetime-edit-fields-wrapper { color: #dce4e5; }
+input[type="date"]::-webkit-datetime-edit-text { color: #4a5a5b; }
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-year-field { color: #dce4e5; }
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.7) sepia(0.3) hue-rotate(160deg);
+  cursor: pointer; opacity: 0.8;
+}
+
+/* ── Qty controls ── */
+.qty-wrap { display: none; align-items: center; gap: 0.6rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06); }
+.svc-check:checked ~ .qty-wrap { display: flex; }
+.qty-btn {
+  width: 1.85rem; height: 1.85rem; border-radius: 50%;
+  border: 1.5px solid rgba(0,240,255,0.3);
+  background: rgba(0,240,255,0.05);
+  color: #00f0ff; font-size: 1.1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s; font-weight: 700; line-height: 1;
+}
+.qty-btn:hover { background: rgba(0,240,255,0.15); border-color: #00f0ff; box-shadow: 0 0 12px rgba(0,240,255,0.2); }
+
+/* ── Input base ── */
+.cc-input {
+  width: 100%;
+  background: rgba(10,13,17,0.9);
+  border: 1.5px solid rgba(255,255,255,0.09);
+  border-radius: 0.875rem; padding: 0.9rem 1.15rem;
+  color: #dce4e5; font-size: 0.9rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  outline: none;
+  backdrop-filter: blur(10px);
+}
+.cc-input:focus {
+  border-color: rgba(0,240,255,0.55);
+  box-shadow: 0 0 0 3px rgba(0,240,255,0.08), inset 0 1px 0 rgba(0,240,255,0.04);
+  background: rgba(0,240,255,0.02);
+}
+.cc-input::placeholder { color: #3a4a4b; }
+select.cc-input option { background: #0e1115; }
+
+/* ── Label ── */
+.cc-label {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.75rem; font-weight: 800;
+  color: #6a8083; margin-bottom: 0.55rem;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+
+/* ── Glass card ── */
+.glass-book {
+  background: rgba(10,13,17,0.95);
+  border: 1.5px solid rgba(255,255,255,0.07);
+  border-radius: 1.5rem;
+  backdrop-filter: blur(20px);
+}
+
+/* ── Sidebar items ── */
+.sidebar-item { display: flex; justify-content: space-between; align-items: baseline; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.84rem; }
+.sidebar-item:last-child { border: none; }
+.summary-row { display: flex; justify-content: space-between; align-items: baseline; padding: 0.65rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.88rem; }
+.summary-row:last-child { border-bottom: none; }
+
+/* ── Shimmer skeleton ── */
+@keyframes shimmer { to { background-position: -200% center; } }
+.skel {
+  border-radius: 0.5rem;
+  background: linear-gradient(90deg, rgba(255,255,255,0.025) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.025) 75%);
+  background-size: 200%; animation: shimmer 1.8s infinite;
+}
+
+/* ── Date input ── */
+input[type="date"] { color-scheme: dark; }
+input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); cursor: pointer; opacity: 0.7; }
+
+/* ── Primary button ── */
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: linear-gradient(135deg, #00f0ff 0%, #00c8d9 60%, #00a8b8 100%);
+  color: #001f22; font-weight: 900; padding: 0.9rem 1.9rem;
+  border-radius: 0.875rem; cursor: pointer; border: none;
+  transition: all 0.25s cubic-bezier(.4,0,.2,1); font-size: 0.9rem;
+  box-shadow: 0 4px 24px rgba(0,240,255,0.28), 0 1px 0 rgba(255,255,255,0.15) inset;
+  letter-spacing: 0.01em;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(0,240,255,0.42), 0 1px 0 rgba(255,255,255,0.2) inset; filter: brightness(1.06); }
+.btn-primary:active { transform: translateY(0); box-shadow: 0 4px 16px rgba(0,240,255,0.2); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* ── Ghost button ── */
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  color: #6a8083; font-weight: 700; padding: 0.9rem 1.4rem;
+  border-radius: 0.875rem; cursor: pointer;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  transition: all 0.2s; font-size: 0.9rem; background: rgba(255,255,255,0.02);
+}
+.btn-ghost:hover { border-color: rgba(255,255,255,0.16); color: #dce4e5; background: rgba(255,255,255,0.05); transform: translateY(-1px); }
+
+/* ── Section header ── */
+.section-title {
+  font-size: 1.5rem; font-weight: 900; color: #fff; margin-bottom: 0.35rem; letter-spacing: -0.02em;
+}
+.section-sub { font-size: 0.85rem; color: #5a7073; margin-bottom: 1.75rem; }
+
+/* ── Icon badge ── */
+.icon-badge {
+  width: 2.4rem; height: 2.4rem; border-radius: 0.875rem; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,240,255,0.07);
+  border: 1px solid rgba(0,240,255,0.13);
+}
+
+/* ── Success ── */
+@keyframes successPop {
+  0%   { transform: scale(0.4); opacity: 0; }
+  65%  { transform: scale(1.18); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.success-icon { animation: successPop 0.6s cubic-bezier(.34,1.56,.64,1) both 0.1s; }
+
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50%       { transform: scale(1.4); opacity: 0; }
+}
+.success-ring {
+  position: absolute; inset: -8px; border-radius: 50%;
+  border: 2px solid rgba(0,240,255,0.3);
+  animation: ringPulse 2s ease-in-out infinite;
+}
+
+@keyframes confettiFall {
+  0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(90px) rotate(420deg); opacity: 0; }
+}
+.confetti-dot {
+  position: absolute; width: 6px; height: 6px; border-radius: 2px;
+  animation: confettiFall 1.3s ease-in both;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 99px; }
+
+/* ── Sidebar section header ── */
+.sb-section-label {
+  font-size: 0.65rem; font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase; color: rgba(255,255,255,0.25); margin-bottom: 0.5rem;
+}
+
+/* ── Duration control ── */
+#duration-wrap { display: none; }
+#duration-wrap.visible { display: block; }
+</style>
+</head>
+<body class="min-h-screen font-body-md antialiased overflow-x-hidden">
+
+<!-- Ambient background -->
+<div class="ambient-mesh"></div>
+<div class="ambient-orb3"></div>
+
+<!-- Header -->
+<div id="site-header" class="relative z-50"></div>
+
+<!-- ════════════════════════════════════════════════════
+     HERO BANNER
+════════════════════════════════════════════════════ -->
+<div class="relative z-10 pt-24 pb-0 overflow-hidden" id="hero-section">
+  <!-- Top gradient wash -->
+  <div class="absolute inset-0 bg-gradient-to-b from-cyan-950/15 via-transparent to-transparent pointer-events-none"></div>
+  <!-- Decorative grid -->
+  <div class="absolute inset-0 pointer-events-none" style="background-image:linear-gradient(rgba(0,240,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,0.025) 1px,transparent 1px);background-size:60px 60px;mask-image:linear-gradient(to bottom,transparent,rgba(0,0,0,0.4) 30%,rgba(0,0,0,0.2) 70%,transparent);"></div>
+
+  <div class="max-w-6xl mx-auto px-4 md:px-8 pb-10 relative">
+    <!-- Back -->
+    <a href="javascript:history.back()" class="inline-flex items-center gap-1.5 text-on-surface-variant hover:text-primary-container transition-colors text-sm mb-8 group">
+      <span class="material-symbols-outlined text-sm group-hover:-translate-x-0.5 transition-transform">arrow_back</span> Back
+    </a>
+
+    <!-- Skeleton hero -->
+    <div id="hero-skeleton" class="flex items-center gap-6">
+      <div class="skel w-20 h-20 rounded-2xl flex-shrink-0"></div>
+      <div class="flex flex-col gap-3 flex-1">
+        <div class="skel h-4 w-32 rounded-lg"></div>
+        <div class="skel h-8 w-72 rounded-lg"></div>
+        <div class="skel h-3.5 w-44 rounded-lg"></div>
+      </div>
+    </div>
+
+    <!-- Real hero -->
+    <div id="hero-content" class="hidden items-center gap-7 flex-wrap">
+      <!-- Avatar with glow ring -->
+      <div class="relative flex-shrink-0">
+        <div id="hero-avatar"
+             class="w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-black shadow-2xl border border-white/10 relative z-10">
+        </div>
+        <div id="hero-avatar-glow" class="absolute inset-0 rounded-2xl blur-xl opacity-40 -z-10 scale-110"></div>
+      </div>
+      <!-- Info -->
+      <div class="flex-1 min-w-0">
+        <span class="inline-flex items-center gap-1.5 text-xs font-bold text-primary-container uppercase tracking-widest mb-2 bg-primary-container/10 px-3 py-1 rounded-full border border-primary-container/20">
+          <span class="material-symbols-outlined text-xs" style="font-variation-settings:'FILL' 1">calendar_month</span>
+          Book a Service
+        </span>
+        <h1 class="text-3xl md:text-4xl font-black text-white mt-1 leading-tight tracking-tight" id="page-title">Loading…</h1>
+        <p class="text-on-surface-variant mt-1.5 text-sm" id="page-subtitle"></p>
+      </div>
+      <!-- View profile pill -->
+      <a id="hero-profile-link" href="#"
+         class="hidden md:inline-flex items-center gap-2 border border-glass-stroke text-on-surface-variant hover:text-primary-container hover:border-primary-container/40 hover:bg-primary-container/05 font-bold px-5 py-2.5 rounded-full transition-all text-sm">
+        <span class="material-symbols-outlined text-sm">person</span> View Profile
+      </a>
+    </div>
+  </div>
+
+  <!-- Bottom divider glow -->
+  <div class="hero-bar"></div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     MAIN — two-column on desktop
+════════════════════════════════════════════════════ -->
+<main class="relative z-10 max-w-6xl mx-auto px-4 md:px-8 pb-24 pt-10">
+  <div class="flex gap-8 items-start">
+
+    <!-- ── LEFT COLUMN: Form ──────────────────────────── -->
+    <div class="flex-1 min-w-0">
+
+      <!-- ── Step indicator ── -->
+      <div id="stepper" class="stepper-wrap mb-10">
+        <div class="step-item is-active" id="step-item-0">
+          <div class="step-dot active" id="dot-0">1</div>
+          <div class="step-connector" id="line-0"></div>
+          <span class="step-label">Services</span>
+        </div>
+        <div class="step-item" id="step-item-1">
+          <div class="step-dot" id="dot-1">2</div>
+          <div class="step-connector" id="line-1"></div>
+          <span class="step-label">Date & Time</span>
+        </div>
+        <div class="step-item" id="step-item-2">
+          <div class="step-dot" id="dot-2">3</div>
+          <div class="step-connector" id="line-2"></div>
+          <span class="step-label">Venue</span>
+        </div>
+        <div class="step-item" id="step-item-3">
+          <div class="step-dot" id="dot-3">4</div>
+          <div class="step-connector" style="display:none"></div>
+          <span class="step-label">Confirm</span>
+        </div>
+      </div>
+
+      <!-- ════════════════════
+           STEP 1 — Services
+      ════════════════════ -->
+      <div class="step-panel active" id="step-0">
+        <h2 class="section-title">Choose Services</h2>
+        <p class="section-sub">Select one or more services you'd like to book.</p>
+
+        <div id="services-list" class="flex flex-col gap-3 mb-6">
+          <div class="skel h-20 rounded-2xl"></div>
+          <div class="skel h-20 rounded-2xl"></div>
+          <div class="skel h-16 rounded-2xl"></div>
+        </div>
+
+        <p id="no-services" class="hidden text-on-surface-variant text-sm text-center py-12 border border-dashed border-white/10 rounded-2xl">
+          <span class="material-symbols-outlined block text-4xl mb-3 opacity-30">inventory_2</span>
+          This professional hasn't listed any services yet.
+        </p>
+
+        <div id="svc-error" class="hidden items-center gap-2 mt-2 mb-4 px-4 py-3 rounded-xl bg-red-950/30 border border-red-500/25 text-red-400 text-sm">
+          <span class="material-symbols-outlined text-base">error</span> Please select at least one service.
+        </div>
+
+        <div class="flex justify-end mt-8">
+          <button onclick="goStep(1)" class="btn-primary">
+            Continue <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ════════════════════
+           STEP 2 — Date & Time
+      ════════════════════ -->
+      <div class="step-panel" id="step-1">
+        <h2 class="section-title">Date &amp; Time</h2>
+        <p class="section-sub">When should the professional show up?</p>
+
+        <!-- Date input -->
+        <div class="mb-7">
+          <label class="cc-label">
+            <span class="material-symbols-outlined text-sm text-primary-container/60">calendar_month</span>
+            Date <span class="text-red-400 normal-case font-normal ml-0.5">*</span>
+          </label>
+          <input type="date" id="input-date" class="cc-input"/>
+        </div>
+
+        <!-- Start Time slots -->
+        <div class="mb-7">
+          <label class="cc-label">
+            <span class="material-symbols-outlined text-sm text-primary-container/60">schedule</span>
+            Start Time <span class="text-red-400 normal-case font-normal ml-0.5">*</span>
+          </label>
+          <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2" id="time-slots"></div>
+        </div>
+
+        <!-- End Time slots -->
+        <div class="mb-7">
+          <label class="cc-label">
+            <span class="material-symbols-outlined text-sm text-primary-container/60">schedule_send</span>
+            End Time <span class="text-on-surface-variant/40 normal-case font-normal text-xs ml-0.5">(optional)</span>
+          </label>
+          <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2" id="end-time-slots"></div>
+        </div>
+
+        <!-- Duration (hourly only) -->
+        <div id="duration-wrap" class="mb-7">
+          <label class="cc-label">
+            <span class="material-symbols-outlined text-sm text-primary-container/60">hourglass_empty</span>
+            Duration
+          </label>
+          <div class="glass-book p-4 flex items-center gap-4 w-fit">
+            <button type="button" class="qty-btn w-10 h-10 text-lg" onclick="changeDuration(-1)">−</button>
+            <div class="text-center min-w-[3rem]">
+              <span id="duration-display" class="text-white font-black text-2xl">2</span>
+              <span class="text-on-surface-variant text-xs ml-1">hrs</span>
+            </div>
+            <button type="button" class="qty-btn w-10 h-10 text-lg" onclick="changeDuration(1)">+</button>
+          </div>
+          <p class="text-xs text-on-surface-variant/50 mt-2">Applied to per-hour services.</p>
+        </div>
+
+        <div id="date-error" class="hidden items-center gap-2 mt-2 mb-4 px-4 py-3 rounded-xl bg-red-950/30 border border-red-500/25 text-red-400 text-sm">
+          <span class="material-symbols-outlined text-base">error</span> Please select a date and time.
+        </div>
+
+        <div class="flex justify-between mt-8">
+          <button onclick="goStep(0)" class="btn-ghost"><span class="material-symbols-outlined text-sm">arrow_back</span> Back</button>
+          <button onclick="goStep(2)" class="btn-primary">Continue <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+        </div>
+      </div>
+
+      <!-- ════════════════════
+           STEP 3 — Venue
+      ════════════════════ -->
+      <div class="step-panel" id="step-2">
+        <h2 class="section-title">Venue &amp; Details</h2>
+        <p class="section-sub">Where is this taking place?</p>
+
+        <div class="mb-5">
+          <label class="cc-label">
+            <span class="material-symbols-outlined text-sm text-primary-container/60">location_on</span>
+            Venue / Location <span class="text-red-400 normal-case font-normal ml-0.5">*</span>
+          </label>
+          <input type="text" id="input-venue" placeholder="e.g. Banquet Hall, Grand Hyatt, Mumbai" class="cc-input"/>
+        </div>
+
+        <div class="mb-5">
+          <label class="cc-label">
+            <span class="material-symbols-outlined text-sm text-primary-container/60">celebration</span>
+            Event Type
+          </label>
+          <div class="relative">
+            <select id="input-event-type" class="cc-input appearance-none pr-10">
+              <option value="">Select event type…</option>
+              <option>Wedding</option>
+              <option>Corporate Event</option>
+              <option>Birthday / Party</option>
+              <option>Product Launch</option>
+              <option>Concert / Live Show</option>
+              <option>Short Film / Production</option>
+              <option>Portrait / Headshots</option>
+              <option>Drone Shoot</option>
+              <option>Podcast Recording</option>
+              <option>Other</option>
+            </select>
+            <span class="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm pointer-events-none">expand_more</span>
+          </div>
+        </div>
+
+        <div class="mb-5">
+          <label class="cc-label">
+            <span class="material-symbols-outlined text-sm text-primary-container/60">notes</span>
+            Additional Notes
+          </label>
+          <textarea id="input-notes" rows="4"
+            placeholder="Special requirements, equipment needs, guest count, reference images…"
+            class="cc-input resize-none"></textarea>
+        </div>
+
+        <div id="venue-error" class="hidden items-center gap-2 mt-2 mb-4 px-4 py-3 rounded-xl bg-red-950/30 border border-red-500/25 text-red-400 text-sm">
+          <span class="material-symbols-outlined text-base">error</span> Please enter a venue.
+        </div>
+
+        <div class="flex justify-between mt-8">
+          <button onclick="goStep(1)" class="btn-ghost"><span class="material-symbols-outlined text-sm">arrow_back</span> Back</button>
+          <button onclick="goStep(3)" class="btn-primary">Review Booking <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+        </div>
+      </div>
+
+      <!-- ════════════════════
+           STEP 4 — Confirm
+      ════════════════════ -->
+      <div class="step-panel" id="step-3">
+        <h2 class="section-title">Review &amp; Confirm</h2>
+        <p class="section-sub">Check everything before sending your request.</p>
+
+        <!-- Summary card -->
+        <div class="glass-book overflow-hidden mb-5">
+
+          <!-- Pro row -->
+          <div class="px-6 py-5 border-b border-white/[0.06] flex items-center gap-4" style="background:rgba(255,255,255,0.02)">
+            <div id="sum-avatar" class="w-12 h-12 rounded-xl flex items-center justify-center font-black text-base flex-shrink-0"></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-white font-black truncate" id="sum-name">—</p>
+              <p class="text-primary-container text-xs font-semibold truncate" id="sum-title">—</p>
+            </div>
+            <span class="material-symbols-outlined text-primary-container/50 text-2xl" style="font-variation-settings:'FILL' 1">verified</span>
+          </div>
+
+          <!-- Date / Time / Venue / Event row -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 divide-x divide-y sm:divide-y-0 divide-white/[0.06] border-b border-white/[0.06]">
+            <div class="px-5 py-4">
+              <p class="sb-section-label">Date</p>
+              <p class="text-white font-bold text-sm leading-snug" id="sum-date">—</p>
+            </div>
+            <div class="px-5 py-4">
+              <p class="sb-section-label">Time</p>
+              <p class="text-white font-bold text-sm" id="sum-time">—</p>
+            </div>
+            <div class="px-5 py-4">
+              <p class="sb-section-label">Venue</p>
+              <p class="text-white font-bold text-sm leading-snug truncate" id="sum-venue">—</p>
+            </div>
+            <div class="px-5 py-4">
+              <p class="sb-section-label">Event</p>
+              <p class="text-white font-bold text-sm truncate" id="sum-event-type">—</p>
+            </div>
+          </div>
+
+          <!-- Line items -->
+          <div class="px-6 py-5">
+            <p class="sb-section-label mb-4">Selected Services</p>
+            <div id="sum-line-items"></div>
+            <div class="mt-4 pt-4 border-t border-white/[0.08] flex justify-between items-center">
+              <span class="text-on-surface-variant font-semibold text-sm">Estimated Total</span>
+              <span class="text-primary-container text-2xl font-black" id="sum-total">₹0</span>
+            </div>
+            <p class="text-xs text-on-surface-variant/35 mt-1.5 text-right">Final amount confirmed with professional.</p>
+          </div>
+        </div>
+
+        <!-- Notes preview -->
+        <div id="sum-notes-wrap" class="hidden glass-book px-6 py-4 mb-5">
+          <p class="sb-section-label mb-2">Notes</p>
+          <p class="text-on-surface-variant text-sm leading-relaxed" id="sum-notes"></p>
+        </div>
+
+        <!-- Auth warning -->
+        <div id="auth-warning" class="hidden rounded-2xl border border-red-500/25 bg-red-950/20 px-5 py-4 mb-5 flex items-start gap-3">
+          <span class="material-symbols-outlined text-red-400 mt-0.5 flex-shrink-0">lock</span>
+          <div>
+            <p class="text-white font-bold text-sm">Sign in to confirm</p>
+            <p class="text-on-surface-variant text-xs mt-0.5">
+              <a href="/signin.html" class="text-primary-container font-bold hover:underline">Sign In</a> or
+              <a href="/customersignup.html" class="text-primary-container font-bold hover:underline">Create Account</a> to complete your booking.
+            </p>
+          </div>
+        </div>
+
+        <div id="confirm-error" class="hidden items-center gap-2 mb-4 px-4 py-3 rounded-xl bg-red-950/30 border border-red-500/25 text-red-400 text-sm">
+          <span class="material-symbols-outlined text-base">error</span> <span id="confirm-error-text"></span>
+        </div>
+
+        <div class="flex justify-between">
+          <button onclick="goStep(2)" class="btn-ghost"><span class="material-symbols-outlined text-sm">arrow_back</span> Back</button>
+          <button id="confirm-btn" onclick="confirmBooking()" class="btn-primary">
+            <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">check_circle</span>
+            Confirm Booking
+          </button>
+        </div>
+      </div>
+
+      <!-- ════════════════════
+           SUCCESS
+      ════════════════════ -->
+      <div class="step-panel" id="step-success">
+        <!-- Success icon -->
+        <div class="relative flex justify-center mb-10">
+          <div id="confetti-dots" class="absolute inset-x-0 top-0 flex justify-center pointer-events-none"></div>
+          <div class="success-icon relative z-10 w-24 h-24 rounded-full flex items-center justify-center"
+               style="background:radial-gradient(circle,rgba(0,240,255,0.18) 0%,rgba(0,240,255,0.04) 70%);border:1.5px solid rgba(0,240,255,0.3);box-shadow:0 0 70px rgba(0,240,255,0.3)">
+            <div class="success-ring"></div>
+            <span class="material-symbols-outlined text-primary-container text-5xl" style="font-variation-settings:'FILL' 1">check_circle</span>
+          </div>
+        </div>
+
+        <div class="text-center mb-10">
+          <h2 class="text-3xl font-black text-white mb-3 tracking-tight">Booking Submitted!</h2>
+          <p class="text-on-surface-variant max-w-sm mx-auto leading-relaxed text-sm">
+            Your request has been sent. The professional will review and confirm your booking shortly.
+          </p>
+        </div>
+
+        <div id="success-summary" class="glass-book overflow-hidden mb-8 max-w-md mx-auto"></div>
+
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="/services.html" class="btn-ghost justify-center">
+            <span class="material-symbols-outlined text-sm">grid_view</span> Browse More
+          </a>
+          <a href="/customer-profile.html" class="btn-primary justify-center">
+            <span class="material-symbols-outlined text-sm">calendar_month</span> My Bookings
+          </a>
+        </div>
+      </div>
+
+    </div><!-- /left column -->
+
+    <!-- ── RIGHT COLUMN: Sticky sidebar (desktop) ──── -->
+    <aside class="hidden lg:block w-80 flex-shrink-0 sticky top-28" id="sidebar">
+
+      <!-- Pro card skeleton -->
+      <div id="sb-pro-skeleton" class="glass-book p-5 mb-4">
+        <div class="flex items-center gap-3">
+          <div class="skel w-12 h-12 rounded-xl flex-shrink-0"></div>
+          <div class="flex-1 flex flex-col gap-2">
+            <div class="skel h-4 w-28 rounded"></div>
+            <div class="skel h-3 w-20 rounded"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pro card -->
+      <div id="sb-pro-card" class="hidden glass-book p-5 mb-4">
+        <div class="flex items-center gap-3 mb-4">
+          <div id="sb-avatar" class="w-12 h-12 rounded-xl flex items-center justify-center font-black text-base flex-shrink-0"></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-white font-bold text-sm truncate" id="sb-name"></p>
+            <p class="text-primary-container text-xs font-semibold truncate" id="sb-title"></p>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-1.5" id="sb-cats"></div>
+      </div>
+
+      <!-- Live booking summary -->
+      <div class="glass-book overflow-hidden" id="sb-summary">
+        <!-- Header -->
+        <div class="px-5 py-4 border-b border-white/[0.06]" style="background:rgba(0,240,255,0.02)">
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-bold text-white/50 uppercase tracking-widest">Booking Summary</p>
+            <span class="material-symbols-outlined text-primary-container/40 text-sm">receipt_long</span>
+          </div>
+        </div>
+
+        <div class="px-5 py-4 flex flex-col gap-5">
+
+          <!-- Services -->
+          <div>
+            <p class="sb-section-label">Services</p>
+            <div id="sb-services">
+              <p class="text-white/25 text-xs italic">No services selected yet</p>
+            </div>
+          </div>
+
+          <!-- When -->
+          <div>
+            <p class="sb-section-label">When</p>
+            <div id="sb-datetime" class="text-white/25 text-xs italic">Not set</div>
+          </div>
+
+          <!-- Where -->
+          <div>
+            <p class="sb-section-label">Where</p>
+            <div id="sb-venue-text" class="text-white/25 text-xs italic">Not set</div>
+          </div>
+
+          <!-- Total -->
+          <div class="border-t border-white/[0.08] pt-4 flex justify-between items-baseline">
+            <span class="text-on-surface-variant text-sm font-semibold">Est. Total</span>
+            <span class="text-primary-container text-xl font-black" id="sb-total">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trust badge -->
+      <div class="mt-4 px-4 py-3 rounded-xl border border-white/05 flex items-center gap-2.5" style="background:rgba(0,240,255,0.02)">
+        <span class="material-symbols-outlined text-primary-container/60 text-sm" style="font-variation-settings:'FILL' 1">shield</span>
+        <p class="text-xs text-on-surface-variant/50">No payment now — confirm first, pay later.</p>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<div id="site-footer" class="relative z-10"></div>
+<script src="/static/js/header-loader.js"></script>
+<script src="/static/js/footer-loader.js"></script>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   State
+══════════════════════════════════════════════════════════ */
+let PRO = null;
+let currentStep = 0;
+let durationHours = 2;
+
+const TIME_SLOTS = [
+  '07:00','08:00','09:00','10:00','11:00','12:00',
+  '13:00','14:00','15:00','16:00','17:00','18:00',
+  '19:00','20:00','21:00',
+];
+
+/* ══════════════════════════════════════════════════════════
+   Helpers
+══════════════════════════════════════════════════════════ */
+function strHue(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) & 0xffffffff;
+  return Math.abs(h) % 360;
+}
+function initials(n) {
+  return (n || '?').split(' ').filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');
+}
+function formatTime(t) {
+  const [hh, mm] = t.split(':').map(Number);
+  const ampm = hh < 12 ? 'AM' : 'PM';
+  const h12  = ((hh - 1 + 12) % 12) + 1;
+  return `${h12}:${mm.toString().padStart(2, '0')} ${ampm}`;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Boot
+══════════════════════════════════════════════════════════ */
+(async function boot() {
+  const username = new URLSearchParams(location.search).get('pro');
+  if (!username) {
+    document.getElementById('page-title').textContent = 'No professional specified.';
+    document.getElementById('hero-skeleton').style.display = 'none';
+    document.getElementById('hero-content').classList.remove('hidden');
+    document.getElementById('hero-content').style.display = 'flex';
+    return;
+  }
+
+  buildTimeSlots();
+  document.getElementById('input-date').min = new Date().toISOString().split('T')[0];
+
+  let data;
+  try {
+    const res = await fetch(`/api/profile/@${encodeURIComponent(username)}`);
+    data = await res.json();
+  } catch (_) {
+    document.getElementById('page-title').textContent = 'Failed to load professional.';
+    return;
+  }
+
+  if (!data.ok) {
+    document.getElementById('page-title').textContent = 'Professional not found.';
+    return;
+  }
+
+  PRO = data.profile;
+  document.title = `Book ${PRO.display_name} | CamCrew Studio`;
+
+  renderHero();
+  renderSidebarPro();
+  renderServices();
+})();
+
+/* ══════════════════════════════════════════════════════════
+   Hero
+══════════════════════════════════════════════════════════ */
+function renderHero() {
+  const hue   = strHue(PRO.username || '');
+  const inits = initials(PRO.display_name);
+  const cats  = (PRO.categories || []).slice(0, 3).join(' · ');
+
+  const av = document.getElementById('hero-avatar');
+  av.style.background = `linear-gradient(135deg,hsl(${hue},45%,14%),hsl(${(hue+50)%360},55%,20%))`;
+  av.style.color = `hsl(${hue},75%,72%)`;
+  av.textContent = inits;
+
+  const glow = document.getElementById('hero-avatar-glow');
+  if (glow) {
+    glow.style.background = `hsl(${hue},60%,40%)`;
+  }
+
+  document.getElementById('page-title').textContent = PRO.display_name;
+  document.getElementById('page-subtitle').textContent = PRO.title || cats;
+
+  const profileLink = document.getElementById('hero-profile-link');
+  profileLink.href = `/@${PRO.username}`;
+  profileLink.classList.remove('hidden');
+
+  document.getElementById('hero-skeleton').style.display = 'none';
+  const hc = document.getElementById('hero-content');
+  hc.classList.remove('hidden');
+  hc.style.display = 'flex';
+}
+
+/* ══════════════════════════════════════════════════════════
+   Sidebar pro card
+══════════════════════════════════════════════════════════ */
+function renderSidebarPro() {
+  if (!PRO) return;
+  const hue   = strHue(PRO.username || '');
+  const inits = initials(PRO.display_name);
+
+  const av = document.getElementById('sb-avatar');
+  av.style.background = `linear-gradient(135deg,hsl(${hue},45%,14%),hsl(${(hue+50)%360},55%,20%))`;
+  av.style.color = `hsl(${hue},75%,72%)`;
+  av.textContent = inits;
+
+  document.getElementById('sb-name').textContent  = PRO.display_name;
+  document.getElementById('sb-title').textContent = PRO.title || '';
+
+  const catsWrap = document.getElementById('sb-cats');
+  (PRO.categories || []).slice(0, 4).forEach(c => {
+    catsWrap.insertAdjacentHTML('beforeend',
+      `<span class="text-xs px-2 py-0.5 rounded-full bg-primary-container/10 text-primary-container border border-primary-container/20 font-semibold">${c}</span>`);
+  });
+
+  document.getElementById('sb-pro-skeleton').style.display = 'none';
+  document.getElementById('sb-pro-card').style.display = 'block';
+  updateSidebar();
+}
+
+/* ══════════════════════════════════════════════════════════
+   Services
+══════════════════════════════════════════════════════════ */
+function renderServices() {
+  const container = document.getElementById('services-list');
+  const services  = PRO.services || [];
+
+  if (!services.length) {
+    container.innerHTML = '';
+    document.getElementById('no-services').classList.remove('hidden');
+    return;
+  }
+
+  const ICONS = ['photo_camera','videocam','palette','edit','music_note','mic','flight','brightness_7','movie','star'];
+
+  container.innerHTML = services.map((svc, i) => {
+    const isHourly   = (svc.unit || '').toLowerCase().includes('hour');
+    const priceLabel = svc.price
+      ? `₹${Number(svc.price).toLocaleString()} <span class="font-normal text-on-surface-variant text-xs">/ ${svc.unit || 'service'}</span>`
+      : '<span class="text-on-surface-variant text-xs font-normal">Price on request</span>';
+    const icon = ICONS[i % ICONS.length];
+
+    return `
+      <div>
+        <input type="checkbox" class="svc-check" id="svc-${i}" data-idx="${i}" onchange="onSvcChange()"/>
+        <label class="svc-label" for="svc-${i}">
+          <div class="flex items-center gap-3">
+            <!-- Inline checkbox -->
+            <div class="svc-box flex-shrink-0">
+              <span class="material-symbols-outlined" style="font-size:0.75rem;font-variation-settings:'FILL' 1,'wght' 700">check</span>
+            </div>
+            <!-- Icon badge -->
+            <div class="icon-badge flex-shrink-0">
+              <span class="material-symbols-outlined text-primary-container text-lg">${icon}</span>
+            </div>
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-3">
+                <p class="text-white font-bold text-sm leading-snug">${svc.name || 'Service'}</p>
+                <span class="text-primary-container font-black text-sm whitespace-nowrap flex-shrink-0">${priceLabel}</span>
+              </div>
+              ${svc.description ? `<p class="text-on-surface-variant/60 text-xs mt-0.5 leading-relaxed">${svc.description}</p>` : ''}
+            </div>
+          </div>
+          ${isHourly ? `
+          <div class="qty-wrap" id="qty-wrap-${i}">
+            <span class="text-xs text-on-surface-variant/70 font-semibold">Hours:</span>
+            <button type="button" class="qty-btn" onclick="adjustQty(event,${i},-1)">−</button>
+            <span class="text-white font-black text-sm w-6 text-center" id="qty-${i}">2</span>
+            <button type="button" class="qty-btn" onclick="adjustQty(event,${i},+1)">+</button>
+          </div>` : ''}
+        </label>
+      </div>`;
+  }).join('');
+}
+
+function onSvcChange() {
+  const services = PRO ? (PRO.services || []) : [];
+  const hasHourly = services.some((svc, i) => {
+    const cb = document.getElementById(`svc-${i}`);
+    return cb && cb.checked && (svc.unit || '').toLowerCase().includes('hour');
+  });
+  const dw = document.getElementById('duration-wrap');
+  if (hasHourly) dw.classList.add('visible'); else dw.classList.remove('visible');
+  updateSidebar();
+}
+
+function adjustQty(e, i, delta) {
+  e.preventDefault(); e.stopPropagation();
+  const el  = document.getElementById(`qty-${i}`);
+  const val = Math.max(1, Math.min(24, parseInt(el.textContent) + delta));
+  el.textContent = val;
+  updateSidebar();
+}
+
+/* ══════════════════════════════════════════════════════════
+   Duration control (step 2)
+══════════════════════════════════════════════════════════ */
+function changeDuration(delta) {
+  durationHours = Math.max(1, Math.min(24, durationHours + delta));
+  document.getElementById('duration-display').textContent = durationHours;
+  updateSidebar();
+}
+
+/* ══════════════════════════════════════════════════════════
+   Time slots
+══════════════════════════════════════════════════════════ */
+function buildTimeSlots() {
+  const html = TIME_SLOTS.map((t, i) => {
+    const [hh] = t.split(':').map(Number);
+    const ampm = hh < 12 ? 'AM' : 'PM';
+    const h12  = ((hh - 1 + 12) % 12) + 1;
+    return `<input type="radio" name="timeslot" class="time-pill" id="ts-${i}" value="${t}" onchange="updateSidebar()"/>
+            <label class="time-label" for="ts-${i}">${h12} ${ampm}</label>`;
+  }).join('');
+  document.getElementById('time-slots').innerHTML = html;
+
+  const htmlEnd = TIME_SLOTS.map((t, i) => {
+    const [hh] = t.split(':').map(Number);
+    const ampm = hh < 12 ? 'AM' : 'PM';
+    const h12  = ((hh - 1 + 12) % 12) + 1;
+    return `<input type="radio" name="endtimeslot" class="time-pill" id="ets-${i}" value="${t}" onchange="updateSidebar()"/>
+            <label class="time-label" for="ets-${i}">${h12} ${ampm}</label>`;
+  }).join('');
+  document.getElementById('end-time-slots').innerHTML = htmlEnd;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Calculate total
+══════════════════════════════════════════════════════════ */
+function calcTotal() {
+  const services = PRO ? (PRO.services || []) : [];
+  let total = 0;
+  services.forEach((svc, i) => {
+    const cb = document.getElementById(`svc-${i}`);
+    if (!cb || !cb.checked) return;
+    const price    = parseFloat(svc.price) || 0;
+    const isHourly = (svc.unit || '').toLowerCase().includes('hour');
+    const qty      = isHourly
+      ? parseInt(document.getElementById(`qty-${i}`)?.textContent || durationHours)
+      : 1;
+    total += price * qty;
+  });
+  return total;
+}
+
+function getSelectedServices() {
+  const services = PRO ? (PRO.services || []) : [];
+  return services.reduce((acc, svc, i) => {
+    const cb = document.getElementById(`svc-${i}`);
+    if (cb && cb.checked) {
+      const isHourly = (svc.unit || '').toLowerCase().includes('hour');
+      const qty      = isHourly
+        ? parseInt(document.getElementById(`qty-${i}`)?.textContent || durationHours)
+        : 1;
+      acc.push({ svc, qty, isHourly });
+    }
+    return acc;
+  }, []);
+}
+
+/* ══════════════════════════════════════════════════════════
+   Update sidebar live summary
+══════════════════════════════════════════════════════════ */
+function updateSidebar() {
+  // Services
+  const sel = getSelectedServices();
+  const sbSvc = document.getElementById('sb-services');
+  if (sel.length) {
+    sbSvc.innerHTML = sel.map(({ svc, qty, isHourly }) => {
+      const price = parseFloat(svc.price) || 0;
+      const line  = price * qty;
+      return `<div class="sidebar-item">
+        <span class="text-on-surface-variant text-xs truncate max-w-[140px]">${svc.name}${isHourly ? ` ×${qty}h` : ''}</span>
+        <span class="text-white text-xs font-bold flex-shrink-0">${price ? '₹' + line.toLocaleString() : '—'}</span>
+      </div>`;
+    }).join('');
+  } else {
+    sbSvc.innerHTML = '<p class="text-white/25 text-xs italic">No services selected yet</p>';
+  }
+
+  // Date/time
+  const dateVal   = document.getElementById('input-date')?.value;
+  const timeEl    = document.querySelector('input[name="timeslot"]:checked');
+  const endTimeEl = document.querySelector('input[name="endtimeslot"]:checked');
+  const sbDt      = document.getElementById('sb-datetime');
+  if (dateVal || timeEl) {
+    const dStr = dateVal
+      ? new Date(dateVal + 'T00:00:00').toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
+      : '';
+    const timeRange = timeEl
+      ? formatTime(timeEl.value) + (endTimeEl ? ` → ${formatTime(endTimeEl.value)}` : '')
+      : '';
+    sbDt.innerHTML = `<span class="text-white text-xs font-bold">${dStr}</span>${timeRange ? ` <span class="text-primary-container text-xs font-semibold">@ ${timeRange}</span>` : ''}`;
+  } else {
+    sbDt.innerHTML = '<span class="text-white/25 text-xs italic">Not set</span>';
+  }
+
+  // Venue
+  const venue    = document.getElementById('input-venue')?.value.trim();
+  const sbVenue  = document.getElementById('sb-venue-text');
+  sbVenue.innerHTML = venue
+    ? `<span class="text-white text-xs font-bold">${venue}</span>`
+    : '<span class="text-white/25 text-xs italic">Not set</span>';
+
+  // Total
+  const total = calcTotal();
+  document.getElementById('sb-total').textContent = total ? `₹${total.toLocaleString()}` : '—';
+}
+
+// Live update on date/venue input
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('input-date')?.addEventListener('input', updateSidebar);
+  document.getElementById('input-venue')?.addEventListener('input', updateSidebar);
+});
+
+/* ══════════════════════════════════════════════════════════
+   Step navigation
+══════════════════════════════════════════════════════════ */
+function goStep(n) {
+  if (n > currentStep && !validateStep(currentStep)) return;
+  if (n === 3) buildConfirmSummary();
+
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`step-${n}`).classList.add('active');
+
+  // Update stepper
+  for (let i = 0; i < 4; i++) {
+    const dot  = document.getElementById(`dot-${i}`);
+    const item = document.getElementById(`step-item-${i}`);
+    const line = document.getElementById(`line-${i}`);
+
+    dot.className  = 'step-dot ' + (i < n ? 'done' : i === n ? 'active' : '');
+    item.className = 'step-item ' + (i < n ? 'is-done' : i === n ? 'is-active' : '');
+    dot.innerHTML  = i < n
+      ? '<span class="material-symbols-outlined text-sm" style="font-variation-settings:\'FILL\' 1">check</span>'
+      : String(i + 1);
+    if (line) line.className = 'step-connector ' + (i < n ? 'is-done' : '');
+  }
+
+  currentStep = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function validateStep(step) {
+  if (step === 0) {
+    const ok = getSelectedServices().length > 0;
+    const el = document.getElementById('svc-error');
+    el.classList.toggle('hidden', ok);
+    el.style.display = ok ? 'none' : 'flex';
+    return ok;
+  }
+  if (step === 1) {
+    const date = document.getElementById('input-date').value;
+    const time = document.querySelector('input[name="timeslot"]:checked');
+    const ok   = !!(date && time);
+    const el = document.getElementById('date-error');
+    el.classList.toggle('hidden', ok);
+    el.style.display = ok ? 'none' : 'flex';
+    return ok;
+  }
+  if (step === 2) {
+    const venue = document.getElementById('input-venue').value.trim();
+    const el = document.getElementById('venue-error');
+    el.classList.toggle('hidden', !!venue);
+    el.style.display = venue ? 'none' : 'flex';
+    return !!venue;
+  }
+  return true;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Confirm summary (step 4)
+══════════════════════════════════════════════════════════ */
+function buildConfirmSummary() {
+  if (!PRO) return;
+
+  const hue   = strHue(PRO.username || '');
+  const inits = initials(PRO.display_name);
+  const av    = document.getElementById('sum-avatar');
+  av.style.background = `linear-gradient(135deg,hsl(${hue},45%,14%),hsl(${(hue+50)%360},55%,20%))`;
+  av.style.color = `hsl(${hue},75%,72%)`;
+  av.textContent = inits;
+
+  document.getElementById('sum-name').textContent  = PRO.display_name || PRO.username;
+  document.getElementById('sum-title').textContent = PRO.title || (PRO.categories || []).join(' · ');
+
+  const dateVal   = document.getElementById('input-date').value;
+  const timeEl    = document.querySelector('input[name="timeslot"]:checked');
+  const endTimeEl = document.querySelector('input[name="endtimeslot"]:checked');
+  const dateStr = dateVal
+    ? new Date(dateVal + 'T00:00:00').toLocaleDateString('en-IN', { weekday:'short', day:'numeric', month:'short', year:'numeric' })
+    : '—';
+  document.getElementById('sum-date').textContent = dateStr;
+  const timeRange = timeEl
+    ? formatTime(timeEl.value) + (endTimeEl ? ` → ${formatTime(endTimeEl.value)}` : '')
+    : '—';
+  document.getElementById('sum-time').textContent = timeRange;
+
+  const venue   = document.getElementById('input-venue').value.trim();
+  const evtType = document.getElementById('input-event-type').value;
+  document.getElementById('sum-venue').textContent      = venue || '—';
+  document.getElementById('sum-event-type').textContent = evtType || '—';
+
+  const notes = document.getElementById('input-notes').value.trim();
+  if (notes) {
+    document.getElementById('sum-notes').textContent = notes;
+    document.getElementById('sum-notes-wrap').classList.remove('hidden');
+  } else {
+    document.getElementById('sum-notes-wrap').classList.add('hidden');
+  }
+
+  const sel    = getSelectedServices();
+  let total    = 0;
+  document.getElementById('sum-line-items').innerHTML = sel.map(({ svc, qty, isHourly }) => {
+    const price = parseFloat(svc.price) || 0;
+    const line  = price * qty;
+    total += line;
+    return `<div class="summary-row">
+      <span class="text-on-surface-variant">${svc.name}${isHourly ? ` <span class="text-xs opacity-60">×${qty} hr</span>` : ''}</span>
+      <span class="text-white font-bold">${price ? '₹' + line.toLocaleString() : 'On request'}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('sum-total').textContent = total ? `₹${total.toLocaleString()}` : 'On request';
+
+  checkAuth();
+}
+
+async function checkAuth() {
+  try {
+    const res   = await fetch('/api/me');
+    const data  = await res.json();
+    const authed = data.ok;
+    document.getElementById('auth-warning').classList.toggle('hidden', authed);
+    document.getElementById('confirm-btn').disabled = !authed;
+  } catch (_) {
+    document.getElementById('auth-warning').classList.remove('hidden');
+    document.getElementById('confirm-btn').disabled = true;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   Confirm booking
+══════════════════════════════════════════════════════════ */
+async function confirmBooking() {
+  const btn    = document.getElementById('confirm-btn');
+  const errEl  = document.getElementById('confirm-error');
+  const errTxt = document.getElementById('confirm-error-text');
+  btn.disabled = true;
+  btn.innerHTML = `<span class="material-symbols-outlined" style="animation:spin 0.8s linear infinite">progress_activity</span> Confirming…`;
+
+  const sel       = getSelectedServices();
+  const dateVal   = document.getElementById('input-date').value;
+  const timeEl    = document.querySelector('input[name="timeslot"]:checked');
+  const endTimeEl = document.querySelector('input[name="endtimeslot"]:checked');
+  const venue     = document.getElementById('input-venue').value.trim();
+  const evtType   = document.getElementById('input-event-type').value;
+  const notes     = document.getElementById('input-notes').value.trim();
+
+  const timeRange   = timeEl ? (endTimeEl ? `${timeEl.value}–${endTimeEl.value}` : timeEl.value) : '';
+  const bookingDate = `${dateVal} ${timeRange}`.trim();
+  const serviceStr  = sel.map(({ svc, qty, isHourly }) => svc.name + (isHourly ? ` (${qty} hr)` : '')).join(', ');
+  const total       = calcTotal();
+
+  const noteLines = [];
+  if (venue)   noteLines.push(`Venue: ${venue}`);
+  if (evtType) noteLines.push(`Event: ${evtType}`);
+  if (notes)   noteLines.push(notes);
+
+  const payload = {
+    professional_name:     PRO.display_name || PRO.username,
+    professional_username: PRO.username || null,
+    service:      serviceStr,
+    booking_date: bookingDate,
+    amount:       total,
+    note:         noteLines.join('\n') || null,
+  };
+
+  try {
+    const res  = await fetch('/api/customer/bookings', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+    const data = await res.json();
+
+    if (!data.ok) {
+      errTxt.textContent = data.error || 'Something went wrong. Please try again.';
+      errEl.classList.remove('hidden');
+      errEl.style.display = 'flex';
+      btn.disabled = false;
+      btn.innerHTML = `<span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">check_circle</span> Confirm Booking`;
+      return;
+    }
+    showSuccess(payload, data.booking_id);
+  } catch (_) {
+    errTxt.textContent = 'Network error. Please check your connection.';
+    errEl.classList.remove('hidden');
+    errEl.style.display = 'flex';
+    btn.disabled = false;
+    btn.innerHTML = `<span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">check_circle</span> Confirm Booking`;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   Success
+══════════════════════════════════════════════════════════ */
+function showSuccess(payload, bookingId) {
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('step-success').classList.add('active');
+  document.getElementById('stepper').style.display = 'none';
+  document.getElementById('sidebar').style.display = 'none';
+
+  spawnConfetti();
+
+  const dateVal = document.getElementById('input-date').value;
+  const timeEl  = document.querySelector('input[name="timeslot"]:checked');
+  const dateStr = dateVal
+    ? new Date(dateVal + 'T00:00:00').toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' })
+    : '—';
+
+  document.getElementById('success-summary').innerHTML = `
+    <div class="px-5 py-4 border-b border-white/[0.06] flex justify-between items-baseline">
+      <span class="text-on-surface-variant text-sm">Professional</span>
+      <span class="text-white font-bold text-sm">${payload.professional_name}</span>
+    </div>
+    <div class="px-5 py-4 border-b border-white/[0.06] flex justify-between items-baseline">
+      <span class="text-on-surface-variant text-sm">Date & Time</span>
+      <span class="text-white font-bold text-sm text-right">${dateStr}${timeEl ? ', ' + formatTime(timeEl.value) : ''}</span>
+    </div>
+    <div class="px-5 py-4 border-b border-white/[0.06] flex justify-between items-start gap-4">
+      <span class="text-on-surface-variant text-sm flex-shrink-0">Services</span>
+      <span class="text-white font-bold text-sm text-right">${payload.service}</span>
+    </div>
+    ${payload.amount ? `
+    <div class="px-5 py-4 border-b border-white/[0.06] flex justify-between items-baseline">
+      <span class="text-on-surface-variant text-sm">Est. Total</span>
+      <span class="text-primary-container font-black text-lg">₹${Number(payload.amount).toLocaleString()}</span>
+    </div>` : ''}
+    <div class="px-5 py-3 flex items-center gap-2" style="background:rgba(0,240,255,0.03)">
+      <span class="material-symbols-outlined text-primary-container/40 text-xs">tag</span>
+      <span class="text-on-surface-variant/50 text-xs">Booking ID #${bookingId}</span>
+    </div>
+  `;
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function spawnConfetti() {
+  const wrap   = document.getElementById('confetti-dots');
+  const colors = ['#00f0ff','#c084fc','#ffffff','#00dbe9','#a855f7','#7df4ff','#e879f9'];
+  for (let i = 0; i < 28; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'confetti-dot';
+    dot.style.cssText = `
+      left:${35 + Math.random() * 30}%;
+      background:${colors[i % colors.length]};
+      animation-delay:${Math.random() * 0.6}s;
+      animation-duration:${1 + Math.random() * 0.8}s;
+      transform: rotate(${Math.random()*360}deg);
+      width:${4 + Math.random()*7}px;
+      height:${4 + Math.random()*7}px;
+      border-radius:${Math.random() > 0.5 ? '50%' : '2px'};
+    `;
+    wrap.appendChild(dot);
+  }
+}
+
+/* ── Spin keyframe ── */
+const style = document.createElement('style');
+style.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>

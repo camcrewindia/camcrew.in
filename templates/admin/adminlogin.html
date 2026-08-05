@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>document.documentElement.setAttribute('data-theme',localStorage.getItem('cc-theme')||'dark');</script>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Admin Login | Camcrew Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  [data-theme="dark"], :root {
+    --bg:           #0b0f14;
+    --card-bg:      #131920;
+    --card-border:  rgba(255,255,255,0.07);
+    --text:         #e2e8f0;
+    --text-muted:   #6b7f96;
+    --text-faint:   rgba(107,127,150,0.6);
+    --input-bg:     rgba(255,255,255,0.05);
+    --input-border: rgba(255,255,255,0.09);
+    --brand:        #006970;
+    --brand-light:  #00b8c4;
+    --brand-glow:   rgba(0,184,196,0.25);
+    --divider:      rgba(255,255,255,0.06);
+    --otp-bg:       rgba(255,255,255,0.05);
+    --otp-border:   rgba(255,255,255,0.1);
+    --error-bg:     rgba(255,80,80,0.09);
+    --error-border: rgba(255,80,80,0.22);
+    --error-text:   #ff8a8a;
+  }
+
+  [data-theme="light"] {
+    --bg:           #eef2f7;
+    --card-bg:      #ffffff;
+    --card-border:  rgba(0,0,0,0.07);
+    --text:         #0f1c2e;
+    --text-muted:   #5a6e85;
+    --text-faint:   rgba(90,110,133,0.6);
+    --input-bg:     rgba(0,0,0,0.03);
+    --input-border: rgba(0,0,0,0.09);
+    --brand:        #006970;
+    --brand-light:  #007f8a;
+    --brand-glow:   rgba(0,105,112,0.2);
+    --divider:      rgba(0,0,0,0.07);
+    --otp-bg:       rgba(0,0,0,0.04);
+    --otp-border:   rgba(0,0,0,0.1);
+    --error-bg:     rgba(200,30,30,0.07);
+    --error-border: rgba(200,30,30,0.2);
+    --error-text:   #c41a1a;
+  }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    /* No zoom on body — body fills the screen at native 100% */
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+  }
+
+  /* Subtle background glow on the real viewport */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 30%, rgba(0,105,112,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 75%, rgba(0,40,80,0.1) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Zoom wrapper — zoom lives here, not on body.
+     min-height: 125vh (= 100 / 0.8) so it fills the viewport after scaling.
+     The card inside then uses 93.75vh (= 75 / 0.8) to appear as 75% of screen. */
+  .al-zoom-wrap {
+    zoom: 0.8;
+    min-height: 125vh;
+    width: 125%;           /* 100 / 0.8 = 125% to fill horizontal space */
+    margin-left: -12.5%;  /* re-center (half of the extra 25%) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Card ── */
+  /* zoom:0.8 on body shrinks vh by 0.8 too, so divide by 0.8 to hit 75% visual */
+  .al-card {
+    position: relative;
+    z-index: 1;
+    width: min(660px, 94vw);
+    height: 94vh;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.35), 0 0 0 1px var(--card-border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Top accent line */
+  .al-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--brand-light), transparent);
+    opacity: 0.5;
+  }
+
+  /* ── Card header ── */
+  .al-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--divider);
+    flex-shrink: 0;
+  }
+  .al-logo { display: flex; align-items: center; }
+  #al-logo-img { height: 32px; width: auto; object-fit: contain; display: block; }
+
+  .al-header-right { display: flex; align-items: center; gap: 0.6rem; }
+  .al-secure-tag {
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em;
+    background: rgba(0,105,112,0.12); color: var(--brand-light);
+    border: 1px solid rgba(0,184,196,0.2);
+    border-radius: 20px; padding: 3px 9px; text-transform: uppercase;
+  }
+  .al-toggle {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    background: var(--input-bg);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .al-toggle:hover { color: var(--brand-light); border-color: rgba(0,184,196,0.25); }
+  .al-toggle span { font-size: 0.95rem; }
+
+  /* ── Card body ── */
+  .al-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2rem 2rem 1.5rem;
+    overflow-y: auto;
+  }
+
+  /* Admin badge */
+  #admin-user-badge {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0,105,112,0.1);
+    border: 1px solid rgba(0,184,196,0.2);
+    border-radius: 20px;
+    padding: 0.3rem 0.9rem 0.3rem 0.5rem;
+    margin-bottom: 1.25rem;
+    width: fit-content;
+  }
+  #admin-user-badge .material-symbols-outlined { font-size: 0.95rem; color: var(--brand-light); }
+  #admin-user-badge .badge-email { font-size: 0.75rem; font-weight: 700; color: var(--brand-light); }
+  #admin-user-badge .badge-tag { font-size: 0.62rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.1em; }
+  #admin-user-badge .badge-signout { background: none; border: none; cursor: pointer; font-size: 0.68rem; font-weight: 700; color: var(--text-muted); font-family: inherit; margin-left: 4px; transition: color 0.15s; }
+  #admin-user-badge .badge-signout:hover { color: var(--brand-light); }
+
+  /* Stage heading */
+  .al-stage-head { margin-bottom: 1.75rem; }
+  .al-stage-head h1 {
+    font-size: 1.6rem; font-weight: 900;
+    letter-spacing: -0.04em; line-height: 1.15;
+    color: var(--text); margin-bottom: 0.35rem;
+  }
+  .al-stage-head p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* Fields */
+  .al-field { margin-bottom: 1.1rem; }
+  .al-label {
+    display: block;
+    font-size: 0.66rem; font-weight: 800;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 0.45rem;
+    transition: color 0.2s;
+  }
+  .al-field:focus-within .al-label { color: var(--brand-light); }
+
+  .al-input-wrap { position: relative; display: flex; align-items: center; }
+  .al-input-icon {
+    position: absolute; left: 0.9rem;
+    font-size: 0.95rem; color: var(--text-muted);
+    pointer-events: none; transition: color 0.2s;
+  }
+  .al-field:focus-within .al-input-icon { color: var(--brand-light); }
+
+  .al-input {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1.5px solid var(--input-border);
+    border-radius: 10px;
+    padding: 0.78rem 0.9rem 0.78rem 2.6rem;
+    font-size: 0.9rem; font-family: inherit;
+    color: var(--text); outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+  .al-input:focus {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px var(--brand-glow);
+    background: var(--card-bg);
+  }
+  .al-input::placeholder { color: var(--text-faint); }
+
+  [data-theme="light"] .al-input:-webkit-autofill,
+  [data-theme="light"] .al-input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 9999px #eef2f7 inset !important;
+    -webkit-text-fill-color: #0f1c2e !important;
+  }
+
+  .al-pw-btn {
+    position: absolute; right: 0.8rem;
+    background: none; border: none; cursor: pointer;
+    color: var(--text-muted); display: inline-flex;
+    transition: color 0.15s; padding: 0;
+  }
+  .al-pw-btn:hover { color: var(--brand-light); }
+  .al-pw-btn span { font-size: 1rem; }
+
+  /* Row */
+  .al-row {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+  .al-check { display: flex; align-items: center; gap: 0.45rem; cursor: pointer; }
+  .al-check input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--brand); cursor: pointer; }
+  .al-check span { font-size: 0.76rem; font-weight: 600; color: var(--text-muted); }
+  .al-forgot { font-size: 0.76rem; font-weight: 700; color: var(--brand-light); text-decoration: none; transition: opacity 0.15s; }
+  .al-forgot:hover { opacity: 0.7; }
+
+  /* Error */
+  .al-error {
+    display: none;
+    align-items: center; gap: 0.45rem;
+    padding: 0.6rem 0.85rem;
+    background: var(--error-bg);
+    border: 1px solid var(--error-border);
+    border-radius: 9px; margin-bottom: 0.9rem;
+    font-size: 0.8rem; font-weight: 600; color: var(--error-text);
+  }
+  .al-error span { font-size: 0.9rem; flex-shrink: 0; }
+
+  /* Submit */
+  .al-btn {
+    width: 100%; padding: 0.82rem 1.5rem;
+    border-radius: 10px; border: none;
+    background: linear-gradient(135deg, #006970, #00adb5);
+    color: #fff; font-size: 0.9rem; font-weight: 800;
+    font-family: inherit; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 0.45rem;
+    box-shadow: 0 4px 18px rgba(0,105,112,0.35);
+    transition: all 0.2s; position: relative; overflow: hidden;
+  }
+  .al-btn::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+    pointer-events: none;
+  }
+  .al-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,105,112,0.45); }
+  .al-btn:active:not(:disabled) { transform: translateY(0); }
+  .al-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .al-btn span.material-symbols-outlined { font-size: 1rem; }
+
+  /* Footer */
+  .al-card-footer {
+    flex-shrink: 0;
+    padding: 1rem 2rem;
+    border-top: 1px solid var(--divider);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .al-footer-note { font-size: 0.68rem; font-weight: 600; color: var(--text-faint); }
+  .al-footer-links { display: flex; gap: 1.25rem; }
+  .al-footer-links a {
+    font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-muted); text-decoration: none; transition: color 0.15s;
+  }
+  .al-footer-links a:hover { color: var(--brand-light); }
+
+  /* ── OTP ── */
+  .al-back-btn {
+    display: flex; align-items: center; gap: 0.35rem;
+    background: none; border: none; cursor: pointer;
+    color: var(--text-muted); font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    font-family: inherit; padding: 0; margin-bottom: 1.5rem; transition: color 0.15s;
+  }
+  .al-back-btn:hover { color: var(--brand-light); }
+  .al-back-btn span { font-size: 0.95rem; }
+
+  .al-otp-grid {
+    display: flex; gap: 0.55rem;
+    justify-content: space-between; margin-bottom: 1.25rem;
+  }
+  .otp-input {
+    flex: 1; height: 58px;
+    border-radius: 10px;
+    border: 1.5px solid var(--otp-border);
+    background: var(--otp-bg);
+    text-align: center; font-size: 1.3rem; font-weight: 900;
+    font-family: inherit; color: var(--text);
+    outline: none; transition: all 0.2s;
+    caret-color: var(--brand-light);
+  }
+  .otp-input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-glow); background: var(--card-bg); }
+  .otp-input.filled { border-color: rgba(0,184,196,0.4); color: var(--brand-light); }
+
+  .al-resend {
+    text-align: center; font-size: 0.81rem; color: var(--text-muted); margin-bottom: 1.25rem;
+  }
+  .al-resend button {
+    background: none; border: none; cursor: pointer;
+    font-weight: 800; font-size: 0.81rem; font-family: inherit;
+    color: var(--brand-light); transition: opacity 0.15s;
+  }
+  .al-resend button:disabled { opacity: 0.4; cursor: default; }
+
+  /* Stage */
+  .al-stage { display: flex; flex-direction: column; flex: 1; }
+  .al-stage.hidden { display: none; }
+
+  /* Toast */
+  #success-toast {
+    position: fixed; bottom: 2rem; left: 50%;
+    transform: translateX(-50%) translateY(16px);
+    background: var(--card-bg);
+    border: 1px solid rgba(0,184,196,0.25);
+    border-radius: 50px; padding: 0.65rem 1.4rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.85rem; font-weight: 700; color: var(--brand-light);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.3);
+    opacity: 0; pointer-events: none; z-index: 1000;
+    transition: opacity 0.4s, transform 0.4s;
+  }
+  #success-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  #success-toast span { font-size: 1rem; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin { display: inline-block; animation: spin 0.7s linear infinite; }
+</style>
+</head>
+<body>
+<div class="al-zoom-wrap">
+<div class="al-card">
+
+  <!-- Header -->
+  <div class="al-header">
+    <div class="al-logo">
+      <img id="al-logo-img" src="" alt="CamCrew Studio">
+    </div>
+    <div class="al-header-right">
+      <span class="al-secure-tag">Secure</span>
+      <button class="al-toggle" id="al-theme-toggle" onclick="toggleTheme()" title="Switch theme">
+        <span class="material-symbols-outlined t-icon" style="font-size:0.95rem;">light_mode</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="al-body">
+
+    <!-- Admin badge -->
+    <div id="admin-user-badge">
+      <span class="material-symbols-outlined">verified_user</span>
+      <span class="badge-email" id="admin-user-email"></span>
+      <span class="badge-tag">· ADMIN</span>
+      <button class="badge-signout" onclick="adminSignOut()">Sign out</button>
+    </div>
+
+    <!-- ── STAGE 1: Credentials ── -->
+    <div class="al-stage" id="form-stage-1">
+      <div>
+        <div class="al-stage-head">
+          <h1>Welcome back,<br>Admin.</h1>
+          <p>Sign in to access the dashboard and management tools.</p>
+        </div>
+
+        <div class="al-error" id="login-error">
+          <span class="material-symbols-outlined">error</span>
+          <span id="login-error-msg"></span>
+        </div>
+
+        <form id="admin-login-form" onsubmit="handleAdminLogin(event)">
+          <div class="al-field">
+            <label class="al-label">Email Address</label>
+            <div class="al-input-wrap">
+              <span class="material-symbols-outlined al-input-icon">alternate_email</span>
+              <input class="al-input" type="email" placeholder="admin@camcrew.studio" required autocomplete="username">
+            </div>
+          </div>
+
+          <div class="al-field">
+            <label class="al-label">Password</label>
+            <div class="al-input-wrap">
+              <span class="material-symbols-outlined al-input-icon">lock</span>
+              <input class="al-input" type="password" id="password-input" placeholder="••••••••" required autocomplete="current-password" style="padding-right:2.8rem;">
+              <button type="button" class="al-pw-btn" onclick="togglePassword()">
+                <span class="material-symbols-outlined" id="pw-toggle-icon">visibility</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="al-row">
+            <label class="al-check">
+              <input type="checkbox">
+              <span>Remember device</span>
+            </label>
+            <a class="al-forgot" href="#">Forgot password?</a>
+          </div>
+
+          <button class="al-btn" type="submit" id="submit-btn">
+            <span id="submit-label">Continue to Verification</span>
+            <span class="material-symbols-outlined" id="submit-icon">arrow_forward</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── STAGE 2: OTP ── -->
+    <div class="al-stage hidden" id="form-stage-2">
+      <div>
+        <button class="al-back-btn" onclick="showLogin()">
+          <span class="material-symbols-outlined">arrow_back</span>
+          Back to Login
+        </button>
+
+        <div class="al-stage-head">
+          <h1>Verify your<br>identity.</h1>
+          <p>Enter the 6-digit code sent to your registered device.</p>
+        </div>
+
+        <form onsubmit="handleOtpSubmit(event)">
+          <div class="al-otp-grid">
+            <input class="otp-input" maxlength="1" type="text" inputmode="numeric">
+            <input class="otp-input" maxlength="1" type="text" inputmode="numeric">
+            <input class="otp-input" maxlength="1" type="text" inputmode="numeric">
+            <input class="otp-input" maxlength="1" type="text" inputmode="numeric">
+            <input class="otp-input" maxlength="1" type="text" inputmode="numeric">
+            <input class="otp-input" maxlength="1" type="text" inputmode="numeric">
+          </div>
+
+          <div class="al-resend">
+            Didn't receive it? &nbsp;
+            <button type="button" id="resend-btn" onclick="startResendTimer()">Resend in 0:45</button>
+          </div>
+
+          <button class="al-btn" type="submit">
+            <span>Authenticate Session</span>
+            <span class="material-symbols-outlined">verified_user</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="al-card-footer">
+    <span class="al-footer-note">🔒 AES-256 · Admin access only</span>
+    <div class="al-footer-links">
+      <a href="#">Support</a>
+      <a href="#">Privacy</a>
+      <a href="index.html">Back to Site</a>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- /.al-card -->
+</div><!-- /.al-zoom-wrap -->
+
+<!-- Toast -->
+<div id="success-toast">
+  <span class="material-symbols-outlined">check_circle</span>
+  Session authenticated. Redirecting…
+</div>
+
+<script>
+  function togglePassword() {
+    const input = document.getElementById('password-input');
+    const icon  = document.getElementById('pw-toggle-icon');
+    if (input.type === 'password') { input.type = 'text'; icon.textContent = 'visibility_off'; }
+    else { input.type = 'password'; icon.textContent = 'visibility'; }
+  }
+
+  function showOtp() {
+    const s1 = document.getElementById('form-stage-1');
+    const s2 = document.getElementById('form-stage-2');
+    s1.style.opacity = '0';
+    setTimeout(() => {
+      s1.classList.add('hidden');
+      s2.classList.remove('hidden');
+      s2.style.opacity = '0';
+      requestAnimationFrame(() => { s2.style.transition = 'opacity 0.35s'; s2.style.opacity = '1'; });
+      const first = s2.querySelector('.otp-input');
+      if (first) first.focus();
+      startResendTimer();
+    }, 280);
+  }
+
+  function showLogin() {
+    const s1 = document.getElementById('form-stage-1');
+    const s2 = document.getElementById('form-stage-2');
+    s2.style.opacity = '0';
+    setTimeout(() => {
+      s2.classList.add('hidden'); s2.style.opacity = '';
+      s1.classList.remove('hidden'); s1.style.opacity = '0';
+      requestAnimationFrame(() => { s1.style.transition = 'opacity 0.35s'; s1.style.opacity = '1'; });
+    }, 280);
+  }
+
+  async function handleAdminLogin(e) {
+    e.preventDefault();
+    const form      = document.getElementById('admin-login-form');
+    const email     = form.querySelector('input[type="email"]').value.trim();
+    const password  = document.getElementById('password-input').value;
+    const submitBtn = document.getElementById('submit-btn');
+    const submitLbl = document.getElementById('submit-label');
+    const submitIco = document.getElementById('submit-icon');
+
+    clearError();
+    submitBtn.disabled = true;
+    submitLbl.textContent = 'Verifying…';
+    submitIco.className = 'material-symbols-outlined spin';
+    submitIco.textContent = 'progress_activity';
+
+    try {
+      const res  = await fetch('/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password }) });
+      const data = await res.json();
+      if (!data.ok) { showError(data.error || 'Login failed. Please check your credentials.'); resetBtn(); return; }
+      const badge = document.getElementById('admin-user-badge');
+      document.getElementById('admin-user-email').textContent = data.user.email;
+      badge.style.display = 'flex';
+      showOtp(); resetBtn();
+    } catch (_) {
+      showError('Network error. Please try again.'); resetBtn();
+    }
+  }
+
+  function resetBtn() {
+    const submitBtn = document.getElementById('submit-btn');
+    document.getElementById('submit-label').textContent = 'Continue to Verification';
+    document.getElementById('submit-icon').className = 'material-symbols-outlined';
+    document.getElementById('submit-icon').textContent = 'arrow_forward';
+    submitBtn.disabled = false;
+  }
+
+  function handleOtpSubmit(e) {
+    e.preventDefault();
+    const inputs = document.querySelectorAll('#form-stage-2 .otp-input');
+    const code   = Array.from(inputs).map(i => i.value).join('');
+    if (code.length < 6) return;
+    document.getElementById('success-toast').classList.add('show');
+    setTimeout(() => { window.location.href = 'admindashboard.html'; }, 1400);
+  }
+
+  function showError(msg) {
+    document.getElementById('login-error-msg').textContent = msg;
+    document.getElementById('login-error').style.display = 'flex';
+  }
+  function clearError() { document.getElementById('login-error').style.display = 'none'; }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const otpInputs = document.querySelectorAll('.otp-input');
+    otpInputs.forEach((input, index) => {
+      input.addEventListener('input', e => {
+        e.target.value = e.target.value.replace(/\D/g,'');
+        if (e.target.value) { e.target.classList.add('filled'); if (index < otpInputs.length-1) otpInputs[index+1].focus(); }
+        else e.target.classList.remove('filled');
+      });
+      input.addEventListener('keydown', e => {
+        if (e.key==='Backspace' && !e.target.value && index>0) { otpInputs[index-1].focus(); otpInputs[index-1].classList.remove('filled'); }
+      });
+      input.addEventListener('paste', e => {
+        const pasted = (e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'');
+        if (pasted.length===6) { e.preventDefault(); otpInputs.forEach((inp,i) => { inp.value=pasted[i]||''; inp.classList.toggle('filled',!!pasted[i]); }); otpInputs[5].focus(); }
+      });
+    });
+  });
+
+  let resendInterval = null;
+  function startResendTimer() {
+    const btn = document.getElementById('resend-btn');
+    if (!btn) return;
+    let seconds = 45; btn.disabled = true;
+    clearInterval(resendInterval);
+    resendInterval = setInterval(() => {
+      seconds--;
+      btn.textContent = seconds>0 ? `Resend in 0:${String(seconds).padStart(2,'0')}` : 'Resend';
+      if (seconds<=0) { clearInterval(resendInterval); btn.disabled=false; }
+    }, 1000);
+  }
+
+  async function adminSignOut() { await fetch('/api/logout',{method:'POST'}); window.location.reload(); }
+
+  (async () => {
+    try {
+      const res  = await fetch('/api/me');
+      const data = await res.json();
+      if (data.ok && data.user.role==='admin') {
+        const badge = document.getElementById('admin-user-badge');
+        document.getElementById('admin-user-email').textContent = data.user.email;
+        badge.style.display = 'flex';
+      }
+    } catch(_){}
+  })();
+
+  (function(){
+    var LOGO_DARK  = 'https://lh3.googleusercontent.com/aida-public/AB6AXuD9q9WVugN54N0Fb7aRUtxhE8PbmbqbdZTbv95zqsIkJgOBvQ2YSnJM5eEsO75LaztJD6qmaVdCCWaQK1NbD62to1CGN4bTwFVAh0Ft0FSjBG7OyXa-YjEsUU5-I0GrNxLig8VzO6p5S1LtjayqZNGde8y20wt1McNqpRBosYLBLNj0kgRSdHZ_5LOyTRqkeyvgRRjPKTZheePKB1-DVbrI08U-IJyZt1ltAYIoPFOL746s8P3LdgMrT-EW-PkAJ3GufbpN8zUZIK-0lg';
+    var LOGO_LIGHT = 'attached_assets/camcrew_studio_logo_cop_1785515916927.png';
+
+    function updateLogo(t){
+      var img=document.getElementById('al-logo-img'); if(!img)return;
+      img.src = t==='dark' ? LOGO_DARK : LOGO_LIGHT;
+    }
+    function initTheme(){
+      var t=localStorage.getItem('cc-theme')||'dark';
+      document.documentElement.setAttribute('data-theme',t);
+      updateBtn(t); updateLogo(t);
+    }
+    function updateBtn(t){
+      var btn=document.getElementById('al-theme-toggle'); if(!btn)return;
+      var ic=btn.querySelector('.t-icon'); if(ic) ic.textContent=t==='dark'?'light_mode':'dark_mode';
+      btn.title=t==='dark'?'Switch to Light Mode':'Switch to Dark Mode';
+    }
+    window.toggleTheme=function(){
+      var cur=document.documentElement.getAttribute('data-theme');
+      var next=cur==='dark'?'light':'dark';
+      document.documentElement.setAttribute('data-theme',next);
+      localStorage.setItem('cc-theme',next); updateBtn(next); updateLogo(next);
+    };
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initTheme);
+    else initTheme();
+  })();
+</script>
+</body>
+</html>

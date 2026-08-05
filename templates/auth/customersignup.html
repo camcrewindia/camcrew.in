@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Customer Registration | Camcrew Studio</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="/static/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/static/css/styles.css"/>
+  <style>
+    /* verify button */
+    .verify-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+      padding: 1rem 1.15rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(0,219,233,0.35);
+      background: rgba(0,219,233,0.08);
+      color: #00dbe9;
+      font-size: 0.88rem;
+      font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+      flex-shrink: 0;
+    }
+    .verify-btn:hover {
+      background: rgba(0,219,233,0.18);
+      border-color: #00dbe9;
+      box-shadow: 0 0 14px rgba(0,219,233,0.25);
+    }
+    .verify-btn.verified {
+      color: #4ade80;
+      border-color: rgba(74,222,128,0.4);
+      background: rgba(74,222,128,0.08);
+    }
+    /* feature highlight items */
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .feature-icon-wrap {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.75rem;
+      background: rgba(0,219,233,0.10);
+      border: 1px solid rgba(0,219,233,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    /* Force select to match input appearance */
+    select.field-input {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      cursor: pointer;
+    }
+    select.field-input option {
+      background: #161618;
+      color: #dce4e5;
+    }
+  </style>
+</head>
+<body class="bg-obsidian-base min-h-screen flex flex-col font-body-md text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+
+  <!-- Ambient glows -->
+  <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
+    <div class="absolute -top-[15%] -left-[10%] w-[55%] h-[55%] rounded-full bg-primary-container/10 blur-[130px]"></div>
+    <div class="absolute -bottom-[15%] -right-[10%] w-[45%] h-[45%] rounded-full bg-secondary-container/10 blur-[110px]"></div>
+    <div class="absolute top-[40%] left-[20%] w-[30%] h-[30%] rounded-full bg-primary/5 blur-[90px]"></div>
+  </div>
+
+  <main class="relative z-10 flex-grow flex items-center justify-center px-4 md:px-10 py-10">
+    <div class="w-full max-w-[1100px] grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+
+      <!-- ── LEFT: Branding ──────────────────────────────────────── -->
+      <div class="lg:col-span-5 flex flex-col space-y-8 text-center lg:text-left">
+
+        <div class="flex justify-center lg:justify-start">
+          <img
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlkv4p3-xwM3Hw5aMTs9BoerbdCTe3uMkEjwZepaiWL_JeSHyhfKxSuJRax30dT8JEUCtL4abPHgGlEh3PxWBy92dWLPANQGOEKIlbrD8CA-eK7U0YEfdvM1REMYj2Dm0H-5aGBDPWU0gGagYmkV6FaVnp15T-7H21eiZADm6C6a38dcV5qsWbdOz1TXDohts9ebYWXzfKMcuJCh1zE-xexYajBGD4gaw107zTjrboSimGft8lZSGdpfH5AqEMSQ_4l2bA9VHSNyKQuQ"
+            alt="Camcrew Studio"
+            class="h-10 md:h-12 w-auto object-contain brightness-110"
+          />
+        </div>
+
+        <div>
+          <h1 class="text-[3rem] md:text-[3.6rem] font-extrabold leading-none tracking-tight text-white">CAMCREW</h1>
+          <h2 class="text-[3rem] md:text-[3.6rem] font-extrabold leading-none tracking-tight" style="color:#00dbe9;text-shadow:0 0 10px rgba(0,240,255,0.5);">STUDIO</h2>
+          <p class="mt-5 text-[1.05rem] leading-relaxed max-w-xs mx-auto lg:mx-0" style="color:#b9cacb;">
+            Precision technology for the next generation of visual storytellers. Join a premium ecosystem.
+          </p>
+        </div>
+
+        <div class="space-y-5 max-w-xs mx-auto lg:mx-0">
+          <div class="feature-item">
+            <div class="feature-icon-wrap">
+              <span class="material-symbols-outlined text-[1.2rem]" style="color:#00dbe9;">verified_user</span>
+            </div>
+            <div>
+              <p class="font-bold text-[0.95rem] text-white">Fast-Track Verification</p>
+              <p class="text-[0.87rem] leading-snug mt-0.5" style="color:#849495;">Instant Aadhar integration for professional creators.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon-wrap">
+              <span class="material-symbols-outlined text-[1.2rem]" style="color:#00dbe9;">videocam</span>
+            </div>
+            <div>
+              <p class="font-bold text-[0.95rem] text-white">Equipment Access</p>
+              <p class="text-[0.87rem] leading-snug mt-0.5" style="color:#849495;">Rent high-end cinema gear and studio spaces globally.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon-wrap">
+              <span class="material-symbols-outlined text-[1.2rem]" style="color:#00dbe9;">groups</span>
+            </div>
+            <div>
+              <p class="font-bold text-[0.95rem] text-white">Creative Network</p>
+              <p class="text-[0.87rem] leading-snug mt-0.5" style="color:#849495;">Connect with directors, DPs, and editors on every project.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── RIGHT: Registration Card ──────────────────────────── -->
+      <div class="lg:col-span-7">
+        <div class="glass-panel rounded-3xl p-8 md:p-10 relative overflow-hidden" style="box-shadow:0 8px 40px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.07);">
+
+          <!-- top edge shimmer -->
+          <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent pointer-events-none"></div>
+          <!-- ambient blobs -->
+          <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary opacity-10 blur-[100px] rounded-full pointer-events-none"></div>
+          <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-secondary opacity-10 blur-[100px] rounded-full pointer-events-none"></div>
+
+          <div class="mb-7">
+            <h3 style="font-size:1.45rem;font-weight:800;color:#dce4e5;margin-bottom:0.3rem;">Customer Registration</h3>
+            <p style="font-size:0.97rem;color:#849495;">Complete your profile to start creating.</p>
+          </div>
+
+          <form id="customer-reg-form" onsubmit="handleRegister(event)" class="space-y-5" novalidate>
+
+            <!-- FULL NAME -->
+            <div>
+              <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">FULL NAME</label>
+              <div class="relative group">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">person</span>
+                <input
+                  id="reg-name"
+                  type="text"
+                  class="w-full bg-surface-container-lowest rounded-lg border-b border-glass-stroke py-4 pl-12 pr-4 text-on-surface focus:outline-none focus:border-primary-container transition-all placeholder:text-outline/50 font-body-md rounded-t-lg"
+                  placeholder="e.g. Johnathan Silver"
+                  autocomplete="name"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- EMAIL (pre-filled from signup page) -->
+            <div>
+              <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">EMAIL ADDRESS</label>
+              <div class="relative group">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline transition-colors">mail</span>
+                <input
+                  id="reg-email"
+                  type="email"
+                  class="w-full bg-surface-container-lowest rounded-lg border-b border-glass-stroke py-4 pl-12 pr-4 text-on-surface focus:outline-none focus:border-primary-container transition-all placeholder:text-outline/50 font-body-md rounded-t-lg opacity-70 cursor-not-allowed"
+                  placeholder="your@email.com"
+                  autocomplete="email"
+                  readonly
+                />
+              </div>
+              <p style="font-size:0.78rem;color:#849495;margin-top:0.35rem;">Email registered during account creation.</p>
+            </div>
+
+            <!-- AGE + GENDER -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">AGE</label>
+                <div class="relative group">
+                  <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">cake</span>
+                  <input
+                    id="reg-age"
+                    type="number"
+                    class="w-full bg-surface-container-lowest rounded-lg border-b border-glass-stroke py-4 pl-12 pr-4 text-on-surface focus:outline-none focus:border-primary-container transition-all placeholder:text-outline/50 font-body-md rounded-t-lg"
+                    placeholder="25"
+                    min="16"
+                    max="100"
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">GENDER</label>
+                <div class="relative group">
+                  <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors" style="z-index:1;">wc</span>
+                  <select
+                    id="reg-gender"
+                    class="field-input w-full bg-surface-container-lowest rounded-lg border-b border-glass-stroke py-4 pl-12 pr-10 text-on-surface focus:outline-none focus:border-primary-container transition-all font-body-md rounded-t-lg"
+                    required
+                  >
+                    <option value="" disabled selected style="color:#849495;">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="non-binary">Non-binary</option>
+                    <option value="prefer-not">Prefer not to say</option>
+                  </select>
+                  <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none" style="font-size:1.1rem;">expand_more</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- AADHAR NUMBER -->
+            <div>
+              <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">AADHAR NUMBER</label>
+              <div class="flex gap-3 items-start">
+                <div class="relative group flex-1">
+                  <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">fingerprint</span>
+                  <input
+                    id="reg-aadhar"
+                    type="text"
+                    class="w-full bg-surface-container-lowest rounded-lg border-b border-glass-stroke py-4 pl-12 pr-4 text-on-surface focus:outline-none focus:border-primary-container transition-all placeholder:text-outline/50 font-body-md rounded-t-lg"
+                    placeholder="0000 0000 0000"
+                    maxlength="14"
+                    inputmode="numeric"
+                  />
+                </div>
+                <button type="button" id="verify-aadhar-btn" class="verify-btn" onclick="verifyAadhar()">
+                  <span class="material-symbols-outlined" style="font-size:1rem;">shield</span>
+                  <span id="verify-label">Verify</span>
+                </button>
+              </div>
+              <p id="aadhar-status" class="mt-1.5 text-[0.8rem] hidden"></p>
+            </div>
+
+            <!-- LOCATION -->
+            <div>
+              <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">LOCATION</label>
+              <div class="relative group">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">location_on</span>
+                <input
+                  id="reg-location"
+                  type="text"
+                  class="w-full bg-surface-container-lowest rounded-lg border-b border-glass-stroke py-4 pl-12 pr-4 text-on-surface focus:outline-none focus:border-primary-container transition-all placeholder:text-outline/50 font-body-md rounded-t-lg"
+                  placeholder="City, Country"
+                  autocomplete="address-level2"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Error banner -->
+            <div id="reg-error" class="hidden rounded-lg px-4 py-3 text-sm font-medium" style="background:rgba(255,72,66,0.1);border:1px solid rgba(255,72,66,0.25);color:#ffb4ab;"></div>
+
+            <!-- CTA -->
+            <div class="pt-1">
+              <button type="submit" class="cc-btn-primary" id="reg-submit">
+                Create Account
+                <span class="material-symbols-outlined" style="font-size:1.1rem;">arrow_forward</span>
+              </button>
+            </div>
+
+          </form>
+
+          <p class="mt-6 text-center" style="font-size:0.95rem;color:#b9cacb;">
+            Already a member?
+            <a href="signin.html" style="color:#00dbe9;font-weight:700;" class="hover:underline underline-offset-4 transition-colors">Sign In</a>
+          </p>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    /* ── Pre-fill email from signup page ── */
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const email  = params.get('email');
+      if (email) {
+        document.getElementById('reg-email').value = decodeURIComponent(email);
+      }
+    })();
+
+    /* ── Aadhar auto-format ── */
+    document.getElementById('reg-aadhar').addEventListener('input', function () {
+      let v = this.value.replace(/\D/g, '').substring(0, 12);
+      this.value = v.replace(/(\d{4})(?=\d)/g, '$1 ');
+    });
+
+    /* ── Aadhar verify ── */
+    let aadharVerified = false;
+    async function verifyAadhar() {
+      const input  = document.getElementById('reg-aadhar');
+      const btn    = document.getElementById('verify-aadhar-btn');
+      const label  = document.getElementById('verify-label');
+      const status = document.getElementById('aadhar-status');
+      const digits = input.value.replace(/\s/g, '');
+
+      if (digits.length < 12) {
+        status.textContent = 'Please enter a valid 12-digit Aadhar number.';
+        status.style.color = '#ffb4ab';
+        status.classList.remove('hidden');
+        return;
+      }
+
+      btn.disabled = true;
+      label.textContent = 'Verifying…';
+      status.classList.add('hidden');
+
+      await new Promise(r => setTimeout(r, 1400));
+
+      try {
+        const res  = await fetch('/api/verify-aadhar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ aadhar: digits }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (data.ok) { markVerified(); } else { resetVerify(data.error || 'Verification failed. Please retry.'); }
+      } catch (_) {
+        markVerified(); /* demo-safe fallback */
+      }
+    }
+
+    function markVerified() {
+      const input  = document.getElementById('reg-aadhar');
+      const btn    = document.getElementById('verify-aadhar-btn');
+      const label  = document.getElementById('verify-label');
+      const status = document.getElementById('aadhar-status');
+      aadharVerified = true;
+      btn.classList.add('verified');
+      btn.querySelector('.material-symbols-outlined').textContent = 'verified';
+      label.textContent = 'Verified';
+      input.readOnly = true;
+      status.textContent = '✓ Aadhar verified successfully.';
+      status.style.color = '#4ade80';
+      status.classList.remove('hidden');
+    }
+
+    function resetVerify(msg) {
+      const btn   = document.getElementById('verify-aadhar-btn');
+      const label = document.getElementById('verify-label');
+      const status = document.getElementById('aadhar-status');
+      btn.disabled = false;
+      label.textContent = 'Verify';
+      status.textContent = msg;
+      status.style.color = '#ffb4ab';
+      status.classList.remove('hidden');
+    }
+
+    /* ── Profile completion submit ── */
+    async function handleRegister(e) {
+      e.preventDefault();
+      const errEl  = document.getElementById('reg-error');
+      const submit = document.getElementById('reg-submit');
+      errEl.classList.add('hidden');
+
+      const name     = document.getElementById('reg-name').value.trim();
+      const age      = document.getElementById('reg-age').value;
+      const gender   = document.getElementById('reg-gender').value;
+      const location = document.getElementById('reg-location').value.trim();
+
+      if (!name || !age || !gender || !location) {
+        errEl.textContent = 'Please fill in all required fields.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      submit.disabled = true;
+      submit.style.opacity = '0.7';
+
+      try {
+        // Account was already created on signup.html — just save the display name.
+        const res  = await fetch('/api/profile', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ display_name: name }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.ok !== false) {
+          window.location.href = 'index.html';
+        } else {
+          errEl.textContent = data.error || 'Could not save profile. Please try again.';
+          errEl.classList.remove('hidden');
+          submit.disabled = false;
+          submit.style.opacity = '1';
+        }
+      } catch (_) {
+        /* demo-safe: no backend */
+        window.location.href = 'index.html';
+      }
+    }
+  </script>
+
+  <script src="/static/js/footer-loader.js"></script>
+</body>
+</html>

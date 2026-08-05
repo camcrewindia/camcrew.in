@@ -1,0 +1,16 @@
+# Python virtual environment
+.pythonlibs/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# SQLite database (runtime data)
+*.db
+*.sqlite
+
+# Uploaded zip
+zipFile.zip
+
+# Replit cache
+.cache/

@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script>document.documentElement.setAttribute('data-theme',localStorage.getItem('cc-theme')||'dark');</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Inventory Management | Camcrew Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "primary": "#006970","primary-container": "#00858f","primary-fixed": "#004f54","primary-fixed-dim": "#006970",
+          "secondary": "#7b1fa2","secondary-container": "#9c27b0","on-secondary": "#ffffff",
+          "surface": "#e0e5ec","background": "#e0e5ec","obsidian-base": "#e0e5ec","charcoal-surface": "#e8edf4",
+          "surface-container": "#dde3eb","surface-container-low": "#d8dfe8","surface-container-high": "#cdd5e0",
+          "surface-container-highest": "#c8d0de","surface-bright": "#eef1f6",
+          "on-surface": "#0f172a","on-surface-variant": "#475569","on-background": "#0f172a","on-primary": "#ffffff",
+          "on-primary-container": "#ffffff",
+          "error": "#c62828","error-container": "#ffcdd2","on-error": "#ffffff","on-error-container": "#7f0000",
+          "glass-stroke": "rgba(0,0,0,0.08)","outline": "#b0bec5","outline-variant": "#cfd8dc"
+        },
+        "spacing": {
+          "margin-desktop": "80px","margin-mobile": "20px","stack-xl": "4rem","stack-md": "1.5rem","gutter": "24px","stack-xs": "0.5rem"
+        },
+        "fontFamily": {
+          "label-caps": ["Plus Jakarta Sans"],"display-lg": ["Plus Jakarta Sans"],"headline-md": ["Plus Jakarta Sans"],"body-md": ["Plus Jakarta Sans"]
+        },
+        "fontSize": {
+          "label-caps": ["13px",{"lineHeight":"1.1","letterSpacing":"0.1em","fontWeight":"700"}],
+          "display-lg": ["48px",{"lineHeight":"1.1","letterSpacing":"-0.02em","fontWeight":"800"}],
+          "headline-md": ["26px",{"lineHeight":"1.3","fontWeight":"700"}],
+          "body-md": ["17px",{"lineHeight":"1.6","fontWeight":"400"}]
+        }
+      }
+    }
+  }
+</script>
+<style>
+  /* ── Inventory — Dark / Light Theme ── */
+  :root, [data-theme="dark"] {
+    --neu-bg:           #16161e;
+    --neu-shadow-dark:  #0d0d16;
+    --neu-shadow-light: #1f1f2c;
+    --neu-accent:       #1a8aff;
+    --neu-accent-glow:  rgba(26,138,255,0.25);
+    --neu-text:         #e4e8f6;
+    --neu-text-muted:   #7a8599;
+    --neu-border:       rgba(255,255,255,0.07);
+    --neu-table-head:   rgba(255,255,255,0.05);
+    --neu-table-head-text: #7a8599;
+    --neu-row-hover:    rgba(255,255,255,0.03);
+    --neu-filter-bar:   rgba(255,255,255,0.04);
+  }
+  [data-theme="light"] {
+    --neu-bg:           #eef1f8;
+    --neu-shadow-dark:  #c5cad8;
+    --neu-shadow-light: #ffffff;
+    --neu-accent:       #0060cc;
+    --neu-accent-glow:  rgba(0,96,204,0.2);
+    --neu-text:         #1a1a2e;
+    --neu-text-muted:   #5a6880;
+    --neu-border:       rgba(0,0,0,0.08);
+    --neu-table-head:   #dde3ef;
+    --neu-table-head-text: #374263;
+    --neu-row-hover:    #d8dfe8;
+    --neu-filter-bar:   #d8dfe8;
+  }
+  body {
+    background-color: var(--neu-bg);
+    color: var(--neu-text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px; line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    zoom: 0.8;
+  }
+  h2,h3,h4,h5,h6 { color: var(--neu-text); font-weight: 800; }
+  .glass-panel {
+    background: var(--neu-bg);
+    box-shadow: 8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light);
+    border: none !important;
+  }
+  .neu-header {
+    background: var(--neu-bg);
+    box-shadow: 0 4px 10px var(--neu-shadow-dark), 0 -2px 6px var(--neu-shadow-light);
+  }
+  .neu-btn {
+    background: var(--neu-bg);
+    box-shadow: 4px 4px 8px var(--neu-shadow-dark), -4px -4px 8px var(--neu-shadow-light);
+    border: none; color: var(--neu-text-muted); transition: all 0.15s ease; cursor: pointer;
+  }
+  .neu-btn:hover { box-shadow: 6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light); color: var(--neu-accent); }
+  .neu-btn:active { box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light); }
+  .neu-inset {
+    background: var(--neu-bg);
+    box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light);
+    border: none !important;
+  }
+  .neu-inset:focus-within {
+    box-shadow: inset 4px 4px 8px var(--neu-shadow-dark), inset -4px -4px 8px var(--neu-shadow-light), 0 0 0 2px rgba(0,133,143,0.35);
+    outline: none;
+  }
+  .neu-inset input { background: transparent; color: var(--neu-text); }
+  .neu-inset input::placeholder { color: rgba(122,133,153,0.5); }
+  .neu-icon-badge {
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 7px var(--neu-shadow-dark), -3px -3px 7px var(--neu-shadow-light);
+    border-radius: 0.75rem; padding: 0.65rem; display: inline-flex;
+  }
+  .stat-card {
+    background: var(--neu-bg);
+    box-shadow: 8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light);
+    border-radius: 1rem; padding: 1.4rem;
+    transition: all 0.25s ease;
+  }
+  .stat-card:hover { box-shadow: 10px 10px 20px var(--neu-shadow-dark), -10px -10px 20px var(--neu-shadow-light); }
+  .action-btn {
+    background: var(--neu-bg);
+    box-shadow: 4px 4px 8px var(--neu-shadow-dark), -4px -4px 8px var(--neu-shadow-light);
+    border: none; border-radius: 0.65rem; padding: 0.6rem 1.4rem;
+    font-size: 0.88rem; font-weight: 700; color: var(--neu-text-muted);
+    display: inline-flex; align-items: center; gap: 7px; cursor: pointer; transition: all 0.15s;
+  }
+  .action-btn:hover { color: var(--neu-accent); box-shadow: 6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light); }
+  .action-btn:active { box-shadow: inset 3px 3px 7px var(--neu-shadow-dark), inset -3px -3px 7px var(--neu-shadow-light); }
+  .action-btn-primary {
+    background: var(--neu-accent); color: #fff;
+    box-shadow: 4px 4px 10px var(--neu-accent-glow);
+    border: none; border-radius: 0.65rem; padding: 0.6rem 1.4rem;
+    font-size: 0.88rem; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 7px; cursor: pointer; transition: all 0.15s;
+  }
+  .action-btn-primary:hover { box-shadow: 6px 6px 14px var(--neu-accent-glow); transform: translateY(-1px); }
+  .action-btn-primary:active { transform: translateY(0); }
+  select.neu-select {
+    background: var(--neu-bg);
+    box-shadow: inset 3px 3px 7px var(--neu-shadow-dark), inset -3px -3px 7px var(--neu-shadow-light);
+    border: none; color: var(--neu-text); border-radius: 0.5rem; padding: 0.45rem 1rem;
+    font-size: 0.88rem; font-weight: 600; appearance: auto;
+  }
+  [data-theme="dark"] select.neu-select { color-scheme: dark; }
+  [data-theme="light"] select.neu-select { color-scheme: light; }
+  tr.neu-row:hover { background: var(--neu-row-hover); }
+  .icon-btn {
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
+    border: none; border-radius: 0.5rem; padding: 0.4rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--neu-text-muted); transition: all 0.15s;
+  }
+  .icon-btn:hover { color: var(--neu-accent); }
+  .icon-btn.danger:hover { color: #ff6464; }
+  .icon-btn:active { box-shadow: inset 2px 2px 5px var(--neu-shadow-dark), inset -2px -2px 5px var(--neu-shadow-light); }
+  .page-btn-active {
+    background: var(--neu-accent); color: #fff; font-weight: 800;
+    width: 2.5rem; height: 2.5rem; border-radius: 0.5rem; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; font-size: 0.88rem;
+  }
+  .page-btn {
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
+    color: var(--neu-text-muted); font-weight: 700;
+    width: 2.5rem; height: 2.5rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center; font-size: 0.88rem;
+  }
+  .page-btn:hover { color: var(--neu-accent); }
+  .neu-track {
+    background: var(--neu-bg);
+    box-shadow: inset 2px 2px 5px var(--neu-shadow-dark), inset -2px -2px 5px var(--neu-shadow-light);
+  }
+  .bar-segment { background: rgba(26,138,255,0.2); border-radius: 0.4rem 0.4rem 0 0; transition: background 0.2s; position: relative; }
+  .bar-segment:hover { background: rgba(26,138,255,0.4); }
+  [data-theme="light"] .bar-segment { background: rgba(0,96,204,0.18); }
+  [data-theme="light"] .bar-segment:hover { background: rgba(0,96,204,0.35); }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--neu-bg); }
+  ::-webkit-scrollbar-thumb { background: var(--neu-shadow-dark); border-radius: 10px; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+
+  /* ── Theme toggle ── */
+  #theme-toggle {
+    width: 2.4rem; height: 2.4rem; border-radius: 50%; border: none; cursor: pointer;
+    background: var(--neu-bg);
+    box-shadow: 3px 3px 8px var(--neu-shadow-dark), -3px -3px 8px var(--neu-shadow-light);
+    color: var(--neu-accent);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s ease; flex-shrink: 0;
+  }
+  #theme-toggle:hover {
+    box-shadow: 5px 5px 12px var(--neu-shadow-dark), -5px -5px 12px var(--neu-shadow-light), 0 0 14px var(--neu-accent-glow);
+    transform: scale(1.08);
+  }
+  #theme-toggle:active { box-shadow: inset 3px 3px 7px var(--neu-shadow-dark), inset -3px -3px 7px var(--neu-shadow-light); }
+
+  /* ── Dark mode overrides for inline-hardcoded colours ── */
+  [data-theme="dark"] thead { background: var(--neu-table-head) !important; }
+  [data-theme="dark"] thead th { color: var(--neu-table-head-text) !important; }
+  [data-theme="dark"] table tbody td { color: var(--neu-text) !important; }
+  [data-theme="dark"] h3, [data-theme="dark"] h4 { color: var(--neu-text) !important; }
+  [data-theme="dark"] p[style*="color:#334155"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] p[style*="color:#475569"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] div[style*="color:#0f172a"] { color: var(--neu-text) !important; }
+  [data-theme="dark"] div[style*="color:#475569"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] span[style*="color:#475569"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] span[style*="color:#334155"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] strong[style*="color:#0f172a"] { color: var(--neu-text) !important; }
+  [data-theme="dark"] [style*="border-bottom:1px solid rgba(0,0,0"] { border-bottom-color: var(--neu-border) !important; }
+  [data-theme="dark"] [style*="border-top:1px solid rgba(0,0,0"] { border-top-color: var(--neu-border) !important; }
+  [data-theme="dark"] .stat-card div[style*="color:#0f172a"] { color: var(--neu-text) !important; }
+  [data-theme="dark"] [style*="background:#d8dfe8"] { background: var(--neu-filter-bar) !important; }
+
+  /* ── Light mode table head ── */
+  [data-theme="light"] thead { background: var(--neu-table-head) !important; }
+  [data-theme="light"] thead th { color: var(--neu-table-head-text) !important; }
+
+  /* ── Modal dark mode ── */
+  [data-theme="dark"] #add-product-modal h3 { color: var(--neu-text) !important; }
+  [data-theme="dark"] #add-product-modal p[style*="color:#475569"] { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] #add-product-modal label { color: var(--neu-text-muted) !important; }
+  [data-theme="dark"] #add-product-modal input,
+  [data-theme="dark"] #add-product-modal textarea,
+  [data-theme="dark"] #add-product-modal select { color: var(--neu-text) !important; }
+  [data-theme="dark"] #add-product-overlay { background: rgba(0,0,0,0.6); }
+</style>
+</head>
+<body>
+<div id="sidebar-container"></div>
+<main class="lg:ml-64 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-30 neu-header px-margin-desktop py-4 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <h2 style="font-size:1.4rem;font-weight:800;color:#006970;">Equipment Inventory</h2>
+      <span class="neu-inset rounded-full px-3 py-1" style="font-size:0.78rem;font-weight:600;color:#334155;">Real-time</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="relative w-64 neu-inset rounded-full">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2" style="color:#475569;">search</span>
+        <input class="bg-transparent border-none focus:ring-0 w-full pl-10 pr-4 py-2" style="font-size:0.92rem;" placeholder="Search inventory..." type="text" data-inv-search/>
+      </div>
+      <button id="theme-toggle" onclick="toggleTheme()" title="Switch to Light Mode">
+        <span class="material-symbols-outlined t-icon" style="font-size:1.15rem;">light_mode</span>
+      </button>
+      <div class="flex items-center gap-3">
+        <div id="hdr-avatar" class="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center" style="box-shadow:3px 3px 6px var(--neu-shadow-dark),-3px -3px 6px var(--neu-shadow-light);background:rgba(0,105,112,0.15);">
+          <span class="material-symbols-outlined" style="color:#006970;font-size:1.3rem;">person</span>
+        </div>
+        <div class="hidden md:block">
+          <p id="hdr-name" style="font-size:0.95rem;font-weight:800;color:#006970;">—</p>
+          <p id="hdr-role" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#475569;">LOADING…</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Body -->
+  <div class="p-margin-desktop space-y-8 pb-32">
+
+    <!-- Page Title + Actions -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div>
+        <h3 style="font-size:1.75rem;font-weight:800;color:#0f172a;letter-spacing:-0.02em;">Equipment Inventory</h3>
+        <p style="font-size:0.95rem;color:#334155;margin-top:4px;max-width:500px;">Centralized control for high-fidelity cinematic assets. Monitor stock levels, SKUs, and equipment status in real-time.</p>
+      </div>
+      <div class="flex gap-3">
+        <button id="export-csv-btn" class="action-btn">
+          <span class="material-symbols-outlined" style="font-size:1.1rem;">file_download</span> Export CSV
+        </button>
+        <button class="action-btn-primary" data-action="add-item">
+          <span class="material-symbols-outlined" style="font-size:1.1rem;">add_box</span> Add New Item
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Bento -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+      <div class="stat-card">
+        <div class="flex justify-between items-start mb-4">
+          <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#475569;text-transform:uppercase;">Total Assets</p>
+          <span class="neu-icon-badge material-symbols-outlined" style="color:#006970;font-size:1.2rem;">precision_manufacturing</span>
+        </div>
+        <div id="stat-total" style="font-size:2rem;font-weight:800;color:#0f172a;line-height:1.1;">—</div>
+        <div style="font-size:0.82rem;color:#475569;margin-top:6px;">Products in catalogue</div>
+      </div>
+      <div class="stat-card">
+        <div class="flex justify-between items-start mb-4">
+          <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#475569;text-transform:uppercase;">Total Units</p>
+          <span class="neu-icon-badge material-symbols-outlined" style="color:#7b1fa2;font-size:1.2rem;">inventory</span>
+        </div>
+        <div id="stat-units" style="font-size:2rem;font-weight:800;color:#0f172a;line-height:1.1;">—</div>
+        <div style="font-size:0.82rem;color:#475569;margin-top:6px;">Combined stock units</div>
+      </div>
+      <div class="stat-card">
+        <div class="flex justify-between items-start mb-4">
+          <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#475569;text-transform:uppercase;">Low Stock Alerts</p>
+          <span class="neu-icon-badge material-symbols-outlined" style="color:#b45309;font-size:1.2rem;">warning</span>
+        </div>
+        <div id="stat-low" style="font-size:2rem;font-weight:800;color:#0f172a;line-height:1.1;">—</div>
+        <div style="font-size:0.82rem;font-weight:600;color:#b45309;margin-top:6px;">Requires urgent restock</div>
+      </div>
+      <div class="stat-card">
+        <div class="flex justify-between items-start mb-4">
+          <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#475569;text-transform:uppercase;">Catalogue Value</p>
+          <span class="neu-icon-badge material-symbols-outlined" style="color:#006970;font-size:1.2rem;">payments</span>
+        </div>
+        <div id="stat-value" style="font-size:2rem;font-weight:800;color:#0f172a;line-height:1.1;">—</div>
+        <div style="font-size:0.82rem;color:#475569;margin-top:6px;">Sum of price × stock</div>
+      </div>
+    </div>
+
+    <!-- Table Container -->
+    <div class="glass-panel rounded-2xl overflow-hidden">
+      <!-- Filter Bar -->
+      <div class="p-5 flex flex-wrap gap-4 items-center justify-between" style="border-bottom:1px solid rgba(0,0,0,0.08);background:#d8dfe8;">
+        <div class="flex gap-4">
+          <select class="neu-select" data-inv-category>
+            <option value="">All Categories</option>
+            <option>Cameras</option>
+            <option>Lenses</option>
+            <option>Lighting</option>
+            <option>Audio</option>
+            <option>Storage</option>
+            <option>Accessories</option>
+            <option>Other</option>
+          </select>
+          <select class="neu-select" data-inv-stock>
+            <option value="">Status: Any</option>
+            <option>In Stock</option>
+            <option>Low Stock</option>
+            <option>Out of Stock</option>
+          </select>
+        </div>
+        <div id="inv-entry-count" style="font-size:0.88rem;color:#334155;">
+          Loading…
+        </div>
+      </div>
+
+      <!-- Data Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead style="background:#d8dfe8;">
+            <tr>
+              <th class="px-6 py-4" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;border-bottom:1px solid rgba(0,0,0,0.08);">Item Name</th>
+              <th class="px-6 py-4" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;border-bottom:1px solid rgba(0,0,0,0.08);">SKU</th>
+              <th class="px-6 py-4" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;border-bottom:1px solid rgba(0,0,0,0.08);">Category</th>
+              <th class="px-6 py-4" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;border-bottom:1px solid rgba(0,0,0,0.08);">Stock Level</th>
+              <th class="px-6 py-4" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;border-bottom:1px solid rgba(0,0,0,0.08);">Unit Price</th>
+              <th class="px-6 py-4 text-right" style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;color:#334155;text-transform:uppercase;border-bottom:1px solid rgba(0,0,0,0.08);">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="inv-tbody">
+            <tr>
+              <td colspan="6" class="px-6 py-10 text-center" style="color:#7a8599;font-size:0.9rem;">
+                <span class="material-symbols-outlined" style="font-size:1.5rem;vertical-align:middle;">progress_activity</span> Loading inventory…
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div id="inv-pagination" class="p-5 flex justify-center gap-2" style="border-top:1px solid rgba(0,0,0,0.08);display:none!important;"></div>
+    </div>
+
+    <!-- Bottom Widgets -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      <!-- Stock by Category Chart -->
+      <div class="glass-panel p-8 rounded-3xl">
+        <h4 style="font-size:1.1rem;font-weight:800;color:#0f172a;margin-bottom:1.25rem;">Stock by Category</h4>
+        <div id="cat-chart-bars" class="flex items-end gap-2" style="height:10rem;">
+          <div style="flex:1;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:0.8rem;">Loading…</div>
+        </div>
+        <div class="neu-track rounded-sm" style="height:3px;margin-top:2px;"></div>
+        <div id="cat-chart-labels" class="flex justify-between mt-3" style="font-size:0.68rem;font-weight:700;letter-spacing:0.04em;color:#475569;text-transform:uppercase;"></div>
+      </div>
+
+      <!-- Quick Actions Card -->
+      <div class="glass-panel p-8 rounded-3xl flex flex-col justify-center items-center text-center gap-4">
+        <div class="neu-icon-badge mb-2" style="padding:1rem;">
+          <span class="material-symbols-outlined" style="font-size:2rem;color:#006970;">manage_search</span>
+        </div>
+        <h4 style="font-size:1.1rem;font-weight:800;color:#0f172a;">Quick Actions</h4>
+        <p style="font-size:0.88rem;color:#334155;max-width:260px;">Add a new product to the catalogue or export the current inventory list as CSV.</p>
+        <div class="flex flex-col gap-3 w-full" style="max-width:220px;">
+          <button data-action="add-item" class="action-btn-primary" style="width:100%;justify-content:center;border-radius:0.75rem;">
+            <span class="material-symbols-outlined" style="font-size:1rem;">add_box</span> Add New Product
+          </button>
+          <button id="export-csv-btn2" class="action-btn" style="width:100%;justify-content:center;border-radius:0.75rem;">
+            <span class="material-symbols-outlined" style="font-size:1rem;">file_download</span> Export CSV
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <div id="footer-container"></div>
+</main>
+
+<!-- FAB -->
+<button id="fab-add-btn" class="fixed bottom-10 right-10 w-16 h-16 rounded-full flex items-center justify-center z-50" style="background:var(--neu-accent);color:#fff;box-shadow:0 8px 24px rgba(0,105,112,0.4);transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+  <span class="material-symbols-outlined" style="font-size:1.6rem;">add</span>
+</button>
+
+<!-- Add Product Modal Overlay -->
+<div id="add-product-overlay" style="display:none;position:fixed;inset:0;z-index:100;background:rgba(14,23,42,0.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:1rem;">
+  <!-- Modal Panel -->
+  <div id="add-product-modal" style="
+    background:var(--neu-bg);
+    border-radius:2rem;
+    width:100%;max-width:560px;
+    position:relative;
+    transform:scale(0.94) translateY(12px);opacity:0;
+    transition:transform 0.3s cubic-bezier(.34,1.45,.64,1),opacity 0.22s ease;
+    max-height:92vh;overflow-y:auto;
+    box-shadow:none;
+  ">
+
+    <!-- Header -->
+    <input type="hidden" id="pf-edit-id" value="">
+    <div style="padding:1.75rem 2rem 0;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;">
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <!-- Icon badge -->
+        <div id="modal-icon-wrap" style="
+          background:var(--neu-bg);
+          box-shadow:6px 6px 14px var(--neu-shadow-dark),-6px -6px 14px var(--neu-shadow-light);
+          border-radius:1.1rem;padding:0.9rem;display:inline-flex;flex-shrink:0;
+        ">
+          <span id="modal-icon" class="material-symbols-outlined" style="font-size:1.6rem;color:var(--neu-accent);">inventory_2</span>
+        </div>
+        <div>
+          <h3 id="modal-title" style="font-size:1.22rem;font-weight:900;color:#0f172a;line-height:1.2;letter-spacing:-0.01em;">Add New Product</h3>
+          <p id="modal-subtitle" style="font-size:0.8rem;color:#64748b;margin-top:3px;">Fill in the details below to add a new inventory item.</p>
+        </div>
+      </div>
+      <!-- Close button -->
+      <button id="close-modal-btn" style="
+        background:var(--neu-bg);
+        box-shadow:3px 3px 8px var(--neu-shadow-dark),-3px -3px 8px var(--neu-shadow-light);
+        border:none;border-radius:0.7rem;padding:0.5rem;flex-shrink:0;margin-top:2px;
+        display:inline-flex;align-items:center;justify-content:center;
+        cursor:pointer;color:#64748b;transition:all 0.15s;
+      " onmouseover="this.style.color='#b71c1c';this.style.boxShadow='inset 3px 3px 6px var(--neu-shadow-dark),inset -3px -3px 6px var(--neu-shadow-light)'" onmouseout="this.style.color='#64748b';this.style.boxShadow='3px 3px 8px var(--neu-shadow-dark),-3px -3px 8px var(--neu-shadow-light)'">
+        <span class="material-symbols-outlined" style="font-size:1.2rem;">close</span>
+      </button>
+    </div>
+
+    <!-- Form -->
+    <form id="add-product-form" onsubmit="return false;" style="padding:1.5rem 2rem 2rem;display:flex;flex-direction:column;gap:0;">
+
+      <!-- ── SECTION: Core Info ── -->
+      <div style="margin-bottom:1.25rem;">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
+          <span class="material-symbols-outlined" style="font-size:0.95rem;color:var(--neu-accent);">info</span>
+          <span style="font-size:0.68rem;font-weight:800;letter-spacing:0.12em;color:#006970;text-transform:uppercase;">Core Details</span>
+          <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(0,105,112,0.25),transparent);"></div>
+        </div>
+
+        <!-- Item Name -->
+        <div style="margin-bottom:0.9rem;">
+          <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Item Name <span style="color:#b71c1c;">*</span></label>
+          <div class="pf-field-wrap">
+            <span class="material-symbols-outlined pf-field-icon">label</span>
+            <input id="pf-name" type="text" placeholder="e.g. Arri Alexa Mini LF" class="pf-input"/>
+          </div>
+        </div>
+
+        <!-- SKU + Category -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;">
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">SKU</label>
+            <div class="pf-field-wrap">
+              <span class="material-symbols-outlined pf-field-icon">qr_code</span>
+              <input id="pf-sku" type="text" placeholder="CAM-AR-01" class="pf-input pf-mono"/>
+            </div>
+          </div>
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Category</label>
+            <div class="pf-field-wrap">
+              <span class="material-symbols-outlined pf-field-icon">category</span>
+              <select id="pf-category" class="pf-input pf-select">
+                <option value="">Select…</option>
+                <option>Cameras</option>
+                <option>Lenses</option>
+                <option>Lighting</option>
+                <option>Audio</option>
+                <option>Storage</option>
+                <option>Accessories</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION: Stock & Pricing ── -->
+      <div style="margin-bottom:1.25rem;">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
+          <span class="material-symbols-outlined" style="font-size:0.95rem;color:#7b1fa2;">payments</span>
+          <span style="font-size:0.68rem;font-weight:800;letter-spacing:0.12em;color:#7b1fa2;text-transform:uppercase;">Stock & Pricing</span>
+          <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(123,31,162,0.25),transparent);"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;">
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Stock Level</label>
+            <div class="pf-field-wrap">
+              <span class="material-symbols-outlined pf-field-icon">inventory</span>
+              <input id="pf-stock" type="number" min="0" placeholder="0" class="pf-input"/>
+            </div>
+          </div>
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Unit Price</label>
+            <div class="pf-field-wrap">
+              <span style="font-size:0.92rem;font-weight:800;color:#475569;flex-shrink:0;line-height:1;">$</span>
+              <input id="pf-price" type="number" min="0" step="0.01" placeholder="0.00" class="pf-input"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION: Media & Meta ── -->
+      <div style="margin-bottom:1.25rem;">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
+          <span class="material-symbols-outlined" style="font-size:0.95rem;color:#b45309;">image</span>
+          <span style="font-size:0.68rem;font-weight:800;letter-spacing:0.12em;color:#b45309;text-transform:uppercase;">Media & Meta</span>
+          <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(180,83,9,0.25),transparent);"></div>
+        </div>
+
+        <!-- Image URL + preview -->
+        <div style="margin-bottom:0.9rem;">
+          <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Image URL <span style="color:#94a3b8;text-transform:none;letter-spacing:0;font-weight:400;">(optional)</span></label>
+          <div style="display:flex;gap:0.75rem;align-items:stretch;">
+            <div class="pf-field-wrap" style="flex:1;">
+              <span class="material-symbols-outlined pf-field-icon">link</span>
+              <input id="pf-image-url" type="url" placeholder="https://…" class="pf-input" oninput="pfUpdatePreview(this.value)"/>
+            </div>
+            <!-- Live thumbnail preview -->
+            <div id="pf-img-preview" style="
+              width:52px;height:52px;border-radius:0.75rem;flex-shrink:0;overflow:hidden;
+              background:var(--neu-bg);
+              box-shadow:inset 3px 3px 7px var(--neu-shadow-dark),inset -3px -3px 7px var(--neu-shadow-light);
+              display:flex;align-items:center;justify-content:center;
+            ">
+              <span class="material-symbols-outlined" style="font-size:1.3rem;color:#94a3b8;">image</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div style="margin-bottom:0.9rem;">
+          <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Description <span style="color:#94a3b8;text-transform:none;letter-spacing:0;font-weight:400;">(optional)</span></label>
+          <div class="pf-field-wrap" style="align-items:flex-start;padding-top:0.7rem;">
+            <span class="material-symbols-outlined pf-field-icon" style="margin-top:1px;">notes</span>
+            <textarea id="pf-description" rows="2" placeholder="Short equipment description…" class="pf-input" style="resize:none;line-height:1.55;"></textarea>
+          </div>
+        </div>
+
+        <!-- Badge chips -->
+        <div>
+          <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.55rem;">Badge <span style="color:#94a3b8;text-transform:none;letter-spacing:0;font-weight:400;">(optional)</span></label>
+          <div id="pf-badge-chips" style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+            <button type="button" class="pf-chip pf-chip-active" data-badge="" onclick="pfSelectBadge(this,'')">None</button>
+            <button type="button" class="pf-chip" data-badge="🔥 Hot" onclick="pfSelectBadge(this,'🔥 Hot')">🔥 Hot</button>
+            <button type="button" class="pf-chip" data-badge="New" onclick="pfSelectBadge(this,'New')">✨ New</button>
+            <button type="button" class="pf-chip" data-badge="Best Seller" onclick="pfSelectBadge(this,'Best Seller')">🏆 Best Seller</button>
+            <button type="button" class="pf-chip" data-badge="Limited" onclick="pfSelectBadge(this,'Limited')">⏳ Limited</button>
+            <button type="button" class="pf-chip" data-badge="⭐ Top Rated" onclick="pfSelectBadge(this,'⭐ Top Rated')">⭐ Top Rated</button>
+          </div>
+          <input type="hidden" id="pf-badge" value="">
+        </div>
+      </div>
+
+      <!-- Error message -->
+      <div id="pf-error" style="display:none;color:#b71c1c;font-size:0.82rem;font-weight:600;padding:0.6rem 0.9rem;background:rgba(183,28,28,0.07);border-radius:0.6rem;margin-bottom:0.5rem;display:flex;align-items:center;gap:6px;">
+        <span class="material-symbols-outlined" style="font-size:1rem;">error</span>
+        <span id="pf-error-msg"></span>
+      </div>
+
+      <!-- Divider -->
+      <div style="height:1px;background:rgba(0,0,0,0.07);border-radius:1px;margin:0.5rem 0 1.25rem;"></div>
+
+      <!-- Action Buttons -->
+      <div style="display:flex;gap:0.85rem;justify-content:flex-end;align-items:center;">
+        <button type="button" id="cancel-modal-btn" style="
+          background:var(--neu-bg);
+          box-shadow:5px 5px 10px var(--neu-shadow-dark),-5px -5px 10px var(--neu-shadow-light);
+          border:none;border-radius:0.75rem;padding:0.7rem 1.5rem;
+          font-size:0.88rem;font-weight:700;color:#475569;
+          font-family:'Plus Jakarta Sans',sans-serif;
+          display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:all 0.15s;
+        "
+        onmouseover="this.style.color='#334155';this.style.boxShadow='7px 7px 14px var(--neu-shadow-dark),-7px -7px 14px var(--neu-shadow-light)'"
+        onmouseout="this.style.color='#475569';this.style.boxShadow='5px 5px 10px var(--neu-shadow-dark),-5px -5px 10px var(--neu-shadow-light)'"
+        onmousedown="this.style.boxShadow='inset 4px 4px 8px var(--neu-shadow-dark),inset -4px -4px 8px var(--neu-shadow-light)'"
+        onmouseup="this.style.boxShadow='5px 5px 10px var(--neu-shadow-dark),-5px -5px 10px var(--neu-shadow-light)'">
+          <span class="material-symbols-outlined" style="font-size:1rem;">close</span> Cancel
+        </button>
+        <button type="submit" id="pf-submit-btn" style="
+          background:linear-gradient(135deg,#006970,#00838f);color:#fff;
+          box-shadow:5px 5px 14px rgba(0,105,112,0.4),-2px -2px 8px rgba(255,255,255,0.08);
+          border:none;border-radius:0.75rem;padding:0.7rem 1.8rem;
+          font-size:0.88rem;font-weight:800;letter-spacing:0.02em;
+          font-family:'Plus Jakarta Sans',sans-serif;
+          display:inline-flex;align-items:center;gap:7px;cursor:pointer;transition:all 0.18s;
+        "
+        onmouseover="this.style.boxShadow='7px 7px 18px rgba(0,105,112,0.5),-2px -2px 8px rgba(255,255,255,0.1)';this.style.transform='translateY(-1px)'"
+        onmouseout="this.style.boxShadow='5px 5px 14px rgba(0,105,112,0.4),-2px -2px 8px rgba(255,255,255,0.08)';this.style.transform='translateY(0)'"
+        onmousedown="this.style.transform='translateY(0)';this.style.boxShadow='inset 3px 3px 8px rgba(0,0,0,0.2)'"
+        onmouseup="this.style.boxShadow='5px 5px 14px rgba(0,105,112,0.4),-2px -2px 8px rgba(255,255,255,0.08)'">
+          <span id="pf-submit-icon" class="material-symbols-outlined" style="font-size:1.1rem;">add_box</span>
+          <span id="pf-submit-label">Add Product</span>
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<style>
+  /* ── Modal field styles ── */
+  .pf-field-wrap {
+    background:var(--neu-bg);
+    box-shadow:inset 5px 5px 10px var(--neu-shadow-dark),inset -5px -5px 10px var(--neu-shadow-light);
+    border-radius:0.8rem;padding:0.62rem 1rem;
+    display:flex;align-items:center;gap:0.55rem;
+    transition:box-shadow 0.15s;
+  }
+  .pf-field-wrap:focus-within {
+    box-shadow:inset 6px 6px 12px var(--neu-shadow-dark),inset -6px -6px 12px var(--neu-shadow-light),0 0 0 2px rgba(0,105,112,0.18);
+  }
+  .pf-field-icon {
+    font-size:1rem;color:#64748b;flex-shrink:0;
+  }
+  .pf-input {
+    background:transparent;border:none;outline:none;
+    font-size:0.92rem;color:#0f172a;width:100%;
+    font-family:'Plus Jakarta Sans',sans-serif;
+  }
+  .pf-mono { font-family:monospace; }
+  .pf-select { cursor:pointer; }
+  [data-theme="dark"] .pf-input { color:var(--neu-text); }
+  [data-theme="dark"] #add-product-modal h3,
+  [data-theme="dark"] #add-product-modal p { color:var(--neu-text) !important; }
+  [data-theme="dark"] #add-product-modal label { color:var(--neu-text-muted) !important; }
+
+  /* Badge chips */
+  .pf-chip {
+    background:var(--neu-bg);
+    box-shadow:3px 3px 7px var(--neu-shadow-dark),-3px -3px 7px var(--neu-shadow-light);
+    border:none;border-radius:2rem;
+    padding:0.32rem 0.85rem;
+    font-size:0.78rem;font-weight:700;color:#475569;
+    font-family:'Plus Jakarta Sans',sans-serif;
+    cursor:pointer;transition:all 0.14s;
+  }
+  .pf-chip:hover { color:#006970; }
+  .pf-chip-active {
+    box-shadow:inset 3px 3px 7px var(--neu-shadow-dark),inset -3px -3px 7px var(--neu-shadow-light);
+    color:#006970 !important;
+  }
+
+  /* Scrollbar inside modal */
+  #add-product-modal::-webkit-scrollbar { width:5px; }
+  #add-product-modal::-webkit-scrollbar-track { background:transparent; }
+  #add-product-modal::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.12);border-radius:4px; }
+
+  #add-product-overlay input::placeholder,
+  #add-product-overlay textarea::placeholder { color:#94a3b8; }
+  #add-product-overlay input[type=number]::-webkit-inner-spin-button { opacity:0.4; }
+</style>
+
+<script>
+/* ── Badge chip selector & image preview helpers ── */
+function pfSelectBadge(el, val) {
+  document.getElementById('pf-badge').value = val;
+  document.querySelectorAll('.pf-chip').forEach(c => c.classList.remove('pf-chip-active'));
+  el.classList.add('pf-chip-active');
+}
+function pfUpdatePreview(url) {
+  const wrap = document.getElementById('pf-img-preview');
+  if (!wrap) return;
+  if (url) {
+    wrap.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentNode.innerHTML='<span class=\\'material-symbols-outlined\\' style=\\'font-size:1.3rem;color:#94a3b8;\\'>broken_image</span>'"/>`;
+  } else {
+    wrap.innerHTML = `<span class="material-symbols-outlined" style="font-size:1.3rem;color:#94a3b8;">image</span>`;
+  }
+}
+function pfResetBadgeChips(val) {
+  document.querySelectorAll('.pf-chip').forEach(c => {
+    c.classList.toggle('pf-chip-active', c.dataset.badge === val);
+  });
+  document.getElementById('pf-badge').value = val || '';
+}
+</script>
+
+<script>
+/* ── Modal: Add / Edit product ───────────────────────────────── */
+(function(){
+  const overlay   = document.getElementById('add-product-overlay');
+  const modal     = document.getElementById('add-product-modal');
+  const fabBtn    = document.getElementById('fab-add-btn');
+  const closeBtn  = document.getElementById('close-modal-btn');
+  const cancelBtn = document.getElementById('cancel-modal-btn');
+  const form      = document.getElementById('add-product-form');
+  const errBox    = document.getElementById('pf-error');
+  const submitBtn = document.getElementById('pf-submit-btn');
+  const submitIcon  = document.getElementById('pf-submit-icon');
+  const submitLabel = document.getElementById('pf-submit-label');
+  const modalTitle  = document.getElementById('modal-title');
+  const modalSub    = document.getElementById('modal-subtitle');
+  const modalIcon   = document.getElementById('modal-icon');
+  const editIdInput = document.getElementById('pf-edit-id');
+
+  /* Field shortcuts */
+  const F = {
+    name:        () => document.getElementById('pf-name'),
+    sku:         () => document.getElementById('pf-sku'),
+    category:    () => document.getElementById('pf-category'),
+    stock:       () => document.getElementById('pf-stock'),
+    price:       () => document.getElementById('pf-price'),
+    description: () => document.getElementById('pf-description'),
+    image_url:   () => document.getElementById('pf-image-url'),
+    badge:       () => document.getElementById('pf-badge'),
+  };
+
+  function openModal(prefill) {
+    editIdInput.value = prefill ? prefill.id : '';
+    if (prefill) {
+      modalTitle.textContent  = 'Edit Product';
+      modalSub.textContent    = 'Update the details for this inventory item.';
+      modalIcon.textContent   = 'edit';
+      submitIcon.textContent  = 'save';
+      submitLabel.textContent = 'Save Changes';
+      F.name().value        = prefill.name        || '';
+      F.sku().value         = prefill.sku         || '';
+      F.category().value    = prefill.category    || '';
+      F.stock().value       = prefill.stock       ?? '';
+      F.price().value       = prefill.price       ?? '';
+      F.description().value = prefill.description || '';
+      F.image_url().value   = prefill.image_url   || '';
+      F.badge().value       = prefill.badge       || '';
+    } else {
+      modalTitle.textContent  = 'Add New Product';
+      modalSub.textContent    = 'Fill in the details below to add a new inventory item.';
+      modalIcon.textContent   = 'inventory_2';
+      submitIcon.textContent  = 'add_box';
+      submitLabel.textContent = 'Add Product';
+      form.querySelectorAll('input:not([type=hidden]), textarea').forEach(el => el.value = '');
+      form.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+    }
+    errBox.style.display = 'none';
+    overlay.style.display = 'flex';
+    requestAnimationFrame(() => {
+      modal.style.transform = 'scale(1)';
+      modal.style.opacity   = '1';
+    });
+  }
+
+  function closeModal() {
+    modal.style.transform = 'scale(0.95)';
+    modal.style.opacity   = '0';
+    setTimeout(() => { overlay.style.display = 'none'; }, 220);
+  }
+
+  /* Bind open triggers */
+  fabBtn?.addEventListener('click', () => openModal());
+  document.querySelectorAll('[data-action="add-item"]').forEach(btn => btn.addEventListener('click', () => openModal()));
+  closeBtn?.addEventListener('click', closeModal);
+  cancelBtn?.addEventListener('click', closeModal);
+  overlay?.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && overlay?.style.display === 'flex') closeModal();
+  });
+
+  /* Expose globally for table row buttons */
+  window.openEditModal = function(id) {
+    const p = (window._allInvProds || []).find(x => x.id === id);
+    if (p) openModal(p);
+  };
+
+  /* Submit: create or update */
+  form?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const editId = editIdInput.value;
+    const name   = F.name()?.value.trim() || '';
+    if (!name) {
+      errBox.textContent   = 'Product name is required.';
+      errBox.style.display = 'block';
+      return;
+    }
+    const payload = {
+      name,
+      sku:         F.sku()?.value.trim()         || '',
+      category:    F.category()?.value           || 'Other',
+      stock:       parseInt(F.stock()?.value)    || 0,
+      price:       parseFloat(F.price()?.value)  || 0,
+      description: F.description()?.value.trim() || '',
+      image_url:   F.image_url()?.value.trim()   || '',
+      badge:       F.badge()?.value              || '',
+    };
+
+    submitBtn.disabled       = true;
+    submitIcon.textContent   = 'progress_activity';
+    submitLabel.textContent  = 'Saving…';
+
+    try {
+      const url    = editId ? `/api/products/${editId}` : '/api/products';
+      const method = editId ? 'PATCH' : 'POST';
+      const res    = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const json   = await res.json();
+      if (!res.ok || !json.ok) throw new Error(json.error || 'Failed to save product.');
+      closeModal();
+      if (typeof window._invReload === 'function') window._invReload();
+      showInvToast(editId ? 'Product updated ✓' : 'Product added to catalogue ✓', true);
+    } catch(err) {
+      errBox.textContent   = err.message;
+      errBox.style.display = 'block';
+    } finally {
+      submitBtn.disabled      = false;
+      submitIcon.textContent  = editIdInput.value ? 'save' : 'add_box';
+      submitLabel.textContent = editIdInput.value ? 'Save Changes' : 'Add Product';
+    }
+  });
+})();
+
+/* ── Edit / Delete — called from table row buttons ─────────── */
+window.editProduct = function(id) {
+  window.openEditModal(id);
+};
+
+window.deleteProduct = async function(id, name) {
+  if (!confirm(`Delete "${name}" from the catalogue?\nThis will also remove it from the sales page.`)) return;
+  try {
+    const res  = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+    const json = await res.json();
+    if (!res.ok || !json.ok) throw new Error(json.error || 'Delete failed.');
+    if (typeof window._invReload === 'function') window._invReload();
+    showInvToast(`"${name}" deleted.`, true);
+  } catch(err) {
+    showInvToast(err.message, false);
+  }
+};
+
+/* ── Export CSV ─────────────────────────────────────────────── */
+function exportInventoryCSV() {
+  const prods = window._allInvProds || [];
+  if (!prods.length) { showInvToast('No products to export.', false); return; }
+  const headers = ['ID','Name','SKU','Category','Stock','Price','Badge','Description'];
+  const rows = prods.map(p => [
+    p.id,
+    `"${(p.name||'').replace(/"/g,'""')}"`,
+    `"${(p.sku||'').replace(/"/g,'""')}"`,
+    p.category||'',
+    p.stock,
+    p.price,
+    `"${(p.badge||'').replace(/"/g,'""')}"`,
+    `"${(p.description||'').replace(/"/g,'""')}"`,
+  ].join(','));
+  const csv  = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `inventory_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showInvToast(`Exported ${prods.length} products.`, true);
+}
+document.getElementById('export-csv-btn')?.addEventListener('click', exportInventoryCSV);
+document.getElementById('export-csv-btn2')?.addEventListener('click', exportInventoryCSV);
+
+/* ── Toast ──────────────────────────────────────────────────── */
+function showInvToast(msg, ok) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = `position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
+    padding:12px 24px;border-radius:999px;opacity:0;
+    background:${ok ? '#006970' : '#b71c1c'};color:#fff;font-weight:700;font-size:0.88rem;
+    z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.3);transition:opacity 0.3s,transform 0.3s;`;
+  document.body.appendChild(t);
+  requestAnimationFrame(() => { t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)'; });
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 350); }, 2500);
+}
+
+/* ── Header: load logged-in user ────────────────────────────── */
+(async function() {
+  try {
+    const res  = await fetch('/api/me');
+    if (!res.ok) return;
+    const data = await res.json();
+    const user = data.user || data;
+    const nameEl   = document.getElementById('hdr-name');
+    const roleEl   = document.getElementById('hdr-role');
+    const avatarEl = document.getElementById('hdr-avatar');
+    if (nameEl) nameEl.textContent = user.name || user.email || 'Admin';
+    if (roleEl) roleEl.textContent = (user.role || 'admin').toUpperCase();
+    if (avatarEl && user.avatar_url) {
+      avatarEl.innerHTML = `<img class="w-full h-full object-cover" src="${user.avatar_url}" alt="${user.name||''}"/>`;
+    }
+  } catch {}
+})();
+</script>
+
+<script src="/static/js/dashboard-components.js"></script>
+<script>
+  (function(){
+    const root = document.documentElement;
+    const saved = localStorage.getItem('cc-theme') || 'dark';
+    root.setAttribute('data-theme', saved);
+    function updateIcon(t){
+      const btn = document.getElementById('theme-toggle');
+      if (!btn) return;
+      const ic = btn.querySelector('.t-icon');
+      if (ic) ic.textContent = t === 'dark' ? 'light_mode' : 'dark_mode';
+      btn.title = t === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+    }
+    updateIcon(saved);
+    window.toggleTheme = function(){
+      const cur = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', cur);
+      localStorage.setItem('cc-theme', cur);
+      updateIcon(cur);
+    };
+  })();
+</script>
+
+<script>
+/* ── Inventory — Live product data connected to sales catalogue ── */
+(function(){
+  const tbody      = document.getElementById('inv-tbody');
+  const pagEl      = document.getElementById('inv-pagination');
+  const countEl    = document.getElementById('inv-entry-count');
+  let allProds = [], filteredProds = [], currentPage = 1;
+  const PER = 20;
+
+  /* ── Stats ── */
+  function updateStats(prods) {
+    const total    = prods.length;
+    const units    = prods.reduce((s, p) => s + (parseInt(p.stock) || 0), 0);
+    const lowStock = prods.filter(p => p.stock > 0 && p.stock <= 3).length;
+    const outStock = prods.filter(p => p.stock === 0).length;
+    const value    = prods.reduce((s, p) => s + (parseFloat(p.price)||0) * (parseInt(p.stock)||0), 0);
+
+    document.getElementById('stat-total').textContent  = total.toLocaleString();
+    document.getElementById('stat-units').textContent  = units.toLocaleString();
+    document.getElementById('stat-low').textContent    = (lowStock + outStock).toLocaleString();
+    const val = value >= 1_000_000
+      ? '$' + (value/1_000_000).toFixed(1) + 'M'
+      : value >= 1_000
+      ? '$' + (value/1_000).toFixed(1) + 'K'
+      : '$' + value.toLocaleString();
+    document.getElementById('stat-value').textContent = val;
+  }
+
+  /* ── Category chart ── */
+  function updateChart(prods) {
+    const barsEl   = document.getElementById('cat-chart-bars');
+    const labelsEl = document.getElementById('cat-chart-labels');
+    if (!barsEl || !labelsEl) return;
+    const cats = ['Cameras','Lenses','Lighting','Audio','Storage','Accessories','Other'];
+    const counts = cats.map(c => prods.filter(p => p.category === c).length);
+    const max = Math.max(...counts, 1);
+    if (counts.every(c => c === 0)) {
+      barsEl.innerHTML = `<div style="flex:1;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:0.8rem;">No data</div>`;
+      labelsEl.innerHTML = '';
+      return;
+    }
+    barsEl.innerHTML = cats.map((c, i) => {
+      const pct = Math.max((counts[i] / max) * 100, counts[i] > 0 ? 8 : 0);
+      return `<div class="bar-segment w-full" style="height:${pct}%;position:relative;" title="${c}: ${counts[i]}"></div>`;
+    }).join('');
+    labelsEl.innerHTML = cats.map(c => `<span>${c.substring(0,3)}</span>`).join('');
+  }
+
+  /* ── Pagination ── */
+  function renderPagination(total) {
+    const pages = Math.ceil(total / PER);
+    if (pages <= 1) { pagEl.style.display = 'none'; return; }
+    pagEl.style.display = 'flex';
+    let html = `<button class="page-btn" onclick="invGoPage(${currentPage-1})" ${currentPage===1?'disabled':''}>
+      <span class="material-symbols-outlined" style="font-size:1.1rem;">chevron_left</span></button>`;
+    for (let i = 1; i <= pages; i++) {
+      if (pages > 5 && i > 2 && i < pages - 1 && Math.abs(i - currentPage) > 1) {
+        if (i === 3 || i === pages - 2) html += `<span class="page-btn" style="cursor:default;box-shadow:none;background:transparent;color:#475569;">…</span>`;
+        continue;
+      }
+      html += `<button class="${i===currentPage?'page-btn-active':'page-btn'}" onclick="invGoPage(${i})">${i}</button>`;
+    }
+    html += `<button class="page-btn" onclick="invGoPage(${currentPage+1})" ${currentPage===pages?'disabled':''}>
+      <span class="material-symbols-outlined" style="font-size:1.1rem;">chevron_right</span></button>`;
+    pagEl.innerHTML = html;
+  }
+
+  window.invGoPage = function(p) {
+    const pages = Math.ceil(filteredProds.length / PER);
+    if (p < 1 || p > pages) return;
+    currentPage = p;
+    renderRows(filteredProds);
+  };
+
+  /* ── Stock badge ── */
+  function stockBadge(stock){
+    if (stock === 0)   return `<span class="w-2 h-2 rounded-full" style="background:#b71c1c;display:inline-block;"></span><span style="font-size:0.9rem;font-weight:600;color:#b71c1c;"> Out of Stock</span>`;
+    if (stock <= 3)    return `<span class="w-2 h-2 rounded-full" style="background:#b45309;display:inline-block;"></span><span style="font-size:0.9rem;font-weight:600;color:#b45309;"> Low Stock (${stock})</span>`;
+    return `<span class="w-2 h-2 rounded-full animate-pulse" style="background:#16a34a;display:inline-block;"></span><span style="font-size:0.9rem;font-weight:600;color:#0f172a;"> In Stock (${stock})</span>`;
+  }
+
+  /* ── Render rows ── */
+  function renderRows(prods){
+    filteredProds = prods;
+    const total = prods.length;
+    const start = (currentPage - 1) * PER;
+    const slice = prods.slice(start, start + PER);
+
+    if (countEl) {
+      if (!total) countEl.textContent = 'No products found';
+      else countEl.innerHTML = `Showing <strong style="color:#0f172a;">${start+1}–${Math.min(start+PER, total)}</strong> of <strong style="color:#0f172a;">${total}</strong> ${total===1?'entry':'entries'}`;
+    }
+    renderPagination(total);
+
+    if (!slice.length){
+      tbody.innerHTML=`<tr><td colspan="6" class="px-6 py-10 text-center" style="color:#7a8599;">No products found.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = slice.map((p,i,arr) => `
+      <tr class="neu-row transition-colors" style="${i<arr.length-1?'border-bottom:1px solid rgba(0,0,0,0.06);':''}">
+        <td class="px-6 py-5">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0" style="box-shadow:3px 3px 6px var(--neu-shadow-dark),-3px -3px 6px var(--neu-shadow-light);">
+              ${p.image_url ? `<img class="w-full h-full object-cover" src="${p.image_url}" loading="lazy"/>` :
+                `<div class="w-full h-full flex items-center justify-center" style="background:rgba(0,105,112,0.1);"><span class="material-symbols-outlined" style="color:#006970;font-size:1.2rem;">inventory_2</span></div>`}
+            </div>
+            <div>
+              <div style="font-size:0.95rem;font-weight:800;color:#0f172a;">${p.name}</div>
+              <div style="font-size:0.8rem;color:#475569;margin-top:1px;">${p.description||''}</div>
+            </div>
+          </div>
+        </td>
+        <td class="px-6 py-5 font-mono" style="font-size:0.88rem;color:#334155;">${p.sku||'—'}</td>
+        <td class="px-6 py-5">
+          <span class="px-2 py-1 rounded" style="font-size:0.75rem;font-weight:700;text-transform:uppercase;background:rgba(123,31,162,0.1);color:#6a1070;">${p.category||'—'}</span>
+        </td>
+        <td class="px-6 py-5"><div class="flex items-center gap-2">${stockBadge(p.stock)}</div></td>
+        <td class="px-6 py-5" style="font-size:0.95rem;font-weight:800;color:#006970;">$${Number(p.price).toLocaleString()}</td>
+        <td class="px-6 py-5 text-right">
+          <div class="flex justify-end gap-2">
+            <button class="icon-btn" onclick="editProduct(${p.id})"><span class="material-symbols-outlined" style="font-size:1.1rem;">edit</span></button>
+            <button class="icon-btn danger" onclick="deleteProduct(${p.id},'${(p.name||'').replace(/'/g,"\\'")}')"><span class="material-symbols-outlined" style="font-size:1.1rem;">delete</span></button>
+          </div>
+        </td>
+      </tr>`).join('');
+  }
+
+  /* ── Load from API ── */
+  async function loadInventory(){
+    try {
+      tbody.innerHTML=`<tr><td colspan="6" class="px-6 py-10 text-center" style="color:#7a8599;"><span class="material-symbols-outlined" style="font-size:1.5rem;vertical-align:middle;">progress_activity</span> Loading…</td></tr>`;
+      const res  = await fetch('/api/products');
+      const data = await res.json();
+      allProds   = data.products || [];
+      window._allInvProds = allProds;
+      updateStats(allProds);
+      updateChart(allProds);
+      currentPage = 1;
+      applyFilters();
+    } catch(e){
+      tbody.innerHTML=`<tr><td colspan="6" class="px-6 py-10 text-center" style="color:#b71c1c;">Failed to load inventory.</td></tr>`;
+    }
+  }
+
+  /* ── Filters ── */
+  function applyFilters(){
+    const q     = (document.querySelector('[data-inv-search]')?.value||'').toLowerCase();
+    const cat   = (document.querySelector('[data-inv-category]')?.value||'');
+    const stock = (document.querySelector('[data-inv-stock]')?.value||'').toLowerCase();
+    let filtered = allProds;
+    if (q)   filtered = filtered.filter(p => (p.name+' '+(p.category||'')+' '+(p.sku||'')).toLowerCase().includes(q));
+    if (cat) filtered = filtered.filter(p => p.category === cat);
+    if (stock === 'low stock')    filtered = filtered.filter(p => p.stock>0&&p.stock<=3);
+    if (stock === 'out of stock') filtered = filtered.filter(p => p.stock===0);
+    if (stock === 'in stock')     filtered = filtered.filter(p => p.stock>3);
+    currentPage = 1;
+    renderRows(filtered);
+  }
+
+  document.querySelector('[data-inv-search]')?.addEventListener('input', ()=>setTimeout(applyFilters,300));
+  document.querySelector('[data-inv-category]')?.addEventListener('change', applyFilters);
+  document.querySelector('[data-inv-stock]')?.addEventListener('change', applyFilters);
+
+  loadInventory();
+  window._invReload = loadInventory;
+})();
+</script>
+</body></html>

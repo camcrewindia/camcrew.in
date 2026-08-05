@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Caterers | CamCrew Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="/static/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="/static/css/styles.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+  body { background: #05070a; }
+  .ambient-orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(120px); }
+  .hero-section { position: relative; z-index: 1; overflow: hidden; padding: 6rem 0 0; min-height: 520px; }
+  .hero-grid { position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(0,240,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,240,255,0.025) 1px, transparent 1px); background-size: 60px 60px; mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 30%, rgba(0,0,0,0.4) 70%, transparent 100%); }
+  .hero-sweep { position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 900px; height: 600px; border-radius: 50%; background: radial-gradient(ellipse at 50% 40%, rgba(0,240,255,0.07) 0%, rgba(139,92,246,0.04) 40%, transparent 70%); filter: blur(30px); pointer-events: none; }
+  .deco-ring { position: absolute; right: -60px; top: 50%; transform: translateY(-55%); width: 520px; height: 520px; pointer-events: none; opacity: 0.18; }
+  @media (max-width: 1024px) { .deco-ring { display: none; } }
+  .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.9rem; border-radius: 999px; border: 1px solid rgba(0,240,255,0.25); background: rgba(0,240,255,0.06); backdrop-filter: blur(10px); font-size: 0.68rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #00f0ff; margin-bottom: 1.1rem; }
+  .hero-title { font-size: clamp(2.4rem, 5vw, 3.8rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.025em; color: #fff; margin-bottom: 1rem; }
+  .hero-title .gradient-word { background: linear-gradient(135deg, #00f0ff 0%, #8b5cf6 55%, #f472b6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-desc { font-size: 1rem; color: rgba(220,228,229,0.6); max-width: 480px; line-height: 1.75; margin-bottom: 2rem; }
+  .trust-row { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
+  .trust-pill { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; font-weight: 600; color: rgba(220,228,229,0.5); }
+  .trust-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #00f0ff; }
+  .hero-stat-card { position: relative; background: rgba(10,14,18,0.85); border: 1px solid rgba(255,255,255,0.1); border-radius: 1rem; padding: 0.9rem 1.25rem; backdrop-filter: blur(20px); display: inline-flex; align-items: center; gap: 0.75rem; }
+  .hero-stat-val { font-size: 1.3rem; font-weight: 900; color: #fff; line-height: 1; }
+  .hero-stat-label { font-size: 0.68rem; font-weight: 600; color: rgba(220,228,229,0.45); text-transform: uppercase; letter-spacing: 0.06em; }
+  .hero-bottom-fade { position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to bottom, transparent, #05070a); pointer-events: none; }
+  .filter-float { position: relative; z-index: 10; margin-top: -1px; }
+  .filter-card { background: rgba(8,11,16,0.96); border: 1px solid rgba(255,255,255,0.09); border-radius: 1.75rem; backdrop-filter: blur(24px); padding: 1.5rem 1.75rem; box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,240,255,0.04); }
+  .filter-label { display: flex; align-items: center; gap: 0.3rem; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,240,255,0.55); margin-bottom: 0.5rem; }
+  :root { --filter-radius: 0.875rem; --filter-bg: rgba(255,255,255,0.04); --filter-border: rgba(255,255,255,0.1); --filter-focus-border: rgba(0,240,255,0.45); --filter-focus-bg: rgba(0,240,255,0.04); --filter-focus-shadow: 0 0 0 3px rgba(0,240,255,0.08); }
+  .filter-input, .filter-input[type="text"], .filter-input[type="number"], select.filter-input { width: 100%; background: var(--filter-bg) !important; border: 1px solid var(--filter-border) !important; border-radius: var(--filter-radius); padding: 0.72rem 1rem; color: #dce4e5 !important; font-size: 0.875rem; font-family: 'Plus Jakarta Sans', sans-serif; outline: none; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; height: 2.75rem; box-sizing: border-box; -webkit-text-fill-color: #dce4e5; color-scheme: dark; }
+  .filter-input:focus, .filter-input[type="text"]:focus, .filter-input[type="number"]:focus, select.filter-input:focus { border-color: var(--filter-focus-border) !important; background: var(--filter-focus-bg) !important; box-shadow: var(--filter-focus-shadow); }
+  .filter-input:-webkit-autofill, .filter-input:-webkit-autofill:hover, .filter-input:-webkit-autofill:focus { -webkit-box-shadow: 0 0 0 1000px rgba(10,14,20,0.98) inset !important; -webkit-text-fill-color: #dce4e5 !important; border-color: var(--filter-border) !important; }
+  .filter-input::placeholder { color: rgba(90,122,125,0.55); }
+  .filter-input[type="number"]::-webkit-inner-spin-button, .filter-input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .filter-input[type="number"] { -moz-appearance: textfield; }
+  select.filter-input { appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 2.25rem; background-color: rgba(10,14,20,0.98) !important; }
+  select.filter-input option { background-color: #0d1117; color: #dce4e5; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.875rem; }
+  select.filter-input option:checked, select.filter-input option:hover { background-color: rgba(0,240,255,0.12); color: #00f0ff; }
+  .btn-search { width: 100%; background: linear-gradient(135deg, #00f0ff 0%, #00c8e0 100%); color: #001f22; font-weight: 900; height: 2.75rem; box-sizing: border-box; padding: 0 1.5rem; border-radius: var(--filter-radius); border: none; cursor: pointer; font-size: 0.875rem; letter-spacing: 0.02em; transition: all 0.2s; box-shadow: 0 6px 24px rgba(0,240,255,0.28); display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+  .btn-search:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(0,240,255,0.42); }
+  .btn-search:active { transform: none; box-shadow: 0 4px 14px rgba(0,240,255,0.2); }
+  .toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem; }
+  .results-meta { font-size: 0.82rem; color: rgba(90,122,125,0.9); font-weight: 600; }
+  .results-meta strong { color: #dce4e5; }
+  .sort-chip { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.38rem 0.9rem; border-radius: 999px; cursor: pointer; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.08); color: rgba(90,122,125,0.9); background: rgba(255,255,255,0.025); transition: all 0.2s; white-space: nowrap; }
+  .sort-chip:hover { border-color: rgba(0,240,255,0.3); color: #00f0ff; }
+  .sort-chip.active { background: rgba(0,240,255,0.1); border-color: rgba(0,240,255,0.35); color: #00f0ff; box-shadow: 0 0 14px rgba(0,240,255,0.12); }
+  .sort-chip .material-symbols-outlined { font-size: 0.8rem; }
+  .pro-card { background: rgba(9,12,18,0.97); border: 1px solid rgba(255,255,255,0.07); border-radius: 1.5rem; overflow: hidden; transition: all 0.32s cubic-bezier(.4,0,.2,1); position: relative; animation: cardFadeIn 0.45s ease both; display: flex; flex-direction: column; }
+  @keyframes cardFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .pro-card::after { content: ''; position: absolute; inset: 0; border-radius: 1.5rem; background: linear-gradient(135deg, rgba(0,240,255,0.04) 0%, transparent 60%); opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+  .pro-card:hover { border-color: rgba(0,240,255,0.22); transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,240,255,0.07); }
+  .pro-card:hover::after { opacity: 1; }
+  .card-banner { height: 10rem; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .card-banner-bg { position: absolute; inset: 0; }
+  .card-banner-noise { position: absolute; inset: 0; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); }
+  .card-banner-ring { position: absolute; border-radius: 50%; border: 1px solid rgba(255,255,255,0.08); pointer-events: none; }
+  .card-avatar-initials { position: relative; z-index: 2; font-size: 2.8rem; font-weight: 900; line-height: 1; text-shadow: 0 4px 24px rgba(0,0,0,0.5); }
+  .card-banner-icon { position: absolute; bottom: 0.75rem; right: 0.75rem; z-index: 2; width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; }
+  .card-banner-icon .material-symbols-outlined { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+  .intl-badge { position: absolute; top: 0.7rem; left: 0.7rem; z-index: 3; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(0,240,255,0.3); border-radius: 999px; padding: 0.18rem 0.6rem; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.07em; color: #00f0ff; text-transform: uppercase; }
+  .verified-badge { position: absolute; top: 0.7rem; right: 0.7rem; z-index: 3; width: 26px; height: 26px; border-radius: 50%; background: rgba(0,240,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(0,240,255,0.3); display: flex; align-items: center; justify-content: center; }
+  .verified-badge .material-symbols-outlined { font-size: 0.85rem; color: #00f0ff; font-variation-settings: 'FILL' 1; }
+  .card-body { padding: 1.1rem 1.2rem 1.2rem; flex: 1; display: flex; flex-direction: column; }
+  .card-name { font-size: 1rem; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.01em; }
+  .card-title { font-size: 0.76rem; color: rgba(0,240,255,0.5); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 0.12rem; margin-bottom: 0.7rem; }
+  .card-info-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem 1rem; margin-bottom: 0.65rem; }
+  .card-info-item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.73rem; color: rgba(90,122,125,0.9); }
+  .card-info-item .material-symbols-outlined { font-size: 0.85rem; }
+  .card-rate { font-size: 0.82rem; font-weight: 800; color: #00f0ff; }
+  .card-cats { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: auto; padding-top: 0.65rem; }
+  .card-cat { font-size: 0.62rem; font-weight: 700; padding: 0.22rem 0.6rem; border-radius: 999px; background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.08); color: rgba(180,200,202,0.5); letter-spacing: 0.04em; text-transform: uppercase; transition: all 0.2s; }
+  .pro-card:hover .card-cat { border-color: rgba(0,240,255,0.15); color: rgba(0,240,255,0.6); }
+  .card-divider { height: 1px; background: rgba(255,255,255,0.055); margin: 0.9rem 0; }
+  .card-actions { display: flex; gap: 0.5rem; }
+  .btn-profile { flex: 1; text-align: center; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09); color: rgba(180,200,202,0.7); font-weight: 700; font-size: 0.76rem; padding: 0.62rem; border-radius: 0.75rem; text-decoration: none; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.3rem; }
+  .btn-profile:hover { background: rgba(255,255,255,0.08); color: #dce4e5; border-color: rgba(255,255,255,0.16); }
+  .btn-book-card { flex: 1.4; text-align: center; background: rgba(0,240,255,0.08); border: 1px solid rgba(0,240,255,0.2); color: #00f0ff; font-weight: 800; font-size: 0.76rem; padding: 0.62rem; border-radius: 0.75rem; text-decoration: none; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.3rem; }
+  .btn-book-card:hover { background: #00f0ff; color: #001f22; box-shadow: 0 6px 20px rgba(0,240,255,0.3); border-color: #00f0ff; }
+  .btn-book-card .material-symbols-outlined, .btn-profile .material-symbols-outlined { font-size: 0.8rem; }
+  .btn-load-more { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.85rem 2.75rem; border-radius: 999px; border: 1.5px solid rgba(0,240,255,0.22); color: #00f0ff; font-weight: 800; font-size: 0.875rem; background: rgba(0,240,255,0.04); cursor: pointer; transition: all 0.25s; }
+  .btn-load-more:hover { background: rgba(0,240,255,0.1); border-color: rgba(0,240,255,0.5); box-shadow: 0 0 30px rgba(0,240,255,0.14); transform: translateY(-2px); }
+  @keyframes shimmer { to { background-position: -200% center; } }
+  .skel { border-radius: 0.75rem; background: linear-gradient(90deg, rgba(255,255,255,0.022) 25%, rgba(255,255,255,0.055) 50%, rgba(255,255,255,0.022) 75%); background-size: 200%; animation: shimmer 1.9s infinite; }
+  .skel-card { border-radius: 1.5rem; overflow: hidden; }
+  .empty-state { grid-column: 1/-1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 6rem 2rem; text-align: center; border: 1px dashed rgba(255,255,255,0.07); border-radius: 1.5rem; }
+  .empty-icon-wrap { width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: center; }
+  .cta-section { position: relative; overflow: hidden; border-radius: 2rem; background: linear-gradient(135deg, rgba(10,14,20,0.98) 0%, rgba(14,10,22,0.98) 100%); border: 1px solid rgba(255,255,255,0.08); padding: 3.5rem; backdrop-filter: blur(20px); }
+  .cta-section::before { content: ''; position: absolute; right: -100px; top: -100px; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%); pointer-events: none; }
+  .cta-section::after { content: ''; position: absolute; left: 30%; bottom: -80px; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(0,240,255,0.06) 0%, transparent 70%); pointer-events: none; }
+  .cta-stat-box { padding: 1rem 1.25rem; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.025); text-align: center; transition: all 0.2s; }
+  .cta-stat-box:hover { border-color: rgba(0,240,255,0.15); background: rgba(0,240,255,0.03); }
+  .cta-stat-val { font-size: 1.6rem; font-weight: 900; color: #fff; line-height: 1.1; }
+  .cta-stat-label { font-size: 0.68rem; font-weight: 600; color: rgba(180,200,202,0.45); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.25rem; }
+  ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.07); border-radius: 99px; }
+  .section-eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(0,240,255,0.6); margin-bottom: 0.5rem; }
+  .section-eyebrow::before { content: ''; display: block; width: 20px; height: 1.5px; background: currentColor; border-radius: 99px; }
+</style>
+</head>
+<body class="min-h-screen antialiased overflow-x-hidden font-body-md">
+
+<div class="ambient-orb" style="width:700px;height:700px;opacity:0.055;background:#00f0ff;top:-300px;left:-200px;"></div>
+<div class="ambient-orb" style="width:600px;height:600px;opacity:0.05;background:#8b5cf6;bottom:5%;right:-200px;"></div>
+<div class="ambient-orb" style="width:400px;height:400px;opacity:0.035;background:#f472b6;top:40%;left:50%;transform:translateX(-50%);"></div>
+
+<div id="site-header" class="relative z-50"></div>
+
+<section class="hero-section">
+  <div class="hero-grid"></div>
+  <div class="hero-sweep"></div>
+
+  <!-- Plate / serving dome decoration -->
+  <svg class="deco-ring" viewBox="0 0 520 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="260" cy="260" r="258" stroke="rgba(0,240,255,0.15)" stroke-width="1"/>
+    <!-- Plate -->
+    <ellipse cx="260" cy="300" rx="180" ry="20" stroke="rgba(0,240,255,0.18)" stroke-width="1.5" fill="rgba(0,240,255,0.015)"/>
+    <ellipse cx="260" cy="300" rx="140" ry="14" stroke="rgba(0,240,255,0.1)" stroke-width="1"/>
+    <!-- Cloche dome -->
+    <path d="M80,300 Q80,140 260,140 Q440,140 440,300" stroke="rgba(0,240,255,0.22)" stroke-width="1.5" fill="rgba(0,240,255,0.02)"/>
+    <path d="M110,300 Q110,170 260,170 Q410,170 410,300" stroke="rgba(0,240,255,0.1)" stroke-width="1"/>
+    <!-- Handle on top -->
+    <circle cx="260" cy="142" r="12" fill="rgba(0,240,255,0.06)" stroke="rgba(0,240,255,0.3)" stroke-width="1.5"/>
+    <!-- Outer reference -->
+    <circle cx="260" cy="4"   r="4" fill="rgba(0,240,255,0.35)"/>
+    <circle cx="260" cy="516" r="4" fill="rgba(0,240,255,0.2)"/>
+    <circle cx="4"   cy="260" r="4" fill="rgba(0,240,255,0.25)"/>
+    <circle cx="516" cy="260" r="4" fill="rgba(0,240,255,0.2)"/>
+    <text x="225" y="36"  fill="rgba(0,240,255,0.35)" font-size="11" font-family="monospace">CUISINE</text>
+    <text x="222" y="498" fill="rgba(0,240,255,0.2)"  font-size="10" font-family="monospace">CATERING</text>
+  </svg>
+
+  <div class="max-w-7xl mx-auto px-4 md:px-8 relative z-10 pb-16 pt-6">
+    <nav class="flex items-center gap-2 text-xs text-on-surface-variant mb-8 opacity-60">
+      <a href="/" class="hover:opacity-100 hover:text-primary-container transition-all">Home</a>
+      <span class="material-symbols-outlined" style="font-size:0.85rem;opacity:0.4;">chevron_right</span>
+      <a href="/services.html" class="hover:opacity-100 hover:text-primary-container transition-all">Services</a>
+      <span class="material-symbols-outlined" style="font-size:0.85rem;opacity:0.4;">chevron_right</span>
+      <span class="text-primary-container opacity-100">Caterers</span>
+    </nav>
+
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-start">
+      <div class="max-w-2xl">
+        <div class="hero-badge">
+          <span class="material-symbols-outlined" style="font-size:0.85rem;font-variation-settings:'FILL' 1;">restaurant</span>
+          Professional Caterers
+        </div>
+        <h1 class="hero-title">Find Your Perfect<br/><span class="gradient-word">Caterer</span></h1>
+        <p class="hero-desc">Browse verified catering professionals for on-set craft services, events, weddings, corporate productions, and dietary specialists.</p>
+        <div class="trust-row">
+          <span class="trust-pill"><span class="dot"></span> Verified Profiles</span>
+          <span class="trust-pill"><span class="dot" style="background:#8b5cf6;"></span> Instant Booking</span>
+          <span class="trust-pill"><span class="dot" style="background:#f472b6;"></span> Across India</span>
+        </div>
+      </div>
+      <div class="hidden lg:flex flex-col gap-3 pt-4">
+        <div class="hero-stat-card">
+          <div style="width:36px;height:36px;border-radius:50%;background:rgba(0,240,255,0.1);border:1px solid rgba(0,240,255,0.2);display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:1.1rem;color:#00f0ff;font-variation-settings:'FILL' 1;">verified</span>
+          </div>
+          <div><div class="hero-stat-val" id="stat-count-hero">—</div><div class="hero-stat-label">Verified Pros</div></div>
+        </div>
+        <div class="hero-stat-card">
+          <div style="width:36px;height:36px;border-radius:50%;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:1.1rem;color:#8b5cf6;font-variation-settings:'FILL' 1;">restaurant</span>
+          </div>
+          <div><div class="hero-stat-val">6+</div><div class="hero-stat-label">Cuisine Types</div></div>
+        </div>
+        <div class="hero-stat-card">
+          <div style="width:36px;height:36px;border-radius:50%;background:rgba(244,114,182,0.1);border:1px solid rgba(244,114,182,0.2);display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:1.1rem;color:#f472b6;font-variation-settings:'FILL' 1;">payments</span>
+          </div>
+          <div><div class="hero-stat-val">Free</div><div class="hero-stat-label">To Join</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-float mt-10">
+      <div class="filter-card">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-4 items-end">
+          <div>
+            <div class="filter-label"><span class="material-symbols-outlined" style="font-size:0.75rem;">location_on</span> Location</div>
+            <div class="relative">
+              <input id="filter-location" type="text" placeholder="City or region…" class="filter-input"/>
+              <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style="font-size:0.9rem;color:rgba(90,122,125,0.5);">search</span>
+            </div>
+          </div>
+          <div>
+            <div class="filter-label"><span class="material-symbols-outlined" style="font-size:0.75rem;">restaurant</span> Service Type</div>
+            <div class="relative">
+              <select id="filter-style" class="filter-input pr-8">
+                <option value="">All Services</option>
+                <option>On-Set Craft Services</option>
+                <option>Event Catering</option>
+                <option>Wedding Catering</option>
+                <option>Corporate Catering</option>
+                <option>Hybrid Production</option>
+                <option>Dietary Specialist</option>
+              </select>
+              <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style="font-size:0.9rem;color:rgba(90,122,125,0.5);">expand_more</span>
+            </div>
+          </div>
+          <div>
+            <div class="filter-label"><span class="material-symbols-outlined" style="font-size:0.75rem;">payments</span> Min Budget (₹)</div>
+            <input id="filter-min" type="number" min="0" placeholder="e.g. 5000" class="filter-input"/>
+          </div>
+          <div>
+            <button class="btn-search" onclick="applyFilters()">
+              <span class="material-symbols-outlined" style="font-size:1rem;">search</span>
+              Search Caterers
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 mt-3.5 pt-3.5 border-t border-white/[0.05]">
+          <span style="font-size:0.62rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(90,122,125,0.6);align-self:center;">Quick filters:</span>
+          <button onclick="setQuickStyle('On-Set Craft Services')" class="sort-chip">Craft Services</button>
+          <button onclick="setQuickStyle('Event Catering')" class="sort-chip">Event</button>
+          <button onclick="setQuickStyle('Wedding Catering')" class="sort-chip">Wedding</button>
+          <button onclick="setQuickStyle('Corporate Catering')" class="sort-chip">Corporate</button>
+          <button onclick="setQuickStyle('Dietary Specialist')" class="sort-chip">Dietary</button>
+          <button onclick="setQuickStyle('Hybrid Production')" class="sort-chip">Hybrid</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-bottom-fade"></div>
+</section>
+
+<main class="relative z-10 max-w-7xl mx-auto px-4 md:px-8 pb-24">
+  <div class="toolbar">
+    <p class="results-meta" id="results-meta">Loading caterers…</p>
+    <div class="flex items-center gap-2" id="sort-chips">
+      <span style="font-size:0.65rem;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:rgba(90,122,125,0.5);">Sort:</span>
+      <button class="sort-chip active" data-sort="recent" onclick="setSort(this,'recent')"><span class="material-symbols-outlined">schedule</span> Most Recent</button>
+      <button class="sort-chip" data-sort="name" onclick="setSort(this,'name')"><span class="material-symbols-outlined">sort_by_alpha</span> A–Z</button>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5" id="grid-caterers">
+    <div class="skel-card skel" style="height:24rem;"></div>
+    <div class="skel-card skel" style="height:24rem;"></div>
+    <div class="skel-card skel" style="height:24rem;"></div>
+    <div class="skel-card skel" style="height:24rem;"></div>
+  </div>
+  <div class="flex justify-center mt-12" id="load-more-wrap" style="display:none!important;">
+    <button class="btn-load-more" id="load-more-btn" onclick="loadMore()">
+      <span class="material-symbols-outlined" style="font-size:1rem;">expand_more</span> Load More Caterers
+    </button>
+  </div>
+</main>
+
+<section class="relative z-10 max-w-7xl mx-auto px-4 md:px-8 pb-28">
+  <div class="cta-section">
+    <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
+      <div class="max-w-xl">
+        <div class="section-eyebrow">For Professionals</div>
+        <h2 class="text-3xl md:text-4xl font-black text-white tracking-tight mb-3 leading-tight">Are you a<br/><span style="background:linear-gradient(135deg,#00f0ff,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Professional Caterer?</span></h2>
+        <p class="text-on-surface-variant mb-6 leading-relaxed text-sm md:text-base opacity-70">Join the CamCrew network and get discovered by productions and events that need quality catering talent.</p>
+        <div class="flex flex-wrap gap-3">
+          <a href="/professional-edit.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm bg-primary-container text-obsidian-base hover:opacity-90 transition-all shadow-[0_6px_24px_rgba(0,240,255,0.25)]">
+            <span class="material-symbols-outlined text-sm">add_circle</span> List Your Profile
+          </a>
+          <a href="/About.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm border border-primary-container/30 text-primary-container hover:bg-primary-container/10 transition-all">
+            Learn More <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+      <div class="hidden md:grid grid-cols-2 gap-3 flex-shrink-0 w-56">
+        <div class="cta-stat-box"><div class="cta-stat-val" id="stat-count">—</div><div class="cta-stat-label">Caterers</div></div>
+        <div class="cta-stat-box"><div class="cta-stat-val" style="color:#00f0ff;">✓</div><div class="cta-stat-label">Verified Pros</div></div>
+        <div class="cta-stat-box"><div class="cta-stat-val">Free</div><div class="cta-stat-label">To Join</div></div>
+        <div class="cta-stat-box"><div class="cta-stat-val">24h</div><div class="cta-stat-label">Avg Response</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer" class="relative z-10"></div>
+<script src="/static/js/header-loader.js"></script>
+<script src="/static/js/footer-loader.js"></script>
+<script>
+const PAGE_SIZE=12;let offset=0,totalLoaded=0,currentSort='recent',allDone=false,isLoading=false;
+function strHue(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))&0xffffffff;return Math.abs(h)%360;}
+function initials(n){return(n||'?').split(' ').filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function buildCard(pro,delay=0){
+  const hue=strHue(pro.username||pro.display_name||''),hue2=(hue+50)%360,hue3=(hue+120)%360;
+  const inits=initials(pro.display_name||pro.username),name=pro.display_name||pro.username||'Professional';
+  const title=pro.title||(pro.categories&&pro.categories[0])||'Caterer';
+  const loc=(pro.locations&&pro.locations[0])||pro.location||'';
+  let rateDisplay='';
+  if(pro.services&&pro.services.length){const priced=pro.services.filter(s=>s.price);if(priced.length){const c=priced.reduce((a,b)=>Number(a.price)<Number(b.price)?a:b);rateDisplay=`₹${Number(c.price).toLocaleString('en-IN')} / ${c.unit||'project'}`;}}
+  if(!rateDisplay&&pro.rate)rateDisplay=pro.rate;
+  const cats=(pro.categories||[]).slice(0,3);
+  return `<div class="pro-card" style="animation-delay:${delay}ms;">
+    <div class="card-banner"><div class="card-banner-bg" style="background:linear-gradient(145deg,hsl(${hue},45%,8%) 0%,hsl(${hue2},50%,13%) 50%,hsl(${hue3},40%,9%) 100%);"></div><div class="card-banner-noise"></div>
+    <div class="card-banner-ring" style="width:200px;height:200px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+    <div class="card-banner-ring" style="width:140px;height:140px;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.6;"></div>
+    <span class="card-avatar-initials" style="color:hsl(${hue},75%,75%);">${esc(inits)}</span>
+    <div class="card-banner-icon"><span class="material-symbols-outlined">restaurant</span></div>
+    ${pro.travel_intl?`<div class="intl-badge">INTL</div>`:''}
+    <div class="verified-badge"><span class="material-symbols-outlined">verified</span></div></div>
+    <div class="card-body"><p class="card-name">${esc(name)}</p><p class="card-title">${esc(title)}</p>
+    <div class="card-info-row">
+      ${loc?`<div class="card-info-item"><span class="material-symbols-outlined" style="color:rgba(90,122,125,0.7);">location_on</span><span class="truncate" style="max-width:110px;">${esc(loc)}</span></div>`:''}
+      ${rateDisplay?`<div class="card-info-item"><span class="material-symbols-outlined" style="color:rgba(90,122,125,0.7);">payments</span><span class="card-rate">${esc(rateDisplay)}</span></div>`:''}
+    </div>
+    ${cats.length?`<div class="card-cats">${cats.map(c=>`<span class="card-cat">${esc(c)}</span>`).join('')}</div>`:'<div style="flex:1;"></div>'}
+    <div class="card-divider"></div>
+    <div class="card-actions">
+      <a href="/@${esc(pro.username)}" class="btn-profile"><span class="material-symbols-outlined">person</span> Profile</a>
+      <a href="/book.html?pro=${esc(pro.username)}" class="btn-book-card"><span class="material-symbols-outlined">calendar_month</span> Book Now</a>
+    </div></div></div>`;}
+async function fetchPros(reset=false){
+  if(isLoading)return;if(allDone&&!reset)return;isLoading=true;
+  if(reset){offset=0;totalLoaded=0;allDone=false;
+    document.getElementById('grid-caterers').innerHTML='<div class="skel-card skel" style="height:24rem;"></div>'.repeat(4);
+    document.getElementById('load-more-wrap').style.display='none';
+    document.getElementById('results-meta').textContent='Loading caterers…';}
+  const loc=(document.getElementById('filter-location').value||'').trim();
+  const sty=(document.getElementById('filter-style').value||'').trim();
+  const min=(document.getElementById('filter-min').value||'').trim();
+  let url=`/api/professionals?category=Caterer&limit=${PAGE_SIZE}&offset=${offset}`;
+  if(loc)url+=`&location=${encodeURIComponent(loc)}`;
+  if(sty)url+=`&style=${encodeURIComponent(sty)}`;
+  if(min)url+=`&min_price=${encodeURIComponent(min)}`;
+  try{const res=await fetch(url),data=await res.json();
+    const grid=document.getElementById('grid-caterers');
+    if(reset)grid.innerHTML='';
+    if(!data.ok||!data.professionals||!data.professionals.length){
+      if(reset)grid.innerHTML=`<div class="empty-state"><div class="empty-icon-wrap"><span class="material-symbols-outlined" style="font-size:2rem;color:rgba(255,255,255,0.12);">restaurant</span></div><p style="font-weight:800;color:#dce4e5;font-size:1rem;">No caterers found</p><p style="font-size:0.84rem;color:rgba(90,122,125,0.8);max-width:280px;line-height:1.6;">Try clearing your filters or broadening your search.</p><button onclick="clearFilters()" style="margin-top:0.25rem;padding:0.65rem 1.5rem;border-radius:999px;border:1.5px solid rgba(0,240,255,0.25);color:#00f0ff;background:rgba(0,240,255,0.06);font-weight:700;font-size:0.82rem;cursor:pointer;">Clear Filters</button></div>`;
+      else allDone=true;
+      updateMeta(totalLoaded);document.getElementById('load-more-wrap').style.display='none';isLoading=false;return;}
+    let pros=data.professionals;
+    if(currentSort==='name')pros=pros.slice().sort((a,b)=>(a.display_name||'').localeCompare(b.display_name||''));
+    pros.forEach((p,i)=>grid.insertAdjacentHTML('beforeend',buildCard(p,i*55)));
+    totalLoaded+=pros.length;offset+=pros.length;
+    const lmw=document.getElementById('load-more-wrap');
+    if(pros.length<PAGE_SIZE){allDone=true;lmw.style.display='none';}else lmw.style.removeProperty('display');
+    updateMeta(totalLoaded);
+    const sv=totalLoaded+(allDone?'':'+');
+    ['stat-count','stat-count-hero'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=sv;});
+  }catch(e){const grid=document.getElementById('grid-caterers');if(reset)grid.innerHTML=`<div class="empty-state"><div class="empty-icon-wrap"><span class="material-symbols-outlined" style="font-size:2rem;color:rgba(255,255,255,0.12);">wifi_off</span></div><p style="font-weight:800;color:#dce4e5;">Failed to load</p><button onclick="fetchPros(true)" style="padding:0.65rem 1.5rem;border-radius:999px;border:1.5px solid rgba(0,240,255,0.25);color:#00f0ff;background:rgba(0,240,255,0.06);font-weight:700;font-size:0.82rem;cursor:pointer;">Retry</button></div>`;}
+  finally{isLoading=false;}}
+function updateMeta(count){const m=document.getElementById('results-meta');m.innerHTML=count===0?'No results found':`Showing <strong>${count}</strong> caterer${count!==1?'s':''}${allDone?'':' so far'}`;}
+function applyFilters(){fetchPros(true);}
+function clearFilters(){document.getElementById('filter-location').value='';document.getElementById('filter-style').value='';document.getElementById('filter-min').value='';document.querySelectorAll('.filter-float .sort-chip').forEach(c=>c.classList.remove('active'));fetchPros(true);}
+function loadMore(){const btn=document.getElementById('load-more-btn');btn.innerHTML=`<span class="material-symbols-outlined" style="font-size:1rem;animation:spin 0.8s linear infinite">progress_activity</span> Loading…`;btn.disabled=true;fetchPros(false).then(()=>{btn.innerHTML=`<span class="material-symbols-outlined" style="font-size:1rem;">expand_more</span> Load More Caterers`;btn.disabled=false;});}
+function setSort(el,sort){currentSort=sort;document.querySelectorAll('#sort-chips .sort-chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');fetchPros(true);}
+function setQuickStyle(style){document.getElementById('filter-style').value=style;document.querySelectorAll('.filter-float .sort-chip').forEach(c=>c.classList.toggle('active',c.textContent.trim()===style));applyFilters();}
+['filter-location','filter-style','filter-min'].forEach(id=>document.getElementById(id)?.addEventListener('keydown',e=>{if(e.key==='Enter')applyFilters();}));
+const styleEl=document.createElement('style');styleEl.textContent='@keyframes spin{to{transform:rotate(360deg)}}';document.head.appendChild(styleEl);
+fetchPros(true);
+</script>
+</body>
+</html>

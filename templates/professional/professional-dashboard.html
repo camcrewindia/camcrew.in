@@ -1,0 +1,2687 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pro Dashboard | Camcrew Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="/static/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="/static/css/styles.css"/>
+<style>
+  /* ══════════════════════════════════════════════════════
+     DARK NEUMORPHISM — shared with customer-profile
+     Base: #141414  |  Dark shadow: #000  |  Light shadow: #1e1e1e
+  ══════════════════════════════════════════════════════ */
+  :root {
+    --nb:  #141414;
+    --ns:  #000000;
+    --nl:  #1e1e1e;
+    --nr:  6px 6px 14px var(--ns), -6px -6px 14px var(--nl);
+    --nr-s:3px 3px 8px  var(--ns), -3px -3px 8px  var(--nl);
+    --ni:  inset 4px 4px 10px var(--ns), inset -4px -4px 10px var(--nl);
+    --ni-s:inset 2px 2px 6px  var(--ns), inset -2px -2px 6px  var(--nl);
+    --ac:  #00dbe9;
+    --ac2: #ebb2ff;
+  }
+
+  /* ── Layout ── */
+  #dashboard { display:none; min-height:100vh; }
+  .cp-sidebar {
+    width:272px; flex-shrink:0; background:var(--nb);
+    box-shadow: 4px 0 18px var(--ns), 1px 0 0 var(--nl);
+    position:sticky; top:0; height:100vh;
+    overflow-y:auto; display:flex; flex-direction:column;
+    scrollbar-width:thin; scrollbar-color:rgba(0,219,233,0.2) transparent;
+  }
+  .cp-content { flex:1; overflow-y:auto; padding:2rem 2.5rem 2rem 2rem; min-width:0; background:var(--nb); }
+
+  /* ── Nav Items ── */
+  .nav-item {
+    display:flex; align-items:center; gap:0.75rem;
+    padding:0.65rem 1.1rem; border-radius:0.75rem; cursor:pointer;
+    color:#849495; font-size:0.9rem; font-weight:600;
+    transition:all 0.2s; margin:0.15rem 0.6rem;
+    background:var(--nb); box-shadow:none; border:none;
+  }
+  .nav-item:hover { color:#dce4e5; box-shadow: var(--nr-s); }
+  .nav-item.active { color:var(--ac); box-shadow: var(--ni-s); background:var(--nb); }
+  .nav-item .material-symbols-outlined { font-size:1.2rem; }
+  .nav-item .nav-badge {
+    margin-left:auto; background:var(--ac); color:#001f22;
+    font-size:0.65rem; font-weight:900; border-radius:999px;
+    padding:0.1rem 0.45rem; min-width:1.2rem; text-align:center;
+  }
+
+  /* ── Divider ── */
+  .nav-divider { height:1px; background:var(--ns); margin:0.5rem 1rem; box-shadow:0 1px 0 var(--nl); }
+
+  /* ── Section titles ── */
+  .sec-title { font-size:1.35rem; font-weight:800; color:#dce4e5; margin-bottom:0.25rem; }
+  .sec-sub   { font-size:0.87rem; color:#849495; margin-bottom:1.5rem; }
+
+  /* ── Badges ── */
+  .badge {
+    display:inline-flex; align-items:center; gap:0.3rem;
+    padding:0.22rem 0.7rem; border-radius:999px;
+    font-size:0.73rem; font-weight:700; letter-spacing:0.04em;
+    text-transform:uppercase;
+    box-shadow: 2px 2px 5px var(--ns), -1px -1px 3px var(--nl);
+  }
+  .badge-pending    { background:#1f1a0d; color:#fbbf24; }
+  .badge-confirmed  { background:#0e1f1e; color:#63cab7; }
+  .badge-active     { background:#0e1f20; color:#00dbe9; }
+  .badge-completed  { background:#0d1f16; color:#4ade80; }
+  .badge-cancelled  { background:#1f0e0e; color:#ff6464; }
+  .badge-declined   { background:#1f0e0e; color:#ff6464; }
+  .badge-in_transit { background:#160d1f; color:#a855f7; }
+  .badge-delivered  { background:#0d1f16; color:#4ade80; }
+  .badge-processing { background:#0e1f20; color:#00dbe9; }
+  .badge-paid       { background:#0d1f16; color:#4ade80; }
+  .badge-unpaid     { background:#1f1a0d; color:#fbbf24; }
+  .badge-overdue    { background:#1f0e0e; color:#ff6464; }
+
+  /* ── Data Cards ── */
+  .data-card {
+    background:var(--nb); border:none;
+    border-radius:1.1rem; padding:1.3rem 1.4rem;
+    box-shadow: var(--nr);
+    transition:box-shadow 0.25s;
+  }
+  .data-card:hover {
+    box-shadow: 8px 8px 20px var(--ns), -8px -8px 20px var(--nl),
+                inset 0 0 0 1px rgba(0,219,233,0.12);
+  }
+  button.data-card:active, a.data-card:active { box-shadow: var(--ni); }
+
+  /* ── Stat Cards ── */
+  .stat-card {
+    background:var(--nb); border-radius:1rem; padding:1.2rem;
+    box-shadow: var(--nr);
+    display:flex; flex-direction:column; gap:0.5rem;
+    transition:box-shadow 0.25s;
+  }
+  .stat-card:hover { box-shadow: 8px 8px 20px var(--ns), -8px -8px 20px var(--nl); }
+
+  /* ── Progress bar ── */
+  .progress-bar { height:7px; border-radius:999px; overflow:hidden; box-shadow: var(--ni-s); background:var(--nb); }
+  .progress-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,#00dbe9,#ebb2ff); transition:width 0.6s ease; }
+
+  /* ── Timeline ── */
+  .timeline-step { display:flex; align-items:flex-start; gap:1rem; padding-bottom:1.5rem; position:relative; }
+  .timeline-step:not(:last-child)::after {
+    content:''; position:absolute; left:14px; top:32px;
+    width:2px; height:calc(100% - 16px);
+    background:var(--ns); box-shadow:1px 0 0 var(--nl);
+  }
+  .timeline-step.done::after   { background:rgba(74,222,128,0.35); box-shadow:none; }
+  .timeline-step.active::after { background:rgba(0,219,233,0.3);   box-shadow:none; }
+  .t-icon {
+    width:30px; height:30px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.85rem; background:var(--nb); z-index:1;
+    box-shadow: var(--nr-s);
+  }
+  .t-icon.done   { box-shadow:inset 2px 2px 6px #04180f, inset -2px -2px 6px #163023; color:#4ade80; }
+  .t-icon.active { box-shadow:inset 2px 2px 6px #04181c, inset -2px -2px 6px #12323a; color:#00dbe9; }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    position:fixed; inset:0; z-index:200;
+    background:rgba(0,0,0,0.78); backdrop-filter:blur(6px);
+    display:none; align-items:center; justify-content:center; padding:1rem;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal-box {
+    background: #e8edf0;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: none;
+    box-shadow: none;
+  }
+
+  /* ── Remove browser focus outline on all form controls ── */
+  input:focus, input:focus-visible,
+  textarea:focus, textarea:focus-visible,
+  select:focus, select:focus-visible {
+    outline: none !important;
+    box-shadow: none;
+  }
+
+  /* ── Form inputs ── */
+  .fi {
+    width: 100%;
+    background: #e8edf0 !important;
+    border: none !important;
+    border-radius: 0.75rem !important;
+    padding: 0.72rem 1rem;
+    color: #1a2a2b !important;
+    font-size: 0.82rem;
+    outline: none;
+    transition: box-shadow 0.2s;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color-scheme: light;
+    -webkit-text-fill-color: #1a2a2b !important;
+    box-shadow: inset 3px 3px 7px #c8cfd3, inset -3px -3px 7px #ffffff !important;
+  }
+  select.fi {
+    background: #e8edf0 !important;
+    color: #1a2a2b !important;
+    -webkit-text-fill-color: #1a2a2b !important;
+    border: none !important;
+    box-shadow: inset 3px 3px 7px #c8cfd3, inset -3px -3px 7px #ffffff !important;
+  }
+  select.fi option { background: #e8edf0; color: #1a2a2b; }
+  .fi::placeholder { color: rgba(80,110,115,0.4) !important; font-size: 0.82rem; }
+  .fi:focus {
+    box-shadow: inset 4px 4px 9px #c0c8cc, inset -4px -4px 9px #ffffff, 0 0 0 2px rgba(0,155,170,0.25) !important;
+  }
+  .fi:-webkit-autofill, .fi:-webkit-autofill:hover, .fi:-webkit-autofill:focus {
+    -webkit-box-shadow: inset 2px 2px 6px var(--ns), inset -2px -2px 6px var(--nl), 0 0 0 9999px var(--nb) inset !important;
+    -webkit-text-fill-color: #dce4e5 !important;
+  }
+  .fi.readonly-fi { opacity:0.55; cursor:not-allowed; }
+  .fi-label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4a6a6c;
+    margin-bottom: 0.35rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  /* ── Empty state ── */
+  .empty-state { text-align:center; padding:3rem 2rem; }
+  .empty-icon  { font-size:3rem; color:rgba(255,255,255,0.1); margin-bottom:1rem; display:block; }
+
+  /* ── Buttons ── */
+  .btn-sm {
+    display:inline-flex; align-items:center; gap:0.35rem;
+    padding:0.42rem 0.95rem; border-radius:0.6rem; font-size:0.78rem; font-weight:700;
+    cursor:pointer; transition:all 0.18s; border:none;
+    background:var(--nb); box-shadow: var(--nr-s);
+    font-family:inherit;
+  }
+  .btn-sm:active { box-shadow: var(--ni-s); }
+  .btn-sm-cyan  { color:var(--ac); }
+  .btn-sm-cyan:hover  { box-shadow: 4px 4px 10px var(--ns), -4px -4px 10px var(--nl), 0 0 8px rgba(0,219,233,0.2); }
+  .btn-sm-green { color:#4ade80; }
+  .btn-sm-green:hover { box-shadow: 4px 4px 10px var(--ns), -4px -4px 10px var(--nl), 0 0 8px rgba(74,222,128,0.2); }
+  .btn-sm-red   { color:#ff6464; }
+  .btn-sm-red:hover   { box-shadow: 4px 4px 10px var(--ns), -4px -4px 10px var(--nl), 0 0 8px rgba(255,100,100,0.2); }
+  .btn-sm-ghost { color:#849495; }
+  .btn-sm-ghost:hover { color:#dce4e5; }
+
+  /* ── Primary CTA ── */
+  .cc-btn-primary {
+    background: linear-gradient(145deg, #00c4d4, #0097a7) !important;
+    border: none !important;
+    border-radius: 0.85rem !important;
+    padding: 0.85rem 1.75rem;
+    font-weight: 800;
+    cursor: pointer;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-size: 0.9rem;
+    font-family: inherit;
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    transition: box-shadow 0.2s ease, filter 0.2s ease;
+    box-shadow: 5px 5px 14px rgba(0,140,160,0.4), -3px -3px 10px rgba(255,255,255,0.8) !important;
+    letter-spacing: 0.02em;
+  }
+  .cc-btn-primary:hover {
+    box-shadow: 6px 6px 18px rgba(0,140,160,0.55), -4px -4px 12px rgba(255,255,255,0.9) !important;
+    filter: brightness(1.08);
+  }
+  .cc-btn-primary:active {
+    box-shadow: inset 3px 3px 8px rgba(0,80,95,0.35), inset -2px -2px 6px rgba(255,255,255,0.25) !important;
+    filter: brightness(0.95);
+  }
+
+  /* ── Sign-out ── */
+  .nm-signout {
+    width:100%; display:flex; align-items:center; justify-content:center; gap:0.5rem;
+    padding:0.65rem; border-radius:0.75rem; font-size:0.88rem; font-weight:700;
+    color:#849495; cursor:pointer; background:var(--nb); border:none;
+    box-shadow: var(--nr-s); transition:all 0.2s;
+  }
+  .nm-signout:hover { color:#ff6464; box-shadow:4px 4px 10px var(--ns),-4px -4px 10px var(--nl),0 0 8px rgba(255,100,100,0.15); }
+
+  /* ── Auth gate card ── */
+  .nm-auth-card {
+    background:var(--nb); border-radius:1.5rem; padding:2.5rem;
+    box-shadow: var(--nr); text-align:center; max-width:360px; width:100%;
+  }
+  .nm-icon-circle {
+    width:4rem; height:4rem; border-radius:50%; background:var(--nb);
+    display:inline-flex; align-items:center; justify-content:center; margin-bottom:1rem;
+    box-shadow: var(--nr);
+  }
+
+  /* ── Mobile header ── */
+  .mobile-header {
+    display:none; align-items:center; justify-content:space-between;
+    padding:0.75rem 1rem; background:var(--nb);
+    box-shadow:0 2px 10px var(--ns), 0 1px 0 var(--nl);
+    position:sticky; top:0; z-index:100; flex-shrink:0;
+  }
+  .mobile-header-back {
+    width:2.2rem; height:2.2rem; border-radius:50%; background:var(--nb);
+    display:flex; align-items:center; justify-content:center;
+    color:#849495; cursor:pointer; border:none; box-shadow: var(--nr-s);
+    transition:all 0.18s;
+  }
+  .mobile-header-back:hover { color:#dce4e5; }
+
+  /* ── Mobile tabs ── */
+  .mobile-tabs {
+    display:none; overflow-x:auto; gap:0.4rem; padding:0.65rem 1rem;
+    background:var(--nb); border-bottom:1px solid var(--ns);
+    scrollbar-width:none; flex-shrink:0;
+  }
+  .mobile-tabs::-webkit-scrollbar { display:none; }
+  .mobile-tab {
+    display:inline-flex; align-items:center; gap:0.35rem; white-space:nowrap;
+    padding:0.45rem 0.85rem; border-radius:999px; font-size:0.77rem; font-weight:700;
+    color:#849495; cursor:pointer; background:var(--nb);
+    box-shadow: var(--nr-s); transition:all 0.2s; border:none;
+  }
+  .mobile-tab.active { color:var(--ac); box-shadow: var(--ni-s); }
+  .mobile-tab .material-symbols-outlined { font-size:0.95rem; }
+
+
+  /* ── File Vault ── */
+  .file-item {
+    display:flex; align-items:center; gap:0.9rem;
+    background:var(--nb); border-radius:0.9rem; padding:0.85rem 1rem;
+    box-shadow: var(--nr-s); transition:box-shadow 0.2s; cursor:default;
+  }
+  .file-item:hover { box-shadow: 5px 5px 12px var(--ns), -5px -5px 12px var(--nl), inset 0 0 0 1px rgba(0,219,233,0.1); }
+  .file-icon {
+    width:2.6rem; height:2.6rem; border-radius:0.7rem; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: var(--nr-s);
+  }
+  .file-icon-img    { background:#1a0e1f; }
+  .file-icon-video  { background:#0e101f; }
+  .file-icon-doc    { background:#0e1a1f; }
+  .file-icon-pdf    { background:#1f100e; }
+  .file-icon-zip    { background:#1a1108; }
+  .file-icon-other  { background:#131413; }
+
+  .vault-folder {
+    background:var(--nb); border-radius:0.9rem; padding:1rem;
+    box-shadow: var(--nr-s); cursor:pointer; text-align:center;
+    transition:box-shadow 0.2s;
+  }
+  .vault-folder:hover { box-shadow: 5px 5px 12px var(--ns), -5px -5px 12px var(--nl), 0 0 0 1px rgba(0,219,233,0.2); }
+  .vault-folder:active { box-shadow: var(--ni-s); }
+  .vault-drop-zone {
+    border-radius:1rem; background:var(--nb); box-shadow: var(--ni);
+    padding:2rem; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:0.5rem;
+    cursor:pointer; transition:box-shadow 0.2s;
+  }
+  .vault-drop-zone:hover, .vault-drop-zone.drag-over {
+    box-shadow: inset 4px 4px 10px var(--ns), inset -4px -4px 10px var(--nl), 0 0 0 2px rgba(0,219,233,0.4);
+  }
+
+  /* ── Request card accent ── */
+  .request-card-new {
+    box-shadow: var(--nr), inset 0 0 0 1.5px rgba(0,219,233,0.25) !important;
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width:5px; }
+  ::-webkit-scrollbar-track { background:var(--nb); }
+  ::-webkit-scrollbar-thumb { background:var(--ns); border-radius:999px; }
+
+  /* ══════════════════════════════════════════════════════
+     LIGHT NEUMORPHISM
+     Base: #e3e8ec  |  Dark shadow: #a2adb8  |  Light shadow: #ffffff
+     High-contrast shadows for strong depth.
+  ══════════════════════════════════════════════════════ */
+  html.light {
+    --nb:  #e3e8ec;
+    --ns:  #a2adb8;
+    --nl:  #ffffff;
+    --nr:  8px 8px 18px var(--ns), -8px -8px 18px var(--nl);
+    --nr-s:4px 4px 10px var(--ns), -4px -4px 10px var(--nl);
+    --ni:  inset 5px 5px 12px var(--ns), inset -5px -5px 12px var(--nl);
+    --ni-s:inset 3px 3px 8px  var(--ns), inset -3px -3px 8px  var(--nl);
+    --ac:  #007d8e;
+    --ac2: #a855f7;
+  }
+  html.light body { background:#e3e8ec !important; }
+
+  /* ── Light sidebar separator ── */
+  html.light .cp-sidebar {
+    box-shadow: 4px 0 20px var(--ns), 1px 0 0 var(--nl);
+  }
+
+  /* ── Text — primary ── */
+  html.light .sec-title,
+  html.light #ov-name,
+  html.light #sb-name,
+  html.light #cp-hdr-title { color:#0a1618 !important; }
+  html.light .sec-sub       { color:#1e3a3c !important; }
+  html.light #sb-email      { color:#2a5052 !important; }
+
+  /* ── Inline-style overrides ── */
+  html.light [style*="color:#dce4e5"] { color:#0a1618 !important; }
+  html.light [style*="color:#849495"] { color:#1e3a3c !important; }
+  html.light [style*="color:#5a7475"] { color:#2a5052 !important; }
+  html.light [style*="color:#001f22"] { color:#0a1618 !important; }
+
+  /* ── Stat cards ── */
+  html.light .stat-card p { color:#0a1618 !important; }
+  html.light .stat-card .text-xs { color:#1e3a3c !important; }
+
+  /* ── Data cards ── */
+  html.light .data-card p,
+  html.light .data-card span { color:#0a1618 !important; }
+
+  /* ── File vault items — filename & meta ── */
+  html.light .file-item p,
+  html.light .file-item span { color:#0a1618 !important; }
+  html.light .file-item [style*="color:#849495"],
+  html.light .file-item [style*="color:#dce4e5"] { color:#1e3a3c !important; }
+
+  /* ── Vault folders ── */
+  html.light .vault-folder p,
+  html.light .vault-folder span { color:#0a1618 !important; }
+
+  /* ── Section nav labels (WORK / FILES & MONEY) ── */
+  html.light nav p { color:#2a5052 !important; }
+
+  /* ── fi-label ── */
+  
+
+  /* ── Pro badge chip ── */
+  html.light span[style*="background:rgba(0,219,233,0.1)"] {
+    background:rgba(0,125,142,0.14) !important; color:#005a67 !important;
+  }
+  /* ── Edit profile chip ── */
+  html.light a[style*="background:var(--nb)"][style*="box-shadow:var(--nr-s)"] { color:#2a5052 !important; }
+
+  /* ── Modal ── */
+  html.light .modal-box h3,
+  html.light .modal-box p,
+  html.light .modal-box label { color:#0a1618 !important; }
+
+  /* ── Auth-gate ── */
+  html.light .nm-auth-card h2 { color:#0a1618 !important; }
+  html.light .nm-auth-card p  { color:#1e3a3c !important; }
+
+  /* ── Inline bold/heavy color overrides ── */
+  html.light [style*="font-weight:700;color:#dce4e5"] { color:#0a1618 !important; }
+  html.light [style*="font-weight:800;color:#dce4e5"] { color:#0a1618 !important; }
+
+  /* ── Nav items ── */
+  html.light .nav-item           { color:#1e3a3c; }
+  html.light .nav-item:hover     { color:#0a1618; box-shadow: var(--nr-s); }
+  html.light .nav-item.active    { color:var(--ac); }
+  html.light .nav-divider        { background:var(--ns); box-shadow:0 1px 0 var(--nl); opacity:0.45; }
+  html.light .mobile-tabs        { border-bottom-color:var(--ns); }
+  html.light .mobile-tab         { color:#1e3a3c; }
+  html.light .mobile-tab.active  { color:var(--ac); }
+
+  /* Badges — light variants */
+  html.light .badge-pending    { background:#fef3c7; color:#b45309; }
+  html.light .badge-confirmed  { background:#d1fae5; color:#065f46; }
+  html.light .badge-active     { background:#cffafe; color:#0e7490; }
+  html.light .badge-completed  { background:#dcfce7; color:#15803d; }
+  html.light .badge-cancelled,
+  html.light .badge-declined   { background:#fee2e2; color:#b91c1c; }
+  html.light .badge-in_transit { background:#f3e8ff; color:#7c3aed; }
+  html.light .badge-delivered  { background:#dcfce7; color:#15803d; }
+  html.light .badge-processing { background:#cffafe; color:#0e7490; }
+  html.light .badge-paid       { background:#dcfce7; color:#15803d; }
+  html.light .badge-unpaid     { background:#fef3c7; color:#b45309; }
+  html.light .badge-overdue    { background:#fee2e2; color:#b91c1c; }
+
+  /* File icon backgrounds */
+  html.light .file-icon-img    { background:#ede9f7; }
+  html.light .file-icon-video  { background:#e8eaf7; }
+  html.light .file-icon-doc    { background:#e7f1f7; }
+  html.light .file-icon-pdf    { background:#fce8e8; }
+  html.light .file-icon-zip    { background:#faf0e0; }
+  html.light .file-icon-other  { background:#eaeceb; }
+
+  /* Empty icon */
+  html.light .empty-icon { color:rgba(0,0,0,0.15) !important; }
+
+  /* Form inputs */
+  
+  html.light .fi:-webkit-autofill,
+  html.light .fi:-webkit-autofill:hover,
+  html.light .fi:-webkit-autofill:focus {
+    -webkit-box-shadow: inset 2px 2px 6px var(--ns), inset -2px -2px 6px var(--nl), 0 0 0 9999px var(--nb) inset !important;
+    -webkit-text-fill-color:#1a2a2b !important;
+  }
+  
+
+  /* ── Sign-out ── */
+  html.light .nm-signout { color:#2a5052; }
+  html.light .nm-signout:hover { color:#b91c1c; }
+
+  /* ── Buttons — light-mode overrides ── */
+  html.light .btn-sm-ghost       { color:#2a5052; }
+  html.light .btn-sm-ghost:hover { color:#0a1618; }
+  html.light .btn-sm-cyan        { color:#007d8e; }
+  html.light .btn-sm-cyan:hover  { box-shadow: 4px 4px 10px var(--ns), -4px -4px 10px var(--nl), 0 0 8px rgba(0,125,142,0.28); }
+  html.light .btn-sm-green       { color:#15803d; }
+  html.light .btn-sm-green:hover { box-shadow: 4px 4px 10px var(--ns), -4px -4px 10px var(--nl), 0 0 8px rgba(21,128,61,0.22); }
+  html.light .btn-sm-red         { color:#b91c1c; }
+  html.light .btn-sm-red:hover   { box-shadow: 4px 4px 10px var(--ns), -4px -4px 10px var(--nl), 0 0 8px rgba(185,28,28,0.22); }
+
+  /* ── nav-item & mobile-tab hover ── */
+  html.light .nav-item:hover           { color:#0a1618; }
+  html.light .mobile-header-back:hover { color:#0a1618; }
+  html.light .mobile-tab:hover         { color:#0a1618; }
+
+  /* ── Primary CTA — light shadows ── */
+  
+  
+  
+
+  /* ── Timeline — light shadows & colors ── */
+  html.light .t-icon                  { box-shadow: var(--nr-s); }
+  html.light .t-icon.done   { box-shadow: inset 2px 2px 6px var(--ns), inset -2px -2px 6px var(--nl); color:#15803d; }
+  html.light .t-icon.active { box-shadow: inset 2px 2px 6px var(--ns), inset -2px -2px 6px var(--nl); color:#007d8e; }
+  html.light .timeline-step:not(:last-child)::after { background:var(--ns); box-shadow:none; opacity:0.35; }
+  html.light .timeline-step.done::after   { background:rgba(21,128,61,0.4);  box-shadow:none; opacity:1; }
+  html.light .timeline-step.active::after { background:rgba(0,125,142,0.38); box-shadow:none; opacity:1; }
+
+  /* ── Error text ── */
+  html.light [style*="color:#ffb4ab"] { color:#b91c1c !important; }
+
+  /* ── Toast — light colors ── */
+  html.light #toast      { box-shadow: 6px 6px 16px var(--ns), -4px -4px 10px var(--nl) !important; }
+  html.light #toast-msg  { color:#0a1618 !important; }
+
+  /* ── Vault breadcrumb ── */
+  html.light #vault-breadcrumb button { color:#2a5052 !important; }
+  html.light #vault-breadcrumb button:hover { color:#0a1618 !important; }
+  html.light #vault-breadcrumb span   { color:#2a5052 !important; }
+
+  /* ── nav-badge (inbox badge) ── */
+  html.light .nav-item .nav-badge { background:var(--ac); color:#ffffff; }
+
+  /* ── Progress bar track ── */
+  html.light .progress-bar { background:var(--nb); box-shadow: var(--ni-s); }
+
+  /* ── Vault drop zone ── */
+  html.light .vault-drop-zone { box-shadow: var(--ni); }
+  html.light .vault-drop-zone:hover,
+  html.light .vault-drop-zone.drag-over {
+    box-shadow: inset 5px 5px 12px var(--ns), inset -5px -5px 12px var(--nl), 0 0 0 2px rgba(0,125,142,0.4);
+  }
+
+  /* ── Vault folder hover accent ── */
+  html.light .vault-folder:hover { box-shadow: 5px 5px 12px var(--ns), -5px -5px 12px var(--nl), 0 0 0 1.5px rgba(0,125,142,0.3); }
+  html.light .file-item:hover    { box-shadow: 5px 5px 12px var(--ns), -5px -5px 12px var(--nl), inset 0 0 0 1px rgba(0,125,142,0.15); }
+
+  /* ── Request card new accent ── */
+  html.light .request-card-new { box-shadow: var(--nr), inset 0 0 0 1.5px rgba(0,125,142,0.28) !important; }
+
+  /* ── data-card hover ── */
+  html.light .data-card:hover {
+    box-shadow: 10px 10px 22px var(--ns), -10px -10px 22px var(--nl),
+                inset 0 0 0 1px rgba(0,125,142,0.12);
+  }
+
+  /* Modal */
+  html.light .modal-overlay { background:rgba(0,0,0,0.45); }
+  
+
+  /* Avatar label */
+  html.light #sb-avatar { color:#001f22 !important; }
+
+  /* Theme toggle button */
+  .theme-toggle {
+    display:flex; align-items:center; justify-content:center;
+    width:2rem; height:2rem; border-radius:50%;
+    background:var(--nb); border:none; cursor:pointer;
+    box-shadow: var(--nr-s);
+    color:#849495; transition:all 0.2s;
+    flex-shrink:0;
+  }
+  .theme-toggle:hover { color:#dce4e5; box-shadow: 4px 4px 10px var(--ns), -4px -4px 10px var(--nl); }
+  .theme-toggle:active { box-shadow: var(--ni-s); }
+  html.light .theme-toggle { color:#2a5052; }
+  html.light .theme-toggle:hover { color:#0a1618; }
+
+  /* ── Rental tabs ── */
+  .rental-tab {
+    display:inline-flex; align-items:center; gap:0.35rem;
+    padding:0.45rem 0.9rem; border-radius:0.55rem; border:none;
+    background:var(--nb); box-shadow:var(--nr-s);
+    font-size:0.78rem; font-weight:700; color:#849495;
+    cursor:pointer; transition:all 0.18s; letter-spacing:0.02em;
+  }
+  .rental-tab:hover { color:#dce4e5; box-shadow:var(--nr); }
+  .rental-tab.active {
+    box-shadow:var(--ni-s); color:var(--ac);
+  }
+  html.light .rental-tab        { color:#2a5052; }
+  html.light .rental-tab:hover  { color:#0a1618; }
+  html.light .rental-tab.active { color:var(--ac); }
+
+  /* ── Edit Profile chip (sidebar) ── */
+  .edit-profile-chip {
+    font-size:0.65rem; font-weight:700; color:#849495;
+    background:var(--nb); box-shadow:var(--nr-s);
+    padding:0.18rem 0.55rem; border-radius:999px;
+    text-decoration:none; letter-spacing:0.08em;
+    text-transform:uppercase; transition:color 0.15s;
+  }
+  .edit-profile-chip:hover { color:#dce4e5; }
+  html.light .edit-profile-chip       { color:#2a5052; }
+  html.light .edit-profile-chip:hover { color:#0a1618; }
+
+  /* ── Modal close button ── */
+  .modal-close-btn {
+    background: #e8edf0;
+    border: none;
+    border-radius: 0.6rem;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #4a6a6c;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    box-shadow: 3px 3px 7px #c8cfd3, -3px -3px 7px #ffffff;
+  }
+  .modal-close-btn:hover { color: #cc3333; box-shadow: inset 2px 2px 5px #c0c8cc, inset -2px -2px 5px #ffffff; }
+  
+  
+
+  /* ── Sidebar logo ── */
+  .cp-sidebar-logo {
+    padding:1.1rem 1.2rem 0.9rem;
+    display:flex; align-items:center;
+    border-bottom:1px solid var(--ns); flex-shrink:0;
+  }
+
+  @media (max-width:768px) {
+    .cp-sidebar    { display:none; }
+    .mobile-header { display:flex; }
+    .mobile-tabs   { display:flex; }
+    .cp-content    { padding:1.1rem; }
+    #close-btn     { display:none !important; }
+  }
+</style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md antialiased" style="background:#141414;">
+
+
+<!-- Auth Gate -->
+<div id="auth-gate" style="display:none" class="flex-1 flex items-center justify-center px-4">
+  <div class="nm-auth-card">
+    <div class="mb-5">
+      <a href="index.html">
+        <img class="site-logo" src="attached_assets/camcrew_studio_logo_cop_y_1785515916927.png"
+             alt="Camcrew Studio" style="height:1.5rem;width:auto;"/>
+      </a>
+    </div>
+    <div class="nm-icon-circle mx-auto">
+      <span class="material-symbols-outlined" style="font-size:2rem;color:var(--ac);">work</span>
+    </div>
+    <h2 style="color:#dce4e5;font-weight:800;font-size:1.2rem;margin-bottom:0.4rem;">Sign in to access your dashboard</h2>
+    <p style="color:#849495;font-size:0.88rem;margin-bottom:1.5rem;">Manage bookings, client requests, and your file vault.</p>
+    <a href="signin.html" class="cc-btn-primary" style="text-decoration:none;">Sign In</a>
+    <p style="font-size:0.85rem;color:#849495;margin-top:1rem;">No account? <a href="signup.html" style="color:var(--ac);font-weight:700;">Sign up</a></p>
+  </div>
+</div>
+
+<!-- Role Gate (not a professional) -->
+<div id="role-gate" style="display:none" class="flex-1 flex items-center justify-center px-4">
+  <div class="nm-auth-card">
+    <div class="nm-icon-circle mx-auto">
+      <span class="material-symbols-outlined" style="font-size:2rem;color:#849495;">work_off</span>
+    </div>
+    <h2 style="color:#dce4e5;font-weight:800;font-size:1.2rem;margin-bottom:0.4rem;">Professional accounts only</h2>
+    <p style="color:#849495;font-size:0.88rem;margin-bottom:1.5rem;">Your account role is <span id="role-display" style="color:var(--ac);font-weight:700;"></span>. Only professionals have this dashboard.</p>
+    <a href="customer-profile.html" class="cc-btn-primary" style="text-decoration:none;">Go to My Account</a>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard" class="flex flex-1" style="display:none;">
+
+  <!-- ── Sidebar ────────────────────────────────────────────── -->
+  <aside class="cp-sidebar">
+    <div class="cp-sidebar-logo">
+      <a href="index.html">
+        <img class="site-logo" src="attached_assets/camcrew_studio_logo_cop_y_1785515916927.png"
+             alt="Camcrew Studio" style="width:140px;height:auto;display:block;"/>
+      </a>
+    </div>
+
+    <!-- Profile summary -->
+    <div class="p-5 pb-3">
+      <div class="flex items-center gap-3 mb-3">
+        <div id="sb-avatar" style="width:2.75rem;height:2.75rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:#001f22;flex-shrink:0;background:linear-gradient(135deg,#00dbe9,#ebb2ff);box-shadow:var(--nr-s);">?</div>
+        <div class="min-w-0">
+          <p id="sb-name" style="color:#dce4e5;font-weight:800;font-size:0.9rem;" class="truncate">Loading…</p>
+          <p id="sb-email" style="color:#849495;font-size:0.75rem;" class="truncate">…</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:0.4rem;">
+        <span style="font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:rgba(0,219,233,0.1);color:#00dbe9;padding:0.18rem 0.55rem;border-radius:999px;">Pro</span>
+        <a href="professional-edit.html" class="edit-profile-chip">Edit Profile</a>
+      </div>
+    </div>
+    <div class="nav-divider"></div>
+
+    <!-- Nav -->
+    <nav class="py-2 flex-1">
+      <div class="nav-item active" data-section="overview" onclick="showSection('overview')">
+        <span class="material-symbols-outlined">dashboard</span> Overview
+      </div>
+      <div class="nav-divider" style="margin:0.4rem 1rem 0.3rem;"></div>
+      <p style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;color:#5a7475;text-transform:uppercase;padding:0 1.2rem 0.3rem;">Work</p>
+      <div class="nav-item" data-section="requests" onclick="showSection('requests')">
+        <span class="material-symbols-outlined">inbox</span> Client Requests
+        <span class="nav-badge" id="nb-requests" style="display:none;">0</span>
+      </div>
+      <div class="nav-item" data-section="jobs" onclick="showSection('jobs')">
+        <span class="material-symbols-outlined">work_history</span> My Jobs
+      </div>
+      <div class="nav-item" data-section="rentals" onclick="showSection('rentals')">
+        <span class="material-symbols-outlined">videocam</span> Rentals
+        <span class="nav-badge" id="nb-rentals" style="display:none;">0</span>
+      </div>
+      <div class="nav-item" data-section="sales" onclick="showSection('sales')">
+        <span class="material-symbols-outlined">storefront</span> Sales
+      </div>
+      <div class="nav-item" data-section="tracking" onclick="showSection('tracking')">
+        <span class="material-symbols-outlined">local_shipping</span> Job Tracking
+      </div>
+      <div class="nav-divider" style="margin:0.4rem 1rem 0.3rem;"></div>
+      <p style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;color:#5a7475;text-transform:uppercase;padding:0 1.2rem 0.3rem;">Files & Money</p>
+      <div class="nav-item" data-section="vault" onclick="showSection('vault')">
+        <span class="material-symbols-outlined">cloud</span> File Vault
+      </div>
+      <div class="nav-item" data-section="earnings" onclick="showSection('earnings')">
+        <span class="material-symbols-outlined">payments</span> Earnings
+      </div>
+      <div class="nav-divider" style="margin:0.4rem 1rem 0.3rem;"></div>
+      <div class="nav-item" data-section="account" onclick="showSection('account')">
+        <span class="material-symbols-outlined">manage_accounts</span> Account Settings
+      </div>
+    </nav>
+
+    <div class="p-4 pt-2" style="display:flex;flex-direction:column;gap:0.6rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
+        <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#849495;">Theme</span>
+        <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark theme">
+          <span class="material-symbols-outlined" id="theme-icon" style="font-size:1.1rem;">light_mode</span>
+        </button>
+      </div>
+      <button onclick="window.signOut && window.signOut()" class="nm-signout">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;">logout</span> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Main ──────────────────────────────────────────────── -->
+  <div class="flex-1 flex flex-col min-w-0">
+
+    <!-- Mobile header -->
+    <div class="mobile-header">
+      <a href="index.html">
+        <img class="site-logo" src="attached_assets/camcrew_studio_logo_cop_y_1785515916927.png"
+             alt="Camcrew Studio" style="height:1.5rem;width:auto;"/>
+      </a>
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark theme">
+          <span class="material-symbols-outlined theme-icon-mobile" style="font-size:1.1rem;">light_mode</span>
+        </button>
+        <button class="mobile-header-back" onclick="history.length>1?history.back():window.location.href='index.html'">
+          <span class="material-symbols-outlined" style="font-size:1.15rem;">arrow_back</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile tabs -->
+    <div class="mobile-tabs">
+      <div class="mobile-tab active" data-section="overview"  onclick="showSection('overview')"><span class="material-symbols-outlined">dashboard</span>Overview</div>
+      <div class="mobile-tab" data-section="requests"  onclick="showSection('requests')"><span class="material-symbols-outlined">inbox</span>Requests</div>
+      <div class="mobile-tab" data-section="jobs"      onclick="showSection('jobs')"><span class="material-symbols-outlined">work_history</span>Jobs</div>
+      <div class="mobile-tab" data-section="rentals"   onclick="showSection('rentals')"><span class="material-symbols-outlined">videocam</span>Rentals</div>
+      <div class="mobile-tab" data-section="sales"     onclick="showSection('sales')"><span class="material-symbols-outlined">storefront</span>Sales</div>
+      <div class="mobile-tab" data-section="tracking"  onclick="showSection('tracking')"><span class="material-symbols-outlined">local_shipping</span>Tracking</div>
+      <div class="mobile-tab" data-section="vault"     onclick="showSection('vault')"><span class="material-symbols-outlined">cloud</span>Vault</div>
+      <div class="mobile-tab" data-section="earnings"  onclick="showSection('earnings')"><span class="material-symbols-outlined">payments</span>Earnings</div>
+      <div class="mobile-tab" data-section="account"   onclick="showSection('account')"><span class="material-symbols-outlined">manage_accounts</span>Account</div>
+    </div>
+
+    <div class="cp-content">
+
+      <!-- ═══ STICKY CONTENT HEADER ═════════════════════════════════ -->
+      <div id="cp-hdr" style="position:sticky;top:0;z-index:90;background:var(--nb);
+                               display:flex;align-items:center;justify-content:space-between;
+                               gap:1rem;padding-bottom:1rem;margin-bottom:0.25rem;">
+        <p id="cp-hdr-title" class="sec-title" style="margin:0;">Overview</p>
+        <div style="display:flex;align-items:center;gap:0.5rem;flex-shrink:0;flex-wrap:nowrap;">
+          <div id="cp-hdr-actions" style="display:flex;align-items:center;gap:0.5rem;"></div>
+          <button class="btn-sm btn-sm-ghost" onclick="toggleTheme()" title="Toggle theme">
+            <span class="material-symbols-outlined theme-icon-mobile" style="font-size:1rem;">light_mode</span>
+          </button>
+          <button id="close-btn" class="btn-sm btn-sm-ghost" title="Close"
+            onclick="history.length>1?history.back():window.location.href='index.html'">
+            <span class="material-symbols-outlined" style="font-size:1rem;">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══ OVERVIEW ══════════════════════════════════════════════ -->
+      <div id="sec-overview">
+        <p class="sec-sub">Your professional dashboard — manage work, clients, and deliverables.</p>
+
+        <!-- Stats Row 1: Services & Work -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+          <div class="stat-card">
+            <span class="material-symbols-outlined" style="font-size:1.6rem;color:var(--ac);">inbox</span>
+            <p id="ov-requests" class="text-2xl font-black" style="color:#dce4e5;">—</p>
+            <p class="text-xs font-semibold" style="color:#849495;">New Requests</p>
+          </div>
+          <div class="stat-card">
+            <span class="material-symbols-outlined" style="font-size:1.6rem;color:#4ade80;">work_history</span>
+            <p id="ov-jobs" class="text-2xl font-black" style="color:#dce4e5;">—</p>
+            <p class="text-xs font-semibold" style="color:#849495;">Active Jobs</p>
+          </div>
+          <div class="stat-card">
+            <span class="material-symbols-outlined" style="font-size:1.6rem;color:#fbbf24;">payments</span>
+            <p id="ov-earnings" class="text-2xl font-black" style="color:#dce4e5;">—</p>
+            <p class="text-xs font-semibold" style="color:#849495;">Service Earnings</p>
+          </div>
+          <div class="stat-card">
+            <span class="material-symbols-outlined" style="font-size:1.6rem;color:#a855f7;">cloud</span>
+            <p id="ov-files" class="text-2xl font-black" style="color:#dce4e5;">—</p>
+            <p class="text-xs font-semibold" style="color:#849495;">Vault Files</p>
+          </div>
+        </div>
+        <!-- Stats Row 2: Rentals & Sales -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+          <div class="stat-card" style="cursor:pointer;" onclick="showSection('rentals')">
+            <span class="material-symbols-outlined" style="font-size:1.4rem;color:#00dbe9;">videocam</span>
+            <p id="ov-rental-income" class="text-2xl font-black" style="color:#dce4e5;">—</p>
+            <p class="text-xs font-semibold" style="color:#849495;">Rental Income</p>
+          </div>
+          <div class="stat-card" style="cursor:pointer;" onclick="showSection('rentals')">
+            <span class="material-symbols-outlined" style="font-size:1.4rem;color:#fbbf24;">pending</span>
+            <p id="ov-pending-rentals" class="text-2xl font-black" style="color:#dce4e5;">—</p>
+            <p class="text-xs font-semibold" style="color:#849495;">Pending Rentals</p>
+          </div>
+          <div class="stat-card" style="cursor:pointer;" onclick="showSection('sales')">
+            <span class="material-symbols-outlined" style="font-size:1.4rem;color:#4ade80;">storefront</span>
+            <p id="ov-sales-revenue" class="text-2xl font-black" style="color:#dce4e5;">—</p>
+            <p class="text-xs font-semibold" style="color:#849495;">Sales Revenue</p>
+          </div>
+          <div class="stat-card" style="cursor:pointer;" onclick="showSection('sales')">
+            <span class="material-symbols-outlined" style="font-size:1.4rem;color:#ebb2ff;">inventory_2</span>
+            <p id="ov-products" class="text-2xl font-black" style="color:#dce4e5;">—</p>
+            <p class="text-xs font-semibold" style="color:#849495;">Listed Products</p>
+          </div>
+        </div>
+
+        <!-- Quick actions -->
+        <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#849495;margin-bottom:0.75rem;">Quick Actions</p>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+          <button onclick="showSection('requests')" class="data-card flex flex-col items-center gap-2 py-4 text-center cursor-pointer">
+            <span class="material-symbols-outlined" style="font-size:1.8rem;color:var(--ac);">inbox</span>
+            <span style="font-size:0.78rem;font-weight:700;color:#849495;">Client Requests</span>
+          </button>
+          <button onclick="showSection('rentals')" class="data-card flex flex-col items-center gap-2 py-4 text-center cursor-pointer">
+            <span class="material-symbols-outlined" style="font-size:1.8rem;color:#00dbe9;">videocam</span>
+            <span style="font-size:0.78rem;font-weight:700;color:#849495;">Rentals</span>
+          </button>
+          <button onclick="showSection('sales')" class="data-card flex flex-col items-center gap-2 py-4 text-center cursor-pointer">
+            <span class="material-symbols-outlined" style="font-size:1.8rem;color:#4ade80;">storefront</span>
+            <span style="font-size:0.78rem;font-weight:700;color:#849495;">Sales</span>
+          </button>
+          <button onclick="showSection('earnings')" class="data-card flex flex-col items-center gap-2 py-4 text-center cursor-pointer">
+            <span class="material-symbols-outlined" style="font-size:1.8rem;color:#fbbf24;">account_balance_wallet</span>
+            <span style="font-size:0.78rem;font-weight:700;color:#849495;">Earnings</span>
+          </button>
+        </div>
+
+        <!-- Recent requests preview -->
+        <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#849495;margin-bottom:0.75rem;">Recent Client Requests</p>
+        <div id="ov-requests-preview"></div>
+      </div>
+
+      <!-- ═══ CLIENT REQUESTS ════════════════════════════════════════ -->
+      <div id="sec-requests" class="hidden">
+        <p class="sec-sub">Incoming booking requests from clients. Accept or decline each request.</p>
+        <div id="requests-list"></div>
+      </div>
+
+      <!-- ═══ MY JOBS ════════════════════════════════════════════════ -->
+      <div id="sec-jobs" class="hidden">
+        <p class="sec-sub">Active and completed jobs you've been booked for.</p>
+        <div id="jobs-list"></div>
+      </div>
+
+      <!-- ═══ RENTALS ════════════════════════════════════════════════ -->
+      <div id="sec-rentals" class="hidden">
+        <p class="sec-sub">List your gear for hire — accept client requests and manage active loans.</p>
+
+        <!-- Rental tabs -->
+        <div style="display:flex;gap:0.5rem;margin-bottom:1.25rem;">
+          <button id="rtab-equipment" class="rental-tab active" onclick="switchRentalTab('equipment')">
+            <span class="material-symbols-outlined" style="font-size:0.95rem;vertical-align:middle;">videocam</span> My Equipment
+          </button>
+          <button id="rtab-orders" class="rental-tab" onclick="switchRentalTab('orders')">
+            <span class="material-symbols-outlined" style="font-size:0.95rem;vertical-align:middle;">inbox</span> Rental Requests
+            <span id="rental-orders-badge" class="hidden" style="display:inline-flex;align-items:center;justify-content:center;min-width:1.1rem;height:1.1rem;padding:0 0.25rem;border-radius:999px;background:var(--ac);color:#fff;font-size:0.62rem;font-weight:800;margin-left:0.35rem;vertical-align:middle;"></span>
+          </button>
+        </div>
+
+        <!-- Equipment panel -->
+        <div id="rental-equipment-panel">
+          <div id="equipment-list"></div>
+        </div>
+
+        <!-- Orders panel -->
+        <div id="rental-orders-panel" class="hidden">
+          <div id="rental-orders-list"></div>
+        </div>
+      </div>
+
+      <!-- ═══ SALES ══════════════════════════════════════════════════ -->
+      <div id="sec-sales" class="hidden">
+        <p class="sec-sub">List your products for sale and track orders from the <a href="sales.html" style="color:var(--ac);font-weight:700;">Sales page</a>.</p>
+
+        <!-- Sales tabs -->
+        <div style="display:flex;gap:0.5rem;margin-bottom:1.25rem;">
+          <button id="stab-listings" class="rental-tab active" onclick="switchSalesTab('listings')">
+            <span class="material-symbols-outlined" style="font-size:0.95rem;vertical-align:middle;">inventory_2</span> My Listings
+          </button>
+          <button id="stab-orders" class="rental-tab" onclick="switchSalesTab('orders')">
+            <span class="material-symbols-outlined" style="font-size:0.95rem;vertical-align:middle;">receipt_long</span> Orders
+          </button>
+        </div>
+
+        <!-- Listings panel -->
+        <div id="sales-listings-panel">
+          <div id="sales-products-list"></div>
+        </div>
+
+        <!-- Orders panel -->
+        <div id="sales-orders-panel" class="hidden">
+          <div id="sales-orders-stats" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5"></div>
+          <div id="sales-orders-list"></div>
+        </div>
+      </div>
+
+      <!-- ═══ JOB TRACKING ═══════════════════════════════════════════ -->
+      <div id="sec-tracking" class="hidden">
+        <p class="sec-sub">Track the status of active jobs and rental shipments in real-time.</p>
+        <div id="tracking-selector" class="mb-6"></div>
+        <div id="tracking-timeline"></div>
+      </div>
+
+      <!-- ═══ FILE VAULT ═════════════════════════════════════════════ -->
+      <div id="sec-vault" class="hidden">
+        <p class="sec-sub">Store and share deliverables with clients. Generate shareable links for any file.</p>
+
+        <input type="file" id="vault-upload-input" multiple class="hidden" onchange="handleVaultUpload(this.files)">
+
+        <!-- Breadcrumb -->
+        <div id="vault-breadcrumb" style="display:flex;align-items:center;gap:0.4rem;margin-bottom:1rem;flex-wrap:wrap;"></div>
+
+        <!-- Drop zone (shown when empty) -->
+        <div id="vault-drop-zone" class="vault-drop-zone mb-4"
+          ondragover="event.preventDefault();this.classList.add('drag-over')"
+          ondragleave="this.classList.remove('drag-over')"
+          ondrop="handleVaultDrop(event)"
+          onclick="document.getElementById('vault-upload-input').click()">
+          <span class="material-symbols-outlined" style="font-size:2.5rem;color:var(--ac);opacity:0.7;">cloud_upload</span>
+          <p style="font-size:0.95rem;font-weight:700;color:#dce4e5;">Drop files here or <span style="color:var(--ac);">browse</span></p>
+          <p style="font-size:0.8rem;color:#849495;">Any file type · Share with clients after upload</p>
+        </div>
+
+        <!-- Storage bar -->
+        <div style="margin-bottom:1.25rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;">
+            <span style="font-size:0.75rem;font-weight:700;color:#849495;">Storage Used</span>
+            <span id="vault-storage-text" style="font-size:0.75rem;font-weight:700;color:#dce4e5;">0 MB of 5 GB</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="vault-storage-bar" style="width:0%;"></div></div>
+        </div>
+
+        <!-- Folders row -->
+        <div id="vault-folders" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:0.75rem;margin-bottom:1.25rem;"></div>
+
+        <!-- Files list/grid -->
+        <div id="vault-files"></div>
+      </div>
+
+      <!-- ═══ EARNINGS ═══════════════════════════════════════════════ -->
+      <div id="sec-earnings" class="hidden">
+        <p class="sec-sub">Your payment history, pending payouts, and completed transactions.</p>
+
+        <!-- Summary cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+          <div class="stat-card">
+            <span class="material-symbols-outlined" style="font-size:1.4rem;color:#4ade80;">account_balance_wallet</span>
+            <p id="earn-total" class="text-2xl font-black" style="color:#dce4e5;">₹0</p>
+            <p style="font-size:0.75rem;font-weight:700;color:#849495;">Total Earned</p>
+          </div>
+          <div class="stat-card">
+            <span class="material-symbols-outlined" style="font-size:1.4rem;color:#fbbf24;">pending</span>
+            <p id="earn-pending" class="text-2xl font-black" style="color:#dce4e5;">₹0</p>
+            <p style="font-size:0.75rem;font-weight:700;color:#849495;">Pending Payout</p>
+          </div>
+          <div class="stat-card">
+            <span class="material-symbols-outlined" style="font-size:1.4rem;color:var(--ac);">trending_up</span>
+            <p id="earn-month" class="text-2xl font-black" style="color:#dce4e5;">₹0</p>
+            <p style="font-size:0.75rem;font-weight:700;color:#849495;">This Month</p>
+          </div>
+        </div>
+        <div id="earnings-list"></div>
+      </div>
+
+      <!-- ═══ ACCOUNT ════════════════════════════════════════════════ -->
+      <div id="sec-account" class="hidden">
+        <p class="sec-sub">Manage your professional account details and security.</p>
+        <div class="data-card max-w-lg" style="display:flex;flex-direction:column;gap:1.1rem;">
+          <div>
+            <label class="fi-label">Display Name</label>
+            <input id="ac-name" class="fi" type="text" placeholder="Your display name"/>
+          </div>
+          <div>
+            <label class="fi-label">Email Address</label>
+            <input id="ac-email" class="fi readonly-fi" type="email" readonly/>
+          </div>
+          <div>
+            <label class="fi-label">Role</label>
+            <input id="ac-role" class="fi readonly-fi" type="text" readonly/>
+          </div>
+          <div id="ac-msg" class="hidden text-sm"></div>
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+            <button onclick="saveAccount()" class="cc-btn-primary" style="width:auto;padding:0.7rem 1.8rem;">Save Changes</button>
+            <a href="forgot-password.html" class="btn-sm btn-sm-ghost" style="padding:0.7rem 1.2rem;text-decoration:none;">
+              <span class="material-symbols-outlined" style="font-size:1rem;">lock_reset</span> Change Password
+            </a>
+            <a href="professional-edit.html" class="btn-sm btn-sm-cyan" style="padding:0.7rem 1.2rem;text-decoration:none;">
+              <span class="material-symbols-outlined" style="font-size:1rem;">edit</span> Edit Pro Profile
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /cp-content -->
+  </div><!-- /flex-1 -->
+</div><!-- /dashboard -->
+
+<!-- ═══ MODALS ═══════════════════════════════════════════════════════ -->
+
+<!-- Respond to Request Modal -->
+<div id="modal-request" class="modal-overlay" onclick="closeModal('modal-request',event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-4">
+      <h3 style="color:#1a2a2b;font-weight:800;font-size:1.1rem;" id="req-modal-title">Client Request</h3>
+      <button onclick="closeModal('modal-request')" class="modal-close-btn"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div id="req-modal-body" class="mb-5"></div>
+    <div style="display:flex;gap:0.65rem;">
+      <button onclick="respondRequest('confirmed')" class="btn-sm btn-sm-green" style="flex:1;justify-content:center;padding:0.7rem;">
+        <span class="material-symbols-outlined" style="font-size:1rem;">check_circle</span> Accept
+      </button>
+      <button onclick="respondRequest('declined')" class="btn-sm btn-sm-red" style="flex:1;justify-content:center;padding:0.7rem;">
+        <span class="material-symbols-outlined" style="font-size:1rem;">cancel</span> Decline
+      </button>
+    </div>
+    <div style="margin-top:0.75rem;">
+      <label class="fi-label">Message to client (optional)</label>
+      <textarea id="req-message" class="fi" rows="2" placeholder="Add a note for the client…" style="resize:none;"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- Add Job Modal -->
+<div id="modal-job" class="modal-overlay" onclick="closeModal('modal-job',event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-4">
+      <h3 style="color:#1a2a2b;font-weight:800;font-size:1.1rem;">Add Job</h3>
+      <button onclick="closeModal('modal-job')" class="modal-close-btn"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <form id="job-form" onsubmit="submitJob(event)" style="display:flex;flex-direction:column;gap:0.9rem;">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="fi-label">Client Name *</label>
+          <input id="job-client" class="fi" type="text" required placeholder="e.g. Acme Corp"/>
+        </div>
+        <div>
+          <label class="fi-label">Service *</label>
+          <input id="job-service" class="fi" type="text" required placeholder="e.g. Wedding Video"/>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="fi-label">Date *</label>
+          <input id="job-date" class="fi" type="date" required/>
+        </div>
+        <div>
+          <label class="fi-label">Amount ($)</label>
+          <input id="job-amount" class="fi" type="number" min="0" placeholder="0"/>
+        </div>
+      </div>
+      <div>
+        <label class="fi-label">Status</label>
+        <select id="job-status" class="fi">
+          <option value="pending">Pending</option>
+          <option value="confirmed" selected>Confirmed</option>
+          <option value="active">Active / In Progress</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+      <div>
+        <label class="fi-label">Notes</label>
+        <textarea id="job-notes" class="fi" rows="2" style="resize:none;" placeholder="Any details, location, special requirements…"></textarea>
+      </div>
+      <div id="job-err" class="hidden text-sm" style="color:#ffb4ab;"></div>
+      <button type="submit" class="cc-btn-primary">Save Job</button>
+    </form>
+  </div>
+</div>
+
+<!-- Add Rental Modal -->
+<div id="modal-rental" class="modal-overlay" onclick="closeModal('modal-rental',event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-4">
+      <h3 id="modal-rental-title" style="color:#1a2a2b;font-weight:800;font-size:1.1rem;">Add Equipment</h3>
+      <button onclick="closeModal('modal-rental')" class="modal-close-btn"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <form id="rental-form" onsubmit="submitEquipment(event)" style="display:flex;flex-direction:column;gap:0.9rem;">
+      <input type="hidden" id="rental-equip-id"/>
+      <div>
+        <label class="fi-label">Equipment Name *</label>
+        <input id="rental-name" class="fi" type="text" required placeholder="e.g. Sony FX6 Body"/>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="fi-label">Category</label>
+          <select id="rental-category" class="fi">
+            <option value="Camera">Camera</option>
+            <option value="Lens">Lens</option>
+            <option value="Lighting">Lighting</option>
+            <option value="Audio">Audio</option>
+            <option value="Stabilizer">Stabilizer</option>
+            <option value="Drone">Drone</option>
+            <option value="Grip">Grip</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="fi-label">Price per Day ($) *</label>
+          <input id="rental-price" class="fi" type="number" min="0" step="0.01" required placeholder="0.00"/>
+        </div>
+      </div>
+      <div>
+        <label class="fi-label">Description</label>
+        <input id="rental-description" class="fi" type="text" placeholder="What's included, condition notes…" maxlength="140"/>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.75rem;padding:0.65rem 0.85rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:0.75rem;">
+        <input id="rental-available" type="checkbox" checked style="width:1.1rem;height:1.1rem;accent-color:var(--ac);cursor:pointer;"/>
+        <label for="rental-available" style="font-size:0.85rem;font-weight:600;color:#1a2a2b;cursor:pointer;">Available for rent right now</label>
+      </div>
+      <div id="rental-err" class="hidden text-sm" style="color:#ffb4ab;"></div>
+      <button type="submit" class="cc-btn-primary">Save Equipment</button>
+    </form>
+  </div>
+</div>
+
+<!-- New Folder Modal -->
+<div id="modal-folder" class="modal-overlay" onclick="closeModal('modal-folder',event)">
+  <div class="modal-box" style="max-width:360px;" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-4">
+      <h3 style="color:#1a2a2b;font-weight:800;font-size:1.1rem;">New Folder</h3>
+      <button onclick="closeModal('modal-folder')" class="modal-close-btn"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <form onsubmit="submitNewFolder(event)" style="display:flex;flex-direction:column;gap:0.9rem;">
+      <div>
+        <label class="fi-label">Folder Name *</label>
+        <input id="folder-name" class="fi" type="text" required placeholder="e.g. Wedding – Smith 2026"/>
+      </div>
+      <button type="submit" class="cc-btn-primary">Create Folder</button>
+    </form>
+  </div>
+</div>
+
+<!-- Share File Modal -->
+<div id="modal-share" class="modal-overlay" onclick="closeModal('modal-share',event)">
+  <div class="modal-box" style="max-width:420px;" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-4">
+      <h3 style="color:#1a2a2b;font-weight:800;font-size:1.1rem;">Share File</h3>
+      <button onclick="closeModal('modal-share')" class="modal-close-btn"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div id="share-file-name" style="font-size:0.9rem;font-weight:700;color:#dce4e5;margin-bottom:1rem;padding:0.75rem 1rem;background:var(--nb);border-radius:0.65rem;box-shadow:var(--ni-s);word-break:break-all;"></div>
+    <div style="margin-bottom:1rem;">
+      <label class="fi-label">Shareable Link</label>
+      <div style="display:flex;gap:0.5rem;">
+        <input id="share-link" class="fi" type="text" readonly style="flex:1;font-size:0.82rem;"/>
+        <button onclick="copyShareLink()" class="btn-sm btn-sm-cyan" style="flex-shrink:0;">
+          <span class="material-symbols-outlined" style="font-size:1rem;">content_copy</span>
+        </button>
+      </div>
+    </div>
+    <div style="margin-bottom:1rem;">
+      <label class="fi-label">Share via Email</label>
+      <div style="display:flex;gap:0.5rem;">
+        <input id="share-email" class="fi" type="email" placeholder="client@example.com" style="flex:1;"/>
+        <button onclick="shareViaEmail()" class="btn-sm btn-sm-cyan" style="flex-shrink:0;">
+          <span class="material-symbols-outlined" style="font-size:1rem;">send</span>
+        </button>
+      </div>
+    </div>
+    <p style="font-size:0.75rem;color:#849495;">Links are read-only. Anyone with the link can view/download this file.</p>
+  </div>
+</div>
+
+<!-- Add / Edit Product Modal -->
+<div id="modal-product" class="modal-overlay" onclick="closeModal('modal-product',event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between mb-4">
+      <h3 id="modal-product-title" style="color:#1a2a2b;font-weight:800;font-size:1.1rem;">List New Product</h3>
+      <button onclick="closeModal('modal-product')" class="modal-close-btn"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <form id="product-form" onsubmit="submitProduct(event)" style="display:flex;flex-direction:column;gap:0.9rem;">
+      <input type="hidden" id="product-id"/>
+      <div>
+        <label class="fi-label">Product Name *</label>
+        <input id="product-name" class="fi" type="text" required placeholder="e.g. Sony FX6 Spare Battery"/>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="fi-label">Category</label>
+          <select id="product-category" class="fi">
+            <option value="Camera">Camera</option>
+            <option value="Lens">Lens</option>
+            <option value="Lighting">Lighting</option>
+            <option value="Audio">Audio</option>
+            <option value="Accessories">Accessories</option>
+            <option value="Prints">Prints</option>
+            <option value="Digital">Digital</option>
+            <option value="Other" selected>Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="fi-label">SKU / Model</label>
+          <input id="product-sku" class="fi" type="text" placeholder="Optional"/>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="fi-label">Price ($) *</label>
+          <input id="product-price" class="fi" type="number" min="0" step="0.01" required placeholder="0.00"/>
+        </div>
+        <div>
+          <label class="fi-label">Stock Quantity</label>
+          <input id="product-stock" class="fi" type="number" min="0" placeholder="0"/>
+        </div>
+      </div>
+      <div>
+        <label class="fi-label">Description</label>
+        <textarea id="product-description" class="fi" rows="2" style="resize:none;" placeholder="Condition, what's included, specs…"></textarea>
+      </div>
+      <div id="product-err" class="hidden text-sm" style="color:#ffb4ab;"></div>
+      <button type="submit" class="cc-btn-primary">Save Listing</button>
+    </form>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" style="
+  position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(1.5rem);
+  display:flex;align-items:center;gap:0.65rem;
+  background:var(--nb);border-radius:999px;padding:0.65rem 1.4rem;
+  font-size:0.88rem;font-weight:700;
+  box-shadow:6px 6px 16px var(--ns),-4px -4px 10px var(--nl),0 0 0 1px rgba(0,219,233,0.2);
+  opacity:0;pointer-events:none;transition:opacity 0.3s,transform 0.3s;z-index:300;
+  font-family:inherit;">
+  <span class="material-symbols-outlined" id="toast-icon" style="font-size:1.05rem;color:var(--ac);">check_circle</span>
+  <span id="toast-msg" style="color:var(--ac);">Saved</span>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════════
+// State
+// ════════════════════════════════════════════════════════════════════
+const S = {
+  profile: null,
+  requests: [],
+  jobs: [],
+  equipment: [],
+  rentalOrders: [],
+  rentalTab: 'equipment',
+  products: [],
+  salesOrders: [],
+  salesRevenue: 0,
+  salesTab: 'listings',
+  vault: { currentFolder: null, folders: [], files: [] },
+  vaultViewGrid: false,
+  activeRequestId: null,
+};
+
+// ── API helpers ──────────────────────────────────────────────────────
+async function api(method, path, body) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' }, credentials: 'include' };
+  if (body !== undefined) opts.body = JSON.stringify(body);
+  const res  = await fetch(path, opts);
+  const data = await res.json();
+  return data;
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Helpers
+// ════════════════════════════════════════════════════════════════════
+function fmt_date(str) {
+  if (!str) return '—';
+  return new Date(str).toLocaleDateString('en-US', { day:'numeric', month:'short', year:'numeric' });
+}
+function fmt_usd(n) { return '₹' + Number(n||0).toLocaleString('en-IN'); }
+function fmt_bytes(b) {
+  if (b >= 1e9) return (b/1e9).toFixed(1) + ' GB';
+  if (b >= 1e6) return (b/1e6).toFixed(1) + ' MB';
+  if (b >= 1e3) return (b/1e3).toFixed(0) + ' KB';
+  return b + ' B';
+}
+function badge(status) {
+  return `<span class="badge badge-${status}">${status.replace('_',' ')}</span>`;
+}
+function empty(icon, msg, sub='') {
+  return `<div class="empty-state">
+    <span class="material-symbols-outlined empty-icon">${icon}</span>
+    <p style="color:#dce4e5;font-weight:700;">${msg}</p>
+    ${sub ? `<p style="color:#849495;font-size:0.85rem;margin-top:0.3rem;">${sub}</p>` : ''}
+  </div>`;
+}
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function showToast(msg, isError=false) {
+  const t  = document.getElementById('toast');
+  const ic = document.getElementById('toast-icon');
+  const tx = document.getElementById('toast-msg');
+  const isLight = document.documentElement.classList.contains('light');
+  ic.textContent = isError ? 'error' : 'check_circle';
+  const okColor  = isLight ? '#007d8e' : '#00dbe9';
+  const errColor = isLight ? '#b91c1c' : '#ffb4ab';
+  ic.style.color = tx.style.color = isError ? errColor : okColor;
+  tx.textContent = msg;
+  t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(t._t);
+  t._t = setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(1.5rem)'; }, 3000);
+}
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id, e) {
+  if (e && document.getElementById(id).querySelector('.modal-box').contains(e.target)) return;
+  document.getElementById(id).classList.remove('open');
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Navigation
+// ════════════════════════════════════════════════════════════════════
+const SECTION_CFG = {
+  overview: {
+    title: () => `Welcome back, <span id="ov-name">…</span> 👋`,
+    actions: ''
+  },
+  requests: {
+    title: () => 'Client Requests',
+    actions: `<select id="req-filter" class="fi" style="width:auto;padding:0.4rem 0.7rem;font-size:0.8rem;" onchange="renderRequests()">
+      <option value="all">All</option>
+      <option value="pending">Pending</option>
+      <option value="confirmed">Confirmed</option>
+      <option value="declined">Declined</option>
+    </select>`
+  },
+  jobs: {
+    title: () => 'My Jobs',
+    actions: `<button onclick="openAddJobModal()" class="btn-sm btn-sm-cyan">
+      <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Add Job
+    </button>`
+  },
+  rentals: {
+    title: () => 'Rentals',
+    actions: `<button onclick="openAddEquipmentModal()" class="btn-sm btn-sm-cyan">
+      <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Add Equipment
+    </button>`
+  },
+  sales: {
+    title: () => 'Sales',
+    actions: `<button onclick="openAddProductModal()" class="btn-sm btn-sm-cyan">
+      <span class="material-symbols-outlined" style="font-size:1rem;">add</span> List Product
+    </button>`
+  },
+  tracking: { title: () => 'Job Tracking', actions: '' },
+  vault: {
+    title: () => 'File Vault',
+    actions: `<button onclick="openNewFolderModal()" class="btn-sm btn-sm-ghost">
+        <span class="material-symbols-outlined" style="font-size:1rem;">create_new_folder</span> New Folder
+      </button>
+      <button onclick="document.getElementById('vault-upload-input').click()" class="btn-sm btn-sm-cyan">
+        <span class="material-symbols-outlined" style="font-size:1rem;">upload</span> Upload
+      </button>
+      <button onclick="toggleVaultView()" id="vault-view-btn" class="btn-sm btn-sm-ghost" title="Toggle view">
+        <span class="material-symbols-outlined" style="font-size:1rem;" id="vault-view-icon">view_list</span>
+      </button>`
+  },
+  earnings: { title: () => 'Earnings', actions: '' },
+  account:  { title: () => 'Account Settings', actions: '' },
+};
+
+function showSection(name) {
+  document.querySelectorAll('[id^="sec-"]').forEach(el => el.classList.add('hidden'));
+  document.getElementById('sec-' + name)?.classList.remove('hidden');
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.section === name));
+  document.querySelectorAll('.mobile-tab').forEach(el => el.classList.toggle('active', el.dataset.section === name));
+
+  // Update sticky header
+  const cfg = SECTION_CFG[name];
+  if (cfg) {
+    document.getElementById('cp-hdr-title').innerHTML = cfg.title();
+    document.getElementById('cp-hdr-actions').innerHTML = cfg.actions;
+  }
+
+  const loaders = {
+    overview: loadOverview,
+    requests: loadRequests,
+    jobs: loadJobs,
+    rentals: loadRentals,
+    sales: loadSales,
+    tracking: loadTrackingSelector,
+    vault: renderVault,
+    earnings: loadEarnings,
+    account: loadAccount,
+  };
+  loaders[name]?.();
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Bootstrap
+// ════════════════════════════════════════════════════════════════════
+async function init() {
+  try {
+    const data = await api('GET', '/api/me');
+    if (!data.ok) { document.getElementById('auth-gate').style.display='flex'; return; }
+    S.profile = data.user;
+
+    if (S.profile.role !== 'professional') {
+      document.getElementById('role-display').textContent = S.profile.role;
+      document.getElementById('role-gate').style.display = 'flex';
+      return;
+    }
+
+    // Populate sidebar
+    const displayName = S.profile.display_name || S.profile.email.split('@')[0];
+    document.getElementById('sb-avatar').textContent = displayName.charAt(0).toUpperCase();
+    document.getElementById('sb-name').textContent   = displayName;
+    document.getElementById('sb-email').textContent  = S.profile.email;
+
+    document.getElementById('dashboard').style.display = 'flex';
+
+    showSection('overview');
+  } catch(_) {
+    document.getElementById('auth-gate').style.display = 'flex';
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Overview
+// ════════════════════════════════════════════════════════════════════
+async function loadOverview() {
+  document.getElementById('ov-name').textContent = S.profile?.display_name || S.profile?.email?.split('@')[0] || '…';
+  try {
+    const data = await api('GET', '/api/professional/overview');
+    if (!data.ok) return;
+    const ov = data.overview;
+
+    document.getElementById('ov-requests').textContent      = ov.pending_requests;
+    document.getElementById('ov-jobs').textContent          = ov.active_jobs;
+    document.getElementById('ov-earnings').textContent      = fmt_usd(ov.total_earnings);
+    document.getElementById('ov-files').textContent         = ov.vault_files;
+    document.getElementById('ov-rental-income').textContent = fmt_usd(ov.rental_income  || 0);
+    document.getElementById('ov-pending-rentals').textContent = ov.pending_rentals ?? '0';
+    document.getElementById('ov-sales-revenue').textContent = fmt_usd(ov.sales_revenue  || 0);
+    document.getElementById('ov-products').textContent      = ov.product_count ?? '0';
+
+    // Update rental badge in sidebar
+    const nbr = document.getElementById('nb-rentals');
+    if (nbr) { nbr.textContent = ov.pending_rentals; nbr.style.display = ov.pending_rentals > 0 ? 'inline-block' : 'none'; }
+
+    // Badge
+    const nb = document.getElementById('nb-requests');
+    if (ov.pending_requests > 0) { nb.textContent = ov.pending_requests; nb.style.display = 'inline-block'; }
+
+    // Recent requests preview
+    const el = document.getElementById('ov-requests-preview');
+    const recent = ov.recent_requests || [];
+    if (!recent.length) { el.innerHTML = empty('inbox', 'No requests yet', 'When clients request your services, they\'ll appear here.'); return; }
+    // Normalise field names for renderRequestCard
+    el.innerHTML = recent.map(r => renderRequestCard(normaliseRequest(r), true)).join('');
+  } catch(_) {}
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Client Requests
+// ════════════════════════════════════════════════════════════════════
+/* Map snake_case DB fields → camelCase used by renderRequestCard */
+function normaliseRequest(r) {
+  return {
+    id:         r.id,
+    client:     r.client_name || r.client || '',
+    service:    r.service,
+    date:       r.booking_date || r.date,
+    amount:     r.amount,
+    status:     r.status,
+    note:       r.note,
+    created_at: r.created_at,
+  };
+}
+
+async function loadRequests() {
+  const el = document.getElementById('requests-list');
+  el.innerHTML = `<p style="color:#849495;font-size:0.85rem;text-align:center;padding:2rem;">Loading…</p>`;
+  try {
+    const data = await api('GET', '/api/professional/requests');
+    if (!data.ok) throw new Error(data.error);
+    S.requests = (data.requests || []).map(normaliseRequest);
+  } catch(_) { S.requests = []; }
+  renderRequests();
+}
+
+function renderRequests() {
+  const el     = document.getElementById('requests-list');
+  const filter = document.getElementById('req-filter')?.value || 'all';
+  const list   = filter === 'all' ? S.requests : S.requests.filter(r => r.status === filter);
+  if (!list.length) { el.innerHTML = empty('inbox', 'No requests', 'New client requests will appear here.'); return; }
+  el.innerHTML = list.map(r => renderRequestCard(r, false)).join('');
+}
+
+function renderRequestCard(r, compact) {
+  const isNew = r.status === 'pending';
+  return `<div class="data-card mb-3 ${isNew ? 'request-card-new' : ''}">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:0.5rem;margin-bottom:0.75rem;">
+      <div>
+        <p style="font-size:1rem;font-weight:800;color:#dce4e5;">${esc(r.client)}</p>
+        <p style="font-size:0.85rem;color:#849495;">${esc(r.service)}</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        ${badge(r.status)}
+        <span style="font-size:0.75rem;color:#849495;">${fmt_date(r.created_at)}</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:1.25rem;font-size:0.82rem;color:#849495;margin-bottom:0.75rem;">
+      <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">event</span>${fmt_date(r.date)}</span>
+      <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">attach_money</span>${fmt_usd(r.amount)}</span>
+    </div>
+    ${r.note ? `<p style="font-size:0.82rem;color:#849495;font-style:italic;border-left:2px solid rgba(0,219,233,0.3);padding-left:0.65rem;margin-bottom:0.75rem;">"${esc(r.note)}"</p>` : ''}
+    ${!compact && r.status === 'pending' ? `
+      <div style="display:flex;gap:0.5rem;justify-content:flex-end;flex-wrap:wrap;">
+        <button onclick="openRequestModal(${r.id})" class="btn-sm btn-sm-cyan">
+          <span class="material-symbols-outlined" style="font-size:0.95rem;">reply</span> Respond
+        </button>
+      </div>` : ''}
+    ${compact && r.status === 'pending' ? `<div style="margin-top:0.5rem;"><button onclick="showSection('requests')" class="btn-sm btn-sm-cyan"><span class="material-symbols-outlined" style="font-size:0.9rem;">arrow_forward</span> View & Respond</button></div>` : ''}
+  </div>`;
+}
+
+function openRequestModal(id) {
+  S.activeRequestId = id;
+  const r = S.requests.find(x => x.id === id);
+  if (!r) return;
+  document.getElementById('req-modal-title').textContent = `Request — ${r.client}`;
+  document.getElementById('req-modal-body').innerHTML = `
+    <div style="display:grid;gap:0.6rem;font-size:0.88rem;">
+      <div style="display:flex;justify-content:space-between;"><span style="color:#849495;">Client</span><span style="color:#dce4e5;font-weight:700;">${esc(r.client)}</span></div>
+      <div style="display:flex;justify-content:space-between;"><span style="color:#849495;">Service</span><span style="color:#dce4e5;font-weight:700;">${esc(r.service)}</span></div>
+      <div style="display:flex;justify-content:space-between;"><span style="color:#849495;">Date</span><span style="color:#dce4e5;font-weight:700;">${fmt_date(r.date)}</span></div>
+      <div style="display:flex;justify-content:space-between;"><span style="color:#849495;">Quote</span><span style="color:#00dbe9;font-weight:800;">${fmt_usd(r.amount)}</span></div>
+      ${r.note ? `<div style="border-left:2px solid rgba(0,219,233,0.3);padding-left:0.65rem;color:#849495;font-style:italic;">"${esc(r.note)}"</div>` : ''}
+    </div>`;
+  document.getElementById('req-message').value = '';
+  openModal('modal-request');
+}
+
+async function respondRequest(newStatus) {
+  const id = S.activeRequestId;
+  if (!id) return;
+  try {
+    const data = await api('PATCH', `/api/professional/requests/${id}`, { status: newStatus });
+    if (!data.ok) throw new Error(data.error);
+    S.requests = S.requests.map(r => r.id === id ? normaliseRequest(data.request) : r);
+
+    // If accepting, also create a job
+    if (newStatus === 'confirmed') {
+      const r = S.requests.find(x => x.id === id);
+      if (r) {
+        const jd = await api('POST', '/api/professional/jobs', {
+          client:       r.client,
+          service:      r.service,
+          booking_date: r.date,
+          amount:       r.amount,
+          status:       'confirmed',
+          notes:        r.note || '',
+        });
+        if (jd.ok) S.jobs.push(normaliseJob(jd.job));
+      }
+    }
+  } catch(err) { showToast('Failed: ' + err.message, true); return; }
+
+  closeModal('modal-request');
+  showToast(newStatus === 'confirmed' ? 'Request accepted — job created!' : 'Request declined.');
+  renderRequests();
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Jobs
+// ════════════════════════════════════════════════════════════════════
+/* Map snake_case DB fields → camelCase used by jobs UI */
+function normaliseJob(j) {
+  return {
+    id:      j.id,
+    client:  j.client,
+    service: j.service,
+    date:    j.booking_date || j.date,
+    amount:  j.amount,
+    status:  j.status,
+    notes:   j.notes || '',
+  };
+}
+
+async function loadJobs() {
+  const el = document.getElementById('jobs-list');
+  el.innerHTML = `<p style="color:#849495;font-size:0.85rem;text-align:center;padding:2rem;">Loading…</p>`;
+  try {
+    const data = await api('GET', '/api/professional/jobs');
+    if (!data.ok) throw new Error(data.error);
+    S.jobs = (data.jobs || []).map(normaliseJob);
+  } catch(_) { S.jobs = []; }
+  renderJobs();
+}
+
+function renderJobs() {
+  const el = document.getElementById('jobs-list');
+  if (!S.jobs.length) { el.innerHTML = empty('work_history','No jobs yet','Add jobs manually or accept client requests.'); return; }
+  el.innerHTML = S.jobs.map(j => `
+    <div class="data-card mb-3">
+      <div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:0.5rem;margin-bottom:0.6rem;">
+        <div>
+          <p style="font-size:1rem;font-weight:800;color:#dce4e5;">${esc(j.client)}</p>
+          <p style="font-size:0.85rem;color:#849495;">${esc(j.service)}</p>
+        </div>
+        ${badge(j.status)}
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:1.25rem;font-size:0.82rem;color:#849495;margin-bottom:0.65rem;">
+        <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">event</span>${fmt_date(j.date)}</span>
+        <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">attach_money</span>${fmt_usd(j.amount)}</span>
+      </div>
+      ${j.notes ? `<p style="font-size:0.8rem;color:#849495;margin-bottom:0.65rem;">${esc(j.notes)}</p>` : ''}
+      <div style="display:flex;gap:0.5rem;justify-content:flex-end;flex-wrap:wrap;">
+        ${j.status !== 'completed' ? `
+          <button onclick="updateJobStatus(${j.id},'completed')" class="btn-sm btn-sm-green">
+            <span class="material-symbols-outlined" style="font-size:0.9rem;">check_circle</span> Mark Complete
+          </button>` : ''}
+        <button onclick="shareJobFiles(${j.id})" class="btn-sm btn-sm-cyan">
+          <span class="material-symbols-outlined" style="font-size:0.9rem;">cloud_upload</span> Share Files
+        </button>
+        <button onclick="removeJob(${j.id})" class="btn-sm btn-sm-red">
+          <span class="material-symbols-outlined" style="font-size:0.9rem;">delete</span>
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+async function updateJobStatus(id, status) {
+  try {
+    const data = await api('PATCH', `/api/professional/jobs/${id}`, { status });
+    if (!data.ok) throw new Error(data.error);
+    S.jobs = S.jobs.map(j => j.id === id ? normaliseJob(data.job) : j);
+  } catch(err) { showToast('Failed: ' + err.message, true); return; }
+  showToast('Job marked as ' + status);
+  renderJobs();
+}
+
+async function removeJob(id) {
+  if (!confirm('Remove this job?')) return;
+  try {
+    const data = await api('DELETE', `/api/professional/jobs/${id}`);
+    if (!data.ok) throw new Error(data.error);
+    S.jobs = S.jobs.filter(j => j.id !== id);
+  } catch(err) { showToast('Failed: ' + err.message, true); return; }
+  showToast('Job removed.');
+  renderJobs();
+}
+
+function shareJobFiles(jobId) {
+  showSection('vault');
+  setTimeout(() => showToast('Upload files here and use the Share button to send them to your client.'), 300);
+}
+
+function openAddJobModal() {
+  document.getElementById('job-form').reset();
+  document.getElementById('job-err').classList.add('hidden');
+  openModal('modal-job');
+}
+
+async function submitJob(e) {
+  e.preventDefault();
+  const payload = {
+    client:       document.getElementById('job-client').value.trim(),
+    service:      document.getElementById('job-service').value.trim(),
+    booking_date: document.getElementById('job-date').value,
+    amount:       parseFloat(document.getElementById('job-amount').value) || 0,
+    status:       document.getElementById('job-status').value,
+    notes:        document.getElementById('job-notes').value.trim(),
+  };
+  if (!payload.client || !payload.service || !payload.booking_date) {
+    document.getElementById('job-err').textContent = 'Client, service, and date are required.';
+    document.getElementById('job-err').classList.remove('hidden');
+    return;
+  }
+  try {
+    const data = await api('POST', '/api/professional/jobs', payload);
+    if (!data.ok) throw new Error(data.error);
+    S.jobs.unshift(normaliseJob(data.job));
+  } catch(err) {
+    document.getElementById('job-err').textContent = err.message;
+    document.getElementById('job-err').classList.remove('hidden');
+    return;
+  }
+  closeModal('modal-job');
+  showToast('Job saved!');
+  renderJobs();
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Rentals — Equipment Listing + Client Orders  (API-backed)
+// ════════════════════════════════════════════════════════════════════
+async function loadRentals() {
+  switchRentalTab(S.rentalTab || 'equipment');
+  try {
+    const [eqRes, ordRes] = await Promise.all([
+      fetch('/api/professional/rental-equipment'),
+      fetch('/api/professional/rental-orders'),
+    ]);
+    const eqData  = await eqRes.json();
+    const ordData = await ordRes.json();
+    if (eqData.ok)  S.equipment    = (eqData.equipment || []).map(normaliseEquip);
+    if (ordData.ok) S.rentalOrders = (ordData.orders   || []).map(normaliseOrder);
+  } catch (_) { /* silently fail — shows empty state */ }
+  switchRentalTab(S.rentalTab || 'equipment');
+}
+
+/* Map snake_case DB fields → camelCase used throughout the dashboard */
+function normaliseEquip(e) {
+  return {
+    id:          e.id,
+    name:        e.name,
+    category:    e.category,
+    description: e.description || '',
+    pricePerDay: e.price_per_day,
+    available:   e.available,
+    image_url:   e.image_url || '',
+  };
+}
+function normaliseOrder(o) {
+  return {
+    id:            o.id,
+    equipmentId:   o.equipment_id,
+    equipmentName: o.equipment_name || '',
+    clientName:    o.customer_name,
+    clientEmail:   o.customer_email,
+    fromDate:      o.from_date,
+    toDate:        o.to_date,
+    days:          o.days,
+    totalCost:     o.total_cost,
+    notes:         o.notes || '',
+    status:        o.status,
+    createdAt:     o.created_at,
+  };
+}
+
+function switchRentalTab(tab) {
+  S.rentalTab = tab;
+  document.getElementById('rental-equipment-panel').classList.toggle('hidden', tab !== 'equipment');
+  document.getElementById('rental-orders-panel').classList.toggle('hidden',    tab !== 'orders');
+  document.getElementById('rtab-equipment').classList.toggle('active', tab === 'equipment');
+  document.getElementById('rtab-orders').classList.toggle('active',    tab === 'orders');
+
+  // Update pending badge
+  const pending = S.rentalOrders.filter(o => o.status === 'pending').length;
+  const badge   = document.getElementById('rental-orders-badge');
+  if (badge) { badge.textContent = pending; badge.classList.toggle('hidden', pending === 0); }
+
+  // Update sticky header action button
+  const actEl = document.getElementById('cp-hdr-actions');
+  if (actEl) {
+    actEl.innerHTML = tab === 'equipment'
+      ? `<button onclick="openAddEquipmentModal()" class="btn-sm btn-sm-cyan">
+           <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Add Equipment
+         </button>`
+      : `<span style="font-size:0.78rem;font-weight:700;color:#849495;">${pending} pending</span>`;
+  }
+
+  if (tab === 'equipment') renderEquipmentList();
+  else renderRentalOrders();
+}
+
+/* ── Equipment listing ──────────────────────────────────────────── */
+function renderEquipmentList() {
+  const el = document.getElementById('equipment-list');
+  if (!S.equipment.length) {
+    el.innerHTML = empty('videocam', 'No equipment listed', 'Add your gear so clients can browse and request rentals.');
+    return;
+  }
+  el.innerHTML = S.equipment.map(e => `
+    <div class="data-card mb-3">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;margin-bottom:0.5rem;">
+        <div>
+          <p style="font-size:1rem;font-weight:800;color:#dce4e5;">${esc(e.name)}</p>
+          <p style="font-size:0.78rem;color:#849495;margin-top:0.1rem;">${esc(e.category)}</p>
+        </div>
+        ${e.available
+          ? `<span style="font-size:0.63rem;font-weight:700;background:rgba(34,197,94,0.13);color:#22c55e;padding:0.15rem 0.55rem;border-radius:999px;letter-spacing:0.07em;white-space:nowrap;">AVAILABLE</span>`
+          : `<span style="font-size:0.63rem;font-weight:700;background:rgba(132,148,149,0.13);color:#849495;padding:0.15rem 0.55rem;border-radius:999px;letter-spacing:0.07em;white-space:nowrap;">UNAVAILABLE</span>`
+        }
+      </div>
+      ${e.description ? `<p style="font-size:0.83rem;color:#849495;margin-bottom:0.55rem;">${esc(e.description)}</p>` : ''}
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
+        <p style="font-size:1.15rem;font-weight:800;color:var(--ac);">${fmt_usd(e.pricePerDay)}<span style="font-size:0.72rem;font-weight:600;color:#849495;"> / day</span></p>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <button onclick="toggleEquipAvailability(${e.id})" class="btn-sm btn-sm-ghost">
+            <span class="material-symbols-outlined" style="font-size:0.9rem;">${e.available ? 'toggle_on' : 'toggle_off'}</span>
+            ${e.available ? 'Unavailable' : 'Available'}
+          </button>
+          <button onclick="openEditEquipmentModal(${e.id})" class="btn-sm btn-sm-ghost">
+            <span class="material-symbols-outlined" style="font-size:0.9rem;">edit</span>
+          </button>
+          <button onclick="removeEquipment(${e.id})" class="btn-sm btn-sm-red">
+            <span class="material-symbols-outlined" style="font-size:0.9rem;">delete</span>
+          </button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function toggleEquipAvailability(id) {
+  const eq = S.equipment.find(e => e.id === id);
+  if (!eq) return;
+  try {
+    const res  = await fetch(`/api/professional/rental-equipment/${id}/availability`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ available: !eq.available }),
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error);
+    S.equipment = S.equipment.map(e => e.id === id ? normaliseEquip(data.equipment) : e);
+  } catch (err) { showToast('Update failed: ' + err.message, 'error'); return; }
+  renderEquipmentList();
+}
+
+async function removeEquipment(id) {
+  if (!confirm('Remove this equipment listing?')) return;
+  try {
+    const res  = await fetch(`/api/professional/rental-equipment/${id}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error);
+    S.equipment = S.equipment.filter(e => e.id !== id);
+  } catch (err) { showToast('Delete failed: ' + err.message, 'error'); return; }
+  showToast('Equipment removed.');
+  renderEquipmentList();
+}
+
+function openAddEquipmentModal() {
+  document.getElementById('rental-form').reset();
+  document.getElementById('rental-equip-id').value = '';
+  document.getElementById('rental-available').checked = true;
+  document.getElementById('modal-rental-title').textContent = 'Add Equipment';
+  document.getElementById('rental-err').classList.add('hidden');
+  openModal('modal-rental');
+}
+
+function openEditEquipmentModal(id) {
+  const e = S.equipment.find(x => x.id === id);
+  if (!e) return;
+  document.getElementById('rental-equip-id').value      = e.id;
+  document.getElementById('rental-name').value           = e.name;
+  document.getElementById('rental-category').value       = e.category;
+  document.getElementById('rental-description').value    = e.description || '';
+  document.getElementById('rental-price').value          = e.pricePerDay;
+  document.getElementById('rental-available').checked    = e.available;
+  document.getElementById('modal-rental-title').textContent = 'Edit Equipment';
+  document.getElementById('rental-err').classList.add('hidden');
+  openModal('modal-rental');
+}
+
+async function submitEquipment(e) {
+  e.preventDefault();
+  const editId = document.getElementById('rental-equip-id').value;
+  const name   = document.getElementById('rental-name').value.trim();
+  const price  = parseFloat(document.getElementById('rental-price').value);
+  if (!name) { showRentalErr('Equipment name is required.'); return; }
+  if (!price || price <= 0) { showRentalErr('Enter a valid price per day.'); return; }
+  const payload = {
+    name,
+    category:      document.getElementById('rental-category').value,
+    description:   document.getElementById('rental-description').value.trim(),
+    price_per_day: price,
+    available:     document.getElementById('rental-available').checked,
+  };
+  try {
+    let res, data;
+    if (editId) {
+      res  = await fetch(`/api/professional/rental-equipment/${editId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      data = await res.json();
+      if (!data.ok) throw new Error(data.error);
+      S.equipment = S.equipment.map(x => x.id == editId ? normaliseEquip(data.equipment) : x);
+    } else {
+      res  = await fetch('/api/professional/rental-equipment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      data = await res.json();
+      if (!data.ok) throw new Error(data.error);
+      S.equipment.push(normaliseEquip(data.equipment));
+    }
+  } catch (err) { showRentalErr(err.message); return; }
+  closeModal('modal-rental');
+  showToast(editId ? 'Equipment updated!' : 'Equipment listed!');
+  renderEquipmentList();
+}
+
+function showRentalErr(msg) {
+  const el = document.getElementById('rental-err');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
+/* ── Rental orders / requests ───────────────────────────────────── */
+function renderRentalOrders() {
+  const el = document.getElementById('rental-orders-list');
+  const statusRank = { pending:0, accepted:1, active:2, completed:3, declined:4 };
+  const orders = [...S.rentalOrders].sort((a,b) =>
+    (statusRank[a.status]??5) - (statusRank[b.status]??5) ||
+    new Date(b.createdAt) - new Date(a.createdAt)
+  );
+  if (!orders.length) {
+    el.innerHTML = empty('inbox', 'No rental requests yet', 'Client requests will appear here once clients can browse your listings.');
+    return;
+  }
+  el.innerHTML = orders.map(o => `
+    <div class="data-card mb-3${o.status === 'pending' ? ' request-card-new' : ''}">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;margin-bottom:0.5rem;">
+        <div>
+          <p style="font-size:1rem;font-weight:800;color:#dce4e5;">${esc(o.equipmentName)}</p>
+          <p style="font-size:0.82rem;color:#849495;">
+            <span class="material-symbols-outlined" style="font-size:0.85rem;vertical-align:middle;">person</span>
+            <strong style="color:#dce4e5;">${esc(o.clientName)}</strong>
+            &nbsp;·&nbsp;${esc(o.clientEmail)}
+          </p>
+        </div>
+        ${rentalOrderBadge(o.status)}
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:1rem;font-size:0.82rem;color:#849495;margin-bottom:0.6rem;">
+        <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">date_range</span>${fmt_date(o.fromDate)} → ${fmt_date(o.toDate)}</span>
+        <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">calendar_today</span>${o.days} day${o.days!==1?'s':''}</span>
+        <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">attach_money</span><strong style="color:#dce4e5;">${fmt_usd(o.totalCost)}</strong></span>
+      </div>
+      ${o.notes ? `<p style="font-size:0.8rem;color:#849495;font-style:italic;margin-bottom:0.6rem;">"${esc(o.notes)}"</p>` : ''}
+      <div style="display:flex;gap:0.5rem;justify-content:flex-end;flex-wrap:wrap;">
+        ${o.status === 'pending' ? `
+          <button onclick="acceptRentalOrder(${o.id})" class="btn-sm btn-sm-green">
+            <span class="material-symbols-outlined" style="font-size:0.9rem;">check</span> Accept
+          </button>
+          <button onclick="declineRentalOrder(${o.id})" class="btn-sm btn-sm-red">
+            <span class="material-symbols-outlined" style="font-size:0.9rem;">close</span> Decline
+          </button>` : ''}
+        ${o.status === 'accepted' ? `
+          <button onclick="setRentalOrderStatus(${o.id},'active')" class="btn-sm btn-sm-cyan">
+            <span class="material-symbols-outlined" style="font-size:0.9rem;">handshake</span> Mark as Out
+          </button>` : ''}
+        ${o.status === 'active' ? `
+          <button onclick="setRentalOrderStatus(${o.id},'completed')" class="btn-sm btn-sm-ghost">
+            <span class="material-symbols-outlined" style="font-size:0.9rem;">keyboard_return</span> Mark Returned
+          </button>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+function rentalOrderBadge(status) {
+  const map = {
+    pending:   { color:'#849495', label:'PENDING' },
+    accepted:  { color:'#00dbe9', label:'ACCEPTED' },
+    active:    { color:'#22c55e', label:'OUT — ACTIVE' },
+    completed: { color:'#849495', label:'RETURNED' },
+    declined:  { color:'#ff6b6b', label:'DECLINED' },
+  };
+  const { color, label } = map[status] || { color:'#849495', label: status.toUpperCase() };
+  return `<span style="font-size:0.63rem;font-weight:700;color:${color};background:${color}22;padding:0.15rem 0.55rem;border-radius:999px;letter-spacing:0.07em;white-space:nowrap;">${label}</span>`;
+}
+
+async function setRentalOrderStatus(id, status) {
+  try {
+    const res  = await fetch(`/api/professional/rental-orders/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error);
+    S.rentalOrders = S.rentalOrders.map(o => o.id === id ? normaliseOrder(data.order) : o);
+  } catch (err) { showToast('Update failed: ' + err.message, 'error'); return; }
+  const msgs = { active:'Equipment marked as out.', completed:'Returned — rental complete!', declined:'Request declined.' };
+  showToast(msgs[status] || 'Updated.');
+  switchRentalTab('orders');
+}
+
+async function acceptRentalOrder(id) {
+  await setRentalOrderStatus(id, 'accepted');
+  showToast('Request accepted!');
+}
+
+function declineRentalOrder(id) {
+  if (!confirm('Decline this rental request?')) return;
+  setRentalOrderStatus(id, 'declined');
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Sales — Product Listings + Orders  (API-backed)
+// ════════════════════════════════════════════════════════════════════
+async function loadSales() {
+  switchSalesTab(S.salesTab || 'listings');
+  try {
+    const [pRes, sRes] = await Promise.all([
+      api('GET', '/api/professional/products'),
+      api('GET', '/api/professional/sales'),
+    ]);
+    if (pRes.ok) S.products  = pRes.products  || [];
+    if (sRes.ok) { S.salesOrders = sRes.sales || []; S.salesRevenue = sRes.total_revenue || 0; }
+  } catch (_) { /* silently fail — shows empty state */ }
+  switchSalesTab(S.salesTab || 'listings');
+}
+
+function switchSalesTab(tab) {
+  S.salesTab = tab;
+  document.getElementById('sales-listings-panel').classList.toggle('hidden', tab !== 'listings');
+  document.getElementById('sales-orders-panel').classList.toggle('hidden', tab !== 'orders');
+  document.getElementById('stab-listings').classList.toggle('active', tab === 'listings');
+  document.getElementById('stab-orders').classList.toggle('active', tab === 'orders');
+
+  // Update sticky header action button
+  const actEl = document.getElementById('cp-hdr-actions');
+  if (actEl) {
+    actEl.innerHTML = tab === 'listings'
+      ? `<button onclick="openAddProductModal()" class="btn-sm btn-sm-cyan">
+           <span class="material-symbols-outlined" style="font-size:1rem;">add</span> List Product
+         </button>`
+      : `<span style="font-size:0.78rem;font-weight:700;color:#849495;">${(S.salesOrders||[]).length} orders</span>`;
+  }
+
+  if (tab === 'listings') renderProductsList();
+  else renderSalesOrders();
+}
+
+function renderProductsList() {
+  const el = document.getElementById('sales-products-list');
+  if (!S.products.length) {
+    el.innerHTML = empty('storefront', 'No products listed', 'List your gear, prints, or digital products for customers to buy on the Sales page.');
+    return;
+  }
+  el.innerHTML = S.products.map(p => `
+    <div class="data-card mb-3">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;margin-bottom:0.5rem;">
+        <div>
+          <p style="font-size:1rem;font-weight:800;color:#dce4e5;">${esc(p.name)}</p>
+          <p style="font-size:0.78rem;color:#849495;margin-top:0.1rem;">${esc(p.category)}${p.sku ? ' · SKU: ' + esc(p.sku) : ''}</p>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <p style="font-size:1.1rem;font-weight:800;color:var(--ac);">${fmt_usd(p.price)}</p>
+          <p style="font-size:0.73rem;color:#849495;">Stock: ${p.stock ?? '—'}</p>
+        </div>
+      </div>
+      ${p.description ? `<p style="font-size:0.83rem;color:#849495;margin-bottom:0.55rem;">${esc(p.description)}</p>` : ''}
+      <div style="display:flex;gap:0.5rem;justify-content:flex-end;flex-wrap:wrap;">
+        <a href="sales.html" target="_blank" class="btn-sm btn-sm-ghost" title="View on Sales page">
+          <span class="material-symbols-outlined" style="font-size:0.9rem;">open_in_new</span>
+        </a>
+        <button onclick="openEditProductModal(${p.id})" class="btn-sm btn-sm-ghost">
+          <span class="material-symbols-outlined" style="font-size:0.9rem;">edit</span>
+        </button>
+        <button onclick="removeProduct(${p.id})" class="btn-sm btn-sm-red">
+          <span class="material-symbols-outlined" style="font-size:0.9rem;">delete</span>
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+function renderSalesOrders() {
+  const el = document.getElementById('sales-orders-list');
+  const statsEl = document.getElementById('sales-orders-stats');
+
+  // Summary cards
+  const totalRev = S.salesRevenue || 0;
+  const totalQty = (S.salesOrders || []).reduce((a, o) => a + (o.quantity || 0), 0);
+  statsEl.innerHTML = `
+    <div class="stat-card">
+      <span class="material-symbols-outlined" style="font-size:1.4rem;color:#4ade80;">account_balance_wallet</span>
+      <p class="text-2xl font-black" style="color:#dce4e5;">${fmt_usd(totalRev)}</p>
+      <p style="font-size:0.75rem;font-weight:700;color:#849495;">Total Sales Revenue</p>
+    </div>
+    <div class="stat-card">
+      <span class="material-symbols-outlined" style="font-size:1.4rem;color:var(--ac);">shopping_bag</span>
+      <p class="text-2xl font-black" style="color:#dce4e5;">${totalQty}</p>
+      <p style="font-size:0.75rem;font-weight:700;color:#849495;">Units Sold</p>
+    </div>`;
+
+  if (!S.salesOrders.length) {
+    el.innerHTML = empty('receipt_long', 'No sales yet', 'When customers buy your products on the Sales page, orders appear here.');
+    return;
+  }
+  el.innerHTML = S.salesOrders.map(o => `
+    <div class="data-card mb-3">
+      <div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:0.5rem;margin-bottom:0.6rem;">
+        <div>
+          <p style="font-size:1rem;font-weight:800;color:#dce4e5;">${esc(o.product_name)}</p>
+          <p style="font-size:0.82rem;color:#849495;">
+            <span class="material-symbols-outlined" style="font-size:0.85rem;vertical-align:middle;">person</span>
+            <strong style="color:#dce4e5;">${esc(o.customer_name || o.customer_email)}</strong>
+            &nbsp;·&nbsp;${esc(o.customer_email)}
+          </p>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <p style="font-size:1.1rem;font-weight:800;color:#4ade80;">${fmt_usd(o.total_price)}</p>
+          ${badge(o.order_status || 'processing')}
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:1rem;font-size:0.82rem;color:#849495;">
+        <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">receipt</span>Order ${esc(o.order_ref)}</span>
+        <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">shopping_cart</span>Qty: ${o.quantity}</span>
+        <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">attach_money</span>${fmt_usd(o.unit_price)} each</span>
+        <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">event</span>${fmt_date(o.created_at)}</span>
+      </div>
+    </div>`).join('');
+}
+
+function openAddProductModal() {
+  document.getElementById('product-form').reset();
+  document.getElementById('product-id').value = '';
+  document.getElementById('modal-product-title').textContent = 'List New Product';
+  document.getElementById('product-err').classList.add('hidden');
+  openModal('modal-product');
+}
+
+function openEditProductModal(id) {
+  const p = S.products.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('product-id').value          = p.id;
+  document.getElementById('product-name').value        = p.name;
+  document.getElementById('product-sku').value         = p.sku || '';
+  document.getElementById('product-category').value    = p.category;
+  document.getElementById('product-price').value       = p.price;
+  document.getElementById('product-stock').value       = p.stock;
+  document.getElementById('product-description').value = p.description || '';
+  document.getElementById('modal-product-title').textContent = 'Edit Product';
+  document.getElementById('product-err').classList.add('hidden');
+  openModal('modal-product');
+}
+
+async function submitProduct(e) {
+  e.preventDefault();
+  const editId = document.getElementById('product-id').value;
+  const name   = document.getElementById('product-name').value.trim();
+  const price  = parseFloat(document.getElementById('product-price').value);
+  if (!name) { showProductErr('Product name is required.'); return; }
+  if (!price || price <= 0) { showProductErr('Enter a valid price.'); return; }
+  const payload = {
+    name,
+    sku:         document.getElementById('product-sku').value.trim() || null,
+    category:    document.getElementById('product-category').value,
+    price,
+    stock:       parseInt(document.getElementById('product-stock').value) || 0,
+    description: document.getElementById('product-description').value.trim() || null,
+  };
+  try {
+    let data;
+    if (editId) {
+      data = await api('PATCH', `/api/professional/products/${editId}`, payload);
+      if (!data.ok) throw new Error(data.error);
+      S.products = S.products.map(p => p.id == editId ? data.product : p);
+    } else {
+      data = await api('POST', '/api/professional/products', payload);
+      if (!data.ok) throw new Error(data.error);
+      S.products.unshift(data.product);
+    }
+  } catch (err) { showProductErr(err.message); return; }
+  closeModal('modal-product');
+  showToast(editId ? 'Product updated!' : 'Product listed on Sales page!');
+  renderProductsList();
+}
+
+function showProductErr(msg) {
+  const el = document.getElementById('product-err');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
+async function removeProduct(id) {
+  if (!confirm('Remove this product listing?')) return;
+  try {
+    const data = await api('DELETE', `/api/professional/products/${id}`);
+    if (!data.ok) throw new Error(data.error);
+    S.products = S.products.filter(p => p.id !== id);
+  } catch (err) { showToast('Delete failed: ' + err.message, true); return; }
+  showToast('Product removed.');
+  renderProductsList();
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Job Tracking
+// ════════════════════════════════════════════════════════════════════
+const JOB_STEPS = [
+  { key:'pending',    label:'Request Received', icon:'inbox' },
+  { key:'confirmed',  label:'Confirmed',        icon:'verified' },
+  { key:'active',     label:'In Progress',      icon:'movie' },
+  { key:'completed',  label:'Completed',        icon:'check_circle' },
+];
+const JOB_ORDER = ['pending','confirmed','active','completed'];
+
+const RENTAL_STEPS = [
+  { key:'pending',   label:'Request Received', icon:'inbox' },
+  { key:'accepted',  label:'Accepted',         icon:'verified' },
+  { key:'active',    label:'Equipment Out',    icon:'videocam' },
+  { key:'completed', label:'Returned',         icon:'keyboard_return' },
+];
+const RENTAL_ORDER = ['pending','accepted','active','completed'];
+
+function loadTrackingSelector() {
+  const jobs   = S.jobs || [];
+  const orders = S.rentalOrders || [];
+  const sel = document.getElementById('tracking-selector');
+  const tl  = document.getElementById('tracking-timeline');
+
+  const jobOpts    = jobs.map(j => `<option value="job-${j.id}">Job: ${j.client} — ${j.service} (${j.status})</option>`).join('');
+  const rentalOpts = orders.filter(o => !['completed','declined'].includes(o.status))
+    .map(o => `<option value="rental-${o.id}">Rental: ${o.equipmentName} — ${o.clientName} (${o.status})</option>`).join('');
+
+  if (!jobOpts && !rentalOpts) {
+    sel.innerHTML = empty('local_shipping', 'Nothing to track', 'Active jobs and accepted rentals appear here.');
+    tl.innerHTML = '';
+    return;
+  }
+
+  sel.innerHTML = `
+    <label class="fi-label">Select Item to Track</label>
+    <select id="track-select" class="fi max-w-sm" onchange="selectTrackItem(this.value)" style="max-width:400px;">
+      <option value="">— Choose a job or rental order —</option>
+      ${jobOpts    ? `<optgroup label="Jobs">${jobOpts}</optgroup>`           : ''}
+      ${rentalOpts ? `<optgroup label="Rental Orders">${rentalOpts}</optgroup>` : ''}
+    </select>`;
+}
+
+function selectTrackItem(val) {
+  if (!val) return;
+  const parts = val.split('-');
+  const type  = parts[0];
+  const id    = parseInt(parts[1]);
+  if (type === 'job') {
+    const job = (S.jobs || []).find(j => j.id === id);
+    if (job) renderJobTimeline(job);
+  } else {
+    const order = (S.rentalOrders || []).find(o => o.id === id);
+    if (order) renderRentalTimeline(order);
+  }
+}
+
+function renderTimeline(steps, order, currentStatus, meta) {
+  const tl   = document.getElementById('tracking-timeline');
+  const curI = order.indexOf(currentStatus);
+  tl.innerHTML = `
+    <div class="data-card max-w-lg">
+      ${meta}
+      <div style="margin-top:1rem;">
+        ${steps.map((step, i) => {
+          const idx   = order.indexOf(step.key);
+          const done  = idx < curI;
+          const active= idx === curI;
+          return `<div class="timeline-step ${done?'done':''} ${active?'active':''}">
+            <div class="t-icon ${done?'done':''} ${active?'active':''}">
+              <span class="material-symbols-outlined" style="font-size:1rem;">${step.icon}</span>
+            </div>
+            <div class="pt-1">
+              <p style="font-size:0.88rem;font-weight:700;color:${active?'#00dbe9':done?'#4ade80':'#849495'};">${step.label}</p>
+              ${active ? '<p style="font-size:0.75rem;color:#849495;margin-top:1px;">Currently here</p>' : ''}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+}
+
+function renderJobTimeline(job) {
+  renderTimeline(JOB_STEPS, JOB_ORDER, job.status, `
+    <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.25rem;">
+      <span style="color:#849495;">Client</span><span style="color:#dce4e5;font-weight:700;">${esc(job.client)}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:0.85rem;">
+      <span style="color:#849495;">Service</span><span style="color:#dce4e5;font-weight:700;">${esc(job.service)}</span>
+    </div>`);
+}
+
+function renderRentalTimeline(order) {
+  renderTimeline(RENTAL_STEPS, RENTAL_ORDER, order.status, `
+    <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.25rem;">
+      <span style="color:#849495;">Equipment</span><span style="color:#dce4e5;font-weight:700;">${esc(order.equipmentName)}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.25rem;">
+      <span style="color:#849495;">Client</span><span style="color:#dce4e5;font-weight:700;">${esc(order.clientName)}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:0.85rem;">
+      <span style="color:#849495;">Period</span><span style="color:#dce4e5;font-weight:700;">${fmt_date(order.fromDate)} → ${fmt_date(order.toDate)}</span>
+    </div>`);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// File Vault  (DB-backed via /api/professional/vault/*)
+// ════════════════════════════════════════════════════════════════════
+
+async function loadVaultData() {
+  try {
+    const [fRes, fiRes] = await Promise.all([
+      api('GET', '/api/professional/vault/folders'),
+      api('GET', '/api/professional/vault/files'),
+    ]);
+    S.vault.folders = fRes.ok  ? fRes.folders : [];
+    S.vault.files   = fiRes.ok ? fiRes.files.map(f => ({
+      id:       f.id,
+      name:     f.name,
+      type:     f.file_type,
+      size:     f.file_size,
+      folder:   f.folder_id,
+      uploaded: f.created_at,
+      shareId:  f.share_id,
+      url:      f.file_url || null,
+    })) : [];
+  } catch(_) {
+    S.vault.folders = [];
+    S.vault.files   = [];
+  }
+}
+
+async function renderVault() {
+  await loadVaultData();
+  _renderVaultUI();
+}
+
+function _renderVaultUI() {
+  const vault  = S.vault;
+  const folder = S.vault.currentFolder;
+
+  // Breadcrumb
+  const bc = document.getElementById('vault-breadcrumb');
+  if (folder) {
+    const f = vault.folders.find(x => x.id === folder);
+    bc.innerHTML = `
+      <button onclick="S.vault.currentFolder=null;renderVault();" style="font-size:0.8rem;font-weight:700;color:var(--ac);background:var(--nb);border:none;cursor:pointer;padding:0.3rem 0.7rem;border-radius:999px;box-shadow:var(--nr-s);">
+        <span class="material-symbols-outlined" style="font-size:0.85rem;vertical-align:middle;">cloud</span> Vault
+      </button>
+      <span style="color:#849495;font-size:0.8rem;">/</span>
+      <span style="font-size:0.8rem;font-weight:700;color:#dce4e5;padding:0.3rem 0.7rem;background:var(--nb);border-radius:999px;box-shadow:var(--ni-s);">
+        <span class="material-symbols-outlined" style="font-size:0.85rem;vertical-align:middle;color:#fbbf24;">folder</span> ${esc(f?.name||'Folder')}
+      </span>`;
+  } else {
+    bc.innerHTML = `<span style="font-size:0.8rem;font-weight:700;color:#dce4e5;padding:0.3rem 0.7rem;background:var(--nb);border-radius:999px;box-shadow:var(--ni-s);">
+      <span class="material-symbols-outlined" style="font-size:0.85rem;vertical-align:middle;color:var(--ac);">cloud</span> All Files
+    </span>`;
+  }
+
+  // Files in current view
+  const files = vault.files.filter(f => folder ? f.folder === folder : true);
+
+  // Storage
+  const totalBytes = vault.files.reduce((a, f) => a + (f.size||0), 0);
+  const maxBytes   = 5 * 1e9;
+  document.getElementById('vault-storage-text').textContent = `${fmt_bytes(totalBytes)} of 5 GB`;
+  document.getElementById('vault-storage-bar').style.width  = Math.min(100, (totalBytes/maxBytes)*100) + '%';
+
+  // Drop zone visibility
+  document.getElementById('vault-drop-zone').style.display = files.length === 0 ? 'flex' : 'none';
+
+  // Folders (only on root)
+  const foldersEl = document.getElementById('vault-folders');
+  if (!folder) {
+    foldersEl.innerHTML = vault.folders.map(f => `
+      <div class="vault-folder" onclick="S.vault.currentFolder=${f.id};_renderVaultUI();">
+        <span class="material-symbols-outlined" style="font-size:2rem;color:#fbbf24;display:block;margin-bottom:0.4rem;">folder</span>
+        <p style="font-size:0.78rem;font-weight:700;color:#dce4e5;word-break:break-word;line-height:1.3;">${esc(f.name)}</p>
+        <p style="font-size:0.68rem;color:#849495;margin-top:0.2rem;">${vault.files.filter(x=>x.folder==f.id).length} files</p>
+      </div>`).join('');
+  } else {
+    foldersEl.innerHTML = '';
+  }
+
+  // Files
+  const filesEl = document.getElementById('vault-files');
+  if (!files.length) {
+    filesEl.innerHTML = folder ? `<p style="font-size:0.85rem;color:#849495;text-align:center;padding:1.5rem 0;">No files in this folder yet. Upload some!</p>` : '';
+    return;
+  }
+
+  if (S.vaultViewGrid) {
+    filesEl.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0.75rem;">${files.map(f => renderFileGrid(f)).join('')}</div>`;
+  } else {
+    filesEl.innerHTML = `<div style="display:flex;flex-direction:column;gap:0.5rem;">${files.map(f => renderFileRow(f)).join('')}</div>`;
+  }
+}
+
+const FILE_ICONS = {
+  image: { icon:'image', cls:'file-icon-img', color:'#ebb2ff' },
+  video: { icon:'videocam', cls:'file-icon-video', color:'#00dbe9' },
+  doc:   { icon:'description', cls:'file-icon-doc', color:'#63cab7' },
+  pdf:   { icon:'picture_as_pdf', cls:'file-icon-pdf', color:'#ff6464' },
+  zip:   { icon:'folder_zip', cls:'file-icon-zip', color:'#fbbf24' },
+  other: { icon:'insert_drive_file', cls:'file-icon-other', color:'#849495' },
+};
+
+function getFileIconInfo(type) { return FILE_ICONS[type] || FILE_ICONS.other; }
+
+function renderFileRow(f) {
+  const ic = getFileIconInfo(f.type);
+  return `<div class="file-item">
+    <div class="file-icon ${ic.cls}">
+      <span class="material-symbols-outlined" style="font-size:1.3rem;color:${ic.color};">${ic.icon}</span>
+    </div>
+    <div style="flex:1;min-width:0;">
+      <p style="font-size:0.88rem;font-weight:700;color:#dce4e5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(f.name)}</p>
+      <p style="font-size:0.72rem;color:#849495;">${fmt_bytes(f.size)} · ${fmt_date(f.uploaded)}</p>
+    </div>
+    <div style="display:flex;gap:0.4rem;flex-shrink:0;">
+      <button onclick="openShareModal('${f.id}')" class="btn-sm btn-sm-cyan" title="Share">
+        <span class="material-symbols-outlined" style="font-size:0.9rem;">share</span>
+      </button>
+      <button onclick="deleteVaultFile('${f.id}')" class="btn-sm btn-sm-red" title="Delete">
+        <span class="material-symbols-outlined" style="font-size:0.9rem;">delete</span>
+      </button>
+    </div>
+  </div>`;
+}
+
+function renderFileGrid(f) {
+  const ic = getFileIconInfo(f.type);
+  return `<div style="background:var(--nb);border-radius:0.9rem;padding:0.85rem;box-shadow:var(--nr-s);text-align:center;position:relative;">
+    <span class="material-symbols-outlined" style="font-size:2.5rem;color:${ic.color};display:block;margin-bottom:0.5rem;">${ic.icon}</span>
+    <p style="font-size:0.72rem;font-weight:700;color:#dce4e5;word-break:break-word;line-height:1.3;margin-bottom:0.25rem;">${esc(f.name)}</p>
+    <p style="font-size:0.65rem;color:#849495;">${fmt_bytes(f.size)}</p>
+    <div style="display:flex;gap:0.3rem;justify-content:center;margin-top:0.6rem;">
+      <button onclick="openShareModal('${f.id}')" class="btn-sm btn-sm-cyan" style="padding:0.3rem 0.5rem;" title="Share">
+        <span class="material-symbols-outlined" style="font-size:0.85rem;">share</span>
+      </button>
+      <button onclick="deleteVaultFile('${f.id}')" class="btn-sm btn-sm-red" style="padding:0.3rem 0.5rem;" title="Delete">
+        <span class="material-symbols-outlined" style="font-size:0.85rem;">delete</span>
+      </button>
+    </div>
+  </div>`;
+}
+
+function toggleVaultView() {
+  S.vaultViewGrid = !S.vaultViewGrid;
+  document.getElementById('vault-view-icon').textContent = S.vaultViewGrid ? 'view_module' : 'view_list';
+  _renderVaultUI();
+}
+
+async function handleVaultUpload(inputFiles) {
+  const fileArr = Array.from(inputFiles);
+  for (const file of fileArr) {
+    const ext  = file.name.split('.').pop().toLowerCase();
+    const type = ['jpg','jpeg','png','gif','webp','heic'].includes(ext) ? 'image'
+               : ['mp4','mov','avi','mkv','webm'].includes(ext)         ? 'video'
+               : ['pdf'].includes(ext)                                  ? 'pdf'
+               : ['zip','rar','7z','tar','gz'].includes(ext)            ? 'zip'
+               : ['doc','docx','txt','pages'].includes(ext)             ? 'doc'
+               : 'other';
+    try {
+      const data = await api('POST', '/api/professional/vault/files', {
+        name:      file.name,
+        file_type: type,
+        file_size: file.size,
+        folder_id: S.vault.currentFolder,
+      });
+      if (data.ok) {
+        S.vault.files.push({
+          id:       data.file.id,
+          name:     data.file.name,
+          type:     data.file.file_type,
+          size:     data.file.file_size,
+          folder:   data.file.folder_id,
+          uploaded: data.file.created_at,
+          shareId:  data.file.share_id,
+          url:      data.file.file_url || null,
+        });
+      }
+    } catch(_) {}
+  }
+  showToast(`${fileArr.length} file${fileArr.length>1?'s':''} added to vault!`);
+  _renderVaultUI();
+}
+
+function handleVaultDrop(e) {
+  e.preventDefault();
+  document.getElementById('vault-drop-zone').classList.remove('drag-over');
+  handleVaultUpload(e.dataTransfer.files);
+}
+
+async function deleteVaultFile(id) {
+  if (!confirm('Delete this file?')) return;
+  try {
+    const data = await api('DELETE', `/api/professional/vault/files/${id}`);
+    if (!data.ok) throw new Error(data.error);
+    S.vault.files = S.vault.files.filter(f => f.id !== id);
+  } catch(err) { showToast('Delete failed: ' + err.message, true); return; }
+  showToast('File deleted.');
+  _renderVaultUI();
+}
+
+async function openShareModal(fileId) {
+  const file = S.vault.files.find(f => f.id == fileId);
+  if (!file) return;
+
+  document.getElementById('share-file-name').textContent = file.name;
+  const linkInput = document.getElementById('share-link');
+  linkInput.value = 'Generating link…';
+  linkInput.disabled = true;
+  document.getElementById('share-email').value = '';
+  openModal('modal-share');
+
+  try {
+    const data = await api('POST', '/api/portfolio/share', {
+      title:     file.name,
+      file_type: file.type,
+      file_url:  file.url || null,
+      shareId:   file.shareId || null,
+    });
+    if (data.ok) {
+      // Update share_id in local state
+      const f = S.vault.files.find(f => f.id == fileId);
+      if (f) f.shareId = data.shareId;
+      linkInput.value = data.url;
+    } else {
+      linkInput.value = `${window.location.origin}/shared/${file.shareId || fileId}`;
+    }
+  } catch (_) {
+    linkInput.value = `${window.location.origin}/shared/${file.shareId || fileId}`;
+  } finally {
+    linkInput.disabled = false;
+  }
+}
+
+function copyShareLink() {
+  const link = document.getElementById('share-link').value;
+  navigator.clipboard.writeText(link).then(() => showToast('Link copied to clipboard!')).catch(() => {
+    document.getElementById('share-link').select();
+    document.execCommand('copy');
+    showToast('Link copied!');
+  });
+}
+
+function shareViaEmail() {
+  const email = document.getElementById('share-email').value.trim();
+  const link  = document.getElementById('share-link').value;
+  if (!email) { showToast('Enter an email address.', true); return; }
+  const subject = encodeURIComponent('Your files from Camcrew Studio');
+  const body    = encodeURIComponent(`Hi,\n\nHere's your file link:\n${link}\n\nBest,\n${S.profile?.display_name||'Your Camcrew Pro'}`);
+  window.open(`mailto:${email}?subject=${subject}&body=${body}`);
+  showToast('Email client opened!');
+}
+
+function openNewFolderModal() {
+  document.getElementById('folder-name').value = '';
+  openModal('modal-folder');
+}
+
+async function submitNewFolder(e) {
+  e.preventDefault();
+  const name = document.getElementById('folder-name').value.trim();
+  if (!name) return;
+  try {
+    const data = await api('POST', '/api/professional/vault/folders', { name });
+    if (!data.ok) throw new Error(data.error);
+    S.vault.folders.push({ id: data.folder.id, name: data.folder.name, color: data.folder.color });
+  } catch(err) { showToast('Failed: ' + err.message, true); return; }
+  closeModal('modal-folder');
+  showToast('Folder created!');
+  _renderVaultUI();
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Earnings
+// ════════════════════════════════════════════════════════════════════
+async function loadEarnings() {
+  document.getElementById('earn-total').textContent   = '…';
+  document.getElementById('earn-pending').textContent = '…';
+  document.getElementById('earn-month').textContent   = '…';
+  try {
+    const data = await api('GET', '/api/professional/earnings');
+    if (!data.ok) throw new Error(data.error);
+    const e = data.earnings;
+    document.getElementById('earn-total').textContent   = fmt_usd(e.total);
+    document.getElementById('earn-pending').textContent = fmt_usd(e.pending);
+    document.getElementById('earn-month').textContent   = fmt_usd(e.month);
+
+    const jobs = e.jobs || [];
+    const el = document.getElementById('earnings-list');
+    if (!jobs.length) { el.innerHTML = empty('payments','No earnings yet','Completed jobs will appear here.'); return; }
+    el.innerHTML = `<p style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#849495;margin-bottom:0.75rem;">Job History</p>` +
+      jobs.map(j => `
+        <div class="data-card mb-3 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p style="font-size:0.95rem;font-weight:700;color:#dce4e5;">${esc(j.client)}</p>
+            <p style="font-size:0.82rem;color:#849495;">${esc(j.service)} · ${fmt_date(j.booking_date || j.date)}</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <p style="font-size:1.05rem;font-weight:800;color:${j.status==='completed'?'#4ade80':'#fbbf24'};">${fmt_usd(j.amount)}</p>
+            ${badge(j.status)}
+          </div>
+        </div>`).join('');
+  } catch(_) {
+    document.getElementById('earn-total').textContent   = '—';
+    document.getElementById('earn-pending').textContent = '—';
+    document.getElementById('earn-month').textContent   = '—';
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Account
+// ════════════════════════════════════════════════════════════════════
+function loadAccount() {
+  if (!S.profile) return;
+  document.getElementById('ac-name').value  = S.profile.display_name || '';
+  document.getElementById('ac-email').value = S.profile.email || '';
+  document.getElementById('ac-role').value  = 'Professional';
+}
+
+async function saveAccount() {
+  const name = document.getElementById('ac-name').value.trim();
+  const msg  = document.getElementById('ac-msg');
+  msg.classList.add('hidden');
+  try {
+    const data = await api('PATCH', '/api/profile', { display_name: name });
+    if (!data.ok) throw new Error(data.error);
+    S.profile.display_name = name;
+    document.getElementById('sb-name').textContent = name;
+    showToast('Account updated!');
+  } catch (err) {
+    msg.textContent = err.message || 'Update failed.';
+    msg.classList.remove('hidden');
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Theme Toggle
+// ════════════════════════════════════════════════════════════════════
+const LOGO_DARK  = 'attached_assets/camcrew_studio_logo_cop_y_1785515916927.png'; // white logo
+const LOGO_LIGHT = 'attached_assets/camcrew_studio_logo_cop_1785515916927.png';   // black logo
+
+function applyTheme(theme) {
+  const isLight = theme === 'light';
+  document.documentElement.classList.toggle('light', isLight);
+  document.documentElement.classList.toggle('dark',  !isLight);
+  document.body.style.background = isLight ? '#e3e8ec' : '#141414';
+
+  // Toggle icon
+  const icon = isLight ? 'dark_mode' : 'light_mode';
+  document.querySelectorAll('#theme-icon, .theme-icon-mobile').forEach(el => el.textContent = icon);
+
+  // Swap logos
+  const logoSrc = isLight ? LOGO_LIGHT : LOGO_DARK;
+  document.querySelectorAll('.site-logo').forEach(img => img.src = logoSrc);
+
+}
+
+function toggleTheme() {
+  const current = localStorage.getItem('pp_theme') || 'dark';
+  const next    = current === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('pp_theme', next);
+  applyTheme(next);
+}
+
+// Apply saved theme immediately
+(function() {
+  const saved = localStorage.getItem('pp_theme') || 'dark';
+  applyTheme(saved);
+})();
+
+// ════════════════════════════════════════════════════════════════════
+// Boot
+// ════════════════════════════════════════════════════════════════════
+init();
+</script>
+<script src="/static/js/footer-loader.js"></script>
+</body>
+</html>
+
+
