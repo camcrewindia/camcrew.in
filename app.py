@@ -941,6 +941,7 @@ _TEMPLATE_MAP = {
     "cart.html":                 "templates/user",
     "checkout.html":             "templates/user",
     "orders.html":               "templates/user",
+    "notifications.html":        "templates/user",
     # professional
     "professional-dashboard.html": "templates/professional",
     "professional-edit.html":      "templates/professional",

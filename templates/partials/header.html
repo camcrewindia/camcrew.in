@@ -39,12 +39,12 @@
 
             <!-- Desktop right: auth area -->
             <div class="flex items-center gap-4">
-                <!-- Notification Bell (Desktop) -->
-                <div class="hidden md:block relative">
-                    <button id="notif-btn" onclick="toggleNotifications()" class="relative text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center p-1" title="Notifications">
+                <!-- Notification Bell (Desktop Hover Trigger) -->
+                <div class="hidden md:block relative group" id="notif-wrapper-desktop">
+                    <a href="notifications.html" id="notif-btn" onclick="toggleNotifications(event)" class="relative text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center p-1" title="Notifications">
                         <span class="material-symbols-outlined text-xl">notifications</span>
                         <span id="notif-badge" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:999px;background:#00f0ff;color:#001f22;font-size:10px;font-weight:800;line-height:18px;text-align:center;padding:0 4px;box-shadow:0 0 10px rgba(0,240,255,0.6);"></span>
-                    </button>
+                    </a>
                 </div>
 
                 <!-- Shopping Cart (Desktop) -->
@@ -73,28 +73,28 @@
                 </a>
 
                 <!-- Mobile Notification Bell -->
-                <div class="md:hidden relative">
-                    <button id="notif-btn-mobile" onclick="toggleNotifications()" class="relative text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center p-1">
+                <div class="md:hidden relative" id="notif-wrapper-mobile">
+                    <a href="notifications.html" id="notif-btn-mobile" onclick="toggleNotifications(event)" class="relative text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center p-1">
                         <span class="material-symbols-outlined text-2xl">notifications</span>
                         <span id="notif-badge-mobile" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:999px;background:#00f0ff;color:#001f22;font-size:10px;font-weight:800;line-height:18px;text-align:center;padding:0 4px;"></span>
-                    </button>
+                    </a>
                 </div>
 
                 <!-- Mobile buttons -->
                 <a href="cart.html" class="md:hidden relative text-on-surface-variant hover:text-primary transition-colors p-1">
                     <span class="material-symbols-outlined text-2xl">shopping_cart</span>
-                    <span id="cart-badge-mobile" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:999px;background:#00dbe9;color:#001f22;font-size:10px;font-weight:800;line-height:18px;text-align:center;padding:0 4px;"></span>
+                    <span id="cart-badge-mobile" style="display:none;position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;border-radius:999px;background:#00dbe9;color:#001f22;font-size:10px;font-weight:800;line-height:18px;text-align:center;padding:0 4px;"></span>
                 </a>
                 <button id="mobile-menu-btn" class="md:hidden material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors text-3xl">menu</button>
             </div>
         </nav>
 
-        <!-- Glassmorphic Notifications Dropdown Drawer -->
+        <!-- Glassmorphic Notifications Hover Dropdown Drawer -->
         <div id="notif-drawer" class="absolute top-full right-4 md:right-8 mt-3 w-80 md:w-96 rounded-2xl bg-obsidian-base/90 backdrop-blur-2xl border border-glass-stroke p-4 opacity-0 invisible translate-y-[-10px] transition-all duration-300 z-[110] shadow-[0px_15px_40px_rgba(0,0,0,0.8)]">
             <div class="flex items-center justify-between border-b border-glass-stroke pb-3 mb-3">
                 <div class="flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary text-lg">notifications</span>
-                    <h3 class="font-bold text-on-surface text-sm tracking-wide">Notifications</h3>
+                    <h3 class="font-bold text-on-surface text-sm tracking-wide">Recent Notifications</h3>
                     <span id="notif-drawer-count" class="bg-primary/10 text-primary font-bold text-xs px-2 py-0.5 rounded-full">0</span>
                 </div>
                 <div class="flex items-center gap-2">
@@ -103,12 +103,19 @@
                 </div>
             </div>
 
-            <!-- List container -->
-            <div id="notif-list" class="flex flex-col gap-2 max-h-80 overflow-y-auto custom-scrollbar">
+            <!-- Recent List container (Limit 5) -->
+            <div id="notif-list" class="flex flex-col gap-2 max-h-72 overflow-y-auto custom-scrollbar">
                 <div class="text-center py-8 text-on-surface-variant text-xs flex flex-col items-center gap-2">
                     <span class="material-symbols-outlined text-3xl opacity-40">notifications_off</span>
                     <span>No notifications yet</span>
                 </div>
+            </div>
+
+            <!-- Footer: View All Link to notifications.html -->
+            <div class="border-t border-glass-stroke pt-3 mt-3">
+                <a href="notifications.html" class="block w-full text-center text-xs font-bold text-primary hover:text-white bg-primary/10 hover:bg-primary/20 border border-primary/30 py-2.5 rounded-xl transition-all">
+                    View All Notifications &rarr;
+                </a>
             </div>
         </div>
 
@@ -132,6 +139,9 @@
                 <a data-nav-key="rentals" href="rentals.html" class="hover:text-primary transition-colors py-2">Rentals</a>
                 <a data-nav-key="sales" href="sales.html" class="hover:text-primary transition-colors py-2">Sales</a>
                 <a data-nav-key="about" href="About.html" class="hover:text-primary transition-colors py-2">About us</a>
+                <a href="notifications.html" class="hover:text-primary transition-colors py-2 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">notifications</span> Notifications
+                </a>
 
                 <hr class="border-glass-stroke my-2">
 
@@ -168,40 +178,41 @@
 
 <script>
 let notifDrawerOpen = false;
+let notifHoverTimer = null;
 
-function toggleNotifications() {
-    notifDrawerOpen = !notifDrawerOpen;
+function openNotifications() {
+    clearTimeout(notifHoverTimer);
+    notifDrawerOpen = true;
     const drawer = document.getElementById('notif-drawer');
     if (!drawer) return;
-    if (notifDrawerOpen) {
-        drawer.classList.remove('opacity-0', 'invisible', 'translate-y-[-10px]');
-        drawer.classList.add('opacity-100', 'visible', 'translate-y-0');
-        fetchNotifications();
-    } else {
-        closeNotifications();
-    }
+    drawer.classList.remove('opacity-0', 'invisible', 'translate-y-[-10px]');
+    drawer.classList.add('opacity-100', 'visible', 'translate-y-0');
+    fetchNotifications(5);
 }
 
 function closeNotifications() {
-    notifDrawerOpen = false;
-    const drawer = document.getElementById('notif-drawer');
-    if (!drawer) return;
-    drawer.classList.add('opacity-0', 'invisible', 'translate-y-[-10px]');
-    drawer.classList.remove('opacity-100', 'visible', 'translate-y-0');
+    notifHoverTimer = setTimeout(() => {
+        notifDrawerOpen = false;
+        const drawer = document.getElementById('notif-drawer');
+        if (!drawer) return;
+        drawer.classList.add('opacity-0', 'invisible', 'translate-y-[-10px]');
+        drawer.classList.remove('opacity-100', 'visible', 'translate-y-0');
+    }, 200);
 }
 
-document.addEventListener('click', function(e) {
-    const drawer = document.getElementById('notif-drawer');
-    const btn = document.getElementById('notif-btn');
-    const btnMobile = document.getElementById('notif-btn-mobile');
-    if (drawer && notifDrawerOpen && !drawer.contains(e.target) && (!btn || !btn.contains(e.target)) && (!btnMobile || !btnMobile.contains(e.target))) {
-        closeNotifications();
-    }
-});
+function cancelCloseNotifications() {
+    clearTimeout(notifHoverTimer);
+}
 
-async function fetchNotifications() {
+function toggleNotifications(e) {
+    if (e && e.target && e.target.closest('a')) {
+        // Allow clicking bell to go directly to notifications.html if desired, or toggle
+    }
+}
+
+async function fetchNotifications(limit = 5) {
     try {
-        const res = await fetch('/api/notifications');
+        const res = await fetch(`/api/notifications?limit=${limit}`);
         if (!res.ok) return;
         const data = await res.json();
         if (!data.ok) return;
@@ -288,27 +299,43 @@ async function handleNotifClick(id, link) {
 async function markNotifRead(id) {
     try {
         await fetch(`/api/notifications/${id}/read`, { method: 'PATCH' });
-        fetchNotifications();
+        fetchNotifications(5);
     } catch (e) {}
 }
 
 async function markAllNotificationsRead() {
     try {
         await fetch('/api/notifications/mark-all-read', { method: 'POST' });
-        fetchNotifications();
+        fetchNotifications(5);
     } catch (e) {}
 }
 
 async function deleteNotif(id) {
     try {
         await fetch(`/api/notifications/${id}`, { method: 'DELETE' });
-        fetchNotifications();
+        fetchNotifications(5);
     } catch (e) {}
 }
 
-// Initial fetch & interval polling
+// Hover Event Listeners Initialization
 document.addEventListener('DOMContentLoaded', () => {
-    fetchNotifications();
-    setInterval(fetchNotifications, 30000);
+    fetchNotifications(5);
+    setInterval(() => fetchNotifications(5), 30000);
+
+    const dWrap = document.getElementById('notif-wrapper-desktop');
+    const mWrap = document.getElementById('notif-wrapper-mobile');
+    const drawer = document.getElementById('notif-drawer');
+
+    [dWrap, mWrap].forEach(w => {
+        if (w) {
+            w.addEventListener('mouseenter', openNotifications);
+            w.addEventListener('mouseleave', closeNotifications);
+        }
+    });
+
+    if (drawer) {
+        drawer.addEventListener('mouseenter', cancelCloseNotifications);
+        drawer.addEventListener('mouseleave', closeNotifications);
+    }
 });
 </script>
