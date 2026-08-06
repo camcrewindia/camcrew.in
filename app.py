@@ -2410,6 +2410,27 @@ def pro_sales():
     return jsonify({"ok": True, "sales": [dict(r) for r in rows], "total_revenue": total_revenue})
 
 
+@app.route("/api/seller/sales", methods=["GET"])
+def seller_sales():
+    """Return sale items for the logged-in seller (works for professionals, studios, etc.)."""
+    uid = require_auth()
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    with get_db() as conn:
+        rows = conn.execute(
+            """SELECT psi.*, o.order_ref, o.status AS order_status,
+                      u.email AS customer_email, u.display_name AS customer_name
+               FROM pro_sale_items psi
+               JOIN orders o ON o.id = psi.order_id
+               JOIN users  u ON u.id = o.user_id
+               WHERE psi.seller_id=%s
+               ORDER BY psi.created_at DESC""",
+            (uid,)
+        ).fetchall()
+    total_revenue = sum(float(r["total_price"]) for r in rows)
+    return jsonify({"ok": True, "sales": [dict(r) for r in rows], "total_revenue": total_revenue})
+
+
 # ── Checkout / Place Order ─────────────────────────────────────────────────────
 
 @app.route("/api/orders", methods=["POST"])
