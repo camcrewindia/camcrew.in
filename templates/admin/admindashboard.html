@@ -912,8 +912,9 @@ function pfResetBadgeChips(val) {
 <div class="flex gap-4">
 <select class="neu-select">
 <option>All Tiers</option>
-<option>Studio Enterprise</option>
-<option>Elite Pro</option>
+<option>Studio</option>
+<option>Professional</option>
+<option>Customer</option>
 </select>
 </div>
 </div>
@@ -1184,11 +1185,11 @@ function pfResetBadgeChips(val) {
 <script>
 /* ── Admin Dashboard — Live Stats + Verification Queue ── */
 (function(){
-  const ROLE_TIER = { studio:'Studio Enterprise', professional:'Elite Pro', customer:'Professional', admin:'Admin' };
+  const ROLE_TIER = { studio:'Studio', professional:'Professional', customer:'Customer', admin:'Admin' };
   const TIER_STYLE = {
-    'Studio Enterprise': 'background:rgba(0,133,143,0.12);color:#005662;',
-    'Elite Pro':         'background:rgba(123,31,162,0.12);color:#6a1070;',
-    'Professional':      'background:rgba(0,0,0,0.07);color:#334155;',
+    'Studio': 'background:rgba(0,133,143,0.12);color:#005662;',
+    'Professional':         'background:rgba(123,31,162,0.12);color:#6a1070;',
+    'Customer':      'background:rgba(0,0,0,0.07);color:#334155;',
     'Admin':             'background:rgba(183,28,28,0.1);color:#b71c1c;',
   };
 
