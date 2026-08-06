@@ -425,7 +425,7 @@
       const { stats } = await res.json();
       const totalPaid = stats.professionals + stats.studios;
       const set = (id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
-      set('stat-mrr',         '$' + (totalPaid * 29).toLocaleString());
+      set('stat-mrr',         '₹' + (totalPaid * 29).toLocaleString());
       set('stat-churn',       '—');
       set('stat-active-subs', (stats.total_users - stats.customers).toLocaleString());
       set('stat-enterprise',  stats.studios.toLocaleString());

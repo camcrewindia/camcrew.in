@@ -951,10 +951,10 @@ function showInvToast(msg, ok) {
     document.getElementById('stat-units').textContent  = units.toLocaleString();
     document.getElementById('stat-low').textContent    = (lowStock + outStock).toLocaleString();
     const val = value >= 1_000_000
-      ? '$' + (value/1_000_000).toFixed(1) + 'M'
+      ? '₹' + (value/1_000_000).toFixed(1) + 'M'
       : value >= 1_000
-      ? '$' + (value/1_000).toFixed(1) + 'K'
-      : '$' + value.toLocaleString();
+      ? '₹' + (value/1_000).toFixed(1) + 'K'
+      : '₹' + value.toLocaleString();
     document.getElementById('stat-value').textContent = val;
   }
 
