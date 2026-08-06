@@ -119,10 +119,12 @@ def init_db():
                 total_amount     REAL    NOT NULL DEFAULT 0,
                 tracking_number  TEXT,
                 tracking_status  TEXT,
+                checkout_payload_json TEXT,
                 created_at       TEXT    DEFAULT TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS'),
                 FOREIGN KEY (user_id) REFERENCES users(id)
             )
         """)
+        conn.execute("ALTER TABLE orders ADD COLUMN IF NOT EXISTS checkout_payload_json TEXT")
         conn.execute("""
             CREATE TABLE IF NOT EXISTS bookings (
                 id                SERIAL PRIMARY KEY,
@@ -2397,7 +2399,7 @@ def pro_sales():
         return jsonify({"ok": False, "error": "Professional account required."}), 401
     with get_db() as conn:
         rows = conn.execute(
-            """SELECT psi.*, o.order_ref, o.status AS order_status,
+            """SELECT psi.*, o.order_ref, o.status AS order_status, o.checkout_payload_json,
                       u.email AS customer_email, u.display_name AS customer_name
                FROM pro_sale_items psi
                JOIN orders o ON o.id = psi.order_id
@@ -2406,8 +2408,29 @@ def pro_sales():
                ORDER BY psi.created_at DESC""",
             (uid,)
         ).fetchall()
-    total_revenue = sum(float(r["total_price"]) for r in rows)
-    return jsonify({"ok": True, "sales": [dict(r) for r in rows], "total_revenue": total_revenue})
+    sales = []
+    for r in rows:
+        payload = _json.loads(r["checkout_payload_json"] or "{}") if r["checkout_payload_json"] else {}
+        customer_name = (payload.get("customer_name") or payload.get("full_name") or "").strip() or r["customer_name"] or r["customer_email"]
+        customer_email = (payload.get("customer_email") or "").strip() or r["customer_email"]
+        sales.append({
+            "id": r["id"],
+            "seller_id": r["seller_id"],
+            "order_id": r["order_id"],
+            "product_id": r["product_id"],
+            "product_name": r["product_name"],
+            "quantity": r["quantity"],
+            "unit_price": float(r["unit_price"] or 0),
+            "total_price": float(r["total_price"] or 0),
+            "created_at": r["created_at"],
+            "order_ref": r["order_ref"],
+            "order_status": r["order_status"],
+            "customer_email": customer_email,
+            "customer_name": customer_name,
+            "checkout_payload": payload,
+        })
+    total_revenue = sum(float(item["total_price"]) for item in sales)
+    return jsonify({"ok": True, "sales": sales, "total_revenue": total_revenue})
 
 
 @app.route("/api/seller/sales", methods=["GET"])
@@ -2418,7 +2441,7 @@ def seller_sales():
         return jsonify({"ok": False, "error": "Not authenticated."}), 401
     with get_db() as conn:
         rows = conn.execute(
-            """SELECT psi.*, o.order_ref, o.status AS order_status,
+            """SELECT psi.*, o.order_ref, o.status AS order_status, o.checkout_payload_json,
                       u.email AS customer_email, u.display_name AS customer_name
                FROM pro_sale_items psi
                JOIN orders o ON o.id = psi.order_id
@@ -2427,8 +2450,29 @@ def seller_sales():
                ORDER BY psi.created_at DESC""",
             (uid,)
         ).fetchall()
-    total_revenue = sum(float(r["total_price"]) for r in rows)
-    return jsonify({"ok": True, "sales": [dict(r) for r in rows], "total_revenue": total_revenue})
+    sales = []
+    for r in rows:
+        payload = _json.loads(r["checkout_payload_json"] or "{}") if r["checkout_payload_json"] else {}
+        customer_name = (payload.get("customer_name") or payload.get("full_name") or "").strip() or r["customer_name"] or r["customer_email"]
+        customer_email = (payload.get("customer_email") or "").strip() or r["customer_email"]
+        sales.append({
+            "id": r["id"],
+            "seller_id": r["seller_id"],
+            "order_id": r["order_id"],
+            "product_id": r["product_id"],
+            "product_name": r["product_name"],
+            "quantity": r["quantity"],
+            "unit_price": float(r["unit_price"] or 0),
+            "total_price": float(r["total_price"] or 0),
+            "created_at": r["created_at"],
+            "order_ref": r["order_ref"],
+            "order_status": r["order_status"],
+            "customer_email": customer_email,
+            "customer_name": customer_name,
+            "checkout_payload": payload,
+        })
+    total_revenue = sum(float(item["total_price"]) for item in sales)
+    return jsonify({"ok": True, "sales": sales, "total_revenue": total_revenue})
 
 
 # ── Checkout / Place Order ─────────────────────────────────────────────────────
@@ -2440,6 +2484,28 @@ def place_order():
     if not uid:
         return jsonify({"ok": False, "error": "Not authenticated."}), 401
     import random, string as _str
+
+    data = request.get_json(force=True, silent=True) or {}
+    full_name = (data.get("customer_name") or data.get("full_name") or "").strip()
+    email = (data.get("customer_email") or "").strip()
+    phone = (data.get("customer_phone") or "").strip()
+    shipping_address = data.get("shipping_address") or {}
+    shipping_method = (data.get("shipping_method") or "").strip()
+    payment_method = (data.get("payment_method") or "").strip()
+    payment_details = data.get("payment_details") or {}
+    notes = (data.get("notes") or "").strip()
+
+    checkout_payload = {
+        "customer_name": full_name,
+        "customer_email": email,
+        "customer_phone": phone,
+        "shipping_address": shipping_address,
+        "shipping_method": shipping_method,
+        "payment_method": payment_method,
+        "payment_details": payment_details,
+        "notes": notes,
+    }
+
     with get_db() as conn:
         cart_items = conn.execute(
             "SELECT * FROM cart_items WHERE user_id=%s", (uid,)
@@ -2453,9 +2519,9 @@ def place_order():
         } for ci in cart_items])
         total = sum(ci["price"] * ci["quantity"] for ci in cart_items)
         order_row = conn.execute(
-            """INSERT INTO orders (user_id,order_ref,status,items_json,total_amount)
-               VALUES (%s,%s,'processing',%s,%s) RETURNING id""",
-            (uid, order_ref, items_json_val, total)
+            """INSERT INTO orders (user_id,order_ref,status,items_json,total_amount,checkout_payload_json)
+               VALUES (%s,%s,'processing',%s,%s,%s) RETURNING id""",
+            (uid, order_ref, items_json_val, total, _json.dumps(checkout_payload))
         ).fetchone()
         order_id = order_row["id"]
         # Record per-seller sale items for professional dashboard
@@ -2588,13 +2654,15 @@ def admin_list_orders():
 
     orders = []
     for r in rows:
+        checkout_payload = _json.loads(r["checkout_payload_json"] or "{}") if r["checkout_payload_json"] else {}
         orders.append({
             "id": r["id"], "order_ref": r["order_ref"], "status": r["status"],
             "items": _json.loads(r["items_json"]), "total_amount": r["total_amount"],
             "tracking_number": r["tracking_number"], "tracking_status": r["tracking_status"],
             "created_at": r["created_at"],
             "customer_email": r["customer_email"],
-            "customer_name": r["customer_name"] or r["customer_email"],
+            "customer_name": checkout_payload.get("customer_name") or r["customer_name"] or r["customer_email"],
+            "checkout_payload": checkout_payload,
         })
     return jsonify({"ok": True, "orders": orders, "total": total, "page": page, "per_page": per_page})
 
@@ -2623,6 +2691,41 @@ def admin_update_order(order_id):
         vals.append(order_id)
         conn.execute(f"UPDATE orders SET {', '.join(sets)} WHERE id=%s", vals)
     return jsonify({"ok": True})
+
+
+@app.route("/api/professional/orders/<int:order_id>", methods=["PATCH"])
+def pro_update_order(order_id):
+    uid = _require_professional()
+    if not uid:
+        return jsonify({"ok": False, "error": "Professional account required."}), 401
+    data = request.get_json(force=True, silent=True) or {}
+    new_status = (data.get("status") or "").strip()
+    allowed = ("processing", "confirmed", "shipped", "delivered", "cancelled")
+    if new_status not in allowed:
+        return jsonify({"ok": False, "error": f"status must be one of {allowed}"}), 400
+    with get_db() as conn:
+        if not conn.execute(
+            "SELECT 1 FROM pro_sale_items WHERE seller_id=%s AND order_id=%s LIMIT 1",
+            (uid, order_id)
+        ).fetchone():
+            return jsonify({"ok": False, "error": "Order not found."}), 404
+        conn.execute("UPDATE orders SET status=%s WHERE id=%s", (new_status, order_id))
+        row = conn.execute(
+            "SELECT id, order_ref, status, items_json, total_amount, tracking_number, tracking_status, created_at, checkout_payload_json FROM orders WHERE id=%s",
+            (order_id,)
+        ).fetchone()
+    checkout_payload = _json.loads(row["checkout_payload_json"] or "{}") if row["checkout_payload_json"] else {}
+    return jsonify({"ok": True, "order": {
+        "id": row["id"],
+        "order_ref": row["order_ref"],
+        "status": row["status"],
+        "items": _json.loads(row["items_json"]),
+        "total_amount": row["total_amount"],
+        "tracking_number": row["tracking_number"],
+        "tracking_status": row["tracking_status"],
+        "created_at": row["created_at"],
+        "checkout_payload": checkout_payload,
+    }})
 
 
 @app.route("/api/admin/verification-requests", methods=["GET"])
