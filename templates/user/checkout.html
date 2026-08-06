@@ -872,7 +872,7 @@ document.getElementById('complete-purchase-btn').addEventListener('click', async
 
 // ── Utilities ─────────────────────────────────────────
 function fmt(n) {
-  return '$' + Number(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return '₹' + Number(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 // ── Load cart for order summary ───────────────────────

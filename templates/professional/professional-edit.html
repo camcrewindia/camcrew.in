@@ -637,13 +637,15 @@
 /* ═══════════════════════════════════════════════════════════════════
    Edit profile — state + logic
 ═══════════════════════════════════════════════════════════════════ */
-let services    = [];
-let locations   = [];
-let mediaFiles  = [];   // { id, url, type, file|null, name, isExisting }
-let travelIntl  = false;
-let selectedUnit = 'per day';
-let avatarUrl    = null;   // current avatar (blob or persisted URL)
-window._isDirty  = false;
+let services         = [];
+let locations        = [];
+let mediaFiles       = [];   // { id, itemId, url, type, file|null, name, isExisting }
+let travelIntl       = false;
+let selectedUnit     = 'per day';
+let avatarUrl        = null;   // current avatar preview URL
+let avatarFile       = null;   // actual selected file to upload
+let removedPortfolioIds = [];
+window._isDirty     = false;
 
 const CITY_SUGGESTIONS = [
   'Los Angeles, CA','New York, NY','Chicago, IL','Houston, TX','Phoenix, AZ',
@@ -678,6 +680,7 @@ document.getElementById('avatar-file').addEventListener('change', function() {
   const file = this.files[0];
   if (!file) return;
   if (file.size > 5 * 1024 * 1024) { showToast('Photo must be under 5 MB', 'error', '#ffb4ab'); return; }
+  avatarFile = file;
   avatarUrl = URL.createObjectURL(file);
   showAvatarPreview(avatarUrl, file.name);
   markDirty();
@@ -696,6 +699,7 @@ function showAvatarPreview(url, name) {
 }
 
 function removeAvatar() {
+  avatarFile = null;
   avatarUrl = null;
   const preview     = document.getElementById('avatar-preview');
   const placeholder = document.getElementById('avatar-placeholder');
@@ -723,7 +727,7 @@ function handlePortfolioFiles(files) {
     const id  = Date.now() + Math.random();
     const url = URL.createObjectURL(file);
     const isVideo = file.type.startsWith('video');
-    mediaFiles.push({ id, url, type: isVideo ? 'video' : 'image', file, name: file.name, isExisting: false });
+    mediaFiles.push({ id, itemId: null, url, type: isVideo ? 'video' : 'image', file, name: file.name, isExisting: false });
     appendThumb({ id, url, isVideo });
     markDirty();
   });
@@ -751,6 +755,10 @@ function appendThumb({ id, url, isVideo }) {
 }
 
 function removeMedia(id, el) {
+  const removed = mediaFiles.find(m => m.id === id);
+  if (removed && removed.isExisting && removed.itemId) {
+    removedPortfolioIds.push(removed.itemId);
+  }
   mediaFiles = mediaFiles.filter(m => m.id !== id);
   el.remove();
   updatePortfolioCount();
@@ -824,7 +832,7 @@ function renderServices() {
         ${s.desc ? `<p style="font-size:0.8rem;color:#849495;margin:0;">${esc(s.desc)}</p>` : ''}
       </div>
       <div style="text-align:right;flex-shrink:0;">
-        <p style="font-size:0.95rem;font-weight:800;color:#00dbe9;">$${Number(s.price).toLocaleString()}</p>
+        <p style="font-size:0.95rem;font-weight:800;color:#00dbe9;">₹${Number(s.price).toLocaleString()}</p>
         <p style="font-size:0.72rem;color:#849495;">${esc(s.unit)}</p>
       </div>
       <button onclick="removeService(${s.id})" style="background:none;border:none;cursor:pointer;color:#475569;display:flex;align-items:center;transition:color 0.15s;flex-shrink:0;"
@@ -911,7 +919,7 @@ function prefillFromStorage(pro) {
   if (!pro) return;
 
   // Name + title
-  document.getElementById('inp-name').value  = pro.name  || '';
+  document.getElementById('inp-name').value  = pro.name || pro.display_name || '';
   document.getElementById('inp-title').value = pro.title || '';
 
   // Bio
@@ -921,16 +929,19 @@ function prefillFromStorage(pro) {
 
   // Avatar
   if (pro.avatarUrl) {
+    avatarFile = null;
     avatarUrl = pro.avatarUrl;
     showAvatarPreview(pro.avatarUrl, 'Current photo');
   } else {
+    avatarFile = null;
+    avatarUrl = null;
     document.getElementById('avatar-name-preview').textContent = '—';
   }
 
   // Avatar display name fallback
   if (!pro.avatarUrl) {
-    const initials = (pro.name || '?').charAt(0).toUpperCase();
-    document.getElementById('avatar-name-preview').textContent = pro.name || '—';
+    const initials = (pro.name || pro.display_name || '?').charAt(0).toUpperCase();
+    document.getElementById('avatar-name-preview').textContent = pro.name || pro.display_name || '—';
   }
 
   // Categories
@@ -954,7 +965,7 @@ function prefillFromStorage(pro) {
   grid.innerHTML = '';
   (pro.portfolio || []).forEach(item => {
     const id = Date.now() + Math.random();
-    mediaFiles.push({ id, url: item.url, type: item.type, file: null, name: item.name || '', isExisting: true });
+    mediaFiles.push({ id, itemId: item.id || null, url: item.url || item.file_url, type: item.type || item.file_type, file: null, name: item.name || item.title || '', isExisting: true });
     appendThumb({ id, url: item.url, isVideo: item.type === 'video' });
   });
   updatePortfolioCount();
@@ -983,40 +994,87 @@ async function saveChanges() {
   const selectedCats = Array.from(document.querySelectorAll('#cat-chips .cat-chip.selected'))
     .map(b => b.dataset.cat);
 
-  const proData = {
-    name,
-    title:      document.getElementById('inp-title').value.trim(),
-    categories: selectedCats,
-    bio:        document.getElementById('inp-bio').value.trim(),
-    phone:      document.getElementById('inp-phone').value.trim(),
-    website:    document.getElementById('inp-website').value.trim(),
+  const profileValues = {
+    display_name: name,
+    title:        document.getElementById('inp-title').value.trim(),
+    categories:   selectedCats,
+    bio:          document.getElementById('inp-bio').value.trim(),
+    phone:        document.getElementById('inp-phone').value.trim(),
+    website:      document.getElementById('inp-website').value.trim(),
     socials: {
       instagram: document.getElementById('inp-instagram').value.trim(),
       facebook:  document.getElementById('inp-facebook').value.trim(),
       tiktok:    document.getElementById('inp-tiktok').value.trim(),
     },
-    avatarUrl,
-    portfolio:  mediaFiles.map(m => ({ url: m.url, type: m.type, name: m.name || '' })),
     services,
     locations,
-    travelIntl,
+    travel_international: travelIntl,
+  };
+
+  const currentAvatarUrl = (typeof avatarUrl === 'string' && (avatarUrl.startsWith('/') || avatarUrl.startsWith('http')))
+    ? avatarUrl
+    : null;
+
+  if (currentAvatarUrl) {
+    profileValues.avatar_url = currentAvatarUrl;
+  }
+
+  const portfolioState = mediaFiles.map(m => ({ url: m.url, type: m.type, name: m.name || '', itemId: m.itemId || null }));
+  const payloadForStorage = {
+    name,
+    ...profileValues,
+    avatarUrl: currentAvatarUrl,
+    portfolio: portfolioState,
     savedAt: new Date().toISOString(),
   };
 
-  // Persist to localStorage
-  try { localStorage.setItem('cc_pro_profile', JSON.stringify(proData)); } catch(_) {}
+  try { localStorage.setItem('cc_pro_profile', JSON.stringify(payloadForStorage)); } catch(_) {}
 
-  // Save full profile (services, categories, bio, etc.) via API
+  let res;
   try {
-    const payload = { ...proData, display_name: name, travel_international: travelIntl };
-    const res  = await fetch('/api/profile', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
+    const newFiles = mediaFiles.filter(m => m.file);
+    const deleteIds = removedPortfolioIds.slice();
+    if (newFiles.length || avatarFile || deleteIds.length) {
+      const form = new FormData();
+      for (const [key, value] of Object.entries(profileValues)) {
+        if (value === undefined || value === null) continue;
+        form.append(key, typeof value === 'object' ? JSON.stringify(value) : value);
+      }
+      if (currentAvatarUrl && !avatarFile) {
+        form.append('avatar_url', currentAvatarUrl);
+      }
+      if (deleteIds.length) {
+        form.append('remove_portfolio_ids', JSON.stringify(deleteIds));
+      }
+      if (avatarFile) {
+        form.append('avatar', avatarFile, avatarFile.name);
+      }
+      newFiles.forEach((m, idx) => {
+        form.append(`portfolio_file_${idx}`, m.file, m.name || `portfolio-${idx}`);
+      });
+
+      res = await fetch('/api/profile', {
+        method: 'PATCH',
+        body: form,
+      });
+    } else {
+      if (currentAvatarUrl) {
+        profileValues.avatar_url = currentAvatarUrl;
+      }
+      if (deleteIds.length) {
+        profileValues.remove_portfolio_ids = deleteIds;
+      }
+      res = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(profileValues),
+      });
+    }
     const data = await res.json();
-    if (!data.ok) throw new Error(data.error);
-  } catch(err) { console.error('Profile save error:', err); }
+    if (!data.ok) throw new Error(data.error || 'Unable to save profile.');
+  } catch(err) {
+    console.error('Profile save error:', err);
+  }
 
   // Reset dirty state
   window._isDirty = false;
@@ -1064,9 +1122,9 @@ async function boot() {
   // Set email (read-only)
   document.getElementById('inp-email').value = apiProfile.email;
 
-  // Pre-fill from localStorage
+  // Pre-fill from localStorage if available, otherwise use saved profile from the server.
   const raw = localStorage.getItem('cc_pro_profile');
-  const pro  = raw ? JSON.parse(raw) : null;
+  const pro  = raw ? JSON.parse(raw) : apiProfile;
   prefillFromStorage(pro);
 
   // Trigger reveal animations

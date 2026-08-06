@@ -16,10 +16,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-change-me")
 
+ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
+UPLOAD_ROOT = os.path.join(ROOT_DIR, "uploads")
+os.makedirs(UPLOAD_ROOT, exist_ok=True)
+
 # Only these extensions may be served as static files.
 ALLOWED_EXTENSIONS = {
     ".html", ".css", ".js", ".ico", ".png", ".jpg", ".jpeg",
-    ".gif", ".svg", ".webp", ".woff", ".woff2", ".ttf", ".otf",
+    ".gif", ".svg", ".webp", ".mp4", ".mov", ".webm",
+    ".woff", ".woff2", ".ttf", ".otf",
     ".json", ".map", ".txt",
 }
 
@@ -82,6 +87,22 @@ class _DBConn:
 
 def get_db():
     return _DBConn()
+
+
+def _save_uploaded_file(file, subdir):
+    filename = getattr(file, 'filename', '') or ''
+    _, ext = os.path.splitext(filename)
+    ext = ext.lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        raise ValueError(f"Unsupported file type: {ext}")
+
+    safe_name = secrets.token_hex(10) + ext
+    rel_dir = os.path.join("uploads", subdir)
+    abs_dir = os.path.join(ROOT_DIR, rel_dir)
+    os.makedirs(abs_dir, exist_ok=True)
+    abs_path = os.path.join(abs_dir, safe_name)
+    file.save(abs_path)
+    return '/' + os.path.join(rel_dir, safe_name).replace('\\', '/')
 
 
 def init_db():
@@ -223,6 +244,7 @@ def init_db():
                 bio          TEXT,
                 phone        TEXT,
                 website      TEXT,
+                avatar_url   TEXT,
                 categories   TEXT NOT NULL DEFAULT '[]',
                 services     TEXT NOT NULL DEFAULT '[]',
                 locations    TEXT NOT NULL DEFAULT '[]',
@@ -232,6 +254,7 @@ def init_db():
                 FOREIGN KEY (user_id) REFERENCES users(id)
             )
         """)
+        conn.execute("ALTER TABLE professional_profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT")
         conn.execute("""
             CREATE TABLE IF NOT EXISTS products (
                 id           SERIAL PRIMARY KEY,
@@ -624,7 +647,7 @@ def list_professionals():
         priced = [s for s in cat_services if s.get("price")]
         if priced:
             cheapest = min(priced, key=lambda s: float(s.get("price") or 0))
-            rate = f"${cheapest['price']}/{cheapest.get('unit', 'per day')}"
+            rate = f"₹{cheapest['price']}/{cheapest.get('unit', 'per day')}"
 
         professionals.append({
             "username":     r["username"],
@@ -1004,34 +1027,103 @@ def me():
 def get_profile():
     if "user_id" not in session:
         return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    uid = session["user_id"]
+
     with get_db() as conn:
         row = conn.execute(
             "SELECT email, role, display_name, created_at FROM users WHERE id = %s",
-            (session["user_id"],)
+            (uid,)
         ).fetchone()
-    if not row:
-        return jsonify({"ok": False, "error": "User not found."}), 404
-    return jsonify({
-        "ok": True,
-        "profile": {
+        if not row:
+            return jsonify({"ok": False, "error": "User not found."}), 404
+
+        profile = {
+            "name":         row["display_name"] or "",
             "email":        row["email"],
             "role":         row["role"],
             "display_name": row["display_name"] or "",
             "created_at":   row["created_at"],
         }
-    })
+
+        if row["role"] == "professional":
+            pro = conn.execute(
+                "SELECT * FROM professional_profiles WHERE user_id=%s",
+                (uid,)
+            ).fetchone()
+            if pro:
+                profile.update({
+                    "username":             pro["username"],
+                    "title":                pro["title"] or "",
+                    "bio":                  pro["bio"] or "",
+                    "phone":                pro["phone"] or "",
+                    "website":              pro["website"] or "",
+                    "avatarUrl":           pro["avatar_url"] or "",
+                    "categories":           _json.loads(pro["categories"] or "[]"),
+                    "services":             _json.loads(pro["services"] or "[]"),
+                    "locations":            _json.loads(pro["locations"] or "[]"),
+                    "socials":              _json.loads(pro["socials"] or "{}"),
+                    "travelIntl":           bool(pro["travel_intl"]),
+                })
+            else:
+                profile.update({
+                    "username":             "",
+                    "title":                "",
+                    "bio":                  "",
+                    "phone":                "",
+                    "website":              "",
+                    "avatarUrl":           "",
+                    "categories":           [],
+                    "services":             [],
+                    "locations":            [],
+                    "socials":              {},
+                    "travelIntl":           False,
+                })
+
+            portfolio = conn.execute(
+                """SELECT id, title, description, file_url, file_type, created_at
+                   FROM portfolio_items
+                   WHERE professional_id = %s AND is_public = TRUE
+                   ORDER BY created_at DESC LIMIT 30""",
+                (uid,)
+            ).fetchall()
+            profile["portfolio"] = [dict(p) for p in portfolio]
+
+    return jsonify({"ok": True, "profile": profile})
 
 
 @app.route("/api/profile", methods=["PATCH"])
 def update_profile():
     if "user_id" not in session:
         return jsonify({"ok": False, "error": "Not authenticated."}), 401
-    uid  = session["user_id"]
-    data = request.get_json(force=True)
+
+    uid = session["user_id"]
+    is_form = bool(request.files)
+    data = request.form.to_dict() if is_form else request.get_json(force=True)
+
+    avatar_file = request.files.get("avatar") if is_form else None
+    portfolio_files = [request.files[k] for k in request.files if k.startswith("portfolio_file_")] if is_form else []
+    removed_portfolio_ids = []
+    if data.get("remove_portfolio_ids"):
+        try:
+            removed_portfolio_ids = _json.loads(data.get("remove_portfolio_ids") or "[]")
+        except ValueError:
+            removed_portfolio_ids = []
+    elif not is_form:
+        removed_portfolio_ids = data.get("remove_portfolio_ids") or []
 
     display_name = (data.get("display_name") or "").strip()
     if display_name and len(display_name) > 60:
         return jsonify({"ok": False, "error": "Display name must be 60 characters or fewer."}), 400
+
+    avatar_url = (data.get("avatar_url") or "").strip() or None
+    if avatar_file:
+        try:
+            avatar_url = _save_uploaded_file(avatar_file, f"profiles/{uid}/avatar")
+        except ValueError as exc:
+            return jsonify({"ok": False, "error": str(exc)}), 400
+
+    if avatar_url and not (avatar_url.startswith("/") or avatar_url.startswith("http")):
+        avatar_url = None
 
     username = None
     with get_db() as conn:
@@ -1045,39 +1137,74 @@ def update_profile():
             bio         = (data.get("bio")      or "").strip() or None
             phone       = (data.get("phone")    or "").strip() or None
             website     = (data.get("website")  or "").strip() or None
-            categories  = _json.dumps(data.get("categories") or [])
-            services    = _json.dumps(data.get("services")   or [])
-            locations   = _json.dumps(data.get("locations")  or [])
-            socials     = _json.dumps(data.get("socials")    or {})
-            travel_intl = bool(data.get("travel_international", False))
+
+            def _parse_json_field(value, default):
+                if isinstance(value, str):
+                    try:
+                        return _json.loads(value)
+                    except ValueError:
+                        return default
+                return value if value is not None else default
+
+            categories  = _json.dumps(_parse_json_field(data.get("categories"), []))
+            services    = _json.dumps(_parse_json_field(data.get("services"), []))
+            locations   = _json.dumps(_parse_json_field(data.get("locations"), []))
+            socials     = _json.dumps(_parse_json_field(data.get("socials"), {}))
+            travel_intl = bool(_parse_json_field(data.get("travel_international"), False))
 
             existing = conn.execute(
                 "SELECT username FROM professional_profiles WHERE user_id=%s", (uid,)
             ).fetchone()
 
             if existing:
-                conn.execute("""
-                    UPDATE professional_profiles SET
-                        title=%s, bio=%s, phone=%s, website=%s,
-                        categories=%s, services=%s, locations=%s,
-                        socials=%s, travel_intl=%s,
-                        updated_at=TO_CHAR(NOW(),'YYYY-MM-DD HH24:MI:SS')
-                    WHERE user_id=%s
-                """, (title, bio, phone, website, categories, services,
-                      locations, socials, travel_intl, uid))
+                update_fields = [
+                    "title=%s", "bio=%s", "phone=%s", "website=%s",
+                    "categories=%s", "services=%s", "locations=%s",
+                    "socials=%s", "travel_intl=%s",
+                ]
+                params = [title, bio, phone, website, categories, services, locations, socials, travel_intl]
+                if avatar_url is not None:
+                    update_fields.append("avatar_url=%s")
+                    params.append(avatar_url)
+                update_fields.append("updated_at=TO_CHAR(NOW(),'YYYY-MM-DD HH24:MI:SS')")
+                params.append(uid)
+                conn.execute(f"UPDATE professional_profiles SET {', '.join(update_fields)} WHERE user_id=%s", tuple(params))
                 username = existing["username"]
             else:
                 dn = display_name or (role_row["display_name"] or "")
                 username = _make_username(dn or "pro", conn)
                 conn.execute("""
                     INSERT INTO professional_profiles
-                    (user_id, username, title, bio, phone, website,
+                    (user_id, username, title, bio, phone, website, avatar_url,
                      categories, services, locations, socials, travel_intl)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                """, (uid, username, title, bio, phone, website,
-                      categories, services, locations, socials, travel_intl))
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                """, (
+                    uid, username, title, bio, phone, website, avatar_url,
+                    categories, services, locations, socials, travel_intl,
+                ))
 
-    return jsonify({"ok": True, "display_name": display_name, "username": username})
+            if removed_portfolio_ids:
+                try:
+                    conn.execute(
+                        "DELETE FROM portfolio_items WHERE professional_id=%s AND id = ANY(%s)",
+                        (uid, removed_portfolio_ids)
+                    )
+                except Exception:
+                    pass
+
+            for file in portfolio_files:
+                try:
+                    file_url = _save_uploaded_file(file, f"profiles/{uid}/portfolio")
+                except ValueError as exc:
+                    return jsonify({"ok": False, "error": str(exc)}), 400
+                _, ext = os.path.splitext(file.filename or "")
+                file_type = "video" if ext.lower() in {".mp4", ".mov", ".webm"} else "image"
+                conn.execute(
+                    "INSERT INTO portfolio_items (professional_id, title, description, file_url, file_type, share_id, is_public) VALUES (%s,%s,%s,%s,%s,NULL,TRUE)",
+                    (uid, file.filename or None, None, file_url, file_type)
+                )
+
+    return jsonify({"ok": True, "display_name": display_name, "username": username, "avatarUrl": avatar_url})
 
 
 # ---------------------------------------------------------------------------
