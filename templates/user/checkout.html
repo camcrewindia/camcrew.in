@@ -814,16 +814,60 @@ document.querySelectorAll('.shipping-opt').forEach(opt => {
 });
 
 // ── Complete Purchase ─────────────────────────────────
-document.getElementById('complete-purchase-btn').addEventListener('click', function() {
+document.getElementById('complete-purchase-btn').addEventListener('click', async function() {
   if (this.disabled) return;
-  this.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite;font-size:20px">progress_activity</span>&nbsp;Processing…';
-  this.disabled = true;
-  setTimeout(() => {
-    this.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px">check_circle</span>&nbsp;Order Confirmed!';
-    this.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
-    this.style.color = '#fff';
-    this.style.boxShadow = '0 0 32px rgba(34,197,94,0.4)';
-  }, 2000);
+  const btn = this;
+  btn.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite;font-size:20px">progress_activity</span>&nbsp;Processing…';
+  btn.disabled = true;
+
+  const selectedShipping = document.querySelector('input[name="shipping"]:checked')?.value || '';
+  const selectedPayment = document.querySelector('.pay-tab.active')?.dataset.method || 'card';
+  const payload = {
+    customer_name: document.getElementById('fname').value.trim(),
+    customer_phone: '',
+    shipping_address: {
+      line1: document.getElementById('addr1').value.trim(),
+      line2: document.getElementById('addr2').value.trim(),
+      city: document.getElementById('city').value.trim(),
+      state: document.getElementById('state').value.trim(),
+      zip: document.getElementById('zip').value.trim(),
+    },
+    shipping_method: selectedShipping,
+    payment_method: selectedPayment,
+    payment_details: {
+      card_holder: document.getElementById('card-holder')?.value.trim() || '',
+      card_last4: (document.getElementById('card-number')?.value || '').replace(/\D/g, '').slice(-4),
+      bank_name: document.getElementById('bank-name')?.value.trim() || '',
+      routing_number: document.getElementById('routing-num')?.value.trim() || '',
+      account_number: document.getElementById('account-num')?.value.trim() || '',
+      wallet_id: document.getElementById('wallet-id')?.value.trim() || '',
+      crypto_wallet: document.getElementById('crypto-wallet')?.value.trim() || '',
+    },
+    notes: document.getElementById('coupon-input')?.value.trim() || '',
+  };
+
+  try {
+    const res = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      throw new Error(data.error || 'Could not place your order.');
+    }
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px">check_circle</span>&nbsp;Order Confirmed!';
+    btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+    btn.style.color = '#fff';
+    btn.style.boxShadow = '0 0 32px rgba(34,197,94,0.4)';
+  } catch (err) {
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px">error</span>&nbsp;Try Again';
+    btn.disabled = false;
+    btn.style.background = 'linear-gradient(135deg, #00f0ff 0%, #00dbe9 60%, #00b8c5 100%)';
+    btn.style.color = '#00363a';
+    btn.style.boxShadow = '';
+    alert(err.message || 'Could not place your order.');
+  }
 });
 
 // ── Utilities ─────────────────────────────────────────

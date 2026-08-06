@@ -69,6 +69,7 @@
   }
   .badge-pending    { background:#1f1a0d; color:#fbbf24; }
   .badge-confirmed  { background:#0e1f1e; color:#63cab7; }
+  .badge-shipped    { background:#0e1f20; color:#00dbe9; }
   .badge-active     { background:#0e1f20; color:#00dbe9; }
   .badge-completed  { background:#0d1f16; color:#4ade80; }
   .badge-cancelled  { background:#1f0e0e; color:#ff6464; }
@@ -2013,6 +2014,17 @@ function declineRentalOrder(id) {
 // ════════════════════════════════════════════════════════════════════
 // Sales — Product Listings + Orders  (API-backed)
 // ════════════════════════════════════════════════════════════════════
+function normaliseSalesOrder(o) {
+  const payload = o.checkout_payload && typeof o.checkout_payload === 'object' ? o.checkout_payload : {};
+  return {
+    ...o,
+    customerName: o.customer_name || payload.customer_name || payload.full_name || '',
+    customerEmail: o.customer_email || payload.customer_email || '',
+    checkoutPayload: payload,
+    orderStatus: o.order_status || o.status || 'processing',
+  };
+}
+
 async function loadSales() {
   switchSalesTab(S.salesTab || 'listings');
   try {
@@ -2021,7 +2033,7 @@ async function loadSales() {
       api('GET', '/api/professional/sales'),
     ]);
     if (pRes.ok) S.products  = pRes.products  || [];
-    if (sRes.ok) { S.salesOrders = sRes.sales || []; S.salesRevenue = sRes.total_revenue || 0; }
+    if (sRes.ok) { S.salesOrders = (sRes.sales || []).map(normaliseSalesOrder); S.salesRevenue = sRes.total_revenue || 0; }
   } catch (_) { /* silently fail — shows empty state */ }
   switchSalesTab(S.salesTab || 'listings');
 }
@@ -2080,6 +2092,18 @@ function renderProductsList() {
     </div>`).join('');
 }
 
+async function updateSalesOrderStatus(id, status) {
+  try {
+    const data = await api('PATCH', `/api/professional/orders/${id}`, { status });
+    if (!data.ok) throw new Error(data.error);
+    S.salesOrders = S.salesOrders.map(o => o.id === id ? { ...o, orderStatus: status, order_status: status } : o);
+    showToast(status === 'confirmed' ? 'Order confirmed.' : status === 'delivered' ? 'Order marked delivered.' : 'Order updated.');
+    renderSalesOrders();
+  } catch (err) {
+    showToast('Failed: ' + err.message, true);
+  }
+}
+
 function renderSalesOrders() {
   const el = document.getElementById('sales-orders-list');
   const statsEl = document.getElementById('sales-orders-stats');
@@ -2103,29 +2127,48 @@ function renderSalesOrders() {
     el.innerHTML = empty('receipt_long', 'No sales yet', 'When customers buy your products on the Sales page, orders appear here.');
     return;
   }
-  el.innerHTML = S.salesOrders.map(o => `
-    <div class="data-card mb-3">
-      <div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:0.5rem;margin-bottom:0.6rem;">
-        <div>
-          <p style="font-size:1rem;font-weight:800;color:#dce4e5;">${esc(o.product_name)}</p>
-          <p style="font-size:0.82rem;color:#849495;">
-            <span class="material-symbols-outlined" style="font-size:0.85rem;vertical-align:middle;">person</span>
-            <strong style="color:#dce4e5;">${esc(o.customer_name || o.customer_email)}</strong>
-            &nbsp;·&nbsp;${esc(o.customer_email)}
-          </p>
+  el.innerHTML = S.salesOrders.map(o => {
+    const payload = o.checkoutPayload || {};
+    const shippingAddress = payload.shipping_address || {};
+    const addressLine = [shippingAddress.line1, shippingAddress.line2, shippingAddress.city, shippingAddress.state, shippingAddress.zip].filter(Boolean).join(', ');
+    const status = o.orderStatus || o.order_status || 'processing';
+    const actionButtons = [];
+    if (status === 'processing') actionButtons.push(`<button onclick="updateSalesOrderStatus(${o.id}, 'confirmed')" class="btn-sm btn-sm-green"><span class="material-symbols-outlined" style="font-size:0.9rem;">check_circle</span> Confirm</button>`);
+    if (status === 'confirmed' || status === 'processing') actionButtons.push(`<button onclick="updateSalesOrderStatus(${o.id}, 'shipped')" class="btn-sm btn-sm-cyan"><span class="material-symbols-outlined" style="font-size:0.9rem;">local_shipping</span> Mark Shipped</button>`);
+    if (status === 'shipped') actionButtons.push(`<button onclick="updateSalesOrderStatus(${o.id}, 'delivered')" class="btn-sm btn-sm-ghost"><span class="material-symbols-outlined" style="font-size:0.9rem;">done_all</span> Mark Delivered</button>`);
+    return `
+      <div class="data-card mb-3">
+        <div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:0.5rem;margin-bottom:0.6rem;">
+          <div>
+            <p style="font-size:1rem;font-weight:800;color:#dce4e5;">${esc(o.product_name)}</p>
+            <p style="font-size:0.82rem;color:#849495;">
+              <span class="material-symbols-outlined" style="font-size:0.85rem;vertical-align:middle;">person</span>
+              <strong style="color:#dce4e5;">${esc(o.customerName || o.customer_name || o.customer_email)}</strong>
+              &nbsp;·&nbsp;${esc(o.customerEmail || o.customer_email)}
+            </p>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <p style="font-size:1.1rem;font-weight:800;color:#4ade80;">${fmt_usd(o.total_price)}</p>
+            ${badge(status)}
+          </div>
         </div>
-        <div style="text-align:right;flex-shrink:0;">
-          <p style="font-size:1.1rem;font-weight:800;color:#4ade80;">${fmt_usd(o.total_price)}</p>
-          ${badge(o.order_status || 'processing')}
+        <div style="display:flex;flex-wrap:wrap;gap:1rem;font-size:0.82rem;color:#849495;margin-bottom:0.7rem;">
+          <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">receipt</span>Order ${esc(o.order_ref)}</span>
+          <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">shopping_cart</span>Qty: ${o.quantity}</span>
+          <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">attach_money</span>${fmt_usd(o.unit_price)} each</span>
+          <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">event</span>${fmt_date(o.created_at)}</span>
         </div>
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:1rem;font-size:0.82rem;color:#849495;">
-        <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">receipt</span>Order ${esc(o.order_ref)}</span>
-        <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">shopping_cart</span>Qty: ${o.quantity}</span>
-        <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">attach_money</span>${fmt_usd(o.unit_price)} each</span>
-        <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">event</span>${fmt_date(o.created_at)}</span>
-      </div>
-    </div>`).join('');
+        <div style="display:grid;gap:0.4rem;font-size:0.8rem;color:#849495;margin-bottom:0.7rem;">
+          ${payload.shipping_method ? `<div><span style="font-weight:700;color:#dce4e5;">Shipping:</span> ${esc(payload.shipping_method)}</div>` : ''}
+          ${payload.payment_method ? `<div><span style="font-weight:700;color:#dce4e5;">Payment:</span> ${esc(payload.payment_method)}</div>` : ''}
+          ${addressLine ? `<div><span style="font-weight:700;color:#dce4e5;">Address:</span> ${esc(addressLine)}</div>` : ''}
+          ${payload.notes ? `<div><span style="font-weight:700;color:#dce4e5;">Notes:</span> ${esc(payload.notes)}</div>` : ''}
+        </div>
+        <div style="display:flex;gap:0.5rem;justify-content:flex-end;flex-wrap:wrap;">
+          ${actionButtons.join('')}
+        </div>
+      </div>`;
+  }).join('');
 }
 
 function openAddProductModal() {
