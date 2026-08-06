@@ -28,7 +28,8 @@ ALLOWED_EXTENSIONS = {
     ".json", ".map", ".txt",
 }
 
-DATABASE_URL = os.environ.get("RENDER_DATABASE_URL")
+DEFAULT_DATABASE_URL = "postgresql://camcrewindia_user:OtYug8HJmROYnDqpCTF7v0bBGxwZeof3@dpg-d9k4lfbm8hqs73bl2jq0-a.oregon-postgres.render.com/camcrewindia?sslmode=require"
+DATABASE_URL = os.environ.get("RENDER_DATABASE_URL", DEFAULT_DATABASE_URL)
 
 # ---------------------------------------------------------------------------
 # Database helpers
@@ -46,23 +47,71 @@ class _DBCursor:
         return self._cur.fetchall()
 
 
+import sqlite3
+import re
+
 class _DBConn:
     """
-    Drop-in replacement for sqlite3 connections.
+    Dual DB connection supporting PostgreSQL and automatic local SQLite fallback.
     Supports: conn.execute(sql, params), conn.commit(), context-manager.
-    Each execute() opens its own cursor backed by RealDictCursor so rows
-    behave like dicts (row["col"]) and can be passed to dict().
     """
     def __init__(self):
-        self._conn = psycopg2.connect(
-            DATABASE_URL,
-            cursor_factory=psycopg2.extras.RealDictCursor,
-        )
+        url = os.environ.get("RENDER_DATABASE_URL") or os.environ.get("DATABASE_URL") or DEFAULT_DATABASE_URL
+        if url and "sslmode" not in url and ("postgres.render.com" in url or "render.com" in url):
+            url += "?sslmode=require" if "?" not in url else "&sslmode=require"
+        self._is_sqlite = False
+        if url:
+            try:
+                self._conn = psycopg2.connect(
+                    url,
+                    cursor_factory=psycopg2.extras.RealDictCursor,
+                )
+                return
+            except Exception as e:
+                print(f"[DB] PostgreSQL connection to Render failed ({e}). Falling back to local SQLite.")
+
+        # Local SQLite fallback when PostgreSQL server is unreachable
+        self._is_sqlite = True
+        db_path = os.path.join(ROOT_DIR, "camcrew_local.db")
+        self._conn = sqlite3.connect(db_path)
+        self._conn.row_factory = sqlite3.Row
 
     def execute(self, sql, params=None):
-        cur = self._conn.cursor()
-        cur.execute(sql, params or ())
-        return _DBCursor(cur)
+        if self._is_sqlite:
+            adapted_sql = sql
+            # Adapt PostgreSQL DDL/DML for SQLite compatibility
+            adapted_sql = adapted_sql.replace("SERIAL PRIMARY KEY", "INTEGER PRIMARY KEY AUTOINCREMENT")
+            adapted_sql = adapted_sql.replace("TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS')", "datetime('now', 'localtime')")
+            adapted_sql = adapted_sql.replace("TO_CHAR(NOW(),'YYYY-MM-DD HH24:MI:SS')", "datetime('now', 'localtime')")
+            adapted_sql = adapted_sql.replace("ILIKE", "LIKE")
+            adapted_sql = adapted_sql.replace("TRUE", "1").replace("FALSE", "0")
+
+            # Handle RETURNING clause emulation for SQLite
+            ret_match = re.search(r"\s+RETURNING\s+(\*|[a-zA-Z0-9_,\s]+)$", adapted_sql, re.IGNORECASE)
+            returning_cols = None
+            if ret_match:
+                returning_cols = ret_match.group(1).strip()
+                adapted_sql = adapted_sql[:ret_match.start()]
+
+            # Replace PostgreSQL %s placeholder with SQLite ?
+            adapted_sql = adapted_sql.replace("%s", "?")
+            cur = self._conn.cursor()
+            cur.execute(adapted_sql, params or ())
+
+            if returning_cols:
+                last_id = cur.lastrowid
+                tbl_match = re.search(r"INSERT\s+INTO\s+([a-zA-Z0-9_]+)", sql, re.IGNORECASE)
+                if tbl_match:
+                    tbl_name = tbl_match.group(1)
+                    if returning_cols == "id":
+                        cur.execute(f"SELECT id FROM {tbl_name} WHERE rowid=?", (last_id,))
+                    else:
+                        cur.execute(f"SELECT * FROM {tbl_name} WHERE rowid=?", (last_id,))
+            return _DBCursor(cur)
+        else:
+            cur = self._conn.cursor()
+            cur.execute(sql, params or ())
+            return _DBCursor(cur)
 
     def commit(self):
         self._conn.commit()
@@ -519,9 +568,112 @@ init_admin_tables()
 init_professional_tables()
 init_pro_sales_table()
 
+
+def init_notifications_table():
+    """Create notifications table if it doesn't exist."""
+    with get_db() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS notifications (
+                id          SERIAL PRIMARY KEY,
+                user_id     INTEGER NOT NULL,
+                title       TEXT    NOT NULL,
+                message     TEXT    NOT NULL,
+                type        TEXT    NOT NULL DEFAULT 'info',
+                link        TEXT,
+                is_read     BOOLEAN NOT NULL DEFAULT FALSE,
+                created_at  TEXT    DEFAULT TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS'),
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            )
+        """)
+
+
+def create_notification(user_id, title, message, ntype='info', link=None, conn=None):
+    """Insert a notification record for target user_id."""
+    if not user_id:
+        return
+    sql = """INSERT INTO notifications (user_id, title, message, type, link)
+             VALUES (%s, %s, %s, %s, %s)"""
+    params = (user_id, title, message, ntype, link)
+    try:
+        if conn:
+            conn.execute(sql, params)
+        else:
+            with get_db() as c:
+                c.execute(sql, params)
+    except Exception as exc:
+        print(f"Failed to create notification: {exc}")
+
+
+init_notifications_table()
+
+
+# ---------------------------------------------------------------------------
+# Notifications API
+# ---------------------------------------------------------------------------
+
+@app.route("/api/notifications", methods=["GET"])
+def get_notifications():
+    uid = require_auth()
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+
+    limit = max(1, min(100, int(request.args.get("limit", 20))))
+    with get_db() as conn:
+        unread_count = conn.execute(
+            "SELECT COUNT(*) AS c FROM notifications WHERE user_id=%s AND is_read=FALSE", (uid,)
+        ).fetchone()["c"]
+        rows = conn.execute(
+            "SELECT * FROM notifications WHERE user_id=%s ORDER BY created_at DESC LIMIT %s",
+            (uid, limit)
+        ).fetchall()
+
+    return jsonify({
+        "ok": True,
+        "unread_count": unread_count,
+        "notifications": [dict(r) for r in rows]
+    })
+
+
+@app.route("/api/notifications/<int:notif_id>/read", methods=["PATCH"])
+def mark_notification_read(notif_id):
+    uid = require_auth()
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    with get_db() as conn:
+        conn.execute(
+            "UPDATE notifications SET is_read=TRUE WHERE id=%s AND user_id=%s",
+            (notif_id, uid)
+        )
+    return jsonify({"ok": True})
+
+
+@app.route("/api/notifications/mark-all-read", methods=["POST"])
+def mark_all_notifications_read():
+    uid = require_auth()
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    with get_db() as conn:
+        conn.execute(
+            "UPDATE notifications SET is_read=TRUE WHERE user_id=%s AND is_read=FALSE",
+            (uid,)
+        )
+    return jsonify({"ok": True})
+
+
+@app.route("/api/notifications/<int:notif_id>", methods=["DELETE"])
+def delete_notification(notif_id):
+    uid = require_auth()
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    with get_db() as conn:
+        conn.execute("DELETE FROM notifications WHERE id=%s AND user_id=%s", (notif_id, uid))
+    return jsonify({"ok": True})
+
+
 # ---------------------------------------------------------------------------
 # Public portfolio sharing
 # ---------------------------------------------------------------------------
+
 
 import re as _re
 
@@ -803,16 +955,16 @@ _TEMPLATE_MAP = {
 
 
 def _serve_template(filename):
-    """Look up filename in _TEMPLATE_MAP and serve it from the right subdir."""
+    """Look up filename in _TEMPLATE_MAP and serve it from the right subdir using ROOT_DIR."""
     subdir = _TEMPLATE_MAP.get(filename)
     if subdir:
-        return send_from_directory(subdir, filename)
+        return send_from_directory(os.path.join(ROOT_DIR, subdir), filename)
     abort(404)
 
 
 @app.route("/")
 def index():
-    return send_from_directory("templates/public", "index.html")
+    return send_from_directory(os.path.join(ROOT_DIR, "templates", "public"), "index.html")
 
 
 @app.route("/<path:filename>")
@@ -822,19 +974,31 @@ def static_files(filename):
         abort(403)
 
     ext = os.path.splitext(filename)[1].lower()
-    if ext not in ALLOWED_EXTENSIONS:
-        abort(403)
 
-    # HTML files → look up in the template map
+    # If no extension is provided (e.g. /services, /about, /signin), default to .html
+    if not ext:
+        filename = filename + ".html"
+        ext = ".html"
+
+    # HTML files → look up in the template map or subdirs
     if ext == ".html":
         basename = os.path.basename(filename)
         subdir = _TEMPLATE_MAP.get(basename)
-        if subdir:
-            return send_from_directory(subdir, basename)
+        if subdir and os.path.exists(os.path.join(ROOT_DIR, subdir, basename)):
+            return send_from_directory(os.path.join(ROOT_DIR, subdir), basename)
+        for sub in ("templates/public", "templates/auth", "templates/user", "templates/professional", "templates/admin"):
+            if os.path.exists(os.path.join(ROOT_DIR, sub, basename)):
+                return send_from_directory(os.path.join(ROOT_DIR, sub), basename)
         abort(404)
 
-    # Everything else (images, fonts, attached_assets, etc.) → serve from root
-    return send_from_directory(".", filename)
+    if ext not in ALLOWED_EXTENSIONS:
+        abort(403)
+
+    # Everything else (images, fonts, attached_assets, etc.) → serve from ROOT_DIR
+    if os.path.exists(os.path.join(ROOT_DIR, filename)):
+        return send_from_directory(ROOT_DIR, filename)
+
+    abort(404)
 
 # ---------------------------------------------------------------------------
 # Auth API
@@ -853,7 +1017,7 @@ def register():
     if len(password) < 6:
         return jsonify({"ok": False, "error": "Password must be at least 6 characters."}), 400
 
-    if role not in ("customer", "professional", "studio", "admin"):
+    if role not in ("customer", "professional", "studio"):
         role = "customer"
 
     hashed = generate_password_hash(password)
@@ -967,7 +1131,6 @@ def forgot_password():
     return jsonify({
         "ok": True,
         "message": "If that email is registered, a reset link has been sent.",
-        "reset_token": token,  # Remove this in production once email is wired up
     })
 
 
@@ -1045,7 +1208,7 @@ def get_profile():
             "created_at":   row["created_at"],
         }
 
-        if row["role"] == "professional":
+        if row["role"] in ("professional", "studio"):
             pro = conn.execute(
                 "SELECT * FROM professional_profiles WHERE user_id=%s",
                 (uid,)
@@ -1132,7 +1295,7 @@ def update_profile():
 
         role_row = conn.execute("SELECT role, display_name FROM users WHERE id=%s", (uid,)).fetchone()
 
-        if role_row and role_row["role"] == "professional":
+        if role_row and role_row["role"] in ("professional", "studio"):
             title       = (data.get("title")   or "").strip() or None
             bio         = (data.get("bio")      or "").strip() or None
             phone       = (data.get("phone")    or "").strip() or None
@@ -1325,7 +1488,7 @@ def create_booking():
                 professional_id = row["user_id"]
         if not professional_id and professional_name:
             row = conn.execute(
-                "SELECT id FROM users WHERE LOWER(display_name)=LOWER(%s) AND role='professional' LIMIT 1",
+                "SELECT id FROM users WHERE LOWER(display_name)=LOWER(%s) AND role IN ('professional', 'studio') LIMIT 1",
                 (professional_name,)
             ).fetchone()
             if row:
@@ -1355,6 +1518,9 @@ def create_booking():
                    VALUES (%s, %s, %s, %s, %s, %s, %s, 'pending', %s)""",
                 (professional_id, client_name, client_email, service, booking_date, amount, note, booking_id),
             )
+            create_notification(professional_id, "New Booking Request", f"{client_name} requested a booking for {service} on {booking_date}.", ntype="booking", link="professional-dashboard.html", conn=conn)
+
+        create_notification(uid, "Booking Submitted", f"Your booking request for {service} has been submitted.", ntype="booking", link="orders.html", conn=conn)
 
     return jsonify({"ok": True, "booking_id": booking_id, "status": "pending"})
 
@@ -2028,6 +2194,8 @@ def place_rental_order():
         from datetime import date as _date
         d1 = _date.fromisoformat(from_date)
         d2 = _date.fromisoformat(to_date)
+        if d1 < _date.today():
+            return jsonify({"ok": False, "error": "Rental start date cannot be in the past."}), 400
         if d2 <= d1:
             return jsonify({"ok": False, "error": "to_date must be after from_date."}), 400
         days = (d2 - d1).days
@@ -2041,6 +2209,15 @@ def place_rental_order():
         ).fetchone()
         if not equip:
             return jsonify({"ok": False, "error": "Equipment not found or not available."}), 404
+
+        overlap = conn.execute(
+            """SELECT id FROM rental_orders
+               WHERE equipment_id=%s AND status IN ('accepted', 'active')
+               AND NOT (to_date <= %s OR from_date >= %s) LIMIT 1""",
+            (equipment_id, from_date, to_date)
+        ).fetchone()
+        if overlap:
+            return jsonify({"ok": False, "error": "Equipment is already booked for the selected date range."}), 400
         total_cost = round(equip["price_per_day"] * days, 2)
         row = conn.execute(
             """INSERT INTO rental_orders
@@ -2050,6 +2227,10 @@ def place_rental_order():
             (equipment_id, equip["professional_id"], customer_id,
              customer_name, customer_email, from_date, to_date, days, total_cost, notes)
         ).fetchone()
+
+        create_notification(equip["professional_id"], "New Rental Request", f"{customer_name} requested to rent '{equip['name']}' ({from_date} to {to_date}).", ntype="rental", link="professional-dashboard.html", conn=conn)
+        if customer_id:
+            create_notification(customer_id, "Rental Request Submitted", f"Your rental request for '{equip['name']}' has been submitted.", ntype="rental", link="orders.html", conn=conn)
     return jsonify({"ok": True, "order": dict(row)}), 201
 
 
@@ -2098,6 +2279,8 @@ def pro_update_rental_order(order_id):
                WHERE ro.id=%s""",
             (order_id,)
         ).fetchone()
+        if existing.get("customer_id"):
+            create_notification(existing["customer_id"], "Rental Request Updated", f"Your rental request for equipment has been updated to '{new_status}'.", ntype="rental", link="orders.html", conn=conn)
     return jsonify({"ok": True, "order": dict(row)})
 
 
@@ -2234,6 +2417,25 @@ def pro_update_request(req_id):
                 "UPDATE bookings SET status=%s WHERE id=%s",
                 (booking_status, existing["booking_id"])
             )
+        if new_status in ("confirmed", "completed"):
+            job_exists = conn.execute(
+                "SELECT id FROM professional_jobs WHERE professional_id=%s AND client=%s AND service=%s AND booking_date=%s",
+                (uid, existing["client_name"], existing["service"], existing["booking_date"])
+            ).fetchone()
+            if not job_exists:
+                conn.execute(
+                    """INSERT INTO professional_jobs (professional_id, client, service, booking_date, amount, status, notes)
+                       VALUES (%s, %s, %s, %s, %s, %s, %s)""",
+                    (uid, existing["client_name"], existing["service"], existing["booking_date"], existing["amount"], new_status, existing["note"])
+                )
+            else:
+                conn.execute(
+                    "UPDATE professional_jobs SET status=%s WHERE id=%s",
+                    (new_status, job_exists["id"])
+                )
+            b_row = conn.execute("SELECT user_id, service FROM bookings WHERE id=%s", (existing["booking_id"],)).fetchone()
+            if b_row:
+                create_notification(b_row["user_id"], "Booking Status Updated", f"Your booking request for '{b_row['service']}' status is now '{booking_status}'.", ntype="booking", link="orders.html", conn=conn)
     return jsonify({"ok": True, "request": dict(row)})
 
 
@@ -2633,27 +2835,66 @@ def place_order():
         "notes": notes,
     }
 
+    coupon_code = (data.get("coupon_code") or "").strip().upper()
+    discount_amount = 0
+
     with get_db() as conn:
         cart_items = conn.execute(
             "SELECT * FROM cart_items WHERE user_id=%s", (uid,)
         ).fetchall()
         if not cart_items:
             return jsonify({"ok": False, "error": "Cart is empty."}), 400
-        order_ref  = 'CC-' + ''.join(random.choices(_str.digits, k=6))
+
+        for ci in cart_items:
+            if ci["product_id"]:
+                prod = conn.execute("SELECT stock, name FROM products WHERE id=%s", (ci["product_id"],)).fetchone()
+                if prod and prod["stock"] < ci["quantity"]:
+                    return jsonify({"ok": False, "error": f"Product '{prod['name']}' has only {prod['stock']} items left in stock."}), 400
+
+        subtotal = sum(ci["price"] * ci["quantity"] for ci in cart_items)
+        total = subtotal
+
+        if coupon_code:
+            coupon = conn.execute(
+                "SELECT * FROM coupons WHERE (user_id=%s OR user_id IS NULL) AND UPPER(code)=%s AND used=0",
+                (uid, coupon_code)
+            ).fetchone()
+            if coupon:
+                if subtotal >= float(coupon["min_order"] or 0):
+                    if coupon["discount_type"] == "percent":
+                        discount_amount = round(subtotal * (float(coupon["discount_value"]) / 100.0), 2)
+                    else:
+                        discount_amount = float(coupon["discount_value"])
+                    discount_amount = min(discount_amount, subtotal)
+                    total = round(subtotal - discount_amount, 2)
+                    conn.execute("UPDATE coupons SET used=1 WHERE id=%s", (coupon["id"],))
+
+        for _ in range(10):
+            order_ref = 'CC-' + ''.join(random.choices(_str.digits, k=6))
+            if not conn.execute("SELECT id FROM orders WHERE order_ref=%s", (order_ref,)).fetchone():
+                break
+
+        checkout_payload["subtotal"] = subtotal
+        checkout_payload["discount_amount"] = discount_amount
+        checkout_payload["coupon_code"] = coupon_code if discount_amount > 0 else None
+
         items_json_val = _json.dumps([{
             "name": ci["name"], "qty": ci["quantity"],
             "price": ci["price"], "product_id": ci["product_id"],
         } for ci in cart_items])
-        total = sum(ci["price"] * ci["quantity"] for ci in cart_items)
         order_row = conn.execute(
             """INSERT INTO orders (user_id,order_ref,status,items_json,total_amount,checkout_payload_json)
                VALUES (%s,%s,'processing',%s,%s,%s) RETURNING id""",
             (uid, order_ref, items_json_val, total, _json.dumps(checkout_payload))
         ).fetchone()
         order_id = order_row["id"]
-        # Record per-seller sale items for professional dashboard
+
         for ci in cart_items:
             if ci["product_id"]:
+                conn.execute(
+                    "UPDATE products SET stock = GREATEST(0, stock - %s) WHERE id=%s",
+                    (ci["quantity"], ci["product_id"])
+                )
                 prod = conn.execute(
                     "SELECT seller_id FROM products WHERE id=%s", (ci["product_id"],)
                 ).fetchone()
@@ -2666,6 +2907,12 @@ def place_order():
                          ci["quantity"], ci["price"], ci["price"] * ci["quantity"])
                     )
         conn.execute("DELETE FROM cart_items WHERE user_id=%s", (uid,))
+        create_notification(uid, "Order Placed", f"Your order #{order_ref} total ₹{round(total, 2)} has been placed successfully.", ntype="order", link="orders.html", conn=conn)
+        for ci in cart_items:
+            if ci["product_id"]:
+                prod = conn.execute("SELECT seller_id FROM products WHERE id=%s", (ci["product_id"],)).fetchone()
+                if prod and prod["seller_id"]:
+                    create_notification(prod["seller_id"], "New Sale Item", f"Your product '{ci['name']}' was ordered in order #{order_ref}.", ntype="order", link="professional-dashboard.html", conn=conn)
     return jsonify({"ok": True, "order_id": order_id, "order_ref": order_ref,
                     "status": "processing", "total": round(total, 2)})
 
@@ -2681,11 +2928,18 @@ def professional_earnings():
         jobs = conn.execute(
             "SELECT * FROM professional_jobs WHERE professional_id=%s ORDER BY booking_date DESC", (uid,)
         ).fetchall()
+        rental_income = conn.execute(
+            "SELECT COALESCE(SUM(total_cost),0) AS s FROM rental_orders WHERE professional_id=%s AND status='completed'", (uid,)
+        ).fetchone()['s']
+        sales_revenue = conn.execute(
+            "SELECT COALESCE(SUM(total_price),0) AS s FROM pro_sale_items WHERE seller_id=%s", (uid,)
+        ).fetchone()['s']
     jobs_list  = [dict(j) for j in jobs]
     completed  = [j for j in jobs_list if j['status'] == 'completed']
     pending_js = [j for j in jobs_list if j['status'] in ('active', 'confirmed')]
-    total      = sum(float(j['amount'] or 0) for j in completed)
+    services_total = sum(float(j['amount'] or 0) for j in completed)
     pending    = sum(float(j['amount'] or 0) for j in pending_js)
+    total      = services_total + float(rental_income or 0) + float(sales_revenue or 0)
     from datetime import date as _date
     today = _date.today()
     month = sum(
@@ -2693,10 +2947,13 @@ def professional_earnings():
         if j.get('booking_date') and j['booking_date'][:7] == today.strftime('%Y-%m')
     )
     return jsonify({"ok": True, "earnings": {
-        "total":   total,
-        "pending": pending,
-        "month":   month,
-        "jobs":    jobs_list,
+        "total":          round(total, 2),
+        "services_total": round(services_total, 2),
+        "rental_income":   round(float(rental_income or 0), 2),
+        "sales_revenue":   round(float(sales_revenue or 0), 2),
+        "pending":        round(pending, 2),
+        "month":          round(month, 2),
+        "jobs":           jobs_list,
     }})
 
 
@@ -2817,6 +3074,9 @@ def admin_update_order(order_id):
             sets.append("tracking_status=%s"); vals.append(tracking_status)
         vals.append(order_id)
         conn.execute(f"UPDATE orders SET {', '.join(sets)} WHERE id=%s", vals)
+        ord_row = conn.execute("SELECT user_id, order_ref FROM orders WHERE id=%s", (order_id,)).fetchone()
+        if ord_row:
+            create_notification(ord_row["user_id"], "Order Status Updated", f"Order #{ord_row['order_ref']} status has been updated to '{new_status}'.", ntype="order", link="orders.html", conn=conn)
     return jsonify({"ok": True})
 
 
@@ -2907,6 +3167,9 @@ def admin_submit_verification():
              (data.get("notes")      or "").strip() or None,
             )
         ).fetchone()
+        admins = conn.execute("SELECT id FROM users WHERE role='admin'").fetchall()
+        for a in admins:
+            create_notification(a["id"], "New Studio Verification Request", f"Verification request submitted for '{studio_name}'.", ntype="verification", link="verificationrequest.html", conn=conn)
     return jsonify({"ok": True, "id": row["id"]}), 201
 
 
@@ -2929,7 +3192,9 @@ def admin_review_verification(req_id):
         )
         # If approved and linked to a user, upgrade their role to 'studio'
         if action == "approved" and row["user_id"]:
-            conn.execute("UPDATE users SET role='studio' WHERE id=%s AND role='customer'", (row["user_id"],))
+            conn.execute("UPDATE users SET role='studio' WHERE id=%s AND role IN ('customer', 'professional')", (row["user_id"],))
+        if row["user_id"]:
+            create_notification(row["user_id"], "Studio Verification Updated", f"Your studio verification request has been '{action}'.", ntype="verification", link="profile.html", conn=conn)
     return jsonify({"ok": True, "status": action})
 
 
@@ -2962,5 +3227,5 @@ def admin_list_users():
 
 
 if __name__ == "__main__":
-    debug = os.environ.get("FLASK_DEBUG", "0") == "1"
+    debug = os.environ.get("FLASK_DEBUG", "1") == "1"
     app.run(host="0.0.0.0", port=5000, debug=debug)

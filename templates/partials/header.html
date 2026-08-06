@@ -39,9 +39,18 @@
 
             <!-- Desktop right: auth area -->
             <div class="flex items-center gap-4">
-                <a href="cart.html" class="hidden md:block relative text-on-surface-variant hover:text-primary transition-colors">
-                    <span class="material-symbols-outlined">shopping_cart</span>
-                    <span id="cart-badge" style="display:none;position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;border-radius:999px;background:#00dbe9;color:#001f22;font-size:10px;font-weight:800;line-height:18px;text-align:center;padding:0 4px;"></span>
+                <!-- Notification Bell (Desktop) -->
+                <div class="hidden md:block relative">
+                    <button id="notif-btn" onclick="toggleNotifications()" class="relative text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center p-1" title="Notifications">
+                        <span class="material-symbols-outlined text-xl">notifications</span>
+                        <span id="notif-badge" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:999px;background:#00f0ff;color:#001f22;font-size:10px;font-weight:800;line-height:18px;text-align:center;padding:0 4px;box-shadow:0 0 10px rgba(0,240,255,0.6);"></span>
+                    </button>
+                </div>
+
+                <!-- Shopping Cart (Desktop) -->
+                <a href="cart.html" class="hidden md:block relative text-on-surface-variant hover:text-primary transition-colors p-1" title="Shopping Cart">
+                    <span class="material-symbols-outlined text-xl">shopping_cart</span>
+                    <span id="cart-badge" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:999px;background:#00dbe9;color:#001f22;font-size:10px;font-weight:800;line-height:18px;text-align:center;padding:0 4px;"></span>
                 </a>
 
                 <!-- Logged-in: shown via JS (desktop only) -->
@@ -63,14 +72,45 @@
                     Sign In
                 </a>
 
+                <!-- Mobile Notification Bell -->
+                <div class="md:hidden relative">
+                    <button id="notif-btn-mobile" onclick="toggleNotifications()" class="relative text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center p-1">
+                        <span class="material-symbols-outlined text-2xl">notifications</span>
+                        <span id="notif-badge-mobile" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:999px;background:#00f0ff;color:#001f22;font-size:10px;font-weight:800;line-height:18px;text-align:center;padding:0 4px;"></span>
+                    </button>
+                </div>
+
                 <!-- Mobile buttons -->
-                <a href="cart.html" class="md:hidden relative text-on-surface-variant hover:text-primary transition-colors">
-                    <span class="material-symbols-outlined">shopping_cart</span>
-                    <span id="cart-badge-mobile" style="display:none;position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;border-radius:999px;background:#00dbe9;color:#001f22;font-size:10px;font-weight:800;line-height:18px;text-align:center;padding:0 4px;"></span>
+                <a href="cart.html" class="md:hidden relative text-on-surface-variant hover:text-primary transition-colors p-1">
+                    <span class="material-symbols-outlined text-2xl">shopping_cart</span>
+                    <span id="cart-badge-mobile" style="display:none;position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:999px;background:#00dbe9;color:#001f22;font-size:10px;font-weight:800;line-height:18px;text-align:center;padding:0 4px;"></span>
                 </a>
                 <button id="mobile-menu-btn" class="md:hidden material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors text-3xl">menu</button>
             </div>
         </nav>
+
+        <!-- Glassmorphic Notifications Dropdown Drawer -->
+        <div id="notif-drawer" class="absolute top-full right-4 md:right-8 mt-3 w-80 md:w-96 rounded-2xl bg-obsidian-base/90 backdrop-blur-2xl border border-glass-stroke p-4 opacity-0 invisible translate-y-[-10px] transition-all duration-300 z-[110] shadow-[0px_15px_40px_rgba(0,0,0,0.8)]">
+            <div class="flex items-center justify-between border-b border-glass-stroke pb-3 mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-lg">notifications</span>
+                    <h3 class="font-bold text-on-surface text-sm tracking-wide">Notifications</h3>
+                    <span id="notif-drawer-count" class="bg-primary/10 text-primary font-bold text-xs px-2 py-0.5 rounded-full">0</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="markAllNotificationsRead()" class="text-[11px] text-primary hover:underline font-medium">Mark all read</button>
+                    <button onclick="closeNotifications()" class="text-on-surface-variant hover:text-on-surface transition-colors flex items-center"><span class="material-symbols-outlined text-base">close</span></button>
+                </div>
+            </div>
+
+            <!-- List container -->
+            <div id="notif-list" class="flex flex-col gap-2 max-h-80 overflow-y-auto custom-scrollbar">
+                <div class="text-center py-8 text-on-surface-variant text-xs flex flex-col items-center gap-2">
+                    <span class="material-symbols-outlined text-3xl opacity-40">notifications_off</span>
+                    <span>No notifications yet</span>
+                </div>
+            </div>
+        </div>
 
         <!-- Mobile Menu Dropdown -->
         <div id="mobile-menu" class="absolute top-full left-0 w-full mt-2 rounded-2xl bg-obsidian-base/65 backdrop-blur-xl border border-glass-stroke p-6 opacity-0 invisible translate-y-[-10px] transition-all duration-300 md:hidden z-[100] shadow-2xl">
@@ -125,3 +165,150 @@
         </div>
     </div>
 </header>
+
+<script>
+let notifDrawerOpen = false;
+
+function toggleNotifications() {
+    notifDrawerOpen = !notifDrawerOpen;
+    const drawer = document.getElementById('notif-drawer');
+    if (!drawer) return;
+    if (notifDrawerOpen) {
+        drawer.classList.remove('opacity-0', 'invisible', 'translate-y-[-10px]');
+        drawer.classList.add('opacity-100', 'visible', 'translate-y-0');
+        fetchNotifications();
+    } else {
+        closeNotifications();
+    }
+}
+
+function closeNotifications() {
+    notifDrawerOpen = false;
+    const drawer = document.getElementById('notif-drawer');
+    if (!drawer) return;
+    drawer.classList.add('opacity-0', 'invisible', 'translate-y-[-10px]');
+    drawer.classList.remove('opacity-100', 'visible', 'translate-y-0');
+}
+
+document.addEventListener('click', function(e) {
+    const drawer = document.getElementById('notif-drawer');
+    const btn = document.getElementById('notif-btn');
+    const btnMobile = document.getElementById('notif-btn-mobile');
+    if (drawer && notifDrawerOpen && !drawer.contains(e.target) && (!btn || !btn.contains(e.target)) && (!btnMobile || !btnMobile.contains(e.target))) {
+        closeNotifications();
+    }
+});
+
+async function fetchNotifications() {
+    try {
+        const res = await fetch('/api/notifications');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.ok) return;
+
+        updateNotifBadges(data.unread_count);
+        renderNotifications(data.notifications);
+    } catch (e) {
+        console.error("Error fetching notifications:", e);
+    }
+}
+
+function updateNotifBadges(count) {
+    const b1 = document.getElementById('notif-badge');
+    const b2 = document.getElementById('notif-badge-mobile');
+    const cnt = document.getElementById('notif-drawer-count');
+
+    if (cnt) cnt.textContent = count || 0;
+
+    [b1, b2].forEach(b => {
+        if (b) {
+            if (count > 0) {
+                b.style.display = 'block';
+                b.textContent = count > 99 ? '99+' : count;
+            } else {
+                b.style.display = 'none';
+            }
+        }
+    });
+}
+
+function renderNotifications(items) {
+    const container = document.getElementById('notif-list');
+    if (!container) return;
+
+    if (!items || items.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-8 text-on-surface-variant text-xs flex flex-col items-center gap-2">
+                <span class="material-symbols-outlined text-3xl opacity-40">notifications_off</span>
+                <span>No notifications yet</span>
+            </div>`;
+        return;
+    }
+
+    const typeIcons = {
+        'order': 'shopping_bag',
+        'booking': 'calendar_today',
+        'rental': 'photo_camera',
+        'verification': 'verified',
+        'info': 'info'
+    };
+
+    container.innerHTML = items.map(n => {
+        const icon = typeIcons[n.type] || 'notifications';
+        const unreadStyle = !n.is_read ? 'bg-primary/10 border-primary/30' : 'bg-white/5 border-glass-stroke opacity-75';
+        const dot = !n.is_read ? '<span class="w-2 h-2 rounded-full bg-primary flex-shrink-0 animate-pulse"></span>' : '';
+        const linkAttr = n.link ? `onclick="handleNotifClick(${n.id}, '${n.link}')"` : `onclick="markNotifRead(${n.id})"`;
+
+        return `
+            <div ${linkAttr} class="cursor-pointer p-3 rounded-xl border ${unreadStyle} hover:border-primary/60 transition-all flex items-start gap-3 relative group">
+                <div class="p-2 rounded-lg bg-obsidian-base border border-glass-stroke text-primary flex-shrink-0 mt-0.5">
+                    <span class="material-symbols-outlined text-sm">${icon}</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between gap-1">
+                        <h4 class="text-xs font-bold text-on-surface truncate">${n.title}</h4>
+                        ${dot}
+                    </div>
+                    <p class="text-[11px] text-on-surface-variant mt-0.5 leading-snug line-clamp-2">${n.message}</p>
+                    <span class="text-[9px] text-on-surface-variant/60 mt-1 block">${n.created_at || ''}</span>
+                </div>
+                <button onclick="event.stopPropagation(); deleteNotif(${n.id})" class="opacity-0 group-hover:opacity-100 text-on-surface-variant hover:text-red-400 transition-opacity p-1" title="Delete notification">
+                    <span class="material-symbols-outlined text-xs">delete</span>
+                </button>
+            </div>
+        `;
+    }).join('');
+}
+
+async function handleNotifClick(id, link) {
+    await markNotifRead(id);
+    if (link) window.location.href = link;
+}
+
+async function markNotifRead(id) {
+    try {
+        await fetch(`/api/notifications/${id}/read`, { method: 'PATCH' });
+        fetchNotifications();
+    } catch (e) {}
+}
+
+async function markAllNotificationsRead() {
+    try {
+        await fetch('/api/notifications/mark-all-read', { method: 'POST' });
+        fetchNotifications();
+    } catch (e) {}
+}
+
+async function deleteNotif(id) {
+    try {
+        await fetch(`/api/notifications/${id}`, { method: 'DELETE' });
+        fetchNotifications();
+    } catch (e) {}
+}
+
+// Initial fetch & interval polling
+document.addEventListener('DOMContentLoaded', () => {
+    fetchNotifications();
+    setInterval(fetchNotifications, 30000);
+});
+</script>
