@@ -1047,7 +1047,7 @@ function showInvToast(msg, ok) {
           <span class="px-2 py-1 rounded" style="font-size:0.75rem;font-weight:700;text-transform:uppercase;background:rgba(123,31,162,0.1);color:#6a1070;">${p.category||'—'}</span>
         </td>
         <td class="px-6 py-5"><div class="flex items-center gap-2">${stockBadge(p.stock)}</div></td>
-        <td class="px-6 py-5" style="font-size:0.95rem;font-weight:800;color:#006970;">$${Number(p.price).toLocaleString()}</td>
+        <td class="px-6 py-5" style="font-size:0.95rem;font-weight:800;color:#006970;">₹${Number(p.price).toLocaleString()}</td>
         <td class="px-6 py-5 text-right">
           <div class="flex justify-end gap-2">
             <button class="icon-btn" onclick="editProduct(${p.id})"><span class="material-symbols-outlined" style="font-size:1.1rem;">edit</span></button>
