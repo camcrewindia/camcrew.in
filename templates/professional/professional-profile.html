@@ -1063,6 +1063,117 @@ function toggleTheme() {
   document.documentElement.className = next;
   localStorage.setItem('cc-theme', next);
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Portfolio Item Deletion & Title Editing Handlers
+═══════════════════════════════════════════════════════════════════ */
+function toggleManageMenu(index, event) {
+  if (event) event.stopPropagation();
+  const allMenus = document.querySelectorAll('.manage-dropdown');
+  allMenus.forEach((m, idx) => {
+    if (idx !== index) m.classList.remove('active');
+  });
+  const menu = document.getElementById(`manage-menu-${index}`);
+  if (menu) menu.classList.toggle('active');
+}
+
+document.addEventListener('click', () => {
+  document.querySelectorAll('.manage-dropdown').forEach(m => m.classList.remove('active'));
+});
+
+function copyMediaLink(url, event) {
+  if (event) event.stopPropagation();
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => showToast('Image link copied to clipboard!'));
+  } else {
+    showToast('Image link copied!');
+  }
+}
+
+async function deletePortfolioItem(itemId, itemIndex, event) {
+  if (event) event.stopPropagation();
+  toggleManageMenu(itemIndex, event);
+  if (!confirm('Are you sure you want to delete this portfolio item?')) return;
+
+  const card = document.getElementById(`portfolio-card-${itemIndex}`);
+  if (card) {
+    card.style.opacity = '0.3';
+    card.style.pointerEvents = 'none';
+  }
+
+  try {
+    let res;
+    if (itemId && itemId !== 'null' && itemId !== 'undefined' && itemId !== '') {
+      res = await fetch(`/api/portfolio/${itemId}`, { method: 'DELETE' });
+    } else {
+      const form = new FormData();
+      form.append('remove_portfolio_ids', JSON.stringify([itemId]));
+      res = await fetch('/api/profile', { method: 'PATCH', body: form });
+    }
+    const data = await res.json();
+    if (data.ok) {
+      if (card) card.remove();
+      showToast('Portfolio item deleted successfully');
+    } else {
+      if (card) { card.style.opacity = '1'; card.style.pointerEvents = 'auto'; }
+      showToast(data.error || 'Failed to delete item');
+    }
+  } catch (err) {
+    console.error('Delete portfolio error:', err);
+    if (card) { card.style.opacity = '1'; card.style.pointerEvents = 'auto'; }
+    showToast('Failed to delete portfolio item');
+  }
+}
+
+let _editingItem = null;
+
+function openEditTitleModal(itemId, currentTitle, cardIndex, event) {
+  if (event) event.stopPropagation();
+  toggleManageMenu(cardIndex, event);
+  _editingItem = { id: itemId, index: cardIndex };
+  const input = document.getElementById('edit-title-input');
+  if (input) input.value = currentTitle || '';
+  const modal = document.getElementById('edit-title-modal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeEditTitleModal() {
+  const modal = document.getElementById('edit-title-modal');
+  if (modal) modal.style.display = 'none';
+  _editingItem = null;
+}
+
+async function savePortfolioTitle() {
+  if (!_editingItem) return;
+  const input = document.getElementById('edit-title-input');
+  const newTitle = input ? input.value.trim() : '';
+  if (!newTitle) { showToast('Please enter a title'); return; }
+
+  const btn = document.getElementById('save-title-btn');
+  if (btn) btn.disabled = true;
+
+  try {
+    const res = await fetch(`/api/portfolio/${_editingItem.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: newTitle })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      const titleEl = document.querySelector(`#portfolio-card-${_editingItem.index} .portfolio-card-title`);
+      if (titleEl) titleEl.textContent = newTitle;
+      showToast('Image name updated successfully!');
+      closeEditTitleModal();
+    } else {
+      showToast(data.error || 'Failed to update title');
+    }
+  } catch (err) {
+    console.error('Update title error:', err);
+    showToast('Failed to update image name');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
 </script>
 
 <!-- Edit Title Modal -->
