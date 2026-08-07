@@ -669,8 +669,8 @@ function render(vaultFiles, jobs) {
         return `<div class="portfolio-cell" onclick="openLightbox(${i})">
           ${isVideo
             ? `<video src="${esc(url)}" muted playsinline preload="metadata"
-                 onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0"></video>`
-            : `<img src="${esc(url)}" alt="Portfolio ${i+1}" loading="lazy"/>`}
+                 onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0" onerror="this.parentElement.style.display='none'"></video>`
+            : `<img src="${esc(url)}" alt="Portfolio ${i+1}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'cell-placeholder\'><span class=\'material-symbols-outlined\' style=\'font-size:1.75rem;color:rgba(255,255,255,0.15);\'>image</span></div>'"/>`}
           <div class="cell-overlay">
             <div class="cell-overlay-icon">
               <span class="material-symbols-outlined">${isVideo ? 'play_arrow' : 'zoom_in'}</span>

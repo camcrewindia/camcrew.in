@@ -1500,7 +1500,9 @@ def update_profile():
 
             for file in portfolio_files:
                 try:
-                    file_url = _save_uploaded_file(file, f"profiles/{uid}/portfolio")
+                    data_url = _file_to_data_url(file)
+                    disk_url = _save_uploaded_file(file, f"profiles/{uid}/portfolio")
+                    file_url = data_url or disk_url
                 except ValueError as exc:
                     return jsonify({"ok": False, "error": str(exc)}), 400
                 _, ext = os.path.splitext(file.filename or "")
