@@ -712,7 +712,7 @@ def get_public_profile(username):
         return jsonify({"ok": False, "error": "Invalid username."}), 400
     with get_db() as conn:
         row = conn.execute("""
-            SELECT pp.*, u.display_name, u.created_at AS joined_at
+            SELECT pp.*, u.display_name, u.avatar_url AS user_avatar_url, u.created_at AS joined_at
             FROM professional_profiles pp
             JOIN users u ON u.id = pp.user_id
             WHERE pp.username = %s
@@ -725,14 +725,16 @@ def get_public_profile(username):
             WHERE professional_id = %s AND is_public = TRUE
             ORDER BY created_at DESC LIMIT 30
         """, (row["user_id"],)).fetchall()
+
+    avatar = row["avatar_url"] or row.get("user_avatar_url") or ""
     return jsonify({"ok": True, "profile": {
         "username":     row["username"],
         "display_name": row["display_name"] or username,
         "title":        row["title"],
         "bio":          row["bio"],
         "website":      row["website"],
-        "avatar_url":   row["avatar_url"] or "",
-        "avatarUrl":    row["avatar_url"] or "",
+        "avatar_url":   avatar,
+        "avatarUrl":    avatar,
         "categories":   _json.loads(row["categories"] or "[]"),
         "services":     _json.loads(row["services"]   or "[]"),
         "locations":    _json.loads(row["locations"]  or "[]"),
@@ -764,7 +766,7 @@ def list_professionals():
         fetch_limit = limit * 4 if (location_q or min_price_val is not None) else limit
         rows = conn.execute("""
             SELECT pp.username, pp.title, pp.bio, pp.categories, pp.services,
-                   pp.locations, pp.travel_intl, pp.avatar_url,
+                   pp.locations, pp.travel_intl, pp.avatar_url, u.avatar_url AS user_avatar_url,
                    u.display_name
             FROM professional_profiles pp
             JOIN users u ON u.id = pp.user_id
@@ -803,13 +805,15 @@ def list_professionals():
             cheapest = min(priced, key=lambda s: float(s.get("price") or 0))
             rate = f"₹{cheapest['price']}/{cheapest.get('unit', 'per day')}"
 
+        avatar = r["avatar_url"] or r.get("user_avatar_url") or ""
+
         professionals.append({
             "username":     r["username"],
             "display_name": r["display_name"] or r["username"],
             "title":        r["title"],
             "bio":          r["bio"],
-            "avatar_url":   r["avatar_url"] or "",
-            "avatarUrl":    r["avatar_url"] or "",
+            "avatar_url":   avatar,
+            "avatarUrl":    avatar,
             "locations":    locations,
             "location":     locations[0] if locations else None,
             "rate":         rate,
@@ -1297,6 +1301,8 @@ def update_profile():
     with get_db() as conn:
         if display_name:
             conn.execute("UPDATE users SET display_name=%s WHERE id=%s", (display_name, uid))
+        if avatar_url is not None:
+            conn.execute("UPDATE users SET avatar_url=%s WHERE id=%s", (avatar_url, uid))
 
         role_row = conn.execute("SELECT role, display_name FROM users WHERE id=%s", (uid,)).fetchone()
 
