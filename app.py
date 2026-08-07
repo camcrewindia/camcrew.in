@@ -569,6 +569,7 @@ def init_professional_tables():
         conn.execute("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS professional_id INTEGER")
         # Migrate: link professional_requests back to the originating customer booking
         conn.execute("ALTER TABLE professional_requests ADD COLUMN IF NOT EXISTS booking_id INTEGER")
+        conn.execute("ALTER TABLE professional_profiles ADD COLUMN IF NOT EXISTS kyc_status TEXT DEFAULT 'verified'")
 
 
 def seed_professional_data(uid):
@@ -1466,6 +1467,8 @@ def get_profile():
                     "locations":            _json.loads(pro["locations"] or "[]"),
                     "socials":              _json.loads(pro["socials"] or "{}"),
                     "travelIntl":           bool(pro["travel_intl"]),
+                    "kyc_status":           pro.get("kyc_status") if "kyc_status" in pro.keys() else "verified",
+                    "is_verified":          True,
                 })
             else:
                 profile.update({
@@ -2078,6 +2081,77 @@ def unblock_date(block_id):
     with get_db() as conn:
         conn.execute("DELETE FROM pro_blocked_dates WHERE id=%s AND professional_id=%s", (block_id, uid))
     return jsonify({"ok": True, "message": "Date unblocked."})
+
+
+# ---------------------------------------------------------------------------
+# Phase 4: Location Match & Search API
+# ---------------------------------------------------------------------------
+
+@app.route("/api/professionals/search", methods=["GET"])
+def search_professionals():
+    q = (request.args.get("q") or "").strip().lower()
+    city = (request.args.get("city") or "").strip().lower()
+    category = (request.args.get("category") or "").strip().lower()
+
+    with get_db() as conn:
+        rows = conn.execute("""
+            SELECT u.id as user_id, u.display_name, p.*
+            FROM users u
+            JOIN professional_profiles p ON p.user_id = u.id
+            WHERE u.role IN ('professional', 'studio')
+            ORDER BY u.id DESC LIMIT 100
+        """).fetchall()
+
+        results = []
+        for r in rows:
+            cats = [c.lower() for c in _json.loads(r["categories"] or "[]")]
+            locs = [l.lower() for l in _json.loads(r["locations"] or "[]")]
+            title = (r["title"] or "").lower()
+            name = (r["display_name"] or "").lower()
+            username = (r["username"] or "").lower()
+
+            if q and not (q in name or q in username or q in title or any(q in c for c in cats)):
+                continue
+
+            if category and not any(category in c for c in cats):
+                continue
+
+            if city and not any(city in l for l in locs):
+                continue
+
+            results.append({
+                "user_id": r["user_id"],
+                "display_name": r["display_name"],
+                "username": r["username"],
+                "title": r["title"] or "",
+                "avatar_url": r["avatar_url"] or "",
+                "categories": _json.loads(r["categories"] or "[]"),
+                "locations": _json.loads(r["locations"] or "[]"),
+                "kyc_status": r.get("kyc_status") if "kyc_status" in r.keys() else "verified",
+                "is_verified": True
+            })
+
+    return jsonify({"ok": True, "count": len(results), "professionals": results})
+
+
+@app.route("/api/admin/verify-pro", methods=["POST"])
+def admin_verify_pro():
+    uid = session.get("user_id")
+    role = session.get("role")
+    if not uid or role != "admin":
+        return jsonify({"ok": False, "error": "Admin access required."}), 403
+
+    data = request.get_json(force=True, silent=True) or {}
+    target_pro_id = data.get("professional_id")
+    status = data.get("kyc_status") or "verified"
+
+    if not target_pro_id:
+        return jsonify({"ok": False, "error": "Professional ID required."}), 400
+
+    with get_db() as conn:
+        conn.execute("UPDATE professional_profiles SET kyc_status=%s WHERE user_id=%s", (status, target_pro_id))
+
+    return jsonify({"ok": True, "message": f"Professional verification status updated to {status}."})
 
 
 # ---------------------------------------------------------------------------

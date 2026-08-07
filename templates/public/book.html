@@ -902,7 +902,7 @@ function renderHero() {
     glow.style.background = `hsl(${hue},60%,40%)`;
   }
 
-  document.getElementById('page-title').textContent = PRO.display_name;
+  document.getElementById('page-title').innerHTML = `${PRO.display_name} <span class="material-symbols-outlined" style="font-size:1.1rem;color:#00f0ff;vertical-align:middle;margin-left:0.25rem;" title="Official Verified Professional">verified</span>`;
   document.getElementById('page-subtitle').textContent = PRO.title || cats;
 
   const profileLink = document.getElementById('hero-profile-link');
