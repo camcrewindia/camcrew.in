@@ -1802,6 +1802,59 @@ def payment_release():
     return jsonify({"ok": True, "message": "Escrow funds released to professional."})
 
 
+@app.route("/api/payments/refund", methods=["POST"])
+def payment_refund():
+    """Refund held escrow payment back to client when booking is cancelled or declined."""
+    uid = session.get("user_id")
+    role = session.get("role")
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    data = request.get_json(force=True, silent=True) or {}
+    escrow_id = data.get("escrow_id")
+    booking_id = data.get("booking_id")
+    reason = (data.get("reason") or "Booking cancelled").strip()
+
+    with get_db() as conn:
+        if escrow_id:
+            pay = conn.execute("SELECT * FROM escrow_payments WHERE id=%s", (escrow_id,)).fetchone()
+        elif booking_id:
+            pay = conn.execute("SELECT * FROM escrow_payments WHERE booking_id=%s ORDER BY id DESC LIMIT 1", (booking_id,)).fetchone()
+        else:
+            return jsonify({"ok": False, "error": "Missing escrow or booking ID."}), 400
+
+        if not pay:
+            return jsonify({"ok": False, "error": "Escrow transaction not found."}), 404
+
+        if role != "admin" and pay["client_id"] != uid and pay["professional_id"] != uid:
+            return jsonify({"ok": False, "error": "Unauthorized to refund this escrow payment."}), 403
+
+        conn.execute("""
+            UPDATE escrow_payments
+            SET escrow_status='refunded_to_client'
+            WHERE id=%s
+        """, (pay["id"],))
+
+        if pay["booking_id"]:
+            conn.execute("UPDATE bookings SET status='cancelled' WHERE id=%s", (pay["booking_id"],))
+
+    create_notification(
+        pay["client_id"],
+        "Escrow Payment Refunded",
+        f"₹{pay['amount']:,.0f} has been refunded to your payment source. Reason: {reason}",
+        ntype="info",
+        link="/customer-profile.html"
+    )
+    create_notification(
+        pay["professional_id"],
+        "Booking Cancelled - Escrow Refunded",
+        f"Booking #{pay['booking_id']} was cancelled and ₹{pay['amount']:,.0f} refunded to client.",
+        ntype="warning",
+        link="/professional-dashboard.html"
+    )
+
+    return jsonify({"ok": True, "message": "Escrow funds refunded to client.", "status": "refunded_to_client"})
+
+
 @app.route("/api/payments/escrow-summary", methods=["GET"])
 def payment_escrow_summary():
     uid = session.get("user_id")
@@ -1865,12 +1918,21 @@ def chat_send():
         sender_name = conn.execute("SELECT display_name FROM users WHERE id=%s", (uid,)).fetchone()
         sname = sender_name["display_name"] if sender_name else "Someone"
 
+        receiver_info = conn.execute("SELECT role FROM users WHERE id=%s", (receiver_id,)).fetchone()
+        receiver_role = receiver_info["role"] if receiver_info else "customer"
+
+    notif_link = (
+        f"/professional-dashboard.html?chat={uid}"
+        if receiver_role in ("professional", "studio", "admin")
+        else f"/customer-profile.html?chat={uid}"
+    )
+
     create_notification(
         receiver_id,
         f"New message from {sname}",
         message[:80] + ("..." if len(message) > 80 else ""),
         ntype="info",
-        link=f"/professional-dashboard.html?chat={uid}"
+        link=notif_link
     )
 
     return jsonify({"ok": True, "message_id": row["id"], "created_at": row["created_at"]})
