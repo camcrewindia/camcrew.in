@@ -854,7 +854,9 @@ function buildCard(pro, delay = 0) {
         <div class="card-banner-noise"></div>
         <div class="card-banner-ring" style="width:200px;height:200px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
         <div class="card-banner-ring" style="width:140px;height:140px;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.6;"></div>
-        <span class="card-avatar-initials" style="color:hsl(${hue},75%,75%);">${esc(inits)}</span>
+        ${(pro.avatarUrl || pro.avatar_url)
+          ? `<img src="${esc(pro.avatarUrl || pro.avatar_url)}" alt="${esc(pro.display_name)}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:2;">`
+          : `<span class="card-avatar-initials" style="color:hsl(${hue},75%,75%);">${esc(inits)}</span>`}
         <div class="card-banner-icon">
           <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 0;">palette</span>
         </div>

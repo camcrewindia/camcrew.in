@@ -550,8 +550,9 @@ function renderProfile(p) {
 
   /* ── Upper profile strip ── */
   const avatarEl = document.getElementById('pp-avatar');
-  if (p.avatar_url) {
-    avatarEl.innerHTML = `<img src="${esc(p.avatar_url)}" alt="${esc(p.display_name || p.username)}">`;
+  const avatarUrl = p.avatar_url || p.avatarUrl;
+  if (avatarUrl) {
+    avatarEl.innerHTML = `<img src="${esc(avatarUrl)}" alt="${esc(p.display_name || p.username)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
     avatarEl.style.background = 'none';
     avatarEl.style.color = '#fff';
     avatarEl.textContent = '';

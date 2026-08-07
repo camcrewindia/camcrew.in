@@ -731,6 +731,8 @@ def get_public_profile(username):
         "title":        row["title"],
         "bio":          row["bio"],
         "website":      row["website"],
+        "avatar_url":   row["avatar_url"] or "",
+        "avatarUrl":    row["avatar_url"] or "",
         "categories":   _json.loads(row["categories"] or "[]"),
         "services":     _json.loads(row["services"]   or "[]"),
         "locations":    _json.loads(row["locations"]  or "[]"),
@@ -762,7 +764,7 @@ def list_professionals():
         fetch_limit = limit * 4 if (location_q or min_price_val is not None) else limit
         rows = conn.execute("""
             SELECT pp.username, pp.title, pp.bio, pp.categories, pp.services,
-                   pp.locations, pp.travel_intl,
+                   pp.locations, pp.travel_intl, pp.avatar_url,
                    u.display_name
             FROM professional_profiles pp
             JOIN users u ON u.id = pp.user_id
@@ -806,6 +808,8 @@ def list_professionals():
             "display_name": r["display_name"] or r["username"],
             "title":        r["title"],
             "bio":          r["bio"],
+            "avatar_url":   r["avatar_url"] or "",
+            "avatarUrl":    r["avatar_url"] or "",
             "locations":    locations,
             "location":     locations[0] if locations else None,
             "rate":         rate,
