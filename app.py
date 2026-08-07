@@ -730,9 +730,9 @@ def get_public_profile(username):
         return jsonify({"ok": False, "error": "Invalid username."}), 400
     with get_db() as conn:
         row = conn.execute("""
-            SELECT pp.*, u.display_name, u.avatar_url AS user_avatar_url, u.created_at AS joined_at
+            SELECT pp.*, u.display_name, u.created_at AS joined_at
             FROM professional_profiles pp
-            JOIN users u ON u.id = pp.user_id
+            LEFT JOIN users u ON u.id = pp.user_id
             WHERE pp.username = %s
         """, (username,)).fetchone()
         if not row:
@@ -744,7 +744,7 @@ def get_public_profile(username):
             ORDER BY created_at DESC LIMIT 30
         """, (row["user_id"],)).fetchall()
 
-    avatar = row["avatar_url"] or row.get("user_avatar_url") or ""
+    avatar = row["avatar_url"] or ""
     return jsonify({"ok": True, "profile": {
         "username":     row["username"],
         "display_name": row["display_name"] or username,
@@ -797,10 +797,10 @@ def list_professionals():
     with get_db() as conn:
         rows = conn.execute("""
             SELECT pp.username, pp.title, pp.bio, pp.categories, pp.services,
-                   pp.locations, pp.travel_intl, pp.avatar_url, u.avatar_url AS user_avatar_url,
+                   pp.locations, pp.travel_intl, pp.avatar_url,
                    u.display_name
             FROM professional_profiles pp
-            JOIN users u ON u.id = pp.user_id
+            LEFT JOIN users u ON u.id = pp.user_id
             ORDER BY pp.updated_at DESC
         """).fetchall()
 
@@ -857,7 +857,7 @@ def list_professionals():
             cheapest = min(priced, key=lambda s: float(s.get("price") or 0))
             rate = f"₹{cheapest['price']}/{cheapest.get('unit', 'per day')}"
 
-        avatar = r["avatar_url"] or r.get("user_avatar_url") or ""
+        avatar = r["avatar_url"] or ""
 
         professionals.append({
             "username":     r["username"],
@@ -1352,8 +1352,6 @@ def update_profile():
     with get_db() as conn:
         if display_name:
             conn.execute("UPDATE users SET display_name=%s WHERE id=%s", (display_name, uid))
-        if avatar_url is not None:
-            conn.execute("UPDATE users SET avatar_url=%s WHERE id=%s", (avatar_url, uid))
 
         role_row = conn.execute("SELECT role, display_name FROM users WHERE id=%s", (uid,)).fetchone()
 
