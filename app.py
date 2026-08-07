@@ -569,7 +569,11 @@ def init_professional_tables():
         conn.execute("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS professional_id INTEGER")
         # Migrate: link professional_requests back to the originating customer booking
         conn.execute("ALTER TABLE professional_requests ADD COLUMN IF NOT EXISTS booking_id INTEGER")
-        conn.execute("ALTER TABLE professional_profiles ADD COLUMN IF NOT EXISTS kyc_status TEXT DEFAULT 'verified'")
+        conn.execute("ALTER TABLE professional_profiles ADD COLUMN IF NOT EXISTS kyc_status TEXT DEFAULT 'pending'")
+        # Reset any row that was auto-granted 'verified' by the old default but has never been reviewed
+        # (Only rows with no explicit admin action — i.e. still at the stale 'verified' migration default)
+        # We do NOT touch rows already manually set by admin to 'verified' or 'rejected'.
+        # Since we can't distinguish, we only fix newly added rows going forward via the INSERT below.
 
 
 def seed_professional_data(uid):
@@ -1584,11 +1588,11 @@ def update_profile():
                 conn.execute("""
                     INSERT INTO professional_profiles
                     (user_id, username, title, bio, phone, website, avatar_url,
-                     categories, services, locations, socials, travel_intl)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                     categories, services, locations, socials, travel_intl, kyc_status)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 """, (
                     uid, username, title, bio, phone, website, avatar_url,
-                    categories, services, locations, socials, travel_intl,
+                    categories, services, locations, socials, travel_intl, 'pending',
                 ))
 
             if removed_portfolio_ids:
@@ -2161,26 +2165,37 @@ def unblock_date(block_id):
 
 @app.route("/api/professionals/search", methods=["GET"])
 def search_professionals():
-    q = (request.args.get("q") or "").strip().lower()
-    city = (request.args.get("city") or "").strip().lower()
-    category = (request.args.get("category") or "").strip().lower()
+    q         = (request.args.get("q")        or "").strip().lower()
+    city      = (request.args.get("city")     or "").strip().lower()
+    category  = (request.args.get("category") or "").strip().lower()
+    # Pagination: page is 1-indexed, per_page max-capped at 50
+    try:
+        page     = max(1, int(request.args.get("page", 1)))
+        per_page = min(50, max(1, int(request.args.get("per_page", 20))))
+    except (ValueError, TypeError):
+        page, per_page = 1, 20
+    offset = (page - 1) * per_page
 
     with get_db() as conn:
+        # Fetch a sliding window large enough to apply in-Python filters and still
+        # return the right page. We over-fetch by a reasonable multiplier and stop early.
+        fetch_limit = per_page * 10  # fetch up to 10 pages worth, filter, then slice
         rows = conn.execute("""
             SELECT u.id as user_id, u.display_name, p.*
             FROM users u
             JOIN professional_profiles p ON p.user_id = u.id
             WHERE u.role IN ('professional', 'studio')
-            ORDER BY u.id DESC LIMIT 100
-        """).fetchall()
+            ORDER BY u.id DESC
+            LIMIT %s OFFSET %s
+        """, (fetch_limit, offset)).fetchall()
 
         results = []
         for r in rows:
-            cats = [c.lower() for c in _json.loads(r["categories"] or "[]")]
-            locs = [l.lower() for l in _json.loads(r["locations"] or "[]")]
-            title = (r["title"] or "").lower()
-            name = (r["display_name"] or "").lower()
-            username = (r["username"] or "").lower()
+            cats     = [c.lower() for c in _json.loads(r["categories"] or "[]")]
+            locs     = [l.lower() for l in _json.loads(r["locations"]   or "[]")]
+            title    = (r["title"]        or "").lower()
+            name     = (r["display_name"] or "").lower()
+            username = (r["username"]     or "").lower()
 
             if q and not (q in name or q in username or q in title or any(q in c for c in cats)):
                 continue
@@ -2191,19 +2206,29 @@ def search_professionals():
             if city and not any(city in l for l in locs):
                 continue
 
+            kyc = r["kyc_status"] if "kyc_status" in r.keys() else "pending"
             results.append({
-                "user_id": r["user_id"],
+                "user_id":    r["user_id"],
                 "display_name": r["display_name"],
-                "username": r["username"],
-                "title": r["title"] or "",
+                "username":   r["username"],
+                "title":      r["title"] or "",
                 "avatar_url": r["avatar_url"] or "",
                 "categories": _json.loads(r["categories"] or "[]"),
-                "locations": _json.loads(r["locations"] or "[]"),
-                "kyc_status": r.get("kyc_status") if "kyc_status" in r.keys() else "verified",
-                "is_verified": True
+                "locations":  _json.loads(r["locations"]  or "[]"),
+                "kyc_status": kyc,
+                "is_verified": kyc == "verified"
             })
 
-    return jsonify({"ok": True, "count": len(results), "professionals": results})
+            if len(results) >= per_page:
+                break  # We have a full page; stop processing
+
+    return jsonify({
+        "ok": True,
+        "page": page,
+        "per_page": per_page,
+        "count": len(results),
+        "professionals": results
+    })
 
 
 @app.route("/api/admin/verify-pro", methods=["POST"])
