@@ -1305,6 +1305,9 @@ async function confirmBooking() {
       errEl.style.display = 'flex';
       btn.disabled = false;
       btn.innerHTML = `<span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">check_circle</span> Confirm Booking`;
+      return;
+    }
+
     if (total > 0 && PRO && (PRO.user_id || PRO.userId || PRO.id)) {
       try {
         await fetch('/api/payments/checkout', {
@@ -1319,6 +1322,7 @@ async function confirmBooking() {
         });
       } catch(e) { console.error('Escrow checkout error:', e); }
     }
+
     showSuccess(payload, data.booking_id);
   } catch (_) {
     errTxt.textContent = 'Network error. Please check your connection.';
