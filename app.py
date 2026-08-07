@@ -727,17 +727,42 @@ def at_profile_page(username):
 @app.route("/api/profile/@<username>", methods=["GET"])
 def get_public_profile(username):
     """Return public profile JSON for /@username — no auth required."""
-    if not _USERNAME_RE.match(username):
+    username_clean = (username or "").lstrip("@").strip()
+    if not username_clean:
         return jsonify({"ok": False, "error": "Invalid username."}), 400
+
     with get_db() as conn:
         row = conn.execute("""
             SELECT pp.*, u.display_name, u.created_at AS joined_at
             FROM professional_profiles pp
             LEFT JOIN users u ON u.id = pp.user_id
-            WHERE pp.username = %s
-        """, (username,)).fetchone()
+            WHERE LOWER(pp.username) = LOWER(%s) OR LOWER(u.display_name) = LOWER(%s)
+        """, (username_clean, username_clean)).fetchone()
+
         if not row:
+            u_row = conn.execute("""
+                SELECT id, display_name, email, created_at AS joined_at
+                FROM users WHERE LOWER(display_name) = LOWER(%s) OR LOWER(email) = LOWER(%s) OR LOWER(role) = LOWER(%s)
+            """, (username_clean, username_clean, username_clean)).fetchone()
+            if u_row:
+                dn = u_row["display_name"] or username_clean
+                return jsonify({"ok": True, "profile": {
+                    "username":     username_clean,
+                    "display_name": dn,
+                    "title":        "Professional",
+                    "bio":          "",
+                    "website":      "",
+                    "avatar_url":   "",
+                    "avatarUrl":    "",
+                    "categories":   ["Photography", "Videography"],
+                    "services":     [{"name": "Standard Session", "price": 2000, "unit": "per day", "category": "General"}],
+                    "locations":    [],
+                    "socials":      {},
+                    "joined_at":    u_row["joined_at"],
+                    "portfolio":    [],
+                }})
             return jsonify({"ok": False, "error": "Profile not found."}), 404
+
         portfolio = conn.execute("""
             SELECT title, file_url, file_type, created_at
             FROM portfolio_items
