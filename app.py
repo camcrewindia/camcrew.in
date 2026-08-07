@@ -1022,6 +1022,30 @@ def _serve_template(filename):
     abort(404)
 
 
+@app.route("/uploads/<path:filename>")
+def serve_uploads(filename):
+    abs_path = os.path.join(ROOT_DIR, "uploads", filename)
+    if os.path.exists(abs_path):
+        return send_from_directory(os.path.join(ROOT_DIR, "uploads"), filename)
+
+    initial = "CC"
+    parts = [p for p in filename.split("/") if p]
+    if len(parts) >= 2:
+        initial = parts[1][:2].upper()
+
+    svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+      <defs>
+        <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00f0ff"/>
+          <stop offset="100%" stop-color="#8b5cf6"/>
+        </linearGradient>
+      </defs>
+      <rect width="200" height="200" rx="100" fill="url(#g)"/>
+      <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#0b0c10" font-family="sans-serif" font-size="72" font-weight="900">{initial}</text>
+    </svg>"""
+    return Response(svg, mimetype="image/svg+xml")
+
+
 @app.route("/")
 def index():
     return send_from_directory(os.path.join(ROOT_DIR, "templates", "public"), "index.html")
