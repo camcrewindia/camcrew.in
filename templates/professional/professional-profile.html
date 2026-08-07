@@ -297,49 +297,145 @@
   /* ══════════════════════════════════════
      PORTFOLIO GRID
   ══════════════════════════════════════ */
+  /* ── Portfolio Grid & Card System ── */
   .portfolio-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 3px;
-    border-radius: 1rem;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.05);
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.25rem;
   }
 
-  .portfolio-cell { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 0.75rem; aspect-ratio: 1; overflow: hidden; position: relative; cursor: pointer; transition: transform 0.2s; }
+  .portfolio-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
+    overflow: visible;
+    position: relative;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+  }
 
-  .portfolio-cell img,
-  .portfolio-cell video {
+  .portfolio-card:hover {
+    border-color: rgba(0, 240, 255, 0.3);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.1);
+    transform: translateY(-3px);
+  }
+
+  .portfolio-media-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+  }
+
+  .portfolio-media-wrap img,
+  .portfolio-media-wrap video {
     width: 100%; height: 100%;
     object-fit: cover; display: block;
-    transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    transition: transform 0.4s ease;
   }
 
-  .portfolio-cell:hover img,
-  .portfolio-cell:hover video { transform: scale(1.08); }
-
-  .portfolio-cell .cell-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(0,30,35,0.6) 0%, rgba(0,0,0,0.5) 100%);
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; transition: opacity 0.25s;
+  .portfolio-card:hover .portfolio-media-wrap img,
+  .portfolio-card:hover .portfolio-media-wrap video {
+    transform: scale(1.06);
   }
-  .portfolio-cell:hover .cell-overlay { opacity: 1; }
 
-  .cell-overlay-icon {
-    width: 2.75rem; height: 2.75rem; border-radius: 50%;
-    background: rgba(0,219,233,0.15);
+  .manage-menu-btn {
+    position: absolute;
+    top: 0.6rem; right: 0.6rem;
+    width: 2.2rem; height: 2.2rem;
+    border-radius: 50%;
+    background: rgba(11, 12, 16, 0.75);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(0,219,233,0.3);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
     display: flex; align-items: center; justify-content: center;
-    transform: scale(0.8); transition: transform 0.25s;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.2s;
   }
-  .portfolio-cell:hover .cell-overlay-icon { transform: scale(1); }
-  .cell-overlay-icon .material-symbols-outlined { font-size: 1.25rem; color: var(--ac); }
 
-  .portfolio-cell .cell-placeholder {
-    width: 100%; height: 100%;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem;
+  .manage-menu-btn:hover {
+    background: #00f0ff;
+    color: #0b0c10;
+    border-color: #00f0ff;
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+  }
+
+  .manage-dropdown {
+    position: absolute;
+    top: 3.2rem; right: 0.6rem;
+    width: 165px;
+    background: rgba(18, 20, 26, 0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.75rem;
+    padding: 0.35rem;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+    z-index: 30;
+    display: none;
+    animation: menuFadeIn 0.15s ease-out;
+  }
+
+  .manage-dropdown.active {
+    display: block;
+  }
+
+  @keyframes menuFadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .manage-item {
+    display: flex; align-items: center; gap: 0.6rem;
+    width: 100%; padding: 0.5rem 0.65rem;
+    font-size: 0.78rem; font-weight: 600; color: #e2e8f0;
+    background: transparent; border: none; border-radius: 0.5rem;
+    cursor: pointer; transition: all 0.15s; text-align: left;
+    font-family: inherit;
+  }
+
+  .manage-item:hover {
+    background: rgba(0, 240, 255, 0.12);
+    color: #00f0ff;
+  }
+
+  .manage-item.danger:hover {
+    background: rgba(255, 77, 77, 0.15);
+    color: #ff4d4d;
+  }
+
+  .manage-item .material-symbols-outlined {
+    font-size: 1rem;
+  }
+
+  .portfolio-card-info {
+    padding: 0.7rem 0.85rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .portfolio-card-title {
+    font-size: 0.82rem; font-weight: 700; color: #fff;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .portfolio-card-badge {
+    font-size: 0.62rem; font-weight: 800; letter-spacing: 0.05em;
+    padding: 0.15rem 0.45rem; border-radius: 0.35rem;
+    background: rgba(0, 240, 255, 0.1); color: #00f0ff;
+    border: 1px solid rgba(0, 240, 255, 0.2); text-transform: uppercase;
   }
 
   /* ── Empty state ── */
@@ -659,22 +755,52 @@ function render(vaultFiles, jobs) {
     ? allMedia.map((item, i) => {
         const isVideo = item.file_type === 'video' || item.type === 'video' || item.isVideo;
         const url     = item.file_url || item.fileUrl || item.url || '';
+        const title   = item.title || item.name || `Portfolio Item #${i+1}`;
+        const itemId  = item.id || null;
+
         if (!url) {
-          return `<div class="portfolio-cell">
-            <div class="cell-placeholder">
-              <span class="material-symbols-outlined" style="font-size:1.75rem;color:rgba(255,255,255,0.1);">${isVideo ? 'movie' : 'image'}</span>
+          return `<div class="portfolio-card">
+            <div class="portfolio-media-wrap">
+              <div class="cell-placeholder">
+                <span class="material-symbols-outlined" style="font-size:1.75rem;color:rgba(255,255,255,0.15);">${isVideo ? 'movie' : 'image'}</span>
+              </div>
             </div>
           </div>`;
         }
-        return `<div class="portfolio-cell" onclick="openLightbox(${i})">
-          ${isVideo
-            ? `<video src="${esc(url)}" muted playsinline preload="metadata"
-                 onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0" onerror="this.parentElement.style.display='none'"></video>`
-            : `<img src="${esc(url)}" alt="Portfolio ${i+1}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'cell-placeholder\'><span class=\'material-symbols-outlined\' style=\'font-size:1.75rem;color:rgba(255,255,255,0.15);\'>image</span></div>'"/>`}
-          <div class="cell-overlay">
-            <div class="cell-overlay-icon">
-              <span class="material-symbols-outlined">${isVideo ? 'play_arrow' : 'zoom_in'}</span>
+
+        return `<div class="portfolio-card" id="portfolio-card-${i}">
+          <div class="portfolio-media-wrap" onclick="openLightbox(${i})">
+            ${isVideo
+              ? `<video src="${esc(url)}" muted playsinline preload="metadata" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0" onerror="this.parentElement.style.display='none'"></video>`
+              : `<img src="${esc(url)}" alt="${esc(title)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'cell-placeholder\\'><span class=\\'material-symbols-outlined\\' style=\\'font-size:1.75rem;color:rgba(255,255,255,0.15);\\'>image</span></div>'"/>`}
+            <div class="cell-overlay">
+              <div class="cell-overlay-icon">
+                <span class="material-symbols-outlined">${isVideo ? 'play_arrow' : 'zoom_in'}</span>
+              </div>
             </div>
+          </div>
+
+          <!-- 3-Dot Manage Button -->
+          <button class="manage-menu-btn" title="Manage item" onclick="toggleManageMenu(${i}, event)">
+            <span class="material-symbols-outlined" style="font-size:1.25rem;">more_vert</span>
+          </button>
+
+          <!-- Floating Dropdown Menu -->
+          <div class="manage-dropdown" id="manage-menu-${i}">
+            <button class="manage-item" onclick="openLightbox(${i}); toggleManageMenu(${i}, event);">
+              <span class="material-symbols-outlined">${isVideo ? 'play_circle' : 'visibility'}</span> Preview
+            </button>
+            <button class="manage-item" onclick="copyMediaLink('${esc(url)}', event); toggleManageMenu(${i}, event);">
+              <span class="material-symbols-outlined">link</span> Copy Link
+            </button>
+            <button class="manage-item danger" onclick="deletePortfolioItem('${itemId || ''}', ${i}, event)">
+              <span class="material-symbols-outlined">delete</span> Delete Item
+            </button>
+          </div>
+
+          <div class="portfolio-card-info">
+            <span class="portfolio-card-title">${esc(title)}</span>
+            <span class="portfolio-card-badge">${isVideo ? 'VIDEO' : 'IMAGE'}</span>
           </div>
         </div>`;
       }).join('')

@@ -794,7 +794,7 @@ def get_public_profile(username):
             return jsonify({"ok": False, "error": "Profile not found."}), 404
 
         portfolio = conn.execute("""
-            SELECT title, file_url, file_type, created_at
+            SELECT id, title, file_url, file_type, created_at
             FROM portfolio_items
             WHERE professional_id = %s AND is_public = TRUE
             ORDER BY created_at DESC LIMIT 30
@@ -1516,6 +1516,17 @@ def update_profile():
                 )
 
     return jsonify({"ok": True, "display_name": display_name, "username": username, "avatarUrl": avatar_url})
+
+
+@app.route("/api/portfolio/<int:item_id>", methods=["DELETE"])
+def delete_portfolio_item(item_id):
+    """Delete a single portfolio item directly for the authenticated professional."""
+    uid = session.get("user_id")
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    with get_db() as conn:
+        conn.execute("DELETE FROM portfolio_items WHERE id=%s AND professional_id=%s", (item_id, uid))
+    return jsonify({"ok": True, "message": "Portfolio item deleted."})
 
 
 # ---------------------------------------------------------------------------
