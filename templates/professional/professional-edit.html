@@ -927,20 +927,19 @@ function prefillFromStorage(pro) {
   bioEl.value = pro.bio || '';
   updateCharCount(bioEl, 'bio-count', 300);
 
-  // Avatar
-  if (pro.avatarUrl) {
+  // Avatar preview restore on page load
+  const existingAvatar = pro.avatarUrl || pro.avatar_url;
+  if (existingAvatar && existingAvatar.trim() !== '') {
     avatarFile = null;
-    avatarUrl = pro.avatarUrl;
-    showAvatarPreview(pro.avatarUrl, 'Current photo');
+    avatarUrl = existingAvatar;
+    showAvatarPreview(existingAvatar, 'Current photo');
   } else {
     avatarFile = null;
     avatarUrl = null;
-    document.getElementById('avatar-name-preview').textContent = '—';
-  }
-
-  // Avatar display name fallback
-  if (!pro.avatarUrl) {
-    const initials = (pro.name || pro.display_name || '?').charAt(0).toUpperCase();
+    document.getElementById('avatar-preview').src = '';
+    document.getElementById('avatar-preview').style.display = 'none';
+    document.getElementById('avatar-placeholder').style.display = 'flex';
+    document.getElementById('avatar-remove-btn').style.display = 'none';
     document.getElementById('avatar-name-preview').textContent = pro.name || pro.display_name || '—';
   }
 

@@ -1305,6 +1305,7 @@ def get_profile():
                     "phone":                pro["phone"] or "",
                     "website":              pro["website"] or "",
                     "avatarUrl":           pro["avatar_url"] or "",
+                    "avatar_url":          pro["avatar_url"] or "",
                     "categories":           _json.loads(pro["categories"] or "[]"),
                     "services":             _json.loads(pro["services"] or "[]"),
                     "locations":            _json.loads(pro["locations"] or "[]"),
