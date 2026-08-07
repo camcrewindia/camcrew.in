@@ -64,6 +64,7 @@ class _DBConn:
             try:
                 self._conn = psycopg2.connect(
                     url,
+                    connect_timeout=3,
                     cursor_factory=psycopg2.extras.RealDictCursor,
                 )
                 return
