@@ -755,10 +755,17 @@ function renderProfile(p) {
 function openLb(i) {
   const item  = (window._lbMedia || [])[i];
   if (!item || !item.file_url) return;
+  const url = item.file_url;
+  const isEmbed = url.includes('youtube.com/embed') || url.includes('player.vimeo.com') || url.includes('instagram.com');
   const isVid = item.file_type === 'video';
-  document.getElementById('lb-content').innerHTML = isVid
-    ? `<video src="${esc(item.file_url)}" controls autoplay style="width:100%;max-height:82vh;border-radius:1rem;"></video>`
-    : `<img src="${esc(item.file_url)}" alt="Portfolio" style="width:100%;max-height:82vh;object-fit:contain;border-radius:1rem;"/>`;
+  const container = document.getElementById('lb-content');
+  if (isEmbed) {
+    container.innerHTML = `<iframe src="${esc(url)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:90vw;max-width:850px;height:70vh;border-radius:1rem;border:none;"></iframe>`;
+  } else if (isVid) {
+    container.innerHTML = `<video src="${esc(url)}" controls autoplay style="width:100%;max-height:82vh;border-radius:1rem;"></video>`;
+  } else {
+    container.innerHTML = `<img src="${esc(url)}" alt="Portfolio" style="width:100%;max-height:82vh;object-fit:contain;border-radius:1rem;"/>`;
+  }
   document.getElementById('lb').classList.add('open');
 }
 function closeLb() {

@@ -464,6 +464,21 @@
           </div>
           <input type="file" id="portfolio-file" accept="image/*,video/*" multiple class="hidden" onchange="handlePortfolioFiles(this.files)">
 
+          <!-- Embed Video / Reel URL -->
+          <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:1rem;padding:1.25rem;margin-bottom:1.25rem;">
+            <p style="font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:0.4rem;">
+              <span class="material-symbols-outlined" style="font-size:1.1rem;color:#00dbe9;vertical-align:middle;margin-right:0.3rem;">link</span>
+              Embed YouTube, Vimeo, or Instagram Reel
+            </p>
+            <p style="font-size:0.78rem;color:#849495;margin-bottom:0.75rem;">Paste a link to showcase your videos or Instagram Reels directly in your portfolio</p>
+            <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;">
+              <input type="text" id="embed-url-inp" class="cc-input" style="flex:1;min-width:200px;" placeholder="https://www.youtube.com/watch?v=... or instagram.com/reel/...">
+              <button type="button" onclick="submitEmbedUrl()" style="padding:0.65rem 1.25rem;border-radius:0.65rem;border:none;background:#00dbe9;color:#001f22;font-weight:800;font-size:0.85rem;cursor:pointer;">
+                Embed Video
+              </button>
+            </div>
+          </div>
+
           <div class="grid grid-cols-3 sm:grid-cols-4 gap-3" id="portfolio-grid"></div>
 
           <p id="portfolio-count" style="font-size:0.78rem;color:#849495;margin-top:0.75rem;text-align:right;">
@@ -1190,6 +1205,30 @@ function esc(s) {
 const spinStyle = document.createElement('style');
 spinStyle.textContent = `@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`;
 document.head.appendChild(spinStyle);
+
+async function submitEmbedUrl() {
+  const inp = document.getElementById('embed-url-inp');
+  const url = inp ? inp.value.trim() : '';
+  if (!url) { showToast('Please enter a video URL', 'error'); return; }
+
+  try {
+    const res = await fetch('/api/portfolio/embed', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      showToast('Video embedded successfully!', 'success');
+      if (inp) inp.value = '';
+      loadProfile();
+    } else {
+      showToast(data.error || 'Failed to embed video', 'error');
+    }
+  } catch(e) {
+    showToast('Failed to embed video', 'error');
+  }
+}
 
 /* ── Blocked Dates Handlers ──────────────────────────────────────── */
 let _blockedDatesList = [];

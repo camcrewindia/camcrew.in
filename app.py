@@ -207,6 +207,35 @@ def _file_to_data_url(file):
         return None
 
 
+def _parse_embed_url(raw_url):
+    """Convert raw YouTube, Vimeo, or Instagram Reels URL to clean embed URL."""
+    url = (raw_url or "").strip()
+    if not url:
+        return None, None
+
+    yt_match = re.search(r'(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})', url)
+    if yt_match:
+        yt_id = yt_match.group(1)
+        return f"https://www.youtube.com/embed/{yt_id}", "video"
+
+    vm_match = re.search(r'vimeo\.com\/(?:.*\/)?(\d+)', url)
+    if vm_match:
+        vm_id = vm_match.group(1)
+        return f"https://player.vimeo.com/video/{vm_id}", "video"
+
+    ig_match = re.search(r'instagram\.com\/(?:reel|p)\/([^"&?\/\s]+)', url)
+    if ig_match:
+        ig_id = ig_match.group(1)
+        return f"https://www.instagram.com/p/{ig_id}/embed", "video"
+
+    if url.startswith("http://") or url.startswith("https://") or url.startswith("data:"):
+        _, ext = os.path.splitext(url)
+        ftype = "video" if ext.lower() in ('.mp4', '.mov', '.webm') else "image"
+        return url, ftype
+
+    return None, None
+
+
 def init_db():
     with get_db() as conn:
         conn.execute("""
@@ -1634,6 +1663,42 @@ def update_portfolio_item_title(item_id):
     with get_db() as conn:
         conn.execute("UPDATE portfolio_items SET title=%s WHERE id=%s AND professional_id=%s", (new_title, item_id, uid))
     return jsonify({"ok": True, "message": "Title updated.", "title": new_title})
+
+
+@app.route("/api/portfolio/embed", methods=["POST"])
+def add_portfolio_embed():
+    """Embed YouTube, Vimeo, or Instagram Reel URL into professional portfolio."""
+    uid = session.get("user_id")
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    data = request.get_json(force=True, silent=True) or {}
+    raw_url = (data.get("url") or "").strip()
+    title = (data.get("title") or "").strip() or None
+
+    if not raw_url:
+        return jsonify({"ok": False, "error": "Video or Reel URL required."}), 400
+
+    embed_url, file_type = _parse_embed_url(raw_url)
+    if not embed_url:
+        return jsonify({"ok": False, "error": "Unsupported video URL. Please paste a YouTube, Vimeo, or Instagram Reel link."}), 400
+
+    with get_db() as conn:
+        row = conn.execute("""
+            INSERT INTO portfolio_items (professional_id, title, description, file_url, file_type, share_id, is_public)
+            VALUES (%s, %s, NULL, %s, %s, NULL, TRUE)
+            RETURNING id, created_at
+        """, (uid, title or "Embedded Video", embed_url, file_type)).fetchone()
+
+    return jsonify({
+        "ok": True,
+        "item": {
+            "id": row["id"],
+            "title": title or "Embedded Video",
+            "file_url": embed_url,
+            "file_type": file_type,
+            "created_at": row["created_at"]
+        }
+    })
 
 
 # ---------------------------------------------------------------------------

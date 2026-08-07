@@ -987,11 +987,17 @@ function render(vaultFiles, jobs) {
 function openLightbox(idx) {
   const media = (window._lightboxMedia || [])[idx];
   if (!media || !media.url) return;
+  const url = media.url;
+  const isEmbed = url.includes('youtube.com/embed') || url.includes('player.vimeo.com') || url.includes('instagram.com');
   const isVideo = media.type === 'video' || media.isVideo;
   const lb = document.getElementById('lightbox-content');
-  lb.innerHTML = isVideo
-    ? `<video src="${esc(media.url)}" controls autoplay style="width:100%;max-height:82vh;border-radius:0.85rem;"></video>`
-    : `<img src="${esc(media.url)}" alt="Portfolio" style="width:100%;max-height:82vh;object-fit:contain;border-radius:0.85rem;"/>`;
+  if (isEmbed) {
+    lb.innerHTML = `<iframe src="${esc(url)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:90vw;max-width:850px;height:70vh;border-radius:0.85rem;border:none;"></iframe>`;
+  } else if (isVideo) {
+    lb.innerHTML = `<video src="${esc(url)}" controls autoplay style="width:100%;max-height:82vh;border-radius:0.85rem;"></video>`;
+  } else {
+    lb.innerHTML = `<img src="${esc(url)}" alt="Portfolio" style="width:100%;max-height:82vh;object-fit:contain;border-radius:0.85rem;"/>`;
+  }
   document.getElementById('lightbox').classList.add('open');
 }
 
