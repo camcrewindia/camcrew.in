@@ -176,10 +176,12 @@ def _save_uploaded_file(file, subdir):
 def _file_to_data_url(file):
     """Convert an uploaded image file into a persistent Base64 Data URL for PostgreSQL storage."""
     try:
-        file.seek(0)
-        data = file.read()
-        file.seek(0)
-        if not data or len(data) > 8 * 1024 * 1024:
+        if hasattr(file, 'seek'):
+            file.seek(0)
+        data = file.read() if hasattr(file, 'read') else None
+        if hasattr(file, 'seek'):
+            file.seek(0)
+        if not data or len(data) > 15 * 1024 * 1024:
             return None
         filename = getattr(file, 'filename', '') or ''
         _, ext = os.path.splitext(filename)
@@ -194,6 +196,8 @@ def _file_to_data_url(file):
             mime = 'image/gif'
         elif ext == 'svg':
             mime = 'image/svg+xml'
+        elif ext in ('mp4', 'mov', 'webm'):
+            mime = f'video/{ext}'
         else:
             mime = 'image/png'
         encoded = base64.b64encode(data).decode('utf-8')
@@ -1527,6 +1531,22 @@ def delete_portfolio_item(item_id):
     with get_db() as conn:
         conn.execute("DELETE FROM portfolio_items WHERE id=%s AND professional_id=%s", (item_id, uid))
     return jsonify({"ok": True, "message": "Portfolio item deleted."})
+
+
+@app.route("/api/portfolio/<int:item_id>", methods=["PATCH"])
+def update_portfolio_item_title(item_id):
+    """Update title/name of a single portfolio item for the authenticated professional."""
+    uid = session.get("user_id")
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    data = request.get_json(force=True) or {}
+    new_title = (data.get("title") or "").strip()
+    if not new_title:
+        return jsonify({"ok": False, "error": "Title cannot be empty."}), 400
+
+    with get_db() as conn:
+        conn.execute("UPDATE portfolio_items SET title=%s WHERE id=%s AND professional_id=%s", (new_title, item_id, uid))
+    return jsonify({"ok": True, "message": "Title updated.", "title": new_title})
 
 
 # ---------------------------------------------------------------------------
