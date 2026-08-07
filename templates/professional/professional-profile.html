@@ -673,36 +673,15 @@ const S = { user: null, pro: null, username: null };
     if (data.ok) S.user = data.user;
   } catch (_) {}
 
-  // Load professional profile from localStorage
+  // Fetch fresh profile from server (PostgreSQL)
   try {
-    const raw = localStorage.getItem('cc_pro_profile');
-    if (raw) S.pro = JSON.parse(raw);
+    const proRes = await fetch('/api/profile');
+    const proData = await proRes.json();
+    if (proData.ok && proData.profile) {
+      S.pro = proData.profile;
+      S.username = proData.profile.username || '';
+    }
   } catch (_) {}
-
-  // Sync profile to server
-  if (S.user?.role === 'professional') {
-    try {
-      const payload = {
-        display_name:         S.user.display_name || S.pro?.name || '',
-        title:                S.pro?.title        || '',
-        bio:                  S.pro?.bio          || '',
-        phone:                S.pro?.phone        || '',
-        website:              S.pro?.website      || '',
-        categories:           S.pro?.categories   || [],
-        services:             S.pro?.services     || [],
-        locations:            S.pro?.locations    || [],
-        socials:              S.pro?.socials      || {},
-        travel_international: S.pro?.travelIntl   || false,
-      };
-      const res  = await fetch('/api/profile', {
-        method: 'PATCH', credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (data.ok && data.username) S.username = data.username;
-    } catch (_) {}
-  }
 
   // Load vault for portfolio count
   let vaultFiles = [];
@@ -1122,6 +1101,7 @@ async function deletePortfolioItem(itemId, itemIndex, event) {
     const data = await res.json();
     if (data.ok) {
       if (card) card.remove();
+      try { localStorage.removeItem('cc_pro_profile'); } catch(_) {}
       showToast('Portfolio item deleted successfully');
     } else {
       if (card) { card.style.opacity = '1'; card.style.pointerEvents = 'auto'; }
