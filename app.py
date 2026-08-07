@@ -9,7 +9,7 @@ import psycopg2.errors
 
 from flask import (
     Flask, request, session, jsonify,
-    send_from_directory, abort
+    send_from_directory, abort, Response
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 
