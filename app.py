@@ -1144,6 +1144,8 @@ _TEMPLATE_MAP = {
     "organizers.html":           "templates/public",  # alias for US spelling -> same file
     "sales.html":                "templates/public",
     "contact.html":              "templates/public",
+    "privacy-policy.html":       "templates/public",
+    "terms.html":                "templates/public",
     "shared.html":               "templates/public",
     # auth
     "signin.html":               "templates/auth",
@@ -1179,9 +1181,10 @@ _TEMPLATE_MAP = {
 
 # Alias map: incoming filename -> actual filename in _TEMPLATE_MAP
 _ALIAS_MAP = {
-    "login.html":     "signin.html",
-    "register.html":  "signup.html",
-    "organizers.html": "organisers.html",
+    "login.html":            "signin.html",
+    "register.html":         "signup.html",
+    "organizers.html":       "organisers.html",
+    "terms-of-service.html": "terms.html",
 }
 
 
@@ -1212,9 +1215,10 @@ Sitemap: https://camcrew-in.onrender.com/sitemap.xml
 @app.route("/sitemap.xml")
 def sitemap_xml():
     pages = [
-        "/", "/about", "/services", "/book",
+        "/", "/about", "/contact", "/services", "/book",
         "/rentals", "/sales", "/photographers",
         "/videographers", "/designers", "/organisers",
+        "/privacy-policy", "/terms",
         "/signin", "/signup",
     ]
     urls = "".join(
