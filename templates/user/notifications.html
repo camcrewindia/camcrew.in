@@ -12,33 +12,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
   
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            'obsidian-base': '#0b0c10',
-            'charcoal-surface': '#12141c',
-            'glass-stroke': 'rgba(255, 255, 255, 0.08)',
-            'primary': '#00f0ff',
-            'primary-container': '#00363d',
-            'on-primary': '#001f22',
-            'on-surface': '#e4e8f6',
-            'on-surface-variant': '#94a3b8',
-          },
-          fontFamily: {
-            sans: ['Plus Jakarta Sans', 'sans-serif'],
-          }
-        }
-      }
-    }
-  </script>
+  <!-- Tailwind CSS & Site Styles -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="/static/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  
   <style>
+    :root { --cyan:#00dbe9; --violet:#ebb2ff; --ink:#0A0A0B; --muted:#b9cacb; }
     body {
-      background-color: #0b0c10;
+      background-color: #0A0A0B;
       color: #e4e8f6;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
@@ -65,13 +47,13 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between pt-24">
+<body class="min-h-screen flex flex-col justify-between pt-24 font-body-md antialiased">
 
-  <!-- Header Partial -->
-  <div id="header-placeholder"></div>
+  <!-- Shared Header Container (Identical to index.html) -->
+  <div id="site-header"></div>
 
-  <!-- Main Container -->
-  <main class="max-w-5xl mx-auto px-4 md:px-8 py-8 w-full flex-1">
+  <!-- Main Notifications Container -->
+  <main class="max-w-5xl mx-auto px-4 md:px-8 py-8 w-full flex-1 relative z-10">
     
     <!-- Title & Top Summary Bar -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
@@ -131,7 +113,7 @@
     </div>
 
     <!-- Notification Feed Container -->
-    <div id="page-notif-feed" class="flex flex-col gap-3">
+    <div id="page-notif-feed" class="flex flex-col gap-3 mb-12">
       <!-- Loading Skeleton -->
       <div class="glass-panel rounded-2xl p-6 text-center text-on-surface-variant text-sm">
         <span class="material-symbols-outlined text-3xl animate-spin text-primary">sync</span>
@@ -141,25 +123,17 @@
 
   </main>
 
-  <!-- Footer Partial -->
-  <div id="footer-placeholder"></div>
+  <!-- Shared Footer Container (Identical to index.html) -->
+  <div id="site-footer"></div>
 
+  <!-- Standard Header & Footer Loaders (Identical to index.html) -->
+  <script src="/static/js/header-loader.js"></script>
+  <script src="/static/js/footer-loader.js"></script>
+
+  <!-- Notification Page Controller JS -->
   <script>
     let allNotifications = [];
     let currentFilterTab = 'all';
-
-    // Load Header & Footer Partials
-    async function loadPartials() {
-      try {
-        const hRes = await fetch('/templates/partials/header.html');
-        if (hRes.ok) document.getElementById('header-placeholder').innerHTML = await hRes.text();
-
-        const fRes = await fetch('/templates/partials/footer.html');
-        if (fRes.ok) document.getElementById('footer-placeholder').innerHTML = await fRes.text();
-      } catch (e) {
-        console.error("Error loading partials:", e);
-      }
-    }
 
     async function loadNotificationsPage() {
       try {
@@ -312,7 +286,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      loadPartials();
       loadNotificationsPage();
     });
   </script>
