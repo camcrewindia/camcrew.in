@@ -173,6 +173,36 @@ def _save_uploaded_file(file, subdir):
     return '/' + os.path.join(rel_dir, safe_name).replace('\\', '/')
 
 
+def _file_to_data_url(file):
+    """Convert an uploaded image file into a persistent Base64 Data URL for PostgreSQL storage."""
+    try:
+        file.seek(0)
+        data = file.read()
+        file.seek(0)
+        if not data or len(data) > 8 * 1024 * 1024:
+            return None
+        filename = getattr(file, 'filename', '') or ''
+        _, ext = os.path.splitext(filename)
+        ext = ext.lower().replace('.', '')
+        if ext in ('jpg', 'jpeg'):
+            mime = 'image/jpeg'
+        elif ext == 'png':
+            mime = 'image/png'
+        elif ext == 'webp':
+            mime = 'image/webp'
+        elif ext == 'gif':
+            mime = 'image/gif'
+        elif ext == 'svg':
+            mime = 'image/svg+xml'
+        else:
+            mime = 'image/png'
+        encoded = base64.b64encode(data).decode('utf-8')
+        return f"data:{mime};base64,{encoded}"
+    except Exception as e:
+        print(f"[AVATAR] Error encoding data url: {e}")
+        return None
+
+
 def init_db():
     with get_db() as conn:
         conn.execute("""
@@ -1392,11 +1422,13 @@ def update_profile():
     avatar_url = (data.get("avatar_url") or "").strip() or None
     if avatar_file:
         try:
-            avatar_url = _save_uploaded_file(avatar_file, f"profiles/{uid}/avatar")
+            data_url = _file_to_data_url(avatar_file)
+            disk_url = _save_uploaded_file(avatar_file, f"profiles/{uid}/avatar")
+            avatar_url = data_url or disk_url
         except ValueError as exc:
             return jsonify({"ok": False, "error": str(exc)}), 400
 
-    if avatar_url and not (avatar_url.startswith("/") or avatar_url.startswith("http")):
+    if avatar_url and not (avatar_url.startswith("/") or avatar_url.startswith("http") or avatar_url.startswith("data:")):
         avatar_url = None
 
     username = None
