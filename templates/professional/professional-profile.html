@@ -1101,15 +1101,24 @@ async function deletePortfolioItem(itemId, itemIndex, event) {
     card.style.pointerEvents = 'none';
   }
 
+  const media = (window._lightboxMedia || [])[itemIndex] || {};
+  const targetId = itemId || media.id;
+  const targetUrl = media.file_url || media.fileUrl || media.url;
+
   try {
     let res;
-    if (itemId && itemId !== 'null' && itemId !== 'undefined' && itemId !== '') {
-      res = await fetch(`/api/portfolio/${itemId}`, { method: 'DELETE' });
+    if (targetId && String(targetId).match(/^\d+$/)) {
+      res = await fetch(`/api/portfolio/${targetId}`, { method: 'DELETE' });
+    } else if (targetUrl) {
+      res = await fetch('/api/portfolio', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ file_url: targetUrl })
+      });
     } else {
-      const form = new FormData();
-      form.append('remove_portfolio_ids', JSON.stringify([itemId]));
-      res = await fetch('/api/profile', { method: 'PATCH', body: form });
+      throw new Error('Item identifier missing.');
     }
+
     const data = await res.json();
     if (data.ok) {
       if (card) card.remove();

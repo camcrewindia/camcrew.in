@@ -1522,6 +1522,27 @@ def update_profile():
     return jsonify({"ok": True, "display_name": display_name, "username": username, "avatarUrl": avatar_url})
 
 
+@app.route("/api/portfolio", methods=["DELETE"])
+def delete_portfolio_generic():
+    """Delete a portfolio item by id or file_url for the authenticated professional."""
+    uid = session.get("user_id")
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    data = request.get_json(force=True, silent=True) or {}
+    item_id = data.get("id") or request.args.get("id")
+    file_url = data.get("file_url") or request.args.get("file_url")
+
+    with get_db() as conn:
+        if item_id and str(item_id).isdigit():
+            conn.execute("DELETE FROM portfolio_items WHERE id=%s AND professional_id=%s", (int(item_id), uid))
+        elif file_url:
+            conn.execute("DELETE FROM portfolio_items WHERE file_url=%s AND professional_id=%s", (file_url, uid))
+        else:
+            return jsonify({"ok": False, "error": "Missing item identifier."}), 400
+
+    return jsonify({"ok": True, "message": "Portfolio item deleted."})
+
+
 @app.route("/api/portfolio/<int:item_id>", methods=["DELETE"])
 def delete_portfolio_item(item_id):
     """Delete a single portfolio item directly for the authenticated professional."""
