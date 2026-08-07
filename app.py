@@ -622,6 +622,40 @@ init_professional_tables()
 init_pro_sales_table()
 
 
+def init_phase1_tables():
+    """Create escrow_payments and chat_messages tables."""
+    with get_db() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS escrow_payments (
+                id              SERIAL PRIMARY KEY,
+                booking_id      INTEGER,
+                client_id       INTEGER NOT NULL,
+                professional_id INTEGER NOT NULL,
+                amount          REAL NOT NULL,
+                payment_method  TEXT NOT NULL DEFAULT 'upi_razorpay',
+                escrow_status   TEXT NOT NULL DEFAULT 'held_in_escrow',
+                transaction_ref TEXT UNIQUE,
+                created_at      TEXT DEFAULT TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS'),
+                released_at     TEXT,
+                FOREIGN KEY (client_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (professional_id) REFERENCES users(id) ON DELETE CASCADE
+            )
+        """)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS chat_messages (
+                id              SERIAL PRIMARY KEY,
+                sender_id       INTEGER NOT NULL,
+                receiver_id     INTEGER NOT NULL,
+                booking_id      INTEGER,
+                message         TEXT NOT NULL,
+                is_read         BOOLEAN NOT NULL DEFAULT FALSE,
+                created_at      TEXT DEFAULT TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS'),
+                FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+            )
+        """)
+
+
 def init_notifications_table():
     """Create notifications table if it doesn't exist."""
     with get_db() as conn:
@@ -658,6 +692,7 @@ def create_notification(user_id, title, message, ntype='info', link=None, conn=N
 
 
 init_notifications_table()
+init_phase1_tables()
 
 
 # ---------------------------------------------------------------------------
@@ -1568,6 +1603,251 @@ def update_portfolio_item_title(item_id):
     with get_db() as conn:
         conn.execute("UPDATE portfolio_items SET title=%s WHERE id=%s AND professional_id=%s", (new_title, item_id, uid))
     return jsonify({"ok": True, "message": "Title updated.", "title": new_title})
+
+
+# ---------------------------------------------------------------------------
+# Phase 1: Escrow Payments API
+# ---------------------------------------------------------------------------
+
+@app.route("/api/payments/checkout", methods=["POST"])
+def payment_checkout():
+    uid = session.get("user_id")
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    data = request.get_json(force=True, silent=True) or {}
+    booking_id = data.get("booking_id")
+    pro_id = data.get("professional_id")
+    amount = float(data.get("amount") or 0)
+    method = data.get("payment_method") or "upi_razorpay"
+
+    if amount <= 0 or not pro_id:
+        return jsonify({"ok": False, "error": "Invalid checkout details."}), 400
+
+    tx_ref = f"CC-ESC-{secrets.token_hex(6).upper()}"
+    with get_db() as conn:
+        row = conn.execute("""
+            INSERT INTO escrow_payments
+            (booking_id, client_id, professional_id, amount, payment_method, escrow_status, transaction_ref)
+            VALUES (%s, %s, %s, %s, %s, 'held_in_escrow', %s)
+            RETURNING id
+        """, (booking_id, uid, pro_id, amount, method, tx_ref)).fetchone()
+        
+        escrow_id = row["id"] if row else None
+        if booking_id:
+            conn.execute("UPDATE bookings SET status='escrow_held' WHERE id=%s", (booking_id,))
+
+    create_notification(
+        pro_id,
+        "Escrow Payment Received!",
+        f"₹{amount:,.0f} has been locked in Escrow Protection for your upcoming shoot! Ref: {tx_ref}",
+        ntype="success",
+        link="/professional-dashboard.html"
+    )
+    create_notification(
+        uid,
+        "Payment Secured in Escrow",
+        f"Your payment of ₹{amount:,.0f} is locked safely in Camcrew Escrow Protection.",
+        ntype="info",
+        link="/customer-profile.html"
+    )
+
+    return jsonify({
+        "ok": True,
+        "escrow_id": escrow_id,
+        "transaction_ref": tx_ref,
+        "status": "held_in_escrow",
+        "message": "Payment locked in Escrow Protection."
+    })
+
+
+@app.route("/api/payments/release", methods=["POST"])
+def payment_release():
+    uid = session.get("user_id")
+    role = session.get("role")
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    data = request.get_json(force=True, silent=True) or {}
+    escrow_id = data.get("escrow_id")
+    booking_id = data.get("booking_id")
+
+    with get_db() as conn:
+        if escrow_id:
+            pay = conn.execute("SELECT * FROM escrow_payments WHERE id=%s", (escrow_id,)).fetchone()
+        elif booking_id:
+            pay = conn.execute("SELECT * FROM escrow_payments WHERE booking_id=%s ORDER BY id DESC LIMIT 1", (booking_id,)).fetchone()
+        else:
+            return jsonify({"ok": False, "error": "Missing escrow or booking ID."}), 400
+
+        if not pay:
+            return jsonify({"ok": False, "error": "Escrow transaction not found."}), 404
+
+        if role != "admin" and pay["client_id"] != uid:
+            return jsonify({"ok": False, "error": "Only client or admin can release escrow funds."}), 403
+
+        conn.execute("""
+            UPDATE escrow_payments
+            SET escrow_status='released_to_pro', released_at=TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS')
+            WHERE id=%s
+        """, (pay["id"],))
+
+        if pay["booking_id"]:
+            conn.execute("UPDATE bookings SET status='completed' WHERE id=%s", (pay["booking_id"],))
+
+    create_notification(
+        pay["professional_id"],
+        "Escrow Payment Released!",
+        f"₹{pay['amount']:,.0f} has been released from Escrow into your earnings!",
+        ntype="success",
+        link="/professional-dashboard.html"
+    )
+    return jsonify({"ok": True, "message": "Escrow funds released to professional."})
+
+
+@app.route("/api/payments/escrow-summary", methods=["GET"])
+def payment_escrow_summary():
+    uid = session.get("user_id")
+    role = session.get("role")
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+
+    with get_db() as conn:
+        if role in ("professional", "studio"):
+            items = conn.execute("""
+                SELECT ep.*, u.display_name as client_name
+                FROM escrow_payments ep
+                JOIN users u ON u.id = ep.client_id
+                WHERE ep.professional_id=%s
+                ORDER BY ep.id DESC LIMIT 50
+            """, (uid,)).fetchall()
+        elif role == "admin":
+            items = conn.execute("""
+                SELECT ep.*, c.display_name as client_name, p.display_name as pro_name
+                FROM escrow_payments ep
+                JOIN users c ON c.id = ep.client_id
+                JOIN users p ON p.id = ep.professional_id
+                ORDER BY ep.id DESC LIMIT 50
+            """).fetchall()
+        else:
+            items = conn.execute("""
+                SELECT ep.*, u.display_name as pro_name
+                FROM escrow_payments ep
+                JOIN users u ON u.id = ep.professional_id
+                WHERE ep.client_id=%s
+                ORDER BY ep.id DESC LIMIT 50
+            """, (uid,)).fetchall()
+
+    return jsonify({"ok": True, "items": [dict(i) for i in items]})
+
+
+# ---------------------------------------------------------------------------
+# Phase 1: Real-Time Chat & Direct Messaging API
+# ---------------------------------------------------------------------------
+
+@app.route("/api/chat/send", methods=["POST"])
+def chat_send():
+    uid = session.get("user_id")
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    data = request.get_json(force=True, silent=True) or {}
+    receiver_id = data.get("receiver_id")
+    booking_id = data.get("booking_id")
+    message = (data.get("message") or "").strip()
+
+    if not receiver_id or not message:
+        return jsonify({"ok": False, "error": "Receiver and message content required."}), 400
+
+    with get_db() as conn:
+        row = conn.execute("""
+            INSERT INTO chat_messages (sender_id, receiver_id, booking_id, message)
+            VALUES (%s, %s, %s, %s)
+            RETURNING id, created_at
+        """, (uid, receiver_id, booking_id, message)).fetchone()
+        
+        sender_name = conn.execute("SELECT display_name FROM users WHERE id=%s", (uid,)).fetchone()
+        sname = sender_name["display_name"] if sender_name else "Someone"
+
+    create_notification(
+        receiver_id,
+        f"New message from {sname}",
+        message[:80] + ("..." if len(message) > 80 else ""),
+        ntype="info",
+        link=f"/professional-dashboard.html?chat={uid}"
+    )
+
+    return jsonify({"ok": True, "message_id": row["id"], "created_at": row["created_at"]})
+
+
+@app.route("/api/chat/messages/<int:target_id>", methods=["GET"])
+def chat_messages_with_user(target_id):
+    uid = session.get("user_id")
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+
+    with get_db() as conn:
+        conn.execute("""
+            UPDATE chat_messages SET is_read=TRUE
+            WHERE sender_id=%s AND receiver_id=%s AND is_read=FALSE
+        """, (target_id, uid))
+        
+        msgs = conn.execute("""
+            SELECT id, sender_id, receiver_id, booking_id, message, is_read, created_at
+            FROM chat_messages
+            WHERE (sender_id=%s AND receiver_id=%s) OR (sender_id=%s AND receiver_id=%s)
+            ORDER BY id ASC LIMIT 200
+        """, (uid, target_id, target_id, uid)).fetchall()
+
+        target_user = conn.execute(
+            "SELECT id, display_name, email, role FROM users WHERE id=%s",
+            (target_id,)
+        ).fetchone()
+
+    return jsonify({
+        "ok": True,
+        "target_user": dict(target_user) if target_user else None,
+        "messages": [dict(m) for m in msgs]
+    })
+
+
+@app.route("/api/chat/conversations", methods=["GET"])
+def chat_conversations():
+    uid = session.get("user_id")
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+
+    with get_db() as conn:
+        rows = conn.execute("""
+            SELECT 
+                CASE WHEN sender_id = %s THEN receiver_id ELSE sender_id END AS other_id,
+                MAX(id) as last_msg_id,
+                COUNT(CASE WHEN receiver_id = %s AND is_read = FALSE THEN 1 END) as unread_count
+            FROM chat_messages
+            WHERE sender_id = %s OR receiver_id = %s
+            GROUP BY other_id
+            ORDER BY last_msg_id DESC
+        """, (uid, uid, uid, uid)).fetchall()
+
+        convos = []
+        for r in rows:
+            other_id = r["other_id"]
+            user_info = conn.execute(
+                "SELECT id, display_name, role FROM users WHERE id=%s",
+                (other_id,)
+            ).fetchone()
+            last_msg = conn.execute(
+                "SELECT message, created_at FROM chat_messages WHERE id=%s",
+                (r["last_msg_id"],)
+            ).fetchone()
+            if user_info and last_msg:
+                convos.append({
+                    "user_id": user_info["id"],
+                    "display_name": user_info["display_name"] or "User",
+                    "role": user_info["role"],
+                    "last_message": last_msg["message"],
+                    "last_time": last_msg["created_at"],
+                    "unread_count": r["unread_count"]
+                })
+
+    return jsonify({"ok": True, "conversations": convos})
 
 
 # ---------------------------------------------------------------------------
