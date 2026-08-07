@@ -710,7 +710,9 @@ function renderProfile(p) {
 
         <!-- Mini avatar + name -->
         <div style="display:flex;align-items:center;gap:0.85rem;margin-bottom:1.25rem;">
-          <div style="width:2.8rem;height:2.8rem;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,hsl(${hue},50%,12%),hsl(${(hue+60)%360},60%,18%));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.95rem;color:hsl(${hue},80%,72%);">${initial}</div>
+          <div style="width:2.8rem;height:2.8rem;border-radius:50%;flex-shrink:0;overflow:hidden;background:linear-gradient(135deg,hsl(${hue},50%,12%),hsl(${(hue+60)%360},60%,18%));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.95rem;color:hsl(${hue},80%,72%);position:relative;">
+            ${(p.avatar_url || p.avatarUrl) ? `<img src="${esc(p.avatar_url || p.avatarUrl)}" alt="${esc(p.display_name||p.username)}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">` : initial}
+          </div>
           <div style="min-width:0;">
             <p style="font-weight:800;font-size:0.9rem;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(p.display_name||p.username)}</p>
             ${p.title ? `<p style="font-size:0.72rem;color:#00f0ff;font-weight:600;">${esc(p.title)}</p>` : ''}
