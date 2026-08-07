@@ -2030,6 +2030,16 @@ def review_submit():
         return jsonify({"ok": False, "error": "Rating (1-5) and review comment required."}), 400
 
     with get_db() as conn:
+        # Prevent duplicate reviews for the same booking or client-pro pair
+        if booking_id:
+            existing = conn.execute("SELECT id FROM reviews WHERE booking_id=%s AND client_id=%s", (booking_id, uid)).fetchone()
+            if existing:
+                return jsonify({"ok": False, "error": "You have already submitted a review for this booking."}), 400
+        else:
+            existing = conn.execute("SELECT id FROM reviews WHERE professional_id=%s AND client_id=%s", (pro_id, uid)).fetchone()
+            if existing:
+                return jsonify({"ok": False, "error": "You have already submitted a review for this professional."}), 400
+
         row = conn.execute("""
             INSERT INTO reviews (booking_id, client_id, professional_id, rating, review_text)
             VALUES (%s, %s, %s, %s, %s)
@@ -2107,7 +2117,7 @@ def get_blocked_dates(pro_id):
         rows = conn.execute("""
             SELECT id, blocked_date, reason, created_at
             FROM pro_blocked_dates
-            WHERE professional_id = %s
+            WHERE professional_id = %s AND blocked_date >= TO_CHAR(NOW() - INTERVAL '1 day', 'YYYY-MM-DD')
             ORDER BY blocked_date ASC
         """, (pro_id,)).fetchall()
     return jsonify({"ok": True, "blocked_dates": [dict(r) for r in rows]})
