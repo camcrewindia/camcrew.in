@@ -3,6 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta name="description" content="About CamCrew Studio — India's production marketplace connecting elite creative professionals with clients across photography, videography, and film."/>
+<meta property="og:title" content="About Us | CamCrew Studio"/>
+<meta property="og:description" content="Learn the story, mission, and team behind CamCrew — India's premier creative production marketplace."/>
+<meta property="og:image" content="/static/img/camcrew_studio_logo_cop_y.png"/>
+<link rel="canonical" href="https://camcrew-in.onrender.com/about"/>
+<link rel="icon" href="/static/img/camcrew_studio_logo_cop_y.png" type="image/png"/>
 <title>About Us | Camcrew Studio</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="/static/js/tailwind-config.js"></script>
@@ -434,11 +440,15 @@
           </div>
           <!-- Right form -->
           <div class="w-full md:w-auto reveal-right">
-            <form class="flex flex-col gap-3 w-full md:w-[360px]">
+            <form class="flex flex-col gap-3 w-full md:w-[360px]" id="subscribe-form" onsubmit="handleSubscribe(event)">
+              <label for="subscribe-email" class="sr-only">Studio Email</label>
               <input
+                id="subscribe-email"
                 class="w-full bg-surface-container-high border border-glass-stroke rounded-full px-6 py-4 focus:ring-2 focus:ring-primary-container focus:border-transparent outline-none transition-all text-on-surface placeholder:text-on-surface-variant"
                 placeholder="Enter your studio email"
                 type="email"
+                required
+                autocomplete="email"
               >
               <button
                 class="shimmer-btn w-full bg-primary-container text-on-primary-fixed px-8 py-4 rounded-full font-label-caps text-label-caps hover:scale-105 transition-transform active:scale-95 shadow-lg"
@@ -460,7 +470,29 @@
 <div id="site-footer"></div>
 
 <script>
-  /* ── Scroll reveal ──────────────────────────── */
+  /* ── Subscribe form ─────────────────────────────── */
+  async function handleSubscribe(e) {
+    e.preventDefault();
+    const email = document.getElementById('subscribe-email').value.trim();
+    const btn = document.querySelector('#subscribe-form button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Subscribing…';
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      btn.textContent = data.ok ? '✓ Subscribed! Thank you.' : (data.error || 'Error. Try again.');
+      btn.style.background = data.ok ? 'linear-gradient(135deg,#00dbe9,#00f0ff)' : '#e53e3e';
+    } catch (_) {
+      btn.textContent = 'Network error. Try again.';
+      btn.disabled = false;
+    }
+  }
+
+  /* ── Scroll reveal ──────────────────────────────── */
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('active'); observer.unobserve(e.target); } });
   }, { threshold: 0.1 });

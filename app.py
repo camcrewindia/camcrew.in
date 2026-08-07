@@ -1141,11 +1141,15 @@ _TEMPLATE_MAP = {
     "developers.html":           "templates/public",
     "caterers.html":             "templates/public",
     "organisers.html":           "templates/public",
+    "organizers.html":           "templates/public",  # alias for US spelling -> same file
     "sales.html":                "templates/public",
+    "contact.html":              "templates/public",
     "shared.html":               "templates/public",
     # auth
     "signin.html":               "templates/auth",
+    "login.html":                "templates/auth",    # alias -> signin.html
     "signup.html":               "templates/auth",
+    "register.html":             "templates/auth",   # alias -> signup.html
     "customersignup.html":       "templates/auth",
     "studiosignup.html":         "templates/auth",
     "professionalsetup.html":    "templates/auth",
@@ -1173,13 +1177,55 @@ _TEMPLATE_MAP = {
     "verificationrequest.html":    "templates/admin",
 }
 
+# Alias map: incoming filename -> actual filename in _TEMPLATE_MAP
+_ALIAS_MAP = {
+    "login.html":     "signin.html",
+    "register.html":  "signup.html",
+    "organizers.html": "organisers.html",
+}
+
 
 def _serve_template(filename):
-    """Look up filename in _TEMPLATE_MAP and serve it from the right subdir using ROOT_DIR."""
-    subdir = _TEMPLATE_MAP.get(filename)
+    """Look up filename in _TEMPLATE_MAP and serve it from the right subdir using ROOT_DIR.
+    Resolves aliases (e.g. login.html → signin.html) transparently.
+    """
+    # Resolve alias first
+    actual = _ALIAS_MAP.get(filename, filename)
+    subdir = _TEMPLATE_MAP.get(actual)
     if subdir:
-        return send_from_directory(os.path.join(ROOT_DIR, subdir), filename)
+        return send_from_directory(os.path.join(ROOT_DIR, subdir), actual)
     abort(404)
+
+
+@app.route("/robots.txt")
+def robots_txt():
+    content = """User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admindashboard.html
+Disallow: /adminlogin.html
+Sitemap: https://camcrew-in.onrender.com/sitemap.xml
+"""
+    return Response(content, mimetype="text/plain")
+
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    pages = [
+        "/", "/about", "/services", "/book",
+        "/rentals", "/sales", "/photographers",
+        "/videographers", "/designers", "/organisers",
+        "/signin", "/signup",
+    ]
+    urls = "".join(
+        f"<url><loc>https://camcrew-in.onrender.com{p}</loc><changefreq>weekly</changefreq></url>"
+        for p in pages
+    )
+    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{urls}
+</urlset>"""
+    return Response(xml, mimetype="application/xml")
 
 
 @app.route("/uploads/<path:filename>")
@@ -1224,21 +1270,23 @@ def static_files(filename):
         filename = filename + ".html"
         ext = ".html"
 
-    # HTML files → look up in the template map or subdirs
+    # HTML files → look up in the template map (with alias resolution) or subdirs
     if ext == ".html":
         basename = os.path.basename(filename)
-        subdir = _TEMPLATE_MAP.get(basename)
-        if subdir and os.path.exists(os.path.join(ROOT_DIR, subdir, basename)):
-            return send_from_directory(os.path.join(ROOT_DIR, subdir), basename)
+        # Resolve alias (e.g. login.html → signin.html)
+        actual = _ALIAS_MAP.get(basename, basename)
+        subdir = _TEMPLATE_MAP.get(actual)
+        if subdir and os.path.exists(os.path.join(ROOT_DIR, subdir, actual)):
+            return send_from_directory(os.path.join(ROOT_DIR, subdir), actual)
         for sub in ("templates/public", "templates/auth", "templates/user", "templates/professional", "templates/admin"):
-            if os.path.exists(os.path.join(ROOT_DIR, sub, basename)):
-                return send_from_directory(os.path.join(ROOT_DIR, sub), basename)
+            if os.path.exists(os.path.join(ROOT_DIR, sub, actual)):
+                return send_from_directory(os.path.join(ROOT_DIR, sub), actual)
         abort(404)
 
     if ext not in ALLOWED_EXTENSIONS:
         abort(403)
 
-    # Everything else (images, fonts, attached_assets, etc.) → serve from ROOT_DIR
+    # Everything else (images, fonts, etc.) → serve from ROOT_DIR
     if os.path.exists(os.path.join(ROOT_DIR, filename)):
         return send_from_directory(ROOT_DIR, filename)
 
@@ -2229,6 +2277,51 @@ def search_professionals():
         "count": len(results),
         "professionals": results
     })
+
+
+# ---------------------------------------------------------------------------
+# Newsletter Subscribe & Contact API
+# ---------------------------------------------------------------------------
+
+@app.route("/api/subscribe", methods=["POST"])
+def newsletter_subscribe():
+    data = request.get_json(force=True, silent=True) or {}
+    email = (data.get("email") or "").strip().lower()
+    if not email or "@" not in email:
+        return jsonify({"ok": False, "error": "A valid email address is required."}), 400
+    with get_db() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+                id SERIAL PRIMARY KEY,
+                email TEXT UNIQUE NOT NULL,
+                subscribed_at TIMESTAMPTZ DEFAULT NOW()
+            )
+        """)
+        try:
+            conn.execute("INSERT INTO newsletter_subscribers (email) VALUES (%s) ON CONFLICT (email) DO NOTHING", (email,))
+        except Exception:
+            pass
+    return jsonify({"ok": True, "message": "Successfully subscribed! Thank you."})
+
+
+@app.route("/api/contact", methods=["POST"])
+def contact_form():
+    data = request.get_json(force=True, silent=True) or {}
+    name    = (data.get("name")    or "").strip()
+    email   = (data.get("email")   or "").strip()
+    message = (data.get("message") or "").strip()
+    if not name or not email or not message:
+        return jsonify({"ok": False, "error": "Name, email, and message are all required."}), 400
+    with get_db() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS contact_messages (
+                id SERIAL PRIMARY KEY,
+                name TEXT, email TEXT, message TEXT,
+                submitted_at TIMESTAMPTZ DEFAULT NOW()
+            )
+        """)
+        conn.execute("INSERT INTO contact_messages (name, email, message) VALUES (%s, %s, %s)", (name, email, message))
+    return jsonify({"ok": True, "message": "Your message has been received. We'll get back to you within 48 hours."})
 
 
 @app.route("/api/admin/verify-pro", methods=["POST"])
