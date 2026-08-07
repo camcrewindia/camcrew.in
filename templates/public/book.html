@@ -869,6 +869,16 @@ function formatTime(t) {
   PRO = data.profile;
   document.title = `Book ${PRO.display_name} | CamCrew Studio`;
 
+  if (PRO && (PRO.user_id || PRO.userId || PRO.id)) {
+    try {
+      const bRes = await fetch(`/api/calendar/blocked-dates/${PRO.user_id || PRO.userId || PRO.id}`);
+      const bData = await bRes.json();
+      if (bData.ok) {
+        window._blockedDates = (bData.blocked_dates || []).map(b => b.blocked_date);
+      }
+    } catch(e) {}
+  }
+
   renderHero();
   renderSidebarPro();
   renderServices();
@@ -1167,8 +1177,15 @@ function validateStep(step) {
   if (step === 1) {
     const date = document.getElementById('input-date').value;
     const time = document.querySelector('input[name="timeslot"]:checked');
-    const ok   = !!(date && time);
     const el = document.getElementById('date-error');
+    const isBlocked = window._blockedDates && window._blockedDates.includes(date);
+    if (isBlocked) {
+      el.textContent = 'This date is marked as unavailable/blocked by the professional. Please select another date.';
+      el.classList.remove('hidden');
+      el.style.display = 'flex';
+      return false;
+    }
+    const ok = !!(date && time);
     el.classList.toggle('hidden', ok);
     el.style.display = ok ? 'none' : 'flex';
     return ok;

@@ -599,6 +599,38 @@
         </div>
       </div>
 
+      <!-- ══ SECTION 6 · AVAILABILITY & BLOCKED DATES ════════════════ -->
+      <div class="edit-section reveal">
+        <div class="section-divider">
+          <div class="section-divider-icon">
+            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">event_busy</span>
+          </div>
+          <div>
+            <h2 class="section-title">Availability & Blocked Dates</h2>
+            <p class="section-subtitle">Block dates when you are unavailable or booked for private shoots</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap;">
+            <div style="flex:1;min-width:160px;">
+              <label class="cc-label" for="block-date-inp">Select Date</label>
+              <input class="cc-input w-full" id="block-date-inp" type="date">
+            </div>
+            <div style="flex:1.5;min-width:200px;">
+              <label class="cc-label" for="block-reason-inp">Reason / Event Name (Optional)</label>
+              <input class="cc-input w-full" id="block-reason-inp" type="text" placeholder="e.g. Private Wedding Shoot">
+            </div>
+            <button onclick="addBlockedDate()" style="padding:0.65rem 1.2rem;border-radius:0.65rem;border:none;background:#00dbe9;color:#001f22;font-weight:800;font-size:0.85rem;cursor:pointer;">
+              Block Date
+            </button>
+          </div>
+
+          <div id="blocked-dates-list" class="space-y-2 mt-4"></div>
+          <p id="blocked-dates-empty" style="font-size:0.85rem;color:#475569;text-align:center;padding:1rem 0;">No blocked dates. You are available for bookings every day!</p>
+        </div>
+      </div>
+
     </div><!-- /space-y-5 -->
   </div>
 </main>
@@ -1159,14 +1191,98 @@ const spinStyle = document.createElement('style');
 spinStyle.textContent = `@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`;
 document.head.appendChild(spinStyle);
 
-/* ── Scroll reveal ───────────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', () => {
-  const obs = new IntersectionObserver(entries =>
-    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }), { threshold: 0.05 });
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-});
+/* ── Blocked Dates Handlers ──────────────────────────────────────── */
+let _blockedDatesList = [];
+
+async function loadBlockedDates() {
+  try {
+    const meRes = await fetch('/api/me');
+    const meData = await meRes.json();
+    if (!meData.ok || !meData.user) return;
+    const uid = meData.user.id;
+    const res = await fetch(`/api/calendar/blocked-dates/${uid}`);
+    const data = await res.json();
+    if (data.ok) {
+      _blockedDatesList = data.blocked_dates || [];
+      renderBlockedDates();
+    }
+  } catch (e) { console.error('Error loading blocked dates:', e); }
+}
+
+function renderBlockedDates() {
+  const container = document.getElementById('blocked-dates-list');
+  const emptyEl = document.getElementById('blocked-dates-empty');
+  if (!container) return;
+
+  if (!_blockedDatesList.length) {
+    container.innerHTML = '';
+    if (emptyEl) emptyEl.style.display = 'block';
+    return;
+  }
+
+  if (emptyEl) emptyEl.style.display = 'none';
+  container.innerHTML = _blockedDatesList.map(b => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.9rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:0.6rem;">
+      <div style="display:flex;align-items:center;gap:0.6rem;">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;color:#ff6b6b;">event_busy</span>
+        <div>
+          <span style="font-weight:700;color:#fff;font-size:0.88rem;">${b.blocked_date}</span>
+          ${b.reason ? `<span style="font-size:0.78rem;color:#849495;margin-left:0.5rem;">(${b.reason})</span>` : ''}
+        </div>
+      </div>
+      <button onclick="deleteBlockedDate(${b.id})" style="background:none;border:none;color:#ff6b6b;cursor:pointer;" title="Unblock Date">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;">delete</span>
+      </button>
+    </div>
+  `).join('');
+}
+
+async function addBlockedDate() {
+  const dateInp = document.getElementById('block-date-inp');
+  const reasonInp = document.getElementById('block-reason-inp');
+  const bdate = dateInp ? dateInp.value : '';
+  const reason = reasonInp ? reasonInp.value.trim() : '';
+
+  if (!bdate) { showToast('Please select a date to block', 'error'); return; }
+
+  try {
+    const res = await fetch('/api/calendar/block', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ blocked_date: bdate, reason })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      showToast(`Date ${bdate} blocked successfully!`, 'success');
+      if (dateInp) dateInp.value = '';
+      if (reasonInp) reasonInp.value = '';
+      loadBlockedDates();
+    } else {
+      showToast(data.error || 'Failed to block date', 'error');
+    }
+  } catch (e) {
+    showToast('Failed to block date', 'error');
+  }
+}
+
+async function deleteBlockedDate(id) {
+  if (!confirm('Unblock this date?')) return;
+  try {
+    const res = await fetch(`/api/calendar/block/${id}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (data.ok) {
+      showToast('Date unblocked successfully!', 'success');
+      loadBlockedDates();
+    } else {
+      showToast(data.error || 'Failed to unblock date', 'error');
+    }
+  } catch (e) {
+    showToast('Failed to unblock date', 'error');
+  }
+}
 
 boot();
+loadBlockedDates();
 </script>
 
 <script src="/static/js/header-loader.js"></script>

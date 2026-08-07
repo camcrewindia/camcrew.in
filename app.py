@@ -656,6 +656,36 @@ def init_phase1_tables():
         """)
 
 
+def init_phase2_tables():
+    """Create reviews and pro_blocked_dates tables."""
+    with get_db() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS reviews (
+                id              SERIAL PRIMARY KEY,
+                booking_id      INTEGER,
+                client_id       INTEGER NOT NULL,
+                professional_id INTEGER NOT NULL,
+                rating          INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+                review_text     TEXT NOT NULL,
+                reply_text      TEXT,
+                created_at      TEXT DEFAULT TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS'),
+                FOREIGN KEY (client_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (professional_id) REFERENCES users(id) ON DELETE CASCADE
+            )
+        """)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS pro_blocked_dates (
+                id              SERIAL PRIMARY KEY,
+                professional_id INTEGER NOT NULL,
+                blocked_date    TEXT NOT NULL,
+                reason          TEXT,
+                created_at      TEXT DEFAULT TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS'),
+                UNIQUE(professional_id, blocked_date),
+                FOREIGN KEY (professional_id) REFERENCES users(id) ON DELETE CASCADE
+            )
+        """)
+
+
 def init_notifications_table():
     """Create notifications table if it doesn't exist."""
     with get_db() as conn:
@@ -693,6 +723,7 @@ def create_notification(user_id, title, message, ntype='info', link=None, conn=N
 
 init_notifications_table()
 init_phase1_tables()
+init_phase2_tables()
 
 
 # ---------------------------------------------------------------------------
@@ -1848,6 +1879,140 @@ def chat_conversations():
                 })
 
     return jsonify({"ok": True, "conversations": convos})
+
+
+# ---------------------------------------------------------------------------
+# Phase 2: Verified Reviews & Rating System API
+# ---------------------------------------------------------------------------
+
+@app.route("/api/reviews/submit", methods=["POST"])
+def review_submit():
+    uid = session.get("user_id")
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    data = request.get_json(force=True, silent=True) or {}
+    pro_id = data.get("professional_id")
+    booking_id = data.get("booking_id")
+    rating = int(data.get("rating") or 5)
+    review_text = (data.get("review_text") or "").strip()
+
+    if not pro_id or not review_text or rating < 1 or rating > 5:
+        return jsonify({"ok": False, "error": "Rating (1-5) and review comment required."}), 400
+
+    with get_db() as conn:
+        row = conn.execute("""
+            INSERT INTO reviews (booking_id, client_id, professional_id, rating, review_text)
+            VALUES (%s, %s, %s, %s, %s)
+            RETURNING id, created_at
+        """, (booking_id, uid, pro_id, rating, review_text)).fetchone()
+
+        client_name = conn.execute("SELECT display_name FROM users WHERE id=%s", (uid,)).fetchone()
+        cname = client_name["display_name"] if client_name else "A client"
+
+    create_notification(
+        pro_id,
+        f"New {rating}★ Review from {cname}!",
+        review_text[:100],
+        ntype="success",
+        link="/professional-profile.html"
+    )
+
+    return jsonify({"ok": True, "review_id": row["id"], "created_at": row["created_at"]})
+
+
+@app.route("/api/reviews/<int:pro_id>", methods=["GET"])
+def reviews_for_pro(pro_id):
+    with get_db() as conn:
+        rows = conn.execute("""
+            SELECT r.*, u.display_name as client_name, u.avatar_url as client_avatar
+            FROM reviews r
+            JOIN users u ON u.id = r.client_id
+            WHERE r.professional_id = %s
+            ORDER BY r.id DESC LIMIT 50
+        """, (pro_id,)).fetchall()
+
+        stats = conn.execute("""
+            SELECT COUNT(*) as count, COALESCE(AVG(rating), 5.0) as average
+            FROM reviews
+            WHERE professional_id = %s
+        """, (pro_id,)).fetchone()
+
+    return jsonify({
+        "ok": True,
+        "total": stats["count"] if stats else 0,
+        "average": round(float(stats["average"]), 1) if stats and stats["count"] > 0 else 5.0,
+        "reviews": [dict(r) for r in rows]
+    })
+
+
+@app.route("/api/reviews/reply", methods=["POST"])
+def review_reply():
+    uid = session.get("user_id")
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    data = request.get_json(force=True, silent=True) or {}
+    review_id = data.get("review_id")
+    reply_text = (data.get("reply_text") or "").strip()
+
+    if not review_id or not reply_text:
+        return jsonify({"ok": False, "error": "Review ID and reply text required."}), 400
+
+    with get_db() as conn:
+        rev = conn.execute("SELECT * FROM reviews WHERE id=%s AND professional_id=%s", (review_id, uid)).fetchone()
+        if not rev:
+            return jsonify({"ok": False, "error": "Review not found or unauthorized."}), 404
+
+        conn.execute("UPDATE reviews SET reply_text=%s WHERE id=%s", (reply_text, review_id))
+
+    return jsonify({"ok": True, "message": "Reply saved successfully."})
+
+
+# ---------------------------------------------------------------------------
+# Phase 2: Interactive Availability Calendar API
+# ---------------------------------------------------------------------------
+
+@app.route("/api/calendar/blocked-dates/<int:pro_id>", methods=["GET"])
+def get_blocked_dates(pro_id):
+    with get_db() as conn:
+        rows = conn.execute("""
+            SELECT id, blocked_date, reason, created_at
+            FROM pro_blocked_dates
+            WHERE professional_id = %s
+            ORDER BY blocked_date ASC
+        """, (pro_id,)).fetchall()
+    return jsonify({"ok": True, "blocked_dates": [dict(r) for r in rows]})
+
+
+@app.route("/api/calendar/block", methods=["POST"])
+def block_date():
+    uid = session.get("user_id")
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    data = request.get_json(force=True, silent=True) or {}
+    bdate = (data.get("blocked_date") or "").strip()
+    reason = (data.get("reason") or "Unavailable").strip()
+
+    if not bdate:
+        return jsonify({"ok": False, "error": "Date required."}), 400
+
+    with get_db() as conn:
+        conn.execute("""
+            INSERT INTO pro_blocked_dates (professional_id, blocked_date, reason)
+            VALUES (%s, %s, %s)
+            ON CONFLICT (professional_id, blocked_date) DO UPDATE SET reason=EXCLUDED.reason
+        """, (uid, bdate, reason))
+
+    return jsonify({"ok": True, "message": f"Date {bdate} blocked successfully."})
+
+
+@app.route("/api/calendar/block/<int:block_id>", methods=["DELETE"])
+def unblock_date(block_id):
+    uid = session.get("user_id")
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+    with get_db() as conn:
+        conn.execute("DELETE FROM pro_blocked_dates WHERE id=%s AND professional_id=%s", (block_id, uid))
+    return jsonify({"ok": True, "message": "Date unblocked."})
 
 
 # ---------------------------------------------------------------------------
