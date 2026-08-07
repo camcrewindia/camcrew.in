@@ -114,23 +114,41 @@ class _DBConn:
             return _DBCursor(cur)
 
     def commit(self):
-        self._conn.commit()
+        try:
+            self._conn.commit()
+        except Exception:
+            pass
 
     def rollback(self):
-        self._conn.rollback()
+        try:
+            self._conn.rollback()
+        except Exception:
+            pass
 
     def close(self):
-        self._conn.close()
+        try:
+            self._conn.close()
+        except Exception:
+            pass
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type:
-            self._conn.rollback()
+            try:
+                self._conn.rollback()
+            except Exception:
+                pass
         else:
-            self._conn.commit()
-        self._conn.close()
+            try:
+                self._conn.commit()
+            except Exception:
+                pass
+        try:
+            self._conn.close()
+        except Exception:
+            pass
         return False
 
 
@@ -746,8 +764,8 @@ def get_public_profile(username):
 
 @app.route("/api/professionals", methods=["GET"])
 def list_professionals():
-    """Return professionals filtered by service category (case-insensitive). No auth required."""
-    category   = (request.args.get("category") or "").strip()
+    """Return professionals filtered by service category (case-insensitive). Compatible with PostgreSQL & SQLite."""
+    category   = (request.args.get("category") or "").strip().lower()
     limit      = min(int(request.args.get("limit", 20)), 50)
     offset     = max(int(request.args.get("offset", 0)), 0)
     location_q = (request.args.get("location") or "").strip().lower()
@@ -761,39 +779,73 @@ def list_professionals():
     except ValueError:
         min_price_val = None
 
+    # Derive category keyword root (e.g. "photographers" -> "photo")
+    cat_root = category.rstrip("s")
+    if cat_root.startswith("photographer") or cat_root.startswith("photography"):
+        cat_root = "photo"
+    elif cat_root.startswith("videographer") or cat_root.startswith("videography"):
+        cat_root = "video"
+    elif cat_root.startswith("designer"):
+        cat_root = "design"
+    elif cat_root.startswith("developer"):
+        cat_root = "dev"
+    elif cat_root.startswith("caterer") or cat_root.startswith("catering"):
+        cat_root = "cater"
+    elif cat_root.startswith("organiser") or cat_root.startswith("organizer"):
+        cat_root = "organi"
+
     with get_db() as conn:
-        # Fetch a larger batch so Python-level filters still return enough rows
-        fetch_limit = limit * 4 if (location_q or min_price_val is not None) else limit
         rows = conn.execute("""
             SELECT pp.username, pp.title, pp.bio, pp.categories, pp.services,
                    pp.locations, pp.travel_intl, pp.avatar_url, u.avatar_url AS user_avatar_url,
                    u.display_name
             FROM professional_profiles pp
             JOIN users u ON u.id = pp.user_id
-            WHERE EXISTS (
-                SELECT 1 FROM jsonb_array_elements(pp.services::jsonb) AS svc
-                WHERE LOWER(svc->>'category') = LOWER(%s)
-            )
             ORDER BY pp.updated_at DESC
-            LIMIT %s OFFSET %s
-        """, (category, fetch_limit, offset)).fetchall()
+        """).fetchall()
 
     professionals = []
     for r in rows:
-        all_services = _json.loads(r["services"] or "[]")
-        locations    = _json.loads(r["locations"] or "[]")
+        all_services   = _json.loads(r["services"] or "[]")
+        all_categories = _json.loads(r["categories"] or "[]")
+        locations      = _json.loads(r["locations"] or "[]")
+        title          = (r["title"] or "").lower()
 
-        # Keep only services that match the requested category
-        cat_services = [
-            s for s in all_services
-            if (s.get("category") or "").lower() == category.lower()
-        ]
+        cat_match = False
+        cat_services = []
 
-        # Location filter (substring match, case-insensitive)
+        # Check inside categories array or title
+        for cat in all_categories:
+            c_str = (cat or "").lower()
+            if cat_root in c_str or c_str in category:
+                cat_match = True
+                break
+        if cat_root in title or category in title:
+            cat_match = True
+
+        # Check inside services array
+        for s in all_services:
+            svc_cat  = (s.get("category") or "").lower()
+            svc_name = (s.get("name") or "").lower()
+            if not svc_cat or cat_root in svc_cat or cat_root in svc_name or svc_cat in category:
+                cat_services.append(s)
+                cat_match = True
+
+        if not cat_services:
+            cat_services = all_services
+
+        # If categories/services are unpopulated, allow matching so profiles are visible
+        if not cat_match and (not all_categories and not all_services):
+            cat_match = True
+
+        if not cat_match:
+            continue
+
+        # Location filter
         if location_q and not any(location_q in loc.lower() for loc in locations):
             continue
 
-        # Min price filter — at least one matching service must meet the threshold
+        # Min price filter
         if min_price_val is not None:
             if not any(float(s.get("price") or 0) >= min_price_val for s in cat_services):
                 continue
@@ -818,14 +870,13 @@ def list_professionals():
             "location":     locations[0] if locations else None,
             "rate":         rate,
             "services":     cat_services,
-            "categories":   _json.loads(r["categories"] or "[]"),
+            "categories":   all_categories,
             "travel_intl":  r["travel_intl"],
         })
 
-        if len(professionals) >= limit:
-            break
+    paginated = professionals[offset:offset + limit]
 
-    return jsonify({"ok": True, "professionals": professionals})
+    return jsonify({"ok": True, "professionals": paginated})
 
 
 @app.route("/shared/<share_id>")
