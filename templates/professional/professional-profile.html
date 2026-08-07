@@ -657,8 +657,8 @@ function render(vaultFiles, jobs) {
   const allMedia  = portfolio.length ? portfolio : vaultFiles.filter(f => ['image','video'].includes(f.type));
   const gridCells = allMedia.length
     ? allMedia.map((item, i) => {
-        const isVideo = item.type === 'video' || item.isVideo;
-        const url     = item.url || '';
+        const isVideo = item.file_type === 'video' || item.type === 'video' || item.isVideo;
+        const url     = item.file_url || item.fileUrl || item.url || '';
         if (!url) {
           return `<div class="portfolio-cell">
             <div class="cell-placeholder">

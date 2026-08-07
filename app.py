@@ -1491,12 +1491,15 @@ def update_profile():
 
             if removed_portfolio_ids:
                 try:
-                    conn.execute(
-                        "DELETE FROM portfolio_items WHERE professional_id=%s AND id = ANY(%s)",
-                        (uid, removed_portfolio_ids)
-                    )
-                except Exception:
-                    pass
+                    clean_ids = [int(x) for x in removed_portfolio_ids if str(x).isdigit()]
+                    if clean_ids:
+                        placeholders = ','.join(['%s'] * len(clean_ids))
+                        conn.execute(
+                            f"DELETE FROM portfolio_items WHERE professional_id=%s AND id IN ({placeholders})",
+                            (uid, *clean_ids)
+                        )
+                except Exception as err:
+                    print(f"[PORTFOLIO] Error deleting portfolio items: {err}")
 
             for file in portfolio_files:
                 try:
