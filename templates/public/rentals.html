@@ -647,6 +647,9 @@
         <button class="filter-btn" data-cat="audio" onclick="filterGear(this)">
           <span class="material-symbols-outlined">mic</span> Audio
         </button>
+        <button class="filter-btn" data-cat="studio floor" onclick="filterGear(this)">
+          <span class="material-symbols-outlined">domain</span> Studio Floors &amp; Soundstages
+        </button>
       </div>
     </div>
 
@@ -870,8 +873,49 @@
       </div>
 
       <div id="reserve-total-row" style="display:none;background:rgba(0,219,233,0.06);border:1px solid rgba(0,219,233,0.15);border-radius:0.75rem;padding:0.75rem 1rem;display:flex;align-items:center;justify-content:space-between;">
-        <span style="font-size:0.82rem;color:#556669;">Estimated total</span>
+        <span style="font-size:0.82rem;color:#556669;">Estimated rental price</span>
         <span id="reserve-total-val" style="font-size:1.1rem;font-weight:900;color:#00dbe9;"></span>
+      </div>
+
+      <!-- Security Deposit Authorization Hold Box -->
+      <div id="deposit-hold-box" style="background:rgba(0,219,233,0.05);border:1px solid rgba(0,219,233,0.2);border-radius:0.75rem;padding:0.75rem 1rem;display:flex;flex-direction:column;gap:0.3rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:0.75rem;font-weight:800;color:#00dbe9;text-transform:uppercase;letter-spacing:0.05em;display:flex;align-items:center;gap:0.3rem;">
+            <span class="material-symbols-outlined" style="font-size:0.95rem;">lock</span> Refundable Deposit Hold
+          </span>
+          <span id="deposit-amount-badge" style="font-size:0.88rem;font-weight:900;color:#00dbe9;">₹5,000 Hold</span>
+        </div>
+        <p style="font-size:0.72rem;color:#849495;margin:0;">Temporary UPI / Razorpay authorization hold — released automatically 24h post-return.</p>
+      </div>
+
+      <!-- Fulfillment Option & Hub Selection -->
+      <div>
+        <label style="font-size:0.72rem;font-weight:700;color:#445a5c;letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:0.4rem;">Fulfillment &amp; Pickup Option</label>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;background:#14181f;border:1px solid rgba(255,255,255,0.08);border-radius:0.75rem;padding:0.75rem;">
+          <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:#dce4e5;cursor:pointer;font-weight:600;">
+            <input type="radio" name="fulfillment_type" value="pickup" checked onchange="toggleFulfillmentMode('pickup')">
+            Self-Pickup at CamCrew Hub (Free)
+          </label>
+          
+          <div id="pickup-hub-wrap" style="padding-left:1.5rem;display:flex;flex-direction:column;gap:0.3rem;">
+            <select id="reserve-pickup-hub" style="width:100%;background:#1a1a1c;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;padding:0.45rem 0.65rem;color:#dce4e5;font-size:0.8rem;">
+              <option value="Mumbai - Andheri West Hub">Mumbai — Andheri West Hub (Off Link Rd)</option>
+              <option value="Bengaluru - Koramangala Hub">Bengaluru — Koramangala Hub (80ft Rd)</option>
+              <option value="Hyderabad - Film Nagar Hub">Hyderabad — Film Nagar Hub (Road No. 12)</option>
+              <option value="Kochi - Kakkanad Hub">Kochi — Kakkanad Hub (Seaport-Airport Rd)</option>
+              <option value="Delhi - Noida Sec 18 Hub">Delhi NCR — Noida Sec 18 Hub</option>
+            </select>
+            <button type="button" onclick="openHubMapModal()" style="background:none;border:none;color:#00dbe9;font-size:0.75rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:0.25rem;padding:0;">
+              <span class="material-symbols-outlined" style="font-size:0.85rem;">map</span> View Interactive Pickup Hubs Map
+            </button>
+          </div>
+
+          <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:#dce4e5;cursor:pointer;font-weight:600;">
+            <input type="radio" name="fulfillment_type" value="delivery" onchange="toggleFulfillmentMode('delivery')">
+            Doorstep Express Courier Delivery (+₹250)
+          </label>
+          <p id="delivery-info-txt" style="display:none;padding-left:1.5rem;font-size:0.72rem;color:#849495;margin:0;">Climate-controlled courier. Estimated delivery window: Same-day by 5:00 PM IST.</p>
+        </div>
       </div>
 
       <div>
@@ -889,7 +933,7 @@
           font-family:inherit;font-size:0.88rem;outline:none;">
       </div>
       <div>
-        <label style="font-size:0.72rem;font-weight:700;color:#445a5c;letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:0.35rem;">Notes (optional)</label>
+        <label style="font-size:0.72rem;font-weight:700;color:#445a5c;letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:0.35rem;">Notes / Shoot Details (optional)</label>
         <input id="reserve-notes" type="text" placeholder="What's the shoot about?" style="
           width:100%;background:#1a1a1c;border:1px solid rgba(255,255,255,0.1);
           border-radius:0.6rem;padding:0.65rem 0.85rem;color:#dce4e5;
@@ -903,6 +947,65 @@
         <span id="reserve-btn-label">Send Request</span>
       </button>
     </form>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     INTERACTIVE PICKUP HUBS MAP MODAL
+══════════════════════════════════════════════════════════════ -->
+<div id="modal-hub-map" style="display:none;position:fixed;inset:0;z-index:250;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:#0e0e10;border:1px solid rgba(255,255,255,0.15);border-radius:1.5rem;padding:1.5rem;width:100%;max-width:580px;position:relative;box-shadow:0 32px 80px rgba(0,0,0,0.8);">
+    <button onclick="closeHubMapModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#849495;font-size:1.2rem;cursor:pointer;">✕</button>
+    <h3 style="color:#dce4e5;font-size:1.1rem;font-weight:800;margin-bottom:0.2rem;display:flex;align-items:center;gap:0.4rem;">
+      <span class="material-symbols-outlined" style="color:#00dbe9;">location_on</span> CamCrew Pickup Hub Network (India)
+    </h3>
+    <p style="color:#849495;font-size:0.78rem;margin-bottom:1rem;">Click any verified hub pin to select it for your rental pickup.</p>
+
+    <!-- Interactive SVG Map Preview -->
+    <div style="background:#14181f;border:1px solid rgba(255,255,255,0.08);border-radius:1rem;padding:1rem;position:relative;height:240px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;overflow:hidden;">
+      <svg width="100%" height="100%" viewBox="0 0 400 220" style="opacity:0.9;">
+        <!-- Stylized India Network Graph -->
+        <path d="M 120 40 L 220 30 L 280 90 L 230 180 L 140 190 L 100 130 Z" fill="rgba(0,219,233,0.03)" stroke="rgba(0,219,233,0.15)" stroke-width="1.5" stroke-dasharray="3 3"/>
+        <line x1="125" y1="115" x2="165" y2="165" stroke="rgba(0,219,233,0.2)" stroke-width="1"/>
+        <line x1="125" y1="115" x2="180" y2="135" stroke="rgba(0,219,233,0.2)" stroke-width="1"/>
+        <line x1="170" y1="55" x2="125" y2="115" stroke="rgba(0,219,233,0.2)" stroke-width="1"/>
+        
+        <!-- Hub Pins -->
+        <g class="hub-pin" onclick="selectHubFromMap('Mumbai - Andheri West Hub')" style="cursor:pointer;">
+          <circle cx="125" cy="115" r="9" fill="rgba(0,219,233,0.25)"/>
+          <circle cx="125" cy="115" r="4" fill="#00dbe9"/>
+          <text x="135" y="118" fill="#dce4e5" font-size="9" font-weight="bold">Mumbai Hub</text>
+        </g>
+        <g class="hub-pin" onclick="selectHubFromMap('Bengaluru - Koramangala Hub')" style="cursor:pointer;">
+          <circle cx="165" cy="165" r="9" fill="rgba(0,219,233,0.25)"/>
+          <circle cx="165" cy="165" r="4" fill="#00dbe9"/>
+          <text x="175" y="168" fill="#dce4e5" font-size="9" font-weight="bold">Bengaluru Hub</text>
+        </g>
+        <g class="hub-pin" onclick="selectHubFromMap('Hyderabad - Film Nagar Hub')" style="cursor:pointer;">
+          <circle cx="180" cy="135" r="9" fill="rgba(0,219,233,0.25)"/>
+          <circle cx="180" cy="135" r="4" fill="#00dbe9"/>
+          <text x="190" y="138" fill="#dce4e5" font-size="9" font-weight="bold">Hyderabad Hub</text>
+        </g>
+        <g class="hub-pin" onclick="selectHubFromMap('Kochi - Kakkanad Hub')" style="cursor:pointer;">
+          <circle cx="150" cy="190" r="9" fill="rgba(0,219,233,0.25)"/>
+          <circle cx="150" cy="190" r="4" fill="#00dbe9"/>
+          <text x="160" y="193" fill="#dce4e5" font-size="9" font-weight="bold">Kochi Hub</text>
+        </g>
+        <g class="hub-pin" onclick="selectHubFromMap('Delhi - Noida Sec 18 Hub')" style="cursor:pointer;">
+          <circle cx="170" cy="55" r="9" fill="rgba(0,219,233,0.25)"/>
+          <circle cx="170" cy="55" r="4" fill="#00dbe9"/>
+          <text x="180" y="58" fill="#dce4e5" font-size="9" font-weight="bold">Delhi NCR Hub</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Hub Address Details List -->
+    <div style="font-size:0.75rem;color:#849495;display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;">
+      <p><strong style="color:#dce4e5;">📍 Mumbai:</strong> Off Link Rd, Andheri W</p>
+      <p><strong style="color:#dce4e5;">📍 Bengaluru:</strong> 80ft Rd, Koramangala</p>
+      <p><strong style="color:#dce4e5;">📍 Hyderabad:</strong> Road No. 12, Film Nagar</p>
+      <p><strong style="color:#dce4e5;">📍 Kochi:</strong> Seaport-Airport Rd, Kakkanad</p>
+    </div>
   </div>
 </div>
 
@@ -1260,6 +1363,7 @@ const CAT_ICONS = {
   lighting: 'light_mode', Lighting: 'light_mode',
   stabilizer: '360', Stabilizer: '360',
   audio: 'mic', Audio: 'mic',
+  'studio floor': 'domain', Studio: 'domain',
 };
 function catIcon(cat) {
   return CAT_ICONS[cat] || CAT_ICONS[cat?.toLowerCase()] || 'videocam';
@@ -1288,17 +1392,18 @@ function renderGearGrid(list) {
   if (empty) empty.style.display = 'none';
 
   list.forEach(eq => {
-    const imgSrc = eq.image_url || 'https://lh3.googleusercontent.com/aida-public/AB6AXuBdjnF8sQFQGYU25tParylfFz1qz3ESUUJirJx2tE-k1im1Ty77KlKjCHuYu96LcE4CV0YH5pVfpXYOHwOLJAr9lG-ERCAjnp7IosUvcH096B_2iZG9tu1bU29sNQeLIj20HHpkEFqcdXAeZKkpddR0VKldUscomGF5eRuYB-4Uw7izzXsVAefiga5I7OnSCfbXNnDVVsDIYzXjb_SA2RS--JvnZRtW6IOGLsr7IayOF8GSrf0SHZgh';
+    const imgSrc = eq.image_url || 'https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=800';
     const weekPrice = (eq.price_per_day * 7 * 0.85).toFixed(0);
+    const isBay = !!eq.is_bay;
     const div = document.createElement('div');
     div.className  = 'gear-card gear-card-dynamic reveal';
     div.dataset.cat = catKey(eq.category);
     div.dataset.id  = eq.id;
     div.innerHTML = `
       <div class="gear-img-wrap">
-        <img src="${imgSrc}" alt="${eq.name}" loading="lazy" onerror="this.src='https://lh3.googleusercontent.com/aida-public/AB6AXuBdjnF8sQFQGYU25tParylfFz1qz3ESUUJirJx2tE-k1im1Ty77KlKjCHuYu96LcE4CV0YH5pVfpXYOHwOLJAr9lG-ERCAjnp7IosUvcH096B_2iZG9tu1bU29sNQeLIj20HHpkEFqcdXAeZKkpddR0VKldUscomGF5eRuYB-4Uw7izzXsVAefiga5I7OnSCfbXNnDVVsDIYzXjb_SA2RS--JvnZRtW6IOGLsr7IayOF8GSrf0SHZgh'">
+        <img src="${imgSrc}" alt="${eq.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=800'">
         <div class="gear-img-overlay"></div>
-        <span class="availability-dot available">Available</span>
+        <span class="availability-dot available">${isBay ? 'Hourly Bay Available' : 'Available'}</span>
       </div>
       <div class="gear-body">
         <div class="gear-cat-tag">
@@ -1306,15 +1411,19 @@ function renderGearGrid(list) {
         </div>
         <div class="gear-name">${eq.name}</div>
         ${eq.description ? `<div class="gear-spec">${eq.description}</div>` : ''}
+        ${(eq.included_equipment && eq.included_equipment.length) ? `
+          <div style="display:flex;flex-wrap:wrap;gap:0.3rem;margin:0.4rem 0;">
+            ${eq.included_equipment.map(item => `<span style="font-size:0.68rem;padding:0.15rem 0.5rem;border-radius:0.4rem;background:rgba(0,219,233,0.08);color:#00dbe9;font-weight:600;">+ ${item}</span>`).join('')}
+          </div>` : ''}
         <div class="gear-price-row">
           <div>
-            <span class="gear-price">₹${Number(eq.price_per_day).toLocaleString()}</span>
-            <span class="gear-price-unit">/ day</span>
+            <span class="gear-price">₹${Number(isBay ? eq.hourly_rate : eq.price_per_day).toLocaleString()}</span>
+            <span class="gear-price-unit">${isBay ? '/ hr' : '/ day'}</span>
           </div>
-          <div class="gear-week-price">$${Number(weekPrice).toLocaleString()} / week</div>
+          <div class="gear-week-price">${isBay ? `₹${(eq.hourly_rate * 8).toLocaleString()} / day (8 hrs)` : `₹${Number(weekPrice).toLocaleString()} / week`}</div>
         </div>
-        <button class="btn-reserve" onclick="openReserveModal(${eq.id})">
-          <span class="material-symbols-outlined">calendar_month</span> Reserve Now
+        <button class="btn-reserve" onclick="openReserveModal('${eq.id}')">
+          <span class="material-symbols-outlined">calendar_month</span> ${isBay ? 'Book Studio Bay' : 'Reserve Now'}
         </button>
       </div>`;
     grid.appendChild(div);
@@ -1335,43 +1444,70 @@ function filterGear(btn) {
   renderGearGrid(filtered);
 }
 
-/* ── Load equipment from API ───────────────────────────────────────── */
+/* ── Load equipment & studio bays from API ──────────────────────────── */
 async function loadEquipment() {
   try {
-    const res  = await fetch('/api/rental-equipment');
-    const data = await res.json();
-    allEquipment = data.equipment || [];
+    const [equipRes, baysRes] = await Promise.all([
+      fetch('/api/rental-equipment'),
+      fetch('/api/studios/bays')
+    ]);
+    const equipData = await equipRes.json();
+    const baysData  = await baysRes.json();
+
+    const gear = equipData.equipment || [];
+    const bays = (baysData.bays || []).map(b => ({
+      id: 'bay_' + b.id,
+      bay_id: b.id,
+      name: b.name,
+      category: 'Studio Floor',
+      price_per_day: b.hourly_rate * 8,
+      hourly_rate: b.hourly_rate,
+      description: `${b.type} · ${b.dimensions} · ${b.city}, ${b.state}`,
+      included_equipment: b.included_equipment || [],
+      image_url: b.image_url,
+      is_bay: true
+    }));
+
+    allEquipment = [...gear, ...bays];
     renderGearGrid(allEquipment);
   } catch (err) {
     const loading = document.getElementById('gear-loading');
-    if (loading) { loading.innerHTML = '<span style="color:#ff6b6b;">Failed to load equipment. Please refresh.</span>'; }
+    if (loading) { loading.innerHTML = '<span style="color:#ff6b6b;">Failed to load inventory. Please refresh.</span>'; }
   }
 }
 loadEquipment();
 
 /* ── Reservation modal ─────────────────────────────────────────────── */
 function openReserveModal(equipId) {
-  const eq = allEquipment.find(e => e.id === equipId);
+  const eq = allEquipment.find(e => String(e.id) === String(equipId));
   if (!eq) return;
-  document.getElementById('reserve-equip-id').value    = eq.id;
-  document.getElementById('reserve-price-per-day').value = eq.price_per_day;
+  document.getElementById('reserve-equip-id').value      = eq.id;
+  document.getElementById('reserve-price-per-day').value = eq.is_bay ? eq.hourly_rate * 8 : eq.price_per_day;
   document.getElementById('modal-equip-name').textContent = eq.name;
-  document.getElementById('modal-equip-price').textContent = `$${Number(eq.price_per_day).toLocaleString()} / day`;
+
+  const displayPrice = eq.is_bay
+    ? `₹${Number(eq.hourly_rate).toLocaleString()} / hr (Studio Bay)`
+    : `₹${Number(eq.price_per_day).toLocaleString()} / day`;
+  document.getElementById('modal-equip-price').textContent = displayPrice;
+
+  // Calculate Security Deposit Hold amount based on item value
+  const depositHold = eq.is_bay ? 10000 : Math.max(3000, Math.round(eq.price_per_day * 4));
+  const badgeEl = document.getElementById('deposit-amount-badge');
+  if (badgeEl) badgeEl.textContent = `₹${depositHold.toLocaleString()} Hold`;
+
   document.getElementById('reserve-from').value  = '';
   document.getElementById('reserve-to').value    = '';
   document.getElementById('reserve-name').value  = '';
   document.getElementById('reserve-email').value = '';
   document.getElementById('reserve-notes').value = '';
   document.getElementById('reserve-err').style.display = 'none';
-  document.getElementById('reserve-btn-label').textContent = 'Send Request';
+  document.getElementById('reserve-btn-label').textContent = eq.is_bay ? 'Confirm Studio Floor Booking' : 'Send Request';
   document.getElementById('reserve-total-row').style.display = 'none';
 
-  // Set min dates to today
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('reserve-from').min = today;
   document.getElementById('reserve-to').min   = today;
 
-  // Recalc total when dates change
   ['reserve-from','reserve-to'].forEach(id => {
     document.getElementById(id).addEventListener('change', updateReserveTotal);
   });
@@ -1379,6 +1515,30 @@ function openReserveModal(equipId) {
   const modal = document.getElementById('modal-reserve');
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
+}
+
+function toggleFulfillmentMode(mode) {
+  const hubWrap = document.getElementById('pickup-hub-wrap');
+  const delTxt  = document.getElementById('delivery-info-txt');
+  if (mode === 'pickup') {
+    if (hubWrap) hubWrap.style.display = 'flex';
+    if (delTxt)  delTxt.style.display  = 'none';
+  } else {
+    if (hubWrap) hubWrap.style.display = 'none';
+    if (delTxt)  delTxt.style.display  = 'block';
+  }
+}
+
+function openHubMapModal() {
+  document.getElementById('modal-hub-map').style.display = 'flex';
+}
+function closeHubMapModal() {
+  document.getElementById('modal-hub-map').style.display = 'none';
+}
+function selectHubFromMap(hubName) {
+  const sel = document.getElementById('reserve-pickup-hub');
+  if (sel) sel.value = hubName;
+  closeHubMapModal();
 }
 
 function closeReserveModal() {
@@ -1394,8 +1554,9 @@ function updateReserveTotal() {
   const to    = document.getElementById('reserve-to').value;
   const price = parseFloat(document.getElementById('reserve-price-per-day').value) || 0;
   const row   = document.getElementById('reserve-total-row');
-  if (from && to && to > from) {
-    const days  = Math.round((new Date(to) - new Date(from)) / 86400000);
+  if (from && to && to >= from) {
+    const diffTime = Math.abs(new Date(to) - new Date(from));
+    const days  = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
     const total = (days * price).toLocaleString('en-IN');
     document.getElementById('reserve-total-val').textContent = `₹${total} (${days} day${days !== 1 ? 's' : ''})`;
     row.style.display = 'flex';
@@ -1408,37 +1569,51 @@ async function submitReservation(e) {
   e.preventDefault();
   const btn      = document.getElementById('reserve-btn-label');
   const errEl    = document.getElementById('reserve-err');
-  const equipId  = parseInt(document.getElementById('reserve-equip-id').value);
+  const equipId  = document.getElementById('reserve-equip-id').value;
   const from     = document.getElementById('reserve-from').value;
   const to       = document.getElementById('reserve-to').value;
   const name     = document.getElementById('reserve-name').value.trim();
   const email    = document.getElementById('reserve-email').value.trim();
   const notes    = document.getElementById('reserve-notes').value.trim();
+  const fulType  = document.querySelector('input[name="fulfillment_type"]:checked')?.value || 'pickup';
+  const pickupHub = document.getElementById('reserve-pickup-hub')?.value || 'Mumbai - Andheri West Hub';
 
-  if (!from || !to || to <= from) {
+  if (!from || !to || to < from) {
     errEl.textContent = 'Please select a valid date range.';
     errEl.style.display = 'block';
     return;
   }
 
-  btn.textContent = 'Sending…';
+  btn.textContent = 'Processing…';
   errEl.style.display = 'none';
 
   try {
+    const payload = {
+      equipment_id: equipId,
+      customer_name: name,
+      customer_email: email,
+      from_date: from,
+      to_date: to,
+      notes: notes,
+      fulfillment_type: fulType,
+      pickup_hub: fulType === 'pickup' ? pickupHub : null,
+      security_deposit_status: 'authorized_hold'
+    };
+
     const res  = await fetch('/api/rental-orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ equipment_id: equipId, customer_name: name, customer_email: email, from_date: from, to_date: to, notes }),
+      body: JSON.stringify(payload),
     });
     const data = await res.json();
     if (!data.ok) throw new Error(data.error || 'Something went wrong.');
     closeReserveModal();
-    // Brief success banner
+
     const banner = document.createElement('div');
-    banner.style.cssText = 'position:fixed;top:1.5rem;left:50%;transform:translateX(-50%);background:#0e0e10;border:1px solid rgba(0,219,233,0.3);border-radius:999px;padding:0.65rem 1.5rem;color:#00dbe9;font-size:0.88rem;font-weight:700;z-index:300;box-shadow:0 8px 24px rgba(0,0,0,0.5);';
-    banner.textContent = '✓ Rental request sent! The professional will be in touch.';
+    banner.style.cssText = 'position:fixed;top:1.5rem;left:50%;transform:translateX(-50%);background:#0e0e10;border:1px solid rgba(0,219,233,0.3);border-radius:999px;padding:0.75rem 1.8rem;color:#00dbe9;font-size:0.88rem;font-weight:700;z-index:300;box-shadow:0 8px 24px rgba(0,0,0,0.5);';
+    banner.textContent = '✓ Booking confirmed! Security Deposit hold authorized & fulfillment details sent to email.';
     document.body.appendChild(banner);
-    setTimeout(() => banner.remove(), 4000);
+    setTimeout(() => banner.remove(), 5000);
   } catch (err) {
     errEl.textContent = err.message;
     errEl.style.display = 'block';

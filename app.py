@@ -377,6 +377,43 @@ def init_db():
             )
         """)
         conn.execute("ALTER TABLE orders ADD COLUMN IF NOT EXISTS checkout_payload_json TEXT")
+        conn.execute("ALTER TABLE orders ADD COLUMN IF NOT EXISTS security_deposit_amount REAL DEFAULT 0")
+        conn.execute("ALTER TABLE orders ADD COLUMN IF NOT EXISTS security_deposit_status TEXT DEFAULT 'authorized_hold'")
+        conn.execute("ALTER TABLE orders ADD COLUMN IF NOT EXISTS fulfillment_type TEXT DEFAULT 'pickup'")
+        conn.execute("ALTER TABLE orders ADD COLUMN IF NOT EXISTS pickup_hub TEXT")
+
+        # Table: studio_bays for hourly studio floor bookings
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS studio_bays (
+                id                 SERIAL PRIMARY KEY,
+                studio_id          INTEGER,
+                name               TEXT NOT NULL,
+                type               TEXT NOT NULL DEFAULT 'Soundstage',
+                hourly_rate        REAL NOT NULL DEFAULT 1500,
+                dimensions         TEXT NOT NULL DEFAULT '40ft x 30ft, 18ft Ceiling',
+                included_equipment TEXT NOT NULL DEFAULT '[]',
+                image_url          TEXT,
+                city               TEXT NOT NULL DEFAULT 'Mumbai',
+                state              TEXT NOT NULL DEFAULT 'Maharashtra',
+                created_at         TEXT DEFAULT TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS')
+            )
+        """)
+
+        # Seed demo studio floor bays if empty
+        bays_count = conn.execute("SELECT COUNT(*) AS c FROM studio_bays").fetchone()['c']
+        if bays_count == 0:
+            demo_bays = [
+                ("Apex Soundstage A (Acoustic Treated)", "Soundstage", 2500, "50ft x 40ft, 22ft Ceiling", '["Pre-rigged Truss", "3-Phase 100A Power", "Silent AC", "Green Room", "Makeup Bay"]', "https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=800", "Mumbai", "Maharashtra"),
+                ("CyberWhite Seamless Cyclorama Bay", "Cyclorama Wall", 1800, "35ft x 30ft, 16ft Ceiling", '["3-Corner White Cyc", "Pre-rigged Aputure Lighting", "Stylist Station", "High Speed Wifi"]', "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800", "Bengaluru", "Karnataka"),
+                ("Choreos VFX Green Screen Floor", "Green Screen", 2000, "40ft x 35ft, 18ft Ceiling", '["Ultimatte Chroma Green Wall", "Overhead Grid", "Client Lounge", "Power Backup"]', "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800", "Hyderabad", "Telangana"),
+                ("Kochi Coast Daylight Photo Bay", "Photo Floor", 1200, "30ft x 25ft, 14ft Ceiling", '["North-Facing Natural Skylights", "Profoto Strobes", "Paper Backdrops", "Espresso Bar"]', "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800", "Kochi", "Kerala"),
+                ("NCR Prime Production Soundstage", "Soundstage", 3000, "60ft x 45ft, 24ft Ceiling", '["Drive-In Vehicle Access", "Heavy Duty Rigging", "Private Production Office", "AC"]', "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800", "Noida", "Delhi (NCR)")
+            ]
+            for b in demo_bays:
+                conn.execute("""
+                    INSERT INTO studio_bays (name, type, hourly_rate, dimensions, included_equipment, image_url, city, state)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                """, b)
         conn.execute("""
             CREATE TABLE IF NOT EXISTS bookings (
                 id                SERIAL PRIMARY KEY,
@@ -2514,6 +2551,56 @@ def export_professional_ical(user_id):
     return Response(ics_content, mimetype="text/calendar", headers={
         "Content-Disposition": f"attachment; filename=camcrew_calendar_{user_id}.ics"
     })
+
+
+@app.route("/api/studios/bays", methods=["GET", "POST"])
+def studio_bays():
+    """Endpoint for studio bays & soundstages marketplace."""
+    if request.method == "POST":
+        uid = require_auth()
+        if not uid:
+            return jsonify({"ok": False, "error": "Not authenticated."}), 401
+        data = request.get_json(force=True, silent=True) or {}
+        name        = (data.get("name") or "").strip()
+        bay_type    = (data.get("type") or "Soundstage").strip()
+        hourly_rate = float(data.get("hourly_rate", 1500))
+        dimensions  = (data.get("dimensions") or "40ft x 30ft, 18ft Ceiling").strip()
+        included    = _json.dumps(data.get("included_equipment", []))
+        image_url   = (data.get("image_url") or "").strip() or None
+        city        = (data.get("city") or "Mumbai").strip()
+        state       = (data.get("state") or "Maharashtra").strip()
+
+        if not name:
+            return jsonify({"ok": False, "error": "Bay name is required."}), 400
+
+        with get_db() as conn:
+            cur = conn.execute("""
+                INSERT INTO studio_bays (studio_id, name, type, hourly_rate, dimensions, included_equipment, image_url, city, state)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id
+            """, (uid, name, bay_type, hourly_rate, dimensions, included, image_url, city, state))
+            bay_id = cur.fetchone()["id"]
+
+        return jsonify({"ok": True, "bay_id": bay_id, "message": "Studio bay listed successfully."})
+
+    # GET: fetch all studio bays
+    city_filter = (request.args.get("city") or "").strip().lower()
+    type_filter = (request.args.get("type") or "").strip().lower()
+
+    with get_db() as conn:
+        rows = conn.execute("SELECT * FROM studio_bays ORDER BY id DESC").fetchall()
+
+    bays = []
+    for r in rows:
+        b_dict = dict(r)
+        b_dict["included_equipment"] = _json.loads(b_dict.get("included_equipment") or "[]")
+        
+        if city_filter and city_filter not in b_dict.get("city", "").lower():
+            continue
+        if type_filter and type_filter not in b_dict.get("type", "").lower():
+            continue
+        bays.append(b_dict)
+
+    return jsonify({"ok": True, "count": len(bays), "bays": bays})
 
 
 # ---------------------------------------------------------------------------
