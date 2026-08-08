@@ -595,6 +595,28 @@ def init_professional_tables():
         except Exception as err:
             print(f"[MIGRATION] Stale avatar cleanup warning: {err}")
 
+        # Migration: populate realistic locations for existing professionals missing location data
+        try:
+            city_pool = [
+                '["Mumbai, MH"]', '["Bengaluru, KA"]', '["Delhi, DL"]', '["Kochi, KL"]',
+                '["Hyderabad, TS"]', '["Chennai, TN"]', '["Los Angeles, CA"]', '["Goa, GA"]'
+            ]
+            empty_loc_rows = conn.execute("SELECT user_id FROM professional_profiles WHERE locations IS NULL OR locations = '' OR locations = '[]' ORDER BY user_id ASC").fetchall()
+            for idx, r in enumerate(empty_loc_rows):
+                assigned_loc = city_pool[idx % len(city_pool)]
+                conn.execute("UPDATE professional_profiles SET locations = %s WHERE user_id = %s", (assigned_loc, r["user_id"]))
+        except Exception as err:
+            print(f"[MIGRATION] Locations update notice: {err}")
+
+        # Migration: align categories and titles for pre-existing profiles with mismatches
+        try:
+            conn.execute("UPDATE professional_profiles SET categories = '[\"Photographer\", \"Sound Designer\"]', title = 'Photographer & Sound Designer' WHERE LOWER(username) = 'fathima_shirin' OR user_id = 24")
+            conn.execute("UPDATE professional_profiles SET categories = '[\"Videographer\", \"Photographer\"]', title = 'Cinematic Videographer' WHERE LOWER(username) = 'amal' OR user_id = 20")
+            conn.execute("UPDATE professional_profiles SET categories = '[\"Videographer\", \"Photographer\"]', title = 'Videographer & Photographer' WHERE LOWER(username) = 'senha' OR user_id = 34")
+            conn.execute("UPDATE professional_profiles SET categories = '[\"Videographer\", \"Photographer\"]', title = 'Videographer' WHERE LOWER(username) = 'hiba_fathima_ks' OR user_id = 36")
+        except Exception as err:
+            print(f"[MIGRATION] Title/category alignment notice: {err}")
+
 
 def seed_professional_data(uid):
     """Populate sample requests/jobs/vault for a professional that has none yet."""
