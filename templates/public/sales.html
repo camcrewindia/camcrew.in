@@ -1,11 +1,29 @@
-<!DOCTYPE html><html class="dark" lang="en"><head>
+<!DOCTYPE html><html class="light" data-theme="light" lang="en"><head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Camcrew Studio | Obsidian Orbit</title>
+<title>Sales | Camcrew Studio</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="/static/js/tailwind-config.js"></script>
 <link rel="stylesheet" href="/static/css/styles.css">
 <style>
+  /* ── Dual Theme System ── */
+  html.light, :root {
+    --page-bg:             #e0e5ec;
+    --text-main:           #0f172a;
+    --text-muted:          #64748b;
+    --accent-color:        #0e5a6f;
+  }
+  html.dark {
+    --page-bg:             #05070a;
+    --text-main:           #dce4e5;
+    --text-muted:          #b9cacb;
+    --accent-color:        #00f0ff;
+  }
+  body {
+    background-color: var(--page-bg) !important;
+    color: var(--text-main) !important;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
   /* ── Hero ambient grid ─────────────────────────────────── */
   .hero-grid {
     background-image:

@@ -1,295 +1,362 @@
-<!DOCTYPE html><html class="dark" lang="en"><head>
+<!DOCTYPE html>
+<html class="light" data-theme="light" lang="en">
+<head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>Services | Camcrew Studio</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="/static/js/tailwind-config.js"></script>
 <link rel="stylesheet" href="/static/css/styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+  /* Dual-Theme Styles for Services Hub */
+  html.light, :root {
+    --page-bg:             #e0e5ec;
+    --text-main:           #0f172a;
+    --text-muted:          #64748b;
+    --accent-color:        #0e5a6f;
+    --card-outer-shadow:   10px 10px 24px #b8c2cc, -10px -10px 24px #ffffff;
+    --card-outer-shadow-h: 14px 14px 32px #a8b3be, -14px -14px 32px #ffffff;
+    
+    --info-bg:             #e0e5ec;
+    --info-shadow:         none;
+    --name-color:          #0f172a;
+    --title-color:         #64748b;
+    --loc-text-color:      #475569;
+    --rate-color:          #0e5a6f;
+    
+    --btn-view-bg:         #e0e5ec;
+    --btn-view-shadow:     4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff;
+    --btn-view-shadow-h:   6px 6px 14px #b8c2cc, -6px -6px 14px #ffffff;
+    --btn-view-shadow-active: inset 4px 4px 8px #b8c2cc, inset -4px -4px 8px #ffffff;
+    --btn-view-color:      #334155;
+    
+    --btn-book-bg:         #0f4c5c;
+    --btn-book-color:      #ffffff;
+    --btn-book-shadow:     0 6px 16px rgba(15,76,92,0.35);
+    --btn-book-shadow-h:   0 8px 24px rgba(15,76,92,0.45);
+    --btn-book-shadow-active: inset 0 4px 8px rgba(0,0,0,0.4);
+
+    --hub-bg:              #e0e5ec;
+    --hub-shadow:          8px 8px 20px #b8c2cc, -8px -8px 20px #ffffff;
+  }
+
+  html.dark {
+    --page-bg:             #05070a;
+    --text-main:           #dce4e5;
+    --text-muted:          #b9cacb;
+    --accent-color:        #00f0ff;
+    --card-outer-shadow:   0 20px 45px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.12);
+    --card-outer-shadow-h: 0 28px 60px rgba(0,0,0,0.95), 0 0 0 1px rgba(0,240,255,0.3);
+    
+    --info-bg:             #161618;
+    --info-shadow:         0 16px 40px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.12);
+    --name-color:          #ffffff;
+    --title-color:         #00f0ff;
+    --loc-text-color:      #b9cacb;
+    --rate-color:          #00f0ff;
+    
+    --btn-view-bg:         rgba(255,255,255,0.06);
+    --btn-view-shadow:     0 0 0 1px rgba(255,255,255,0.12);
+    --btn-view-shadow-h:   0 0 15px rgba(0,240,255,0.3), 0 0 0 1px #00f0ff;
+    --btn-view-shadow-active: inset 0 3px 6px rgba(0,0,0,0.7), 0 0 20px rgba(0,240,255,0.5);
+    --btn-view-color:      #dce4e5;
+    
+    --btn-book-bg:         linear-gradient(135deg, #00f0ff 0%, #00c8e0 100%);
+    --btn-book-color:      #001f22;
+    --btn-book-shadow:     0 6px 20px rgba(0,240,255,0.35);
+    --btn-book-shadow-h:   0 8px 28px rgba(0,240,255,0.55);
+    --btn-book-shadow-active: inset 0 3px 6px rgba(0,0,0,0.5), 0 0 30px rgba(0,240,255,0.8);
+
+    --hub-bg:              rgba(22, 22, 24, 0.75);
+    --hub-shadow:          0 20px 50px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.12);
+  }
+
+  body {
+    background-color: var(--page-bg);
+    color: var(--text-main);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* ── Reference Card Design ── */
+  .pro-card-wrap { animation: fadeIn 0.4s ease both; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  .pro-card {
+    background: transparent; border-radius: 32px; padding: 0;
+    box-shadow: var(--card-outer-shadow); transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex; flex-direction: column; position: relative; overflow: hidden;
+  }
+  .pro-card:hover { transform: translateY(-6px); box-shadow: var(--card-outer-shadow-h); }
+
+  .pro-card-banner { height: 240px; width: 100%; border-radius: 32px 32px 0 0; position: relative; overflow: hidden; background: #1e293b; }
+  .pro-card-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+  .pro-card:hover .pro-card-img { transform: scale(1.04); }
+  .pro-card-initials { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; font-weight: 900; color: #64748b; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+
+  .badge-intl { position: absolute; top: 12px; left: 12px; z-index: 3; background: rgba(15,23,42,0.8); backdrop-filter: blur(8px); color: #38bdf8; font-size: 0.6rem; font-weight: 900; padding: 0.2rem 0.6rem; border-radius: 999px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .badge-verified { position: absolute; top: 12px; right: 12px; z-index: 3; width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+  .pro-card-info { margin-top: -45px; position: relative; z-index: 4; background: var(--info-bg); border-radius: 28px; padding: 1.25rem 1.1rem 1.1rem; box-shadow: var(--info-shadow); display: flex; flex-direction: column; transition: background 0.3s ease, box-shadow 0.3s ease; }
+  .pro-card-name { font-size: 1.15rem; font-weight: 800; color: var(--name-color); line-height: 1.2; margin: 0 0 0.15rem 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pro-card-title { font-size: 0.8rem; font-weight: 600; color: var(--title-color); margin: 0 0 0.5rem 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .pro-card-loc { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.65rem; }
+  .loc-pin-icon { width: 18px; height: 18px; border-radius: 50%; background: #ef4444; color: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(239,68,68,0.4); }
+  .loc-pin-icon .material-symbols-outlined { font-size: 0.7rem; transform: rotate(45deg); }
+  .loc-text { font-size: 0.8rem; font-weight: 700; color: var(--loc-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pro-card-rate { font-size: 1rem; font-weight: 800; color: var(--rate-color); margin-bottom: 0.85rem; letter-spacing: -0.01em; }
+
+  .pro-card-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .btn-view-profile {
+    background: var(--btn-view-bg); box-shadow: var(--btn-view-shadow); border-radius: 999px;
+    color: var(--btn-view-color); font-weight: 700; font-size: 0.78rem; padding: 0.65rem 0.4rem; text-align: center;
+    text-decoration: none; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease-in-out; cursor: pointer; user-select: none;
+  }
+  .btn-view-profile:hover { box-shadow: var(--btn-view-shadow-h); transform: translateY(-2px); }
+  .btn-view-profile:active { box-shadow: var(--btn-view-shadow-active) !important; transform: translateY(1px) !important; }
+
+  .btn-book-now {
+    background: var(--btn-book-bg); border-radius: 999px; color: var(--btn-book-color);
+    font-weight: 800; font-size: 0.78rem; padding: 0.65rem 0.4rem; text-align: center;
+    text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: var(--btn-book-shadow); transition: all 0.15s ease-in-out; cursor: pointer; user-select: none;
+  }
+  .btn-book-now:hover { box-shadow: var(--btn-book-shadow-h); transform: translateY(-2px); }
+  .btn-book-now:active { box-shadow: var(--btn-book-shadow-active) !important; transform: translateY(1px) !important; }
+
+  .sticky-hub {
+    background: var(--hub-bg);
+    box-shadow: var(--hub-shadow);
+  }
+</style>
 </head>
-<body class="bg-obsidian-base">
-<!-- Global WebGL Background -->
+<body>
 
 <!-- Header Navigation -->
-<div id="site-header"></div>
+<div id="site-header" class="relative z-30"></div>
+
 <!-- Main Content Area -->
-<main class="relative z-10 pt-32">
-<!-- Section 1: Featured Services Carousel -->
-<section class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop mb-stack-xl transition-all duration-1000 opacity-100 translate-y-0">
-<div class="flex flex-col gap-2 mb-stack-md">
-<span class="font-label-caps text-label-caps text-primary-container uppercase tracking-widest">Premium Selection</span>
-<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary">Featured Cinematic Arts</h1>
+<main class="relative z-10 pt-28 pb-16">
+
+<!-- Section 1: Featured Services Banner -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+<div class="flex flex-col gap-2 mb-6">
+<span class="text-xs font-black uppercase tracking-widest text-[var(--accent-color)]">Verified Creative Directory</span>
+<h1 class="text-3xl md:text-5xl font-black text-[var(--text-main)]">CamCrew Services Marketplace</h1>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-<!-- Featured Card 1 -->
-<div class="group relative h-[500px] rounded-3xl overflow-hidden glass-panel border-glass-stroke">
-<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="A cinematic low-angle shot of a high-end film production set with heavy atmosphere, blue and purple neon lighting, and professional camera rigs. The mood is sophisticated and technologically advanced, echoing an obsidian minimalism style." style="background-image: url('https://www.magnific.com/free-photo/people-working-together-new-movie_17342936.htm#fromView=search&page=1&position=46&uuid=2e5a5f10-d9e5-4072-961e-4d8d2d5361c1&track=ais_test_b&query=film+production')"></div>
-<div class="absolute inset-0 bg-gradient-to-t from-obsidian-base via-transparent to-transparent opacity-90"></div>
-<div class="absolute bottom-0 left-0 p-8 w-full">
-<div class="flex items-center gap-2 mb-2">
-<span class="material-symbols-outlined text-primary-container text-sm">stars</span>
-<span class="font-label-caps text-label-caps text-on-surface-variant">Top Rated</span>
-</div>
-<h3 class="font-headline-md text-headline-md text-white mb-2">Epic Narrative Films</h3>
-<p class="font-body-md text-body-md text-on-surface-variant mb-6">World-class short film production for creators who demand cinematic excellence.</p>
-<button class="w-full py-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold hover:bg-primary-container hover:text-obsidian-base transition-all">Explore Service</button>
-</div>
-</div>
-<!-- Featured Card 2 -->
-<div class="group relative h-[500px] rounded-3xl overflow-hidden glass-panel border-glass-stroke md:mt-12">
-<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="A futuristic digital workspace featuring a high-end professional UI/UX designer working on a sleek terminal with neon cyan glowing interfaces. The room is dark, obsidian-toned, with soft reflections of cyan and purple light on polished surfaces." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuABiFJb0I75yzoXK-2el4SND5fvJ3NMxgqVCa5FT88I80tINLJ3JmfiQAXuIe40vv1iuhypCMWpvdsmnJqIxER1MJxcR7Dtu8FpuOL2JqL5bg8J4NsdSYP2yanKlnSC8mYDxpWu9ih5e-sn0jC7D0WQJYaZJPcQHgXnxxnHl8k60SkQ4-SY6-hhwX_Ljy8bIIm0pPs_klRjxWpRySLPDVrfv1kCcylG4SE1I1MScGmumJT2TkdKiOKK')"></div>
-<div class="absolute inset-0 bg-gradient-to-t from-obsidian-base via-transparent to-transparent opacity-90"></div>
-<div class="absolute bottom-0 left-0 p-8 w-full">
-<div class="flex items-center gap-2 mb-2">
-<span class="material-symbols-outlined text-secondary text-sm">bolt</span>
-<span class="font-label-caps text-label-caps text-on-surface-variant">New Release</span>
-</div>
-<h3 class="font-headline-md text-headline-md text-white mb-2">Next-Gen App UI</h3>
-<p class="font-body-md text-body-md text-on-surface-variant mb-6">Designing digital experiences that bridge the gap between human and machine.</p>
-<button class="w-full py-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold hover:bg-secondary-container hover:text-white transition-all">View Designs</button>
-</div>
-</div>
-<!-- Featured Card 3 -->
-<div class="group relative h-[500px] rounded-3xl overflow-hidden glass-panel border-glass-stroke">
-<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="An ethereal wedding ceremony captured in a slow-shutter cinematic style with soft glowing lanterns and cool blue night tones. Professional photography gear is visible in the foreground, creating a feeling of premium service and artistry." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA3YEoTSl_sQQhg1e1j05Bo_sa8eAc-zPPqHb6drPomKPeq9eg1Fpqvnqv4R5X0f-0tUhc38hjLCdkyaLeE8ximBcc64aY7PAb2qVoGs0qkvV3rCqkRUGywP6SrpVECPor5vcyKeKSKEkbXO2fr1zGXqy92f2FCyPo6BawkXbJQ4U432LFM0PQzJ3oV7Y4C-ngaT10S_UXC4W7s7Q0R0BeTDhuPwQI5wlZbjXNFlsr-yDjaCX2DFLF9')"></div>
-<div class="absolute inset-0 bg-gradient-to-t from-obsidian-base via-transparent to-transparent opacity-90"></div>
-<div class="absolute bottom-0 left-0 p-8 w-full">
-<div class="flex items-center gap-2 mb-2">
-<span class="material-symbols-outlined text-primary-container text-sm">favorite</span>
-<span class="font-label-caps text-label-caps text-on-surface-variant">User Favorite</span>
-</div>
-<h3 class="font-headline-md text-headline-md text-white mb-2">Celestial Weddings</h3>
-<p class="font-body-md text-body-md text-on-surface-variant mb-6">Preserving your most precious moments in high-fidelity obsidian elegance.</p>
-<button class="w-full py-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold hover:bg-primary-container hover:text-obsidian-base transition-all">Book Artist</button>
-</div>
-</div>
-</div>
-</section>
+
 <!-- Section 2: Category Navigation Hub -->
-<div class="sticky top-40 z-40 max-w-4xl mx-auto px-4 mb-stack-xl">
-<div class="glass-panel p-2 rounded-full border-glass-stroke shadow-2xl flex items-center justify-between gap-2 overflow-x-auto hide-scrollbar">
-<a class="flex items-center gap-2 px-6 py-3 rounded-full bg-primary-container/20 text-primary-container font-bold whitespace-nowrap transition-all" href="#photographers">
-<span class="material-symbols-outlined">photo_camera</span>
-<span class="">Photographers</span>
+<div class="sticky top-28 z-40 max-w-4xl mx-auto px-2 mb-12">
+<div class="sticky-hub p-2 rounded-full border border-white/10 shadow-2xl flex items-center justify-between gap-2 overflow-x-auto custom-scrollbar">
+<a class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[var(--btn-book-bg)] text-[var(--btn-book-color)] font-extrabold text-xs whitespace-nowrap transition-all" href="#photographers">
+<span class="material-symbols-outlined text-sm">photo_camera</span> Photographers
 </a>
-<a class="flex items-center gap-2 px-6 py-3 rounded-full hover:bg-white/5 text-on-surface-variant whitespace-nowrap transition-all" href="#videographers">
-<span class="material-symbols-outlined">videocam</span>
-<span class="">Videographers</span>
+<a class="flex items-center gap-2 px-5 py-2.5 rounded-full hover:bg-black/5 text-[var(--text-main)] font-bold text-xs whitespace-nowrap transition-all" href="#videographers">
+<span class="material-symbols-outlined text-sm">videocam</span> Videographers
 </a>
-<a class="flex items-center gap-2 px-6 py-3 rounded-full hover:bg-white/5 text-on-surface-variant whitespace-nowrap transition-all" href="#designers">
-<span class="material-symbols-outlined">palette</span>
-<span class="">Designers</span>
+<a class="flex items-center gap-2 px-5 py-2.5 rounded-full hover:bg-black/5 text-[var(--text-main)] font-bold text-xs whitespace-nowrap transition-all" href="#designers">
+<span class="material-symbols-outlined text-sm">palette</span> Designers
 </a>
-<a class="flex items-center gap-2 px-6 py-3 rounded-full hover:bg-white/5 text-on-surface-variant whitespace-nowrap transition-all" href="#organizers">
-<span class="material-symbols-outlined">event</span>
-<span class="">Organizers</span>
+<a class="flex items-center gap-2 px-5 py-2.5 rounded-full hover:bg-black/5 text-[var(--text-main)] font-bold text-xs whitespace-nowrap transition-all" href="#organizers">
+<span class="material-symbols-outlined text-sm">event</span> Organizers
 </a>
-<a class="flex items-center gap-2 px-6 py-3 rounded-full hover:bg-white/5 text-on-surface-variant whitespace-nowrap transition-all" href="#developers">
-<span class="material-symbols-outlined">code</span>
-<span class="">Developers</span>
+<a class="flex items-center gap-2 px-5 py-2.5 rounded-full hover:bg-black/5 text-[var(--text-main)] font-bold text-xs whitespace-nowrap transition-all" href="#developers">
+<span class="material-symbols-outlined text-sm">code</span> Developers
 </a>
-<a class="flex items-center gap-2 px-6 py-3 rounded-full hover:bg-white/5 text-on-surface-variant whitespace-nowrap transition-all" href="#caterers">
-<span class="material-symbols-outlined">restaurant</span>
-<span class="">Caterers</span>
+<a class="flex items-center gap-2 px-5 py-2.5 rounded-full hover:bg-black/5 text-[var(--text-main)] font-bold text-xs whitespace-nowrap transition-all" href="#caterers">
+<span class="material-symbols-outlined text-sm">restaurant</span> Caterers
 </a>
-</div>
-</div>
-<!-- Section 3: Photographers Category -->
-<section class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop mb-stack-xl transition-all duration-1000 opacity-100 translate-y-0" id="photographers" style="scroll-margin-top: 320px;">
-<div class="flex items-end justify-between mb-stack-md">
-<div>
-<h2 class="font-display-lg text-headline-md md:text-display-lg text-white">Photographers</h2>
-<p class="font-body-md text-on-surface-variant">Masters of light and composition.</p>
-</div>
-<a class="text-primary-container font-bold flex items-center gap-2 hover:translate-x-2 transition-transform" href="photographers.html">
-                    View All <span class="material-symbols-outlined">arrow_forward</span>
-</a>
-</div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter" id="grid-photographers">
-<div class="col-span-full flex items-center justify-center py-12 text-on-surface-variant" id="grid-photographers-loading">
-  <span class="material-symbols-outlined animate-spin mr-2">progress_activity</span> Loading professionals…
-</div>
-</div>
-</section><!-- Section: Videographers -->
-<section class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop mb-stack-xl transition-all duration-1000 opacity-100 translate-y-0" id="videographers" style="scroll-margin-top: 320px;">
-<div class="flex items-end justify-between mb-stack-md">
-<div>
-<h2 class="font-display-lg text-headline-md md:text-display-lg text-white">Videographers</h2>
-<p class="font-body-md text-on-surface-variant">Masters of motion and light.</p>
-</div>
-<a class="text-primary-container font-bold flex items-center gap-2 hover:translate-x-2 transition-transform" href="videographers.html">
-      View All <span class="material-symbols-outlined">arrow_forward</span>
-</a>
-</div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter" id="grid-videographers">
-<div class="col-span-full flex items-center justify-center py-12 text-on-surface-variant" id="grid-videographers-loading">
-  <span class="material-symbols-outlined animate-spin mr-2">progress_activity</span> Loading professionals…
 </div>
 </div>
 </section>
+
+<!-- Section: Photographers -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16" id="photographers" style="scroll-margin-top: 180px;">
+<div class="flex items-end justify-between mb-6">
+<div>
+<h2 class="text-2xl md:text-3xl font-black text-[var(--text-main)]">Photographers</h2>
+<p class="text-sm font-semibold text-[var(--text-muted)]">Masters of light, fashion, and composition.</p>
+</div>
+<a class="text-[var(--accent-color)] font-extrabold text-sm flex items-center gap-1 hover:translate-x-1 transition-transform" href="photographers.html">
+View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="grid-photographers">
+<div class="col-span-full text-center py-12 text-[var(--text-muted)]" id="grid-photographers-loading">
+  <span class="material-symbols-outlined animate-spin mr-2">progress_activity</span> Loading photographers…
+</div>
+</div>
+</section>
+
+<!-- Section: Videographers -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16" id="videographers" style="scroll-margin-top: 180px;">
+<div class="flex items-end justify-between mb-6">
+<div>
+<h2 class="text-2xl md:text-3xl font-black text-[var(--text-main)]">Videographers</h2>
+<p class="text-sm font-semibold text-[var(--text-muted)]">Masters of cinematic storytelling &amp; motion.</p>
+</div>
+<a class="text-[var(--accent-color)] font-extrabold text-sm flex items-center gap-1 hover:translate-x-1 transition-transform" href="videographers.html">
+View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="grid-videographers">
+<div class="col-span-full text-center py-12 text-[var(--text-muted)]" id="grid-videographers-loading">
+  <span class="material-symbols-outlined animate-spin mr-2">progress_activity</span> Loading videographers…
+</div>
+</div>
+</section>
+
 <!-- Section: Designers -->
-<section class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop mb-stack-xl transition-all duration-1000 opacity-100 translate-y-0" id="designers" style="scroll-margin-top: 320px;">
-<div class="flex items-end justify-between mb-stack-md">
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16" id="designers" style="scroll-margin-top: 180px;">
+<div class="flex items-end justify-between mb-6">
 <div>
-<h2 class="font-display-lg text-headline-md md:text-display-lg text-white">Designers</h2>
-<p class="font-body-md text-on-surface-variant">Architects of visual identity.</p>
+<h2 class="text-2xl md:text-3xl font-black text-[var(--text-main)]">Designers</h2>
+<p class="text-sm font-semibold text-[var(--text-muted)]">Architects of visual identity and digital interfaces.</p>
 </div>
-<a class="text-primary-container font-bold flex items-center gap-2 hover:translate-x-2 transition-transform" href="designers.html">
-      View All <span class="material-symbols-outlined">arrow_forward</span>
+<a class="text-[var(--accent-color)] font-extrabold text-sm flex items-center gap-1 hover:translate-x-1 transition-transform" href="designers.html">
+View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
 </a>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter" id="grid-designers">
-<div class="col-span-full flex items-center justify-center py-12 text-on-surface-variant" id="grid-designers-loading">
-  <span class="material-symbols-outlined animate-spin mr-2">progress_activity</span> Loading professionals…
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="grid-designers">
+<div class="col-span-full text-center py-12 text-[var(--text-muted)]" id="grid-designers-loading">
+  <span class="material-symbols-outlined animate-spin mr-2">progress_activity</span> Loading designers…
 </div>
 </div>
 </section>
+
 <!-- Section: Organizers -->
-<section class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop mb-stack-xl transition-all duration-1000 opacity-100 translate-y-0" id="organizers" style="scroll-margin-top: 320px;">
-<div class="flex items-end justify-between mb-stack-md">
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16" id="organizers" style="scroll-margin-top: 180px;">
+<div class="flex items-end justify-between mb-6">
 <div>
-<h2 class="font-display-lg text-headline-md md:text-display-lg text-white">Organizers</h2>
-<p class="font-body-md text-on-surface-variant">Curators of unforgettable experiences.</p>
+<h2 class="text-2xl md:text-3xl font-black text-[var(--text-main)]">Organizers</h2>
+<p class="text-sm font-semibold text-[var(--text-muted)]">Curators of grand galas, weddings, and summits.</p>
 </div>
-<a class="text-primary-container font-bold flex items-center gap-2 hover:translate-x-2 transition-transform" href="organisers.html">
-      View All <span class="material-symbols-outlined">arrow_forward</span>
+<a class="text-[var(--accent-color)] font-extrabold text-sm flex items-center gap-1 hover:translate-x-1 transition-transform" href="organisers.html">
+View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
 </a>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter" id="grid-organizers">
-<div class="col-span-full flex items-center justify-center py-12 text-on-surface-variant" id="grid-organizers-loading">
-  <span class="material-symbols-outlined animate-spin mr-2">progress_activity</span> Loading professionals…
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="grid-organizers">
+<div class="col-span-full text-center py-12 text-[var(--text-muted)]" id="grid-organizers-loading">
+  <span class="material-symbols-outlined animate-spin mr-2">progress_activity</span> Loading organizers…
 </div>
 </div>
 </section>
-<!-- Section 4: Developers -->
-<section class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop mb-stack-xl transition-all duration-1000 opacity-100 translate-y-0" id="developers" style="scroll-margin-top: 320px;">
-<div class="flex items-end justify-between mb-stack-md">
+
+<!-- Section: Developers -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16" id="developers" style="scroll-margin-top: 180px;">
+<div class="flex items-end justify-between mb-6">
 <div>
-<h2 class="font-display-lg text-headline-md md:text-display-lg text-white">Developers</h2>
-<p class="font-body-md text-on-surface-variant">Architects of the digital frontier.</p>
+<h2 class="text-2xl md:text-3xl font-black text-[var(--text-main)]">Developers</h2>
+<p class="text-sm font-semibold text-[var(--text-muted)]">Architects of web, mobile apps, and cloud APIs.</p>
 </div>
-<a class="text-primary-container font-bold flex items-center gap-2 hover:translate-x-2 transition-transform" href="developers.html">
-  View All <span class="material-symbols-outlined">arrow_forward</span>
+<a class="text-[var(--accent-color)] font-extrabold text-sm flex items-center gap-1 hover:translate-x-1 transition-transform" href="developers.html">
+View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
 </a>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter" id="grid-developers">
-<div class="col-span-full flex items-center justify-center py-12 text-on-surface-variant" id="grid-developers-loading">
-  <span class="material-symbols-outlined animate-spin mr-2">progress_activity</span> Loading professionals…
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="grid-developers">
+<div class="col-span-full text-center py-12 text-[var(--text-muted)]" id="grid-developers-loading">
+  <span class="material-symbols-outlined animate-spin mr-2">progress_activity</span> Loading developers…
 </div>
 </div>
 </section>
-<!-- Section 5: Caterers -->
-<section class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop mb-stack-xl transition-all duration-1000 opacity-100 translate-y-0" id="caterers" style="scroll-margin-top: 320px;">
-<div class="flex items-end justify-between mb-stack-md">
+
+<!-- Section: Caterers -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16" id="caterers" style="scroll-margin-top: 180px;">
+<div class="flex items-end justify-between mb-6">
 <div>
-<h2 class="font-display-lg text-headline-md md:text-display-lg text-white">Caterers</h2>
-<p class="font-body-md text-on-surface-variant">Culinary experts for every occasion.</p>
+<h2 class="text-2xl md:text-3xl font-black text-[var(--text-main)]">Caterers</h2>
+<p class="text-sm font-semibold text-[var(--text-muted)]">Master chefs and luxury event dining teams.</p>
 </div>
-<a class="text-primary-container font-bold flex items-center gap-2 hover:translate-x-2 transition-transform" href="caterers.html">
-  View All <span class="material-symbols-outlined">arrow_forward</span>
+<a class="text-[var(--accent-color)] font-extrabold text-sm flex items-center gap-1 hover:translate-x-1 transition-transform" href="caterers.html">
+View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
 </a>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter" id="grid-caterers">
-<div class="col-span-full flex items-center justify-center py-12 text-on-surface-variant" id="grid-caterers-loading">
-  <span class="material-symbols-outlined animate-spin mr-2">progress_activity</span> Loading professionals…
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="grid-caterers">
+<div class="col-span-full text-center py-12 text-[var(--text-muted)]" id="grid-caterers-loading">
+  <span class="material-symbols-outlined animate-spin mr-2">progress_activity</span> Loading caterers…
 </div>
 </div>
 </section>
+
 </main>
-<!-- Footer Component -->
-<div id="site-footer"></div>
-<script>
-        // Smooth reveal on scroll
-        // Floating Hub highlight on scroll
-window.addEventListener('scroll', () => {
-    // FIX 1: Array order now matches your HTML DOM exactly
-    const sections = ['photographers', 'videographers', 'designers', 'organizers', 'developers', 'caterers'];
-    let current = '';
 
-    sections.forEach(section => {
-        const element = document.getElementById(section);
-        if (element) {
-            const rect = element.getBoundingClientRect();
-            // FIX 2: Increased threshold to 350 to account for your 320px scroll-margin-top
-            if (rect.top <= 350) { 
-                current = section;
-            }
-        }
-    });
-
-    const navLinks = document.querySelectorAll('.sticky a');
-    navLinks.forEach(link => {
-        // Reset all links to inactive state
-        link.classList.remove('bg-primary-container/20', 'text-primary-container', 'font-bold');
-        link.classList.add('text-on-surface-variant');
-        
-        // FIX 3: Make sure 'current' isn't empty before applying the active class
-        if (current && link.getAttribute('href').includes(current)) {
-            link.classList.add('bg-primary-container/20', 'text-primary-container', 'font-bold');
-            link.classList.remove('text-on-surface-variant');
-        }
-    });
-});
-    </script>
+<div id="site-footer" class="relative z-10"></div>
 
 <script src="/static/js/header-loader.js"></script>
-  <script src="/static/js/footer-loader.js"></script>
+<script src="/static/js/footer-loader.js"></script>
 <script>
-// ── Utility: generate a consistent hue from a string ──────────────────────
-function strHue(str) {
-  let h = 0;
-  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) & 0xffffffff;
-  return Math.abs(h) % 360;
-}
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function initials(name) { return (name || '?').split(' ').filter(Boolean).slice(0,2).map(w => w[0].toUpperCase()).join(''); }
 
-function initials(name) {
-  return (name || '?').split(' ').filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');
-}
+/* Reference Card Builder — Dual Theme Compatible */
+function buildNeumorphicCard(pro) {
+  const name  = pro.display_name || pro.username || 'Creative Professional';
+  const title = pro.title || (pro.categories && pro.categories[0]) || 'Service Specialist';
+  
+  let loc = pro.location || (pro.locations && pro.locations[0]) || 'Mumbai, Maharashtra';
 
-// ── Build a profile card ───────────────────────────────────────────────────
-function buildCard(pro) {
-  const hue   = strHue(pro.username || pro.display_name || '');
-  const inits = initials(pro.display_name);
-  const name  = pro.display_name || pro.username || 'Professional';
-  const title = pro.title || (pro.categories && pro.categories[0]) || 'Creative Professional';
-  const loc   = pro.location || 'Location not set';
-  const rate  = pro.rate || 'Rate on request';
+  let rateDisplay = '';
+  if (pro.services && pro.services.length) {
+    const priced = pro.services.filter(s => s.price);
+    if (priced.length) {
+      const cheapest = priced.reduce((a,b) => Number(a.price) < Number(b.price) ? a : b);
+      rateDisplay = `₹${Number(cheapest.price).toLocaleString('en-IN')}`;
+    }
+  }
+  if (!rateDisplay && pro.rate) rateDisplay = pro.rate;
+  if (!rateDisplay) rateDisplay = '₹5,000/day';
+
+  const avatarUrl = pro.avatarUrl || pro.avatar_url || '';
+  const inits = initials(name);
 
   return `
-    <div class="glass-panel p-4 rounded-3xl border-glass-stroke neon-border-glow transition-all duration-300 group">
-      <div class="relative h-48 rounded-2xl overflow-hidden mb-4 flex items-center justify-center"
-           style="background: linear-gradient(135deg, hsl(${hue},40%,12%), hsl(${(hue+40)%360},50%,18%));">
-        <span class="text-5xl font-bold select-none" style="color:hsl(${hue},70%,70%)">${inits}</span>
-        ${pro.travel_intl ? `<div class="absolute top-3 right-3 bg-obsidian-base/80 backdrop-blur-md px-3 py-1 rounded-full border border-glass-stroke">
-          <span class="font-label-caps text-primary-container text-[10px]">INTL</span>
-        </div>` : ''}
-      </div>
-      <h4 class="font-headline-md text-headline-md text-white truncate">${name}</h4>
-      <p class="font-body-md text-on-surface-variant text-sm mb-2 truncate">${title}</p>
-      <div class="flex items-center gap-2 text-on-surface-variant/60 text-xs mb-4">
-        <span class="material-symbols-outlined text-sm">location_on</span>
-        <span class="truncate">${loc}</span>
-      </div>
-      <div class="pt-4 border-t border-glass-stroke">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-white font-bold text-sm">${rate}</span>
+    <div class="pro-card-wrap">
+      <div class="pro-card">
+        <div class="pro-card-banner">
+          ${avatarUrl ? 
+            `<img src="${esc(avatarUrl)}" alt="${esc(name)}" class="pro-card-img"/>` : 
+            `<div class="pro-card-initials">${esc(inits)}</div>`
+          }
+          ${pro.travel_intl ? `<span class="badge-intl">INTL</span>` : ''}
+          <div class="badge-verified" title="Verified CamCrew Professional">
+            <span class="material-symbols-outlined text-sm text-teal-700 font-bold">verified</span>
+          </div>
         </div>
-        <div class="flex gap-2">
-          <a href="/@${pro.username}" class="flex-1 text-center bg-white/5 border border-glass-stroke text-primary-container px-3 py-2 rounded-xl font-bold hover:bg-white/10 transition-all text-xs">View Profile</a>
-          <a href="/book.html?pro=${pro.username}" class="flex-1 text-center bg-primary-container/10 text-primary-container px-3 py-2 rounded-xl font-bold hover:bg-primary-container hover:text-obsidian-base transition-all text-xs">Book Now</a>
+
+        <div class="pro-card-info">
+          <h3 class="pro-card-name" title="${esc(name)}">${esc(name)}</h3>
+          <p class="pro-card-title">${esc(title)}</p>
+
+          <div class="pro-card-loc">
+            <div class="loc-pin-icon">
+              <span class="material-symbols-outlined">navigation</span>
+            </div>
+            <span class="loc-text" title="${esc(loc)}">${esc(loc)}</span>
+          </div>
+
+          <div class="pro-card-rate">
+            ${esc(rateDisplay)}
+          </div>
+
+          <div class="pro-card-buttons">
+            <a href="/public-profile.html?pro=${esc(pro.username)}" class="btn-view-profile">View Profile</a>
+            <a href="/book.html?pro=${esc(pro.username)}" class="btn-book-now">Book Now</a>
+          </div>
         </div>
       </div>
-    </div>`;
+    </div>
+  `;
 }
 
-// ── Empty state ────────────────────────────────────────────────────────────
 function emptyState(label) {
-  return `<div class="col-span-full flex flex-col items-center justify-center py-16 text-on-surface-variant gap-3">
-    <span class="material-symbols-outlined text-4xl opacity-40">person_search</span>
-    <p class="text-sm">No ${label} have set up their profile yet.</p>
+  return `<div class="col-span-full flex flex-col items-center justify-center py-12 text-[var(--text-muted)] gap-2">
+    <span class="material-symbols-outlined text-3xl opacity-40">person_search</span>
+    <p class="text-xs font-bold">No ${label} listed yet.</p>
   </div>`;
 }
 
-// ── Load a single category grid ────────────────────────────────────────────
 async function loadGrid(gridId, category, label) {
   const grid    = document.getElementById(gridId);
   const loading = document.getElementById(gridId + '-loading');
@@ -301,13 +368,13 @@ async function loadGrid(gridId, category, label) {
 
     if (loading) loading.remove();
 
-    if (!data.ok || !data.professionals.length) {
+    if (!data.ok || !data.professionals || !data.professionals.length) {
       grid.insertAdjacentHTML('beforeend', emptyState(label));
       return;
     }
 
     data.professionals.forEach(pro => {
-      grid.insertAdjacentHTML('beforeend', buildCard(pro));
+      grid.insertAdjacentHTML('beforeend', buildNeumorphicCard(pro));
     });
   } catch (e) {
     if (loading) loading.remove();
@@ -315,12 +382,12 @@ async function loadGrid(gridId, category, label) {
   }
 }
 
-// ── Bootstrap all grids ────────────────────────────────────────────────────
-loadGrid('grid-photographers', 'Photography',  'photographers');
-loadGrid('grid-videographers', 'Videography',  'videographers');
-loadGrid('grid-designers',     'Designer',     'designers');
-loadGrid('grid-organizers',    'Organiser',    'organizers');
-loadGrid('grid-developers',    'Developer',    'developers');
-loadGrid('grid-caterers',      'Caterer',      'caterers');
+// Bootstrap all grids
+loadGrid('grid-photographers', 'Photography',            'photographers');
+loadGrid('grid-videographers', 'Videography',            'videographers');
+loadGrid('grid-designers',     'Design & Creative',      'designers');
+loadGrid('grid-organizers',    'Event Management',       'organizers');
+loadGrid('grid-developers',    'Web & App Development',  'developers');
+loadGrid('grid-caterers',      'Catering Services',      'caterers');
 </script>
 </body></html>

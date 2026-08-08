@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html class="light" data-theme="light" lang="en">
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -11,14 +11,35 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 <style>
+  /* ── Dual Theme System ── */
+  html.light, :root {
+    --page-bg:             #e0e5ec;
+    --text-main:           #0f172a;
+    --text-muted:          #64748b;
+    --accent-color:        #0e5a6f;
+    --card-outer-shadow:   10px 10px 24px #b8c2cc, -10px -10px 24px #ffffff;
+    --card-outer-shadow-h: 14px 14px 32px #a8b3be, -14px -14px 32px #ffffff;
+    --info-bg:             #e0e5ec;
+  }
+  html.dark {
+    --page-bg:             #05070a;
+    --text-main:           #dce4e5;
+    --text-muted:          #b9cacb;
+    --accent-color:        #00f0ff;
+    --card-outer-shadow:   0 20px 45px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.12);
+    --card-outer-shadow-h: 0 28px 60px rgba(0,0,0,0.95), 0 0 0 1px rgba(0,240,255,0.3);
+    --info-bg:             #161618;
+  }
+
   /* ── Base ── */
   *, *::before, *::after { box-sizing: border-box; }
   body {
-    background: #0A0A0B;
-    color: #dce4e5;
+    background: var(--page-bg);
+    color: var(--text-main);
     font-family: 'Plus Jakarta Sans', sans-serif;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   /* ── Hero ── */
