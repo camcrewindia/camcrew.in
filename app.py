@@ -584,6 +584,17 @@ def init_professional_tables():
         # Migration: reset pre-existing profiles whose kyc_status was auto-granted 'verified' by old migration default back to 'pending'
         conn.execute("UPDATE professional_profiles SET kyc_status = 'pending' WHERE kyc_status = 'verified' OR kyc_status IS NULL")
 
+        # Cleanup migration: reset avatar_url to '' for any stale /uploads/ paths whose files no longer exist on ephemeral disk
+        try:
+            stale_rows = conn.execute("SELECT user_id, avatar_url FROM professional_profiles WHERE avatar_url LIKE '/uploads/%'").fetchall()
+            for r in stale_rows:
+                rel_path = (r["avatar_url"] or "").lstrip("/")
+                abs_path = os.path.join(ROOT_DIR, rel_path)
+                if not os.path.exists(abs_path):
+                    conn.execute("UPDATE professional_profiles SET avatar_url = '' WHERE user_id = %s", (r["user_id"],))
+        except Exception as err:
+            print(f"[MIGRATION] Stale avatar cleanup warning: {err}")
+
 
 def seed_professional_data(uid):
     """Populate sample requests/jobs/vault for a professional that has none yet."""
