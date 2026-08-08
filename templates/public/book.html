@@ -606,9 +606,38 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); cur
             <span class="material-symbols-outlined text-sm text-primary-container/60">notes</span>
             Additional Notes
           </label>
-          <textarea id="input-notes" rows="4"
+          <textarea id="input-notes" rows="3"
             placeholder="Special requirements, equipment needs, guest count, reference images…"
             class="cc-input resize-none"></textarea>
+        </div>
+
+        <!-- Digital E-Contract & NDA Agreement -->
+        <div class="mb-6 p-4 rounded-2xl bg-surface-container-lowest/60 border border-glass-stroke space-y-3">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-base">gavel</span>
+            <span class="text-xs font-bold uppercase tracking-widest text-primary">Digital Shoot Contract &amp; NDA Terms</span>
+          </div>
+          
+          <div class="p-3 rounded-xl bg-black/40 border border-white/5 text-xs text-on-surface-variant max-h-32 overflow-y-auto leading-relaxed space-y-1.5 font-mono">
+            <p><strong class="text-on-surface">1. Scope of Work:</strong> The professional agrees to provide services as described in the booking summary on the scheduled date and venue.</p>
+            <p><strong class="text-on-surface">2. Non-Disclosure &amp; Confidentiality (NDA):</strong> Any unreleased media, event details, and private production assets remain confidential unless client grants publication rights.</p>
+            <p><strong class="text-on-surface">3. Escrow &amp; Payment Terms:</strong> Payment is held securely in CamCrew Escrow until raw/edited deliverables are released according to project terms.</p>
+            <p><strong class="text-on-surface">4. Copyright &amp; Usage Rights:</strong> Client receives non-exclusive personal/commercial usage rights upon full escrow release.</p>
+          </div>
+
+          <div class="flex items-start gap-2 pt-1">
+            <input type="checkbox" id="contract-agree-chk" class="mt-0.5 rounded border-glass-stroke bg-surface-container-lowest text-primary focus:ring-primary">
+            <label for="contract-agree-chk" class="text-xs text-on-surface cursor-pointer select-none">
+              I have read, understood, and agree to the <strong>CamCrew Shoot Contract &amp; NDA Terms</strong>. <span class="text-red-400">*</span>
+            </label>
+          </div>
+
+          <div class="pt-2">
+            <label class="cc-label text-xs mb-1" for="contract-signature-inp">
+              Digital Signature (Type Full Legal Name) <span class="text-red-400">*</span>
+            </label>
+            <input type="text" id="contract-signature-inp" placeholder="e.g. Rahul Sharma" class="cc-input text-sm font-semibold tracking-wide" style="font-family:'Plus Jakarta Sans',sans-serif;"/>
+          </div>
         </div>
 
         <div id="venue-error" class="hidden items-center gap-2 mt-2 mb-4 px-4 py-3 rounded-xl bg-red-950/30 border border-red-500/25 text-red-400 text-sm">
@@ -1240,26 +1269,40 @@ function validateStep(step) {
     const dist   = document.getElementById('book-loc-district')?.value || '';
     const city   = document.getElementById('book-loc-city')?.value || '';
     const street = document.getElementById('input-venue-street')?.value.trim() || '';
+    const agree  = document.getElementById('contract-agree-chk')?.checked;
+    const sig    = document.getElementById('contract-signature-inp')?.value.trim() || '';
 
     const el = document.getElementById('venue-error');
     if (!state || !dist || !city) {
       if (el) {
         el.textContent = 'Please select Indian State, District, and City for the venue location.';
-        el.classList.remove('hidden');
-        el.style.display = 'flex';
+        el.classList.remove('hidden'); el.style.display = 'flex';
       }
       return false;
     }
     if (!street) {
       if (el) {
         el.textContent = 'Please enter street address or building name for the venue.';
-        el.classList.remove('hidden');
-        el.style.display = 'flex';
+        el.classList.remove('hidden'); el.style.display = 'flex';
+      }
+      return false;
+    }
+    if (!agree) {
+      if (el) {
+        el.textContent = 'Please check and agree to the Shoot Contract & NDA Terms.';
+        el.classList.remove('hidden'); el.style.display = 'flex';
+      }
+      return false;
+    }
+    if (!sig) {
+      if (el) {
+        el.textContent = 'Please type your full legal name in the Digital Signature field.';
+        el.classList.remove('hidden'); el.style.display = 'flex';
       }
       return false;
     }
 
-    const ok = !!(state && dist && city && street);
+    const ok = !!(state && dist && city && street && agree && sig);
     if (el) {
       el.classList.toggle('hidden', ok);
       el.style.display = ok ? 'none' : 'flex';

@@ -673,6 +673,13 @@ function renderProfile(p) {
         ${esc(p.website.replace(/^https?:\/\//,''))}
       </a>` : ''}
 
+      <!-- Verified Certification Badges -->
+      ${(p.certifications && p.certifications.length) ? `<div class="chips-row mb-3">${p.certifications.map(c=>`
+        <span class="chip" style="background:rgba(0,219,233,0.12);border-color:#00dbe9;color:#00dbe9;font-weight:800;">
+          <span class="material-symbols-outlined" style="font-size:0.75rem;">verified</span>
+          ${esc(c)}
+        </span>`).join('')}</div>` : ''}
+
       <!-- Categories chips -->
       ${cats.length ? `<div class="chips-row">${cats.map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div>` : ''}
 
@@ -682,6 +689,21 @@ function renderProfile(p) {
           <span class="material-symbols-outlined" style="font-size:0.7rem;">location_on</span>
           ${esc(l)}
         </span>`).join('')}</div>` : ''}
+
+      <!-- Equipment Roster section -->
+      ${(p.equipment_roster && p.equipment_roster.length) ? `
+        <div class="section-head">
+          <span class="section-head-title">Equipment Roster</span>
+          <span class="section-head-count">${p.equipment_roster.length}</span>
+          <div class="section-head-line"></div>
+        </div>
+        <div class="flex flex-wrap gap-2 mb-6">
+          ${p.equipment_roster.map(eq => `
+            <div style="padding:0.5rem 0.8rem;border-radius:0.75rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);font-size:0.78rem;">
+              <span style="font-size:0.65rem;font-weight:800;color:#00f0ff;text-transform:uppercase;display:block;">[${esc(eq.category || 'Gear')}]</span>
+              <span style="font-weight:600;color:#dce4e5;">${esc(eq.item || '')}</span>
+            </div>`).join('')}
+        </div>` : ''}
 
       <!-- Social links -->
       ${socialsHTML ? `<div class="socials-row">${socialsHTML}</div>` : ''}

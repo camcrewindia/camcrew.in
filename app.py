@@ -486,6 +486,12 @@ def init_db():
             )
         """)
         conn.execute("ALTER TABLE professional_profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT")
+        conn.execute("ALTER TABLE professional_profiles ADD COLUMN IF NOT EXISTS equipment_roster TEXT NOT NULL DEFAULT '[]'")
+        conn.execute("ALTER TABLE professional_profiles ADD COLUMN IF NOT EXISTS certifications TEXT NOT NULL DEFAULT '[]'")
+        conn.execute("ALTER TABLE professional_profiles ADD COLUMN IF NOT EXISTS ical_url TEXT")
+        conn.execute("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS contract_signature TEXT")
+        conn.execute("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS contract_signed_at TEXT")
+        conn.execute("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS contract_terms_text TEXT")
         conn.execute("""
             CREATE TABLE IF NOT EXISTS products (
                 id           SERIAL PRIMARY KEY,
@@ -1044,14 +1050,17 @@ def get_public_profile(username):
         "website":      row["website"],
         "avatar_url":   avatar,
         "avatarUrl":    avatar,
-        "categories":   _json.loads(row["categories"] or "[]"),
-        "services":     _json.loads(row["services"]   or "[]"),
-        "locations":    _json.loads(row["locations"]  or "[]"),
-        "socials":      _json.loads(row["socials"]    or "{}"),
-        "joined_at":    row["joined_at"],
-        "kyc_status":   row["kyc_status"] if ("kyc_status" in row.keys() and row["kyc_status"]) else "pending",
-        "is_verified":  (row["kyc_status"] == "verified") if "kyc_status" in row.keys() else False,
-        "portfolio":    [dict(p) for p in portfolio],
+        "categories":       _json.loads(row["categories"] or "[]"),
+        "services":         _json.loads(row["services"]   or "[]"),
+        "locations":        _json.loads(row["locations"]  or "[]"),
+        "socials":          _json.loads(row["socials"]    or "{}"),
+        "equipment_roster": _json.loads(row["equipment_roster"] or "[]") if "equipment_roster" in row.keys() else [],
+        "certifications":   _json.loads(row["certifications"]   or "[]") if "certifications"   in row.keys() else [],
+        "ical_url":         row["ical_url"] if "ical_url" in row.keys() else None,
+        "joined_at":        row["joined_at"],
+        "kyc_status":       row["kyc_status"] if ("kyc_status" in row.keys() and row["kyc_status"]) else "pending",
+        "is_verified":      (row["kyc_status"] == "verified") if "kyc_status" in row.keys() else False,
+        "portfolio":        [dict(p) for p in portfolio],
     }})
 
 
@@ -1767,11 +1776,14 @@ def update_profile():
                         return default
                 return value if value is not None else default
 
-            categories  = _json.dumps(_parse_json_field(data.get("categories"), []))
-            services    = _json.dumps(_parse_json_field(data.get("services"), []))
-            locations   = _json.dumps(_parse_json_field(data.get("locations"), []))
-            socials     = _json.dumps(_parse_json_field(data.get("socials"), {}))
-            travel_intl = bool(_parse_json_field(data.get("travel_international"), False))
+            categories       = _json.dumps(_parse_json_field(data.get("categories"), []))
+            services         = _json.dumps(_parse_json_field(data.get("services"), []))
+            locations        = _json.dumps(_parse_json_field(data.get("locations"), []))
+            socials          = _json.dumps(_parse_json_field(data.get("socials"), {}))
+            equipment_roster = _json.dumps(_parse_json_field(data.get("equipment_roster"), []))
+            certifications   = _json.dumps(_parse_json_field(data.get("certifications"), []))
+            ical_url         = (data.get("ical_url") or "").strip() or None
+            travel_intl      = bool(_parse_json_field(data.get("travel_international"), False))
 
             existing = conn.execute(
                 "SELECT username FROM professional_profiles WHERE user_id=%s", (uid,)
@@ -1781,9 +1793,10 @@ def update_profile():
                 update_fields = [
                     "title=%s", "bio=%s", "phone=%s", "website=%s",
                     "categories=%s", "services=%s", "locations=%s",
-                    "socials=%s", "travel_intl=%s",
+                    "socials=%s", "equipment_roster=%s", "certifications=%s",
+                    "ical_url=%s", "travel_intl=%s",
                 ]
-                params = [title, bio, phone, website, categories, services, locations, socials, travel_intl]
+                params = [title, bio, phone, website, categories, services, locations, socials, equipment_roster, certifications, ical_url, travel_intl]
                 if avatar_url is not None:
                     update_fields.append("avatar_url=%s")
                     params.append(avatar_url)
@@ -1797,11 +1810,11 @@ def update_profile():
                 conn.execute("""
                     INSERT INTO professional_profiles
                     (user_id, username, title, bio, phone, website, avatar_url,
-                     categories, services, locations, socials, travel_intl, kyc_status)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                     categories, services, locations, socials, equipment_roster, certifications, ical_url, travel_intl, kyc_status)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 """, (
                     uid, username, title, bio, phone, website, avatar_url,
-                    categories, services, locations, socials, travel_intl, 'pending',
+                    categories, services, locations, socials, equipment_roster, certifications, ical_url, travel_intl, 'pending',
                 ))
 
             if removed_portfolio_ids:
@@ -2415,15 +2428,18 @@ def search_professionals():
 
             kyc = r["kyc_status"] if "kyc_status" in r.keys() else "pending"
             results.append({
-                "user_id":    r["user_id"],
-                "display_name": r["display_name"],
-                "username":   r["username"],
-                "title":      r["title"] or "",
-                "avatar_url": r["avatar_url"] or "",
-                "categories": _json.loads(r["categories"] or "[]"),
-                "locations":  _json.loads(r["locations"]  or "[]"),
-                "kyc_status": kyc,
-                "is_verified": kyc == "verified"
+                "user_id":          r["user_id"],
+                "display_name":     r["display_name"],
+                "username":         r["username"],
+                "title":            r["title"] or "",
+                "avatar_url":       r["avatar_url"] or "",
+                "categories":       _json.loads(r["categories"] or "[]"),
+                "locations":        _json.loads(r["locations"]  or "[]"),
+                "equipment_roster": _json.loads(r["equipment_roster"] or "[]") if "equipment_roster" in r.keys() else [],
+                "certifications":   _json.loads(r["certifications"] or "[]")   if "certifications" in r.keys() else [],
+                "ical_url":         r["ical_url"] if "ical_url" in r.keys() else None,
+                "kyc_status":       kyc,
+                "is_verified":      kyc == "verified"
             })
 
             if len(results) >= per_page:
@@ -2435,6 +2451,68 @@ def search_professionals():
         "per_page": per_page,
         "count": len(results),
         "professionals": results
+    })
+
+
+@app.route("/api/professionals/<int:user_id>/calendar.ics", methods=["GET"])
+def export_professional_ical(user_id):
+    """Generate RFC 5545 iCal (.ics) calendar feed for Google Calendar / Apple iCal / Outlook integration."""
+    with get_db() as conn:
+        pro = conn.execute(
+            "SELECT u.display_name, pp.username FROM users u JOIN professional_profiles pp ON pp.user_id = u.id WHERE u.id = %s",
+            (user_id,)
+        ).fetchone()
+        if not pro:
+            return "Calendar not found", 404
+        
+        blocked = conn.execute(
+            "SELECT blocked_date, reason FROM professional_blocked_dates WHERE professional_id = %s",
+            (user_id,)
+        ).fetchall()
+        bookings = conn.execute(
+            "SELECT booking_date, service, status FROM bookings WHERE professional_name = %s AND status != 'cancelled'",
+            (pro["username"],)
+        ).fetchall()
+
+    cal_lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//CamCrew Studio//Professional Calendar//EN",
+        "CALSCALE:GREGORIAN",
+        "METHOD:PUBLISH",
+        f"X-WR-CALNAME:CamCrew Calendar - {pro['display_name']}",
+        "X-WR-TIMEZONE:Asia/Kolkata"
+    ]
+
+    for b in blocked:
+        d_str = b["blocked_date"].replace("-", "")
+        reason = b["reason"] or "Unavailable / Private Event"
+        cal_lines.extend([
+            "BEGIN:VEVENT",
+            f"UID:blocked-{user_id}-{d_str}@camcrew.in",
+            f"DTSTAMP:{now_ist().strftime('%Y%m%dT%H%M%SZ')}",
+            f"DTSTART;VALUE=DATE:{d_str}",
+            f"SUMMARY:Blocked: {reason}",
+            "STATUS:CONFIRMED",
+            "END:VEVENT"
+        ])
+
+    for bk in bookings:
+        d_str = bk["booking_date"].replace("-", "")
+        cal_lines.extend([
+            "BEGIN:VEVENT",
+            f"UID:booking-{user_id}-{d_str}@camcrew.in",
+            f"DTSTAMP:{now_ist().strftime('%Y%m%dT%H%M%SZ')}",
+            f"DTSTART;VALUE=DATE:{d_str}",
+            f"SUMMARY:CamCrew Booking: {bk['service']} ({bk['status']})",
+            "STATUS:CONFIRMED",
+            "END:VEVENT"
+        ])
+
+    cal_lines.append("END:VCALENDAR")
+    ics_content = "\r\n".join(cal_lines)
+    return Response(ics_content, mimetype="text/calendar", headers={
+        "Content-Disposition": f"attachment; filename=camcrew_calendar_{user_id}.ics"
     })
 
 
@@ -2635,11 +2713,15 @@ def create_booking():
         client_name  = (cust["display_name"] or cust["email"]) if cust else "Customer"
         client_email = cust["email"] if cust else None
 
+        contract_signature  = (data.get("contract_signature")  or "").strip() or None
+        contract_terms_text = (data.get("contract_terms_text") or "").strip() or None
+        contract_signed_at  = now_ist_str() if contract_signature else None
+
         cur = conn.execute(
             """INSERT INTO bookings
-               (user_id, professional_name, service, booking_date, status, amount, note, professional_id)
-               VALUES (%s, %s, %s, %s, 'pending', %s, %s, %s) RETURNING id""",
-            (uid, professional_name, service, booking_date, amount, note, professional_id),
+               (user_id, professional_name, service, booking_date, status, amount, note, professional_id, contract_signature, contract_signed_at, contract_terms_text)
+               VALUES (%s, %s, %s, %s, 'pending', %s, %s, %s, %s, %s, %s) RETURNING id""",
+            (uid, professional_name, service, booking_date, amount, note, professional_id, contract_signature, contract_signed_at, contract_terms_text),
         )
         booking_id = cur.fetchone()["id"]
 

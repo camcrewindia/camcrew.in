@@ -643,6 +643,107 @@
         </div>
       </div>
 
+      <!-- ══ SECTION 7 · EQUIPMENT ROSTER LISTING ════════════════ -->
+      <div class="edit-section reveal">
+        <div class="section-divider">
+          <div class="section-divider-icon">
+            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">photo_camera</span>
+          </div>
+          <div>
+            <h2 class="section-title">Equipment Roster Listing</h2>
+            <p class="section-subtitle">Display your camera loadouts, lenses, drones, lighting, and audio gear</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap;">
+            <div style="flex:1;min-width:140px;">
+              <label class="cc-label" for="eq-cat-inp">Category</label>
+              <select class="cc-input w-full" id="eq-cat-inp">
+                <option value="Cameras">Cameras</option>
+                <option value="Lenses">Lenses</option>
+                <option value="Drones">Drones</option>
+                <option value="Lighting">Lighting</option>
+                <option value="Audio">Audio</option>
+                <option value="Gimbals & Support">Gimbals & Support</option>
+                <option value="Accessories">Accessories</option>
+              </select>
+            </div>
+            <div style="flex:2;min-width:200px;">
+              <label class="cc-label" for="eq-item-inp">Equipment Name & Model</label>
+              <input class="cc-input w-full" id="eq-item-inp" type="text" placeholder="e.g. Sony FX3 / Aputure 600d Pro / DJI Mavic 3 Cine" onkeydown="if(event.key==='Enter'){event.preventDefault();addEquipmentItem();}">
+            </div>
+            <button onclick="addEquipmentItem()" style="padding:0.65rem 1.2rem;border-radius:0.65rem;border:none;background:#00dbe9;color:#001f22;font-weight:800;font-size:0.85rem;cursor:pointer;">
+              + Add Gear
+            </button>
+          </div>
+
+          <div id="equipment-roster-tags" class="flex flex-wrap gap-2 pt-2"></div>
+          <p id="equipment-roster-empty" style="font-size:0.85rem;color:#475569;text-align:center;padding:1rem 0;">No equipment added to your roster yet.</p>
+        </div>
+      </div>
+
+      <!-- ══ SECTION 8 · VERIFIED SKILLS & CERTIFICATION BADGES ════════════════ -->
+      <div class="edit-section reveal">
+        <div class="section-divider">
+          <div class="section-divider-icon">
+            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">verified</span>
+          </div>
+          <div>
+            <h2 class="section-title">Verified Skills & Certification Badges</h2>
+            <p class="section-subtitle">Display industry certifications to build trust with high-value clients</p>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.1em;color:#00dbe9;text-transform:uppercase;">Select Your Verified Badges</p>
+          <div class="flex flex-wrap gap-2.5" id="cert-badge-options">
+            <button type="button" class="cat-chip cert-badge-toggle" onclick="toggleCertBadge('DGCA Certified Drone Pilot')" data-cert="DGCA Certified Drone Pilot">🚁 DGCA Certified Drone Pilot</button>
+            <button type="button" class="cat-chip cert-badge-toggle" onclick="toggleCertBadge('RED Cinema Operator')" data-cert="RED Cinema Operator">🎥 RED Cinema Operator</button>
+            <button type="button" class="cat-chip cert-badge-toggle" onclick="toggleCertBadge('ARRI Lighting Specialist')" data-cert="ARRI Lighting Specialist">💡 ARRI Lighting Specialist</button>
+            <button type="button" class="cat-chip cert-badge-toggle" onclick="toggleCertBadge('Adobe Certified Expert')" data-cert="Adobe Certified Expert">🎬 Adobe Certified Expert</button>
+            <button type="button" class="cat-chip cert-badge-toggle" onclick="toggleCertBadge('Apple Final Cut Pro Certified')" data-cert="Apple Final Cut Pro Certified">🍏 Apple FCP Certified</button>
+            <button type="button" class="cat-chip cert-badge-toggle" onclick="toggleCertBadge('DaVinci Resolve Certified Colorist')" data-cert="DaVinci Resolve Certified Colorist">🎨 DaVinci Resolve Colorist</button>
+            <button type="button" class="cat-chip cert-badge-toggle" onclick="toggleCertBadge('Steadicam / Gimbal Operator')" data-cert="Steadicam / Gimbal Operator">⚡ Steadicam Operator</button>
+            <button type="button" class="cat-chip cert-badge-toggle" onclick="toggleCertBadge('Sennheiser / Sound Devices Audio Pro')" data-cert="Sennheiser / Sound Devices Audio Pro">🎙️ Professional Sound Engineer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SECTION 9 · LIVE iCAL CALENDAR SYNC ════════════════ -->
+      <div class="edit-section reveal">
+        <div class="section-divider">
+          <div class="section-divider-icon">
+            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">sync</span>
+          </div>
+          <div>
+            <h2 class="section-title">Live iCal Calendar Sync (Google &amp; Apple iCal)</h2>
+            <p class="section-subtitle">Export your CamCrew schedule or import external iCal calendar links</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Export iCal -->
+          <div class="p-4 rounded-xl bg-surface-container-lowest/50 border border-glass-stroke">
+            <label class="cc-label" style="margin-bottom:0.4rem;color:#00dbe9;">Your Live iCal Feed URL (Export to Google Calendar / Apple iCal)</label>
+            <div class="flex gap-2 items-center">
+              <input type="text" id="ical-export-url" class="cc-input flex-1" readonly value="Loading calendar feed URL...">
+              <button type="button" onclick="copyICalUrl()" style="padding:0.75rem 1.25rem;border-radius:0.75rem;background:rgba(0,219,233,0.15);border:1px solid rgba(0,219,233,0.3);color:#00dbe9;font-weight:700;font-size:0.85rem;cursor:pointer;shrink:0;">
+                Copy Feed Link
+              </button>
+            </div>
+            <p style="font-size:0.75rem;color:#849495;margin-top:0.4rem;">Paste this feed URL into Google Calendar ("From URL") or Apple Calendar ("New Calendar Subscription") to keep your devices synced live.</p>
+          </div>
+
+          <!-- Import iCal -->
+          <div>
+            <label class="cc-label" for="ical-import-url">External iCal Import URL (Optional)</label>
+            <input type="url" id="ical-import-url" class="cc-input w-full" placeholder="https://calendar.google.com/calendar/ical/your_feed.ics" onchange="markDirty()">
+            <p style="font-size:0.75rem;color:#849495;margin-top:0.3rem;">Paste an external Google Calendar or Apple iCal link to automatically block off dates you are busy elsewhere.</p>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /space-y-5 -->
   </div>
 </main>
@@ -689,7 +790,85 @@ let selectedUnit     = 'per day';
 let avatarUrl        = null;   // current avatar preview URL
 let avatarFile       = null;   // actual selected file to upload
 let removedPortfolioIds = [];
+let equipmentRoster  = [];   // [{ category, item }]
+let certifications   = [];   // ['DGCA Certified Drone Pilot', ...]
 window._isDirty     = false;
+
+/* ── Equipment Roster ───────────────────────────────────────────── */
+function addEquipmentItem() {
+  const cat = document.getElementById('eq-cat-inp').value;
+  const item = document.getElementById('eq-item-inp').value.trim();
+  if (!item) return;
+  equipmentRoster.push({ category: cat, item });
+  document.getElementById('eq-item-inp').value = '';
+  renderEquipmentRoster();
+  markDirty();
+}
+function removeEquipmentItem(idx) {
+  equipmentRoster.splice(idx, 1);
+  renderEquipmentRoster();
+  markDirty();
+}
+function renderEquipmentRoster() {
+  const wrap = document.getElementById('equipment-roster-tags');
+  const empty = document.getElementById('equipment-roster-empty');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  empty.style.display = equipmentRoster.length ? 'none' : 'block';
+  equipmentRoster.forEach((eq, idx) => {
+    const el = document.createElement('div');
+    el.className = 'loc-tag';
+    el.style.background = 'rgba(0,219,233,0.06)';
+    el.style.border = '1px solid rgba(0,219,233,0.2)';
+    el.innerHTML = `
+      <span style="font-size:0.7rem;font-weight:800;color:#00dbe9;text-transform:uppercase;margin-right:4px;">[${esc(eq.category)}]</span>
+      <span style="font-weight:600;color:#dce4e5;">${esc(eq.item)}</span>
+      <button type="button" onclick="removeEquipmentItem(${idx})" style="background:none;border:none;color:#849495;cursor:pointer;margin-left:6px;display:inline-flex;align-items:center;">
+        <span class="material-symbols-outlined" style="font-size:0.95rem;">close</span>
+      </button>
+    `;
+    wrap.appendChild(el);
+  });
+}
+
+/* ── Certifications ─────────────────────────────────────────────── */
+function toggleCertBadge(certName) {
+  if (certifications.includes(certName)) {
+    certifications = certifications.filter(c => c !== certName);
+  } else {
+    certifications.push(certName);
+  }
+  renderCertBadges();
+  markDirty();
+}
+function renderCertBadges() {
+  const set = new Set(certifications);
+  document.querySelectorAll('#cert-badge-options .cert-badge-toggle').forEach(btn => {
+    const cert = btn.dataset.cert;
+    if (set.has(cert)) {
+      btn.style.background = 'rgba(0,219,233,0.2)';
+      btn.style.borderColor = '#00dbe9';
+      btn.style.color = '#00dbe9';
+    } else {
+      btn.style.background = '';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }
+  });
+}
+
+/* ── iCal ────────────────────────────────────────────────────────── */
+function copyICalUrl() {
+  const input = document.getElementById('ical-export-url');
+  if (!input || !input.value) return;
+  navigator.clipboard.writeText(input.value).then(() => {
+    showToast('iCal Feed URL copied to clipboard!', 'success', '#00dbe9');
+  }).catch(() => {
+    input.select();
+    document.execCommand('copy');
+    showToast('iCal Feed URL copied!', 'success', '#00dbe9');
+  });
+}
 
 const CITY_SUGGESTIONS = [
   'Los Angeles, CA','New York, NY','Chicago, IL','Houston, TX','Phoenix, AZ',
@@ -1024,6 +1203,21 @@ function prefillFromStorage(pro) {
   locations = [...(pro.locations || [])];
   renderLocations();
 
+  // Equipment Roster & Certifications
+  equipmentRoster = [...(pro.equipment_roster || pro.equipmentRoster || [])];
+  renderEquipmentRoster();
+
+  certifications = [...(pro.certifications || [])];
+  renderCertBadges();
+
+  if (document.getElementById('ical-import-url')) {
+    document.getElementById('ical-import-url').value = pro.ical_url || pro.icalUrl || '';
+  }
+  const proId = pro.user_id || pro.userId || pro.id;
+  if (proId && document.getElementById('ical-export-url')) {
+    document.getElementById('ical-export-url').value = `${window.location.origin}/api/professionals/${proId}/calendar.ics`;
+  }
+
   // Travel
   toggleTravel(!!pro.travelIntl);
 }
@@ -1054,6 +1248,9 @@ async function saveChanges() {
     },
     services,
     locations,
+    equipment_roster: equipmentRoster,
+    certifications,
+    ical_url: document.getElementById('ical-import-url')?.value.trim() || '',
     travel_international: travelIntl,
   };
 
