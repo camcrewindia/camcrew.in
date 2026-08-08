@@ -28,8 +28,19 @@ ALLOWED_EXTENSIONS = {
     ".json", ".map", ".txt",
 }
 
-DEFAULT_DATABASE_URL = "postgresql://camcrewindia_user:OtYug8HJmROYnDqpCTF7v0bBGxwZeof3@dpg-d9k4lfbm8hqs73bl2jq0-a.oregon-postgres.render.com/camcrewindia?sslmode=require"
-DATABASE_URL = os.environ.get("RENDER_DATABASE_URL", DEFAULT_DATABASE_URL)
+# ---------------------------------------------------------------------------
+# Database configuration — credentials MUST be set via environment variable.
+# NEVER commit credentials to source code.
+# Set RENDER_DATABASE_URL in Render → Environment → Environment Variables.
+# ---------------------------------------------------------------------------
+DATABASE_URL = os.environ.get("RENDER_DATABASE_URL")
+if not DATABASE_URL:
+    import sys
+    sys.stderr.write(
+        "\n[FATAL] RENDER_DATABASE_URL environment variable is not set.\n"
+        "Set it in Render → Environment → Environment Variables and redeploy.\n\n"
+    )
+    sys.exit(1)
 
 # ---------------------------------------------------------------------------
 # Database helpers
@@ -570,10 +581,8 @@ def init_professional_tables():
         # Migrate: link professional_requests back to the originating customer booking
         conn.execute("ALTER TABLE professional_requests ADD COLUMN IF NOT EXISTS booking_id INTEGER")
         conn.execute("ALTER TABLE professional_profiles ADD COLUMN IF NOT EXISTS kyc_status TEXT DEFAULT 'pending'")
-        # Reset any row that was auto-granted 'verified' by the old default but has never been reviewed
-        # (Only rows with no explicit admin action — i.e. still at the stale 'verified' migration default)
-        # We do NOT touch rows already manually set by admin to 'verified' or 'rejected'.
-        # Since we can't distinguish, we only fix newly added rows going forward via the INSERT below.
+        # Migration: reset pre-existing profiles whose kyc_status was auto-granted 'verified' by old migration default back to 'pending'
+        conn.execute("UPDATE professional_profiles SET kyc_status = 'pending' WHERE kyc_status = 'verified' OR kyc_status IS NULL")
 
 
 def seed_professional_data(uid):
@@ -918,6 +927,8 @@ def get_public_profile(username):
         "locations":    _json.loads(row["locations"]  or "[]"),
         "socials":      _json.loads(row["socials"]    or "{}"),
         "joined_at":    row["joined_at"],
+        "kyc_status":   row["kyc_status"] if ("kyc_status" in row.keys() and row["kyc_status"]) else "pending",
+        "is_verified":  (row["kyc_status"] == "verified") if "kyc_status" in row.keys() else False,
         "portfolio":    [dict(p) for p in portfolio],
     }})
 
@@ -1523,8 +1534,8 @@ def get_profile():
                     "locations":            _json.loads(pro["locations"] or "[]"),
                     "socials":              _json.loads(pro["socials"] or "{}"),
                     "travelIntl":           bool(pro["travel_intl"]),
-                    "kyc_status":           pro.get("kyc_status") if "kyc_status" in pro.keys() else "verified",
-                    "is_verified":          True,
+                    "kyc_status":           pro.get("kyc_status") if ("kyc_status" in pro.keys() and pro["kyc_status"]) else "pending",
+                    "is_verified":          pro.get("kyc_status") == "verified" if "kyc_status" in pro.keys() else False,
                 })
             else:
                 profile.update({
