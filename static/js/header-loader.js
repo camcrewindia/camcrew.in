@@ -167,4 +167,37 @@
     window.location.href = 'signin.html';
   };
 
+  // ── 7. Global Theme Toggle ────────────────────────────────────────────────
+  function applyTheme(theme) {
+    const html = document.documentElement;
+    const icons = document.querySelectorAll('#theme-toggle-icon');
+
+    if (theme === 'light') {
+      html.classList.remove('dark');
+      html.classList.add('light');
+      html.setAttribute('data-theme', 'light');
+      icons.forEach(ic => ic.textContent = 'dark_mode');
+    } else {
+      html.classList.remove('light');
+      html.classList.add('dark');
+      html.setAttribute('data-theme', 'dark');
+      icons.forEach(ic => ic.textContent = 'light_mode');
+    }
+    localStorage.setItem('camcrew-theme', theme);
+    document.dispatchEvent(new CustomEvent('camcrew:theme', { detail: { theme } }));
+  }
+
+  function toggleSiteTheme() {
+    const current = document.documentElement.classList.contains('light') ? 'light' : 'dark';
+    const next = current === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+  }
+
+  window.toggleSiteTheme = toggleSiteTheme;
+  window.applyTheme = applyTheme;
+
+  // Initial theme sync
+  const savedTheme = localStorage.getItem('camcrew-theme') || (document.documentElement.classList.contains('light') ? 'light' : 'dark');
+  applyTheme(savedTheme);
+
 })();
