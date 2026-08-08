@@ -549,4 +549,88 @@
   window.openShootTimelineModal = openShootTimelineModal;
   window.closeShootTimelineModal = closeShootTimelineModal;
 </script>
+
+<!-- Milestone Escrow Release Modal -->
+<div id="modal-milestones" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+  <div class="glass-panel w-full max-w-xl p-6 rounded-3xl relative border border-glass-stroke shadow-2xl">
+    <button onclick="closeMilestonesModal()" class="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface text-xl">✕</button>
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+        <span class="material-symbols-outlined">payments</span>
+      </div>
+      <div>
+        <h3 class="text-lg font-extrabold text-on-surface">Milestone Escrow Releases</h3>
+        <p class="text-xs text-on-surface-variant">Progressive payments released upon deliverable approval</p>
+      </div>
+    </div>
+
+    <div id="milestones-list-container" class="space-y-3 my-6">
+      <!-- Rendered dynamically -->
+    </div>
+
+    <div class="pt-4 border-t border-glass-stroke flex justify-between items-center">
+      <a id="gst-invoice-link" href="#" target="_blank" class="px-4 py-2 rounded-xl bg-primary-container/20 text-primary-container border border-primary-container/30 text-xs font-bold flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">receipt_long</span> Official GST Tax Invoice (SAC 998386)
+      </a>
+      <button onclick="closeMilestonesModal()" class="px-4 py-2 rounded-xl border border-glass-stroke text-xs font-bold text-on-surface-variant">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  async function openMilestonesModal(bookingId) {
+    document.getElementById('gst-invoice-link').href = `/api/bookings/${bookingId}/gst-invoice`;
+    const container = document.getElementById('milestones-list-container');
+    container.innerHTML = `<p class="text-xs text-on-surface-variant text-center py-4">Loading milestones…</p>`;
+    
+    document.getElementById('modal-milestones').classList.remove('hidden');
+    document.getElementById('modal-milestones').classList.add('flex');
+
+    try {
+      const res = await fetch(`/api/bookings/${bookingId}/milestones`);
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || 'Failed to load milestones.');
+
+      container.innerHTML = data.milestones.map(m => {
+        const isReleased = m.status === 'released';
+        return `
+          <div class="flex items-center justify-between p-3.5 rounded-2xl ${isReleased ? 'bg-emerald-500/10 border border-emerald-500/30' : 'bg-black/20 border border-white/5'}">
+            <div>
+              <p class="text-sm font-bold text-on-surface">${m.title}</p>
+              <p class="text-xs text-on-surface-variant">${m.percentage}% Split · ₹${Number(m.amount).toLocaleString('en-IN')}</p>
+              ${isReleased ? `<p class="text-[10px] text-emerald-400 font-bold mt-0.5">Released IST: ${m.released_at}</p>` : ''}
+            </div>
+            <div>
+              ${isReleased ? 
+                `<span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-black">RELEASED</span>` :
+                `<button onclick="releaseMilestone(${bookingId}, ${m.id})" class="px-3.5 py-1.5 rounded-xl bg-primary text-on-primary text-xs font-extrabold hover:scale-105 transition-transform shadow-lg">Release ₹${Number(m.amount).toLocaleString('en-IN')}</button>`
+              }
+            </div>
+          </div>`;
+      }).join('');
+    } catch (err) {
+      container.innerHTML = `<p class="text-xs text-error text-center py-4">${err.message}</p>`;
+    }
+  }
+
+  async function releaseMilestone(bookingId, milestoneId) {
+    if (!confirm('Are you sure you want to release this milestone payment from escrow?')) return;
+    try {
+      const res = await fetch(`/api/bookings/${bookingId}/milestones/${milestoneId}/release`, { method: 'POST' });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || 'Failed to release milestone.');
+      openMilestonesModal(bookingId);
+    } catch (err) {
+      alert(err.message);
+    }
+  }
+
+  function closeMilestonesModal() {
+    document.getElementById('modal-milestones').classList.add('hidden');
+    document.getElementById('modal-milestones').classList.remove('flex');
+  }
+  window.openMilestonesModal = openMilestonesModal;
+  window.closeMilestonesModal = closeMilestonesModal;
+  window.releaseMilestone = releaseMilestone;
+</script>
 </body></html>

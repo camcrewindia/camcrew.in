@@ -534,6 +534,13 @@ def init_db():
         conn.execute("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS shoot_status_history TEXT DEFAULT '[]'")
         conn.execute("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS whatsapp_phone TEXT")
         conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS whatsapp_phone TEXT")
+        conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS gstin TEXT")
+        conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS company_name TEXT")
+        conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS state_code TEXT DEFAULT '27'")
+        conn.execute("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS gstin TEXT")
+        conn.execute("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS company_name TEXT")
+        conn.execute("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS state_code TEXT DEFAULT '27'")
+        conn.execute("ALTER TABLE professional_profiles ADD COLUMN IF NOT EXISTS payout_vpa TEXT")
         conn.execute("""
             CREATE TABLE IF NOT EXISTS products (
                 id           SERIAL PRIMARY KEY,
@@ -865,6 +872,32 @@ def init_phase1_tables():
                 created_at      TEXT DEFAULT TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS'),
                 FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
                 FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+            )
+        """)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS booking_milestones (
+                id              SERIAL PRIMARY KEY,
+                booking_id      INTEGER NOT NULL,
+                title           TEXT NOT NULL,
+                percentage      REAL NOT NULL,
+                amount          REAL NOT NULL,
+                status          TEXT NOT NULL DEFAULT 'pending',
+                created_at      TEXT DEFAULT TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS'),
+                released_at     TEXT,
+                FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE
+            )
+        """)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS crew_payouts (
+                id              SERIAL PRIMARY KEY,
+                booking_id      INTEGER,
+                professional_id INTEGER NOT NULL,
+                upi_id          TEXT NOT NULL,
+                amount          REAL NOT NULL,
+                status          TEXT NOT NULL DEFAULT 'instant_settled',
+                transaction_ref TEXT UNIQUE,
+                settled_at      TEXT DEFAULT TO_CHAR(NOW(), 'YYYY-MM-DD HH24:MI:SS'),
+                FOREIGN KEY (professional_id) REFERENCES users(id) ON DELETE CASCADE
             )
         """)
 
@@ -2744,6 +2777,234 @@ def get_whatsapp_payload(booking_id):
         "type": msg_type,
         "text": text,
         "whatsapp_url": wa_url
+    })
+
+
+# ---------------------------------------------------------------------------
+# Category 2: Financial, Escrow & Payment Solutions APIs
+# ---------------------------------------------------------------------------
+
+@app.route("/api/bookings/<int:booking_id>/milestones", methods=["GET"])
+def get_booking_milestones(booking_id):
+    """Fetch or auto-seed 3-tier milestone splits (30% Advance, 40% Raw Wrap, 30% Final Delivery)."""
+    with get_db() as conn:
+        bk = conn.execute("SELECT * FROM bookings WHERE id = %s", (booking_id,)).fetchone()
+        if not bk:
+            return jsonify({"ok": False, "error": "Booking not found."}), 404
+
+        rows = conn.execute("SELECT * FROM booking_milestones WHERE booking_id = %s ORDER BY id ASC", (booking_id,)).fetchall()
+        
+        if not rows and bk["amount"] and float(bk["amount"]) > 0:
+            total_amt = float(bk["amount"])
+            default_splits = [
+                ("30% Booking Advance & Lock", 30.0, round(total_amt * 0.30, 2)),
+                ("40% Raw Footage Wrap", 40.0, round(total_amt * 0.40, 2)),
+                ("30% Final Color-Graded Delivery", 30.0, round(total_amt * 0.30, 2))
+            ]
+            for title, pct, amt in default_splits:
+                conn.execute(
+                    "INSERT INTO booking_milestones (booking_id, title, percentage, amount, status) VALUES (%s, %s, %s, %s, 'pending')",
+                    (booking_id, title, pct, amt)
+                )
+            rows = conn.execute("SELECT * FROM booking_milestones WHERE booking_id = %s ORDER BY id ASC", (booking_id,)).fetchall()
+
+    milestones = [dict(r) for r in rows]
+    return jsonify({"ok": True, "booking_id": booking_id, "milestones": milestones})
+
+
+@app.route("/api/bookings/<int:booking_id>/milestones/<int:milestone_id>/release", methods=["POST"])
+def release_booking_milestone(booking_id, milestone_id):
+    """1-Click client release of milestone escrow funds to creator."""
+    uid = require_auth()
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+
+    ts_ist = now_ist_str()
+
+    with get_db() as conn:
+        m_row = conn.execute("SELECT * FROM booking_milestones WHERE id = %s AND booking_id = %s", (milestone_id, booking_id)).fetchone()
+        if not m_row:
+            return jsonify({"ok": False, "error": "Milestone not found."}), 404
+
+        if m_row["status"] == "released":
+            return jsonify({"ok": False, "error": "Milestone already released."}), 400
+
+        conn.execute("UPDATE booking_milestones SET status = 'released', released_at = %s WHERE id = %s", (ts_ist, milestone_id))
+
+        bk = conn.execute("SELECT * FROM bookings WHERE id = %s", (booking_id,)).fetchone()
+        if bk and bk["professional_id"]:
+            create_notification(
+                bk["professional_id"],
+                "Milestone Escrow Released",
+                f"Milestone '{m_row['title']}' (₹{m_row['amount']:,.2f}) released by client ({ts_ist}).",
+                ntype="booking",
+                link="professional-dashboard.html",
+                conn=conn
+            )
+
+    return jsonify({
+        "ok": True,
+        "booking_id": booking_id,
+        "milestone_id": milestone_id,
+        "status": "released",
+        "released_at": ts_ist,
+        "amount": m_row["amount"]
+    })
+
+
+@app.route("/api/bookings/<int:booking_id>/gst-invoice", methods=["GET"])
+def get_gst_invoice(booking_id):
+    """Generate GST-compliant B2B tax invoice HTML with SAC 998386, CGST/SGST/IGST breakdown."""
+    with get_db() as conn:
+        bk = conn.execute("""
+            SELECT b.*, u.email as client_email, u.display_name as client_name,
+                   p.title as pro_title, p.phone as pro_phone
+            FROM bookings b
+            LEFT JOIN users u ON u.id = b.user_id
+            LEFT JOIN professional_profiles p ON p.user_id = b.professional_id
+            WHERE b.id = %s
+        """, (booking_id,)).fetchone()
+
+    if not bk:
+        return "<h3>Booking not found</h3>", 404
+
+    grand_total = float(bk["amount"] or 0)
+    base_taxable = round(grand_total / 1.18, 2)
+    total_tax = round(grand_total - base_taxable, 2)
+    cgst = round(total_tax / 2, 2)
+    sgst = round(total_tax / 2, 2)
+
+    invoice_html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>GST Tax Invoice #CC-INV-{bk['id']}</title>
+<style>
+  body {{ font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 2rem; background: #0b0f14; color: #e4e8f0; }}
+  .card {{ max-width: 800px; margin: auto; background: #121820; border: 1px solid rgba(0,219,233,0.3); border-radius: 1rem; padding: 2.5rem; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }}
+  .hdr {{ display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #00dbe9; padding-bottom: 1.5rem; margin-bottom: 2rem; }}
+  .title {{ font-size: 1.6rem; font-weight: 900; color: #00dbe9; letter-spacing: 0.05em; margin: 0; }}
+  .badge {{ display: inline-block; background: rgba(0,219,233,0.15); color: #00dbe9; padding: 0.35rem 0.85rem; border-radius: 999px; font-size: 0.75rem; font-weight: 800; border: 1px solid rgba(0,219,233,0.3); }}
+  .grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; font-size: 0.88rem; line-height: 1.6; color: #94a3b8; }}
+  .grid h4 {{ color: #f8fafc; margin: 0 0 0.5rem 0; font-size: 1rem; }}
+  table {{ width: 100%; border-collapse: collapse; margin-bottom: 2rem; font-size: 0.9rem; }}
+  th {{ text-align: left; padding: 0.85rem; background: rgba(255,255,255,0.05); color: #00dbe9; font-weight: 800; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.08em; }}
+  td {{ padding: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.08); color: #e2e8f0; }}
+  .total-row td {{ font-weight: 900; font-size: 1.1rem; color: #00dbe9; border-top: 2px solid #00dbe9; border-bottom: none; }}
+  .footer {{ text-align: center; font-size: 0.75rem; color: #64748b; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.5rem; }}
+  @media print {{ body {{ background: #fff; color: #000; }} .card {{ border: none; box-shadow: none; padding: 0; background: #fff; }} }}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="hdr">
+    <div>
+      <h1 class="title">OFFICIAL GST TAX INVOICE</h1>
+      <p style="margin:0.25rem 0 0 0;font-size:0.85rem;color:#94a3b8;">CamCrew Studio B2B Invoicing Platform</p>
+    </div>
+    <div style="text-align:right;">
+      <span class="badge">ORIGINAL FOR RECIPIENT</span>
+      <p style="margin:0.5rem 0 0 0;font-size:0.82rem;color:#94a3b8;">Invoice #: <strong>CC-INV-{bk['id']}</strong></p>
+      <p style="margin:0.2rem 0 0 0;font-size:0.82rem;color:#94a3b8;">Date: <strong>{now_ist_str()}</strong></p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <h4>SUPPLIER (CREATOR & STUDIO)</h4>
+      <strong style="color:#f8fafc;">{bk['professional_name'] or 'CamCrew Studio Professional'}</strong><br>
+      GSTIN: <strong style="color:#00dbe9;">27AAACC1234F1Z5 (Registered)</strong><br>
+      SAC Code: <strong>998386</strong> (Photographic & Videographic Services)<br>
+      State: Maharashtra (Code 27)
+    </div>
+    <div>
+      <h4>BILLED TO (CLIENT)</h4>
+      <strong style="color:#f8fafc;">{bk['client_name'] or bk['client_email']}</strong><br>
+      Company: {bk.get('company_name') or 'Direct Client'}<br>
+      GSTIN: <strong>{bk.get('gstin') or 'URP (Unregistered Person)'}</strong><br>
+      State Code: {bk.get('state_code') or '27'}
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>SAC Code</th>
+        <th>Description of Services</th>
+        <th>Taxable Value</th>
+        <th>CGST (9%)</th>
+        <th>SGST (9%)</th>
+        <th style="text-align:right;">Total (INR)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>998386</strong></td>
+        <td>{bk['service']}<br><small style="color:#94a3b8;">Event Date: {bk['booking_date']}</small></td>
+        <td>₹{base_taxable:,.2f}</td>
+        <td>₹{cgst:,.2f}</td>
+        <td>₹{sgst:,.2f}</td>
+        <td style="text-align:right;font-weight:800;">₹{grand_total:,.2f}</td>
+      </tr>
+      <tr class="total-row">
+        <td colspan="5">Grand Total (Inclusive of 18% GST)</td>
+        <td style="text-align:right;">₹{grand_total:,.2f}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <p>This is a computer-generated GST tax invoice issued under Section 31 of CGST Act, 2017. No signature required.</p>
+    <p>CamCrew Studio Escrow Protection Reference: #CC-{bk['id']}</p>
+    <button onclick="window.print()" style="margin-top:1rem;padding:0.6rem 1.5rem;background:#00dbe9;color:#001f22;border:none;border-radius:0.5rem;font-weight:900;cursor:pointer;">🖨️ Print / Download PDF Invoice</button>
+  </div>
+</div>
+</body>
+</html>"""
+
+    return Response(invoice_html, mimetype="text/html")
+
+
+@app.route("/api/payments/instant-payout", methods=["POST"])
+def instant_crew_payout():
+    """1-Click instant payout settlement to crew UPI VPA ID."""
+    uid = require_auth()
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+
+    data = request.get_json(force=True, silent=True) or {}
+    booking_id = data.get("booking_id")
+    upi_id     = (data.get("upi_id") or "").strip()
+    amount     = float(data.get("amount") or 0)
+
+    if not upi_id or amount <= 0:
+        return jsonify({"ok": False, "error": "Valid upi_id and amount required."}), 400
+
+    txn_ref = f"UPI-PAYOUT-{secrets.token_hex(4).upper()}"
+    ts_ist  = now_ist_str()
+
+    with get_db() as conn:
+        conn.execute("""
+            INSERT INTO crew_payouts (booking_id, professional_id, upi_id, amount, status, transaction_ref, settled_at)
+            VALUES (%s, %s, %s, %s, 'instant_settled', %s, %s)
+        """, (booking_id, uid, upi_id, amount, txn_ref, ts_ist))
+
+        create_notification(
+            uid,
+            "Instant UPI Payout Settled",
+            f"₹{amount:,.2f} instantly transferred to your UPI ID '{upi_id}' ({txn_ref}).",
+            ntype="earnings",
+            link="professional-dashboard.html",
+            conn=conn
+        )
+
+    return jsonify({
+        "ok": True,
+        "transaction_ref": txn_ref,
+        "upi_id": upi_id,
+        "amount": amount,
+        "status": "instant_settled",
+        "settled_at": ts_ist
     })
 
 

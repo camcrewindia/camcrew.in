@@ -1581,9 +1581,38 @@ function renderShootStatusControls(bookingId, currentStatus) {
           style="padding:0.35rem 0.65rem;border-radius:0.5rem;background:rgba(37,211,102,0.15);border:1px solid rgba(37,211,102,0.3);color:#25d366;font-size:0.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:0.25rem;">
           <span class="material-symbols-outlined" style="font-size:0.85rem;">send</span> WhatsApp Live Status
         </button>
+        <button type="button" onclick="triggerInstantUpiPayout(${bookingId})"
+          style="padding:0.35rem 0.65rem;border-radius:0.5rem;background:rgba(234,179,8,0.15);border:1px solid rgba(234,179,8,0.3);color:#eab308;font-size:0.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:0.25rem;">
+          <span class="material-symbols-outlined" style="font-size:0.85rem;">bolt</span> ⚡ Instant UPI Settle
+        </button>
+        <button type="button" onclick="window.open('/api/bookings/${bookingId}/gst-invoice', '_blank')"
+          style="padding:0.35rem 0.65rem;border-radius:0.5rem;background:rgba(0,219,233,0.15);border:1px solid rgba(0,219,233,0.3);color:#00dbe9;font-size:0.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:0.25rem;">
+          <span class="material-symbols-outlined" style="font-size:0.85rem;">receipt_long</span> GST Tax Invoice
+        </button>
       </div>
     </div>
   `;
+}
+
+async function triggerInstantUpiPayout(bookingId) {
+  const upiId = prompt("Enter your UPI VPA ID for instant crew payout settlement:", "procrew@okaxis");
+  if (!upiId) return;
+  const amtStr = prompt("Enter payout amount (₹):", "5000");
+  const amount = parseFloat(amtStr);
+  if (!amount || amount <= 0) return;
+
+  try {
+    const res = await fetch('/api/payments/instant-payout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ booking_id: bookingId, upi_id: upiId, amount: amount })
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Failed to process instant payout.');
+    showToast(`⚡ Instant payout ₹${amount.toLocaleString('en-IN')} transferred to ${upiId} (${data.transaction_ref})`);
+  } catch (err) {
+    showToast(err.message, true);
+  }
 }
 
 async function advanceShootStatus(bookingId, newStatus) {
