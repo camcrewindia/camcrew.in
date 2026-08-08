@@ -1536,6 +1536,7 @@ function renderRequestCard(r, compact) {
       <span><span class="material-symbols-outlined" style="font-size:0.9rem;vertical-align:middle;margin-right:3px;">attach_money</span>${fmt_usd(r.amount)}</span>
     </div>
     ${r.note ? `<p style="font-size:0.82rem;color:#849495;font-style:italic;border-left:2px solid rgba(0,219,233,0.3);padding-left:0.65rem;margin-bottom:0.75rem;">"${esc(r.note)}"</p>` : ''}
+    ${!compact && r.status === 'confirmed' ? renderShootStatusControls(r.id, r.shoot_status || 'confirmed') : ''}
     ${!compact && r.status === 'pending' ? `
       <div style="display:flex;gap:0.5rem;justify-content:flex-end;flex-wrap:wrap;">
         <button onclick="openRequestModal(${r.id})" class="btn-sm btn-sm-cyan">
@@ -1544,6 +1545,73 @@ function renderRequestCard(r, compact) {
       </div>` : ''}
     ${compact && r.status === 'pending' ? `<div style="margin-top:0.5rem;"><button onclick="showSection('requests')" class="btn-sm btn-sm-cyan"><span class="material-symbols-outlined" style="font-size:0.9rem;">arrow_forward</span> View & Respond</button></div>` : ''}
   </div>`;
+}
+
+/* ── Live Shoot Status Controls & WhatsApp Integration ─────────── */
+function renderShootStatusControls(bookingId, currentStatus) {
+  const statuses = [
+    { key: 'en_route', label: '🚗 Crew En-Route' },
+    { key: 'on_set', label: '📍 Arrived On Set' },
+    { key: 'in_progress', label: '🎬 Shooting In-Progress' },
+    { key: 'post_production', label: '🖥️ Post-Production' },
+    { key: 'deliverables_ready', label: '📦 Deliverables Ready' }
+  ];
+
+  return `
+    <div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.06);">
+      <p style="font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#00dbe9;text-transform:uppercase;margin-bottom:0.4rem;">Advance Live Shoot Status</p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.6rem;">
+        ${statuses.map(s => `
+          <button type="button" onclick="advanceShootStatus(${bookingId}, '${s.key}')"
+            style="padding:0.35rem 0.65rem;border-radius:0.5rem;font-size:0.72rem;font-weight:700;cursor:pointer;
+            ${currentStatus === s.key ? 'background:#00dbe9;color:#001f22;border:none;' : 'background:rgba(255,255,255,0.04);color:#849495;border:1px solid rgba(255,255,255,0.08);'}">
+            ${s.label}
+          </button>`).join('')}
+      </div>
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+        <button type="button" onclick="sendWhatsAppPayload(${bookingId}, 'callsheet')"
+          style="padding:0.35rem 0.65rem;border-radius:0.5rem;background:rgba(37,211,102,0.15);border:1px solid rgba(37,211,102,0.3);color:#25d366;font-size:0.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:0.25rem;">
+          <span class="material-symbols-outlined" style="font-size:0.85rem;">chat</span> WhatsApp Call Sheet
+        </button>
+        <button type="button" onclick="sendWhatsAppPayload(${bookingId}, 'receipt')"
+          style="padding:0.35rem 0.65rem;border-radius:0.5rem;background:rgba(37,211,102,0.15);border:1px solid rgba(37,211,102,0.3);color:#25d366;font-size:0.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:0.25rem;">
+          <span class="material-symbols-outlined" style="font-size:0.85rem;">receipt_long</span> WhatsApp Receipt
+        </button>
+        <button type="button" onclick="sendWhatsAppPayload(${bookingId}, 'update')"
+          style="padding:0.35rem 0.65rem;border-radius:0.5rem;background:rgba(37,211,102,0.15);border:1px solid rgba(37,211,102,0.3);color:#25d366;font-size:0.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:0.25rem;">
+          <span class="material-symbols-outlined" style="font-size:0.85rem;">send</span> WhatsApp Live Status
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+async function advanceShootStatus(bookingId, newStatus) {
+  try {
+    const res = await fetch(`/api/bookings/${bookingId}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ shoot_status: newStatus })
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Failed to update shoot status.');
+    showToast(`Shoot status updated to '${data.status_label}' (${data.timestamp_ist})`);
+    if (typeof loadRequests === 'function') loadRequests();
+    if (typeof loadJobs === 'function') loadJobs();
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function sendWhatsAppPayload(bookingId, type) {
+  try {
+    const res = await fetch(`/api/bookings/${bookingId}/whatsapp-payload?type=${type}`);
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Failed to fetch WhatsApp payload.');
+    window.open(data.whatsapp_url, '_blank');
+  } catch (err) {
+    showToast(err.message, true);
+  }
 }
 
 function openRequestModal(id) {

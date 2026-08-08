@@ -459,12 +459,94 @@
         </button>`;
     }
 
-    // Live filter/search
-    document.querySelector('[data-status-filter]')?.addEventListener('change', ()=>loadOrders(1));
-    document.querySelector('input[placeholder="Search orders..."]')?.addEventListener('input', ()=>setTimeout(()=>loadOrders(1),400));
-
     loadOrders(1);
     window.loadOrders = loadOrders;
   })();
+</script>
+
+<!-- Live Shoot Status Timeline Modal for Client -->
+<div id="modal-shoot-timeline" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+  <div class="glass-panel w-full max-w-xl p-6 rounded-3xl relative border border-glass-stroke shadow-2xl">
+    <button onclick="closeShootTimelineModal()" class="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface text-xl">✕</button>
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+        <span class="material-symbols-outlined">movie</span>
+      </div>
+      <div>
+        <h3 id="timeline-project-title" class="text-lg font-extrabold text-on-surface">Live Shoot Status Timeline</h3>
+        <p id="timeline-project-sub" class="text-xs text-on-surface-variant">Real-time status updates &amp; timestamps (IST)</p>
+      </div>
+    </div>
+
+    <!-- 5-Stage Stepper Bar -->
+    <div class="my-6 space-y-4">
+      <div id="timeline-steps-container" class="space-y-3">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- WhatsApp Support Action -->
+    <div class="pt-4 border-t border-glass-stroke flex justify-between items-center">
+      <a id="timeline-wa-btn" href="#" target="_blank" class="px-4 py-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">chat</span> Send WhatsApp Update to Pro
+      </a>
+      <button onclick="closeShootTimelineModal()" class="px-4 py-2 rounded-xl border border-glass-stroke text-xs font-bold text-on-surface-variant">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openShootTimelineModal(bookingId, serviceName, status, historyJson) {
+    document.getElementById('timeline-project-title').textContent = serviceName || 'Shoot Booking';
+    
+    let history = [];
+    try { history = typeof historyJson === 'string' ? JSON.parse(historyJson || '[]') : (historyJson || []); } catch(_) {}
+    
+    const stages = [
+      { key: 'confirmed', label: 'Shoot Confirmed', icon: 'check_circle' },
+      { key: 'en_route', label: 'Crew En-Route', icon: 'directions_car' },
+      { key: 'on_set', label: 'Arrived On Set', icon: 'location_on' },
+      { key: 'in_progress', label: 'Shooting In-Progress', icon: 'videocam' },
+      { key: 'post_production', label: 'Post-Production & Editing', icon: 'computer' },
+      { key: 'deliverables_ready', label: 'Deliverables Ready', icon: 'inventory' }
+    ];
+
+    let currentIdx = stages.findIndex(s => s.key === status);
+    if (currentIdx === -1) currentIdx = 0;
+
+    const container = document.getElementById('timeline-steps-container');
+    container.innerHTML = stages.map((stg, i) => {
+      const isCompleted = i <= currentIdx;
+      const isActive = i === currentIdx;
+      const histItem = history.find(h => h.status === stg.key);
+      const tsStr = histItem ? histItem.timestamp_ist : (isCompleted ? 'Completed' : 'Pending');
+
+      return `
+        <div class="flex items-start gap-3 p-3 rounded-2xl ${isActive ? 'bg-primary/10 border border-primary/30 shadow-lg' : 'bg-black/20 border border-white/5'}">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isCompleted ? 'bg-primary text-on-primary font-bold' : 'bg-surface-container text-on-surface-variant'}">
+            <span class="material-symbols-outlined text-sm">${stg.icon}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-bold ${isActive ? 'text-primary' : 'text-on-surface'}">${stg.label}</p>
+            <p class="text-xs text-on-surface-variant mt-0.5">${tsStr}</p>
+          </div>
+          ${isActive ? `<span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary text-[10px] font-black uppercase tracking-wider animate-pulse">ACTIVE</span>` : ''}
+        </div>`;
+    }).join('');
+
+    fetch(`/api/bookings/${bookingId}/whatsapp-payload?type=update`).then(r => r.json()).then(d => {
+      if (d.ok) document.getElementById('timeline-wa-btn').href = d.whatsapp_url;
+    }).catch(() => {});
+
+    document.getElementById('modal-shoot-timeline').classList.remove('hidden');
+    document.getElementById('modal-shoot-timeline').classList.add('flex');
+  }
+
+  function closeShootTimelineModal() {
+    document.getElementById('modal-shoot-timeline').classList.add('hidden');
+    document.getElementById('modal-shoot-timeline').classList.remove('flex');
+  }
+  window.openShootTimelineModal = openShootTimelineModal;
+  window.closeShootTimelineModal = closeShootTimelineModal;
 </script>
 </body></html>

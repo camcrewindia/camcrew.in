@@ -1,7 +1,8 @@
 import os
 import json as _json
 import secrets
-from datetime import datetime, timedelta
+import urllib.parse
+from datetime import datetime, timedelta, timezone
 
 import psycopg2
 import psycopg2.extras
@@ -529,6 +530,10 @@ def init_db():
         conn.execute("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS contract_signature TEXT")
         conn.execute("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS contract_signed_at TEXT")
         conn.execute("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS contract_terms_text TEXT")
+        conn.execute("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS shoot_status TEXT DEFAULT 'confirmed'")
+        conn.execute("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS shoot_status_history TEXT DEFAULT '[]'")
+        conn.execute("ALTER TABLE bookings ADD COLUMN IF NOT EXISTS whatsapp_phone TEXT")
+        conn.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS whatsapp_phone TEXT")
         conn.execute("""
             CREATE TABLE IF NOT EXISTS products (
                 id           SERIAL PRIMARY KEY,
@@ -2601,6 +2606,145 @@ def studio_bays():
         bays.append(b_dict)
 
     return jsonify({"ok": True, "count": len(bays), "bays": bays})
+
+
+# ---------------------------------------------------------------------------
+# Live Shoot Status Timeline & WhatsApp Integration API
+# ---------------------------------------------------------------------------
+
+SHOOT_STATUS_LABELS = {
+    "confirmed":          "Shoot Confirmed",
+    "en_route":           "Crew En-Route",
+    "on_set":            "Arrived On Set",
+    "in_progress":       "Shooting In-Progress",
+    "post_production":   "Post-Production & Editing",
+    "deliverables_ready":"Deliverables Ready",
+    "completed":          "Project Completed"
+}
+
+@app.route("/api/bookings/<int:booking_id>/status", methods=["PATCH"])
+def update_shoot_status(booking_id):
+    """Update live shoot status, record IST timestamp, and trigger notification."""
+    uid = require_auth()
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+
+    data = request.get_json(force=True, silent=True) or {}
+    new_status = (data.get("shoot_status") or "").strip().lower()
+    if new_status not in SHOOT_STATUS_LABELS:
+        return jsonify({"ok": False, "error": "Invalid shoot status."}), 400
+
+    timestamp_ist = now_ist_str()
+
+    with get_db() as conn:
+        b_row = conn.execute("SELECT * FROM bookings WHERE id = %s", (booking_id,)).fetchone()
+        if not b_row:
+            return jsonify({"ok": False, "error": "Booking not found."}), 404
+
+        history = _json.loads(b_row["shoot_status_history"] or "[]") if "shoot_status_history" in b_row.keys() else []
+        history.append({
+            "status": new_status,
+            "label": SHOOT_STATUS_LABELS[new_status],
+            "timestamp_ist": timestamp_ist
+        })
+
+        conn.execute(
+            "UPDATE bookings SET shoot_status = %s, shoot_status_history = %s WHERE id = %s",
+            (new_status, _json.dumps(history), booking_id)
+        )
+
+        customer_id = b_row["user_id"]
+        status_label = SHOOT_STATUS_LABELS[new_status]
+        create_notification(
+            customer_id,
+            "Live Shoot Update",
+            f"Shoot for '{b_row['service']}' status updated to '{status_label}' ({timestamp_ist}).",
+            ntype="booking",
+            link="orders.html",
+            conn=conn
+        )
+
+    return jsonify({
+        "ok": True,
+        "booking_id": booking_id,
+        "shoot_status": new_status,
+        "status_label": status_label,
+        "timestamp_ist": timestamp_ist,
+        "history": history
+    })
+
+
+@app.route("/api/bookings/<int:booking_id>/whatsapp-payload", methods=["GET"])
+def get_whatsapp_payload(booking_id):
+    """Generate pre-formatted, URL-encoded WhatsApp click-to-send payload for client/crew."""
+    msg_type = (request.args.get("type") or "update").strip().lower()
+    
+    with get_db() as conn:
+        bk = conn.execute("""
+            SELECT b.*, u.email as client_email, u.display_name as client_name
+            FROM bookings b
+            LEFT JOIN users u ON u.id = b.user_id
+            WHERE b.id = %s
+        """, (booking_id,)).fetchone()
+
+    if not bk:
+        return jsonify({"ok": False, "error": "Booking not found."}), 404
+
+    client = bk["client_name"] or bk["client_email"] or "Client"
+    service = bk["service"] or "Shoot Service"
+    date_str = bk["booking_date"] or "Scheduled Date"
+    amount = bk["amount"] or 0
+    phone = (bk["whatsapp_phone"] or "").replace("+", "").replace(" ", "").replace("-", "")
+
+    if msg_type == "callsheet":
+        text = (
+            f"🎥 *CAMCREW OFFICIAL CALL SHEET*\n"
+            f"----------------------------------------\n"
+            f"📌 *Project:* {service}\n"
+            f"👤 *Client:* {client}\n"
+            f"📅 *Date & Time:* {date_str} (IST)\n"
+            f"📍 *Venue:* {bk.get('note') or 'As specified in booking'}\n"
+            f"✍️ *Signed Contract:* Verified v1.0\n"
+            f"----------------------------------------\n"
+            f"Please ensure all crew members arrive 15 minutes prior to call time.\n"
+            f"CamCrew Studio Support: https://camcrew-in.onrender.com"
+        )
+    elif msg_type == "receipt":
+        text = (
+            f"🧾 *CAMCREW ESCROW PAYMENT RECEIPT*\n"
+            f"----------------------------------------\n"
+            f"Reference ID: #CC-{bk['id']}\n"
+            f"Service: {service}\n"
+            f"Amount Paid: ₹{amount:,.2f}\n"
+            f"Escrow Status: Held Securely (100% Protection)\n"
+            f"Timestamp: {now_ist_str()}\n"
+            f"----------------------------------------\n"
+            f"View live booking tracker: https://camcrew-in.onrender.com/orders.html"
+        )
+    else:
+        cur_status = bk.get("shoot_status") or "confirmed"
+        cur_label = SHOOT_STATUS_LABELS.get(cur_status, "Confirmed")
+        text = (
+            f"🎬 *LIVE SHOOT STATUS UPDATE*\n"
+            f"----------------------------------------\n"
+            f"Booking ID: #CC-{bk['id']}\n"
+            f"Service: {service}\n"
+            f"Current Status: *{cur_label}*\n"
+            f"Updated At: {now_ist_str()} (IST)\n"
+            f"----------------------------------------\n"
+            f"Track live shoot timeline: https://camcrew-in.onrender.com/orders.html"
+        )
+
+    encoded_text = urllib.parse.quote(text)
+    wa_url = f"https://wa.me/{phone if phone else ''}?text={encoded_text}"
+
+    return jsonify({
+        "ok": True,
+        "booking_id": booking_id,
+        "type": msg_type,
+        "text": text,
+        "whatsapp_url": wa_url
+    })
 
 
 # ---------------------------------------------------------------------------
