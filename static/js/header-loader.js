@@ -167,30 +167,4 @@
     window.location.href = 'signin.html';
   };
 
-  // ── 7. Global Theme Toggle System ────────────────────────────────────────
-  (function initTheme() {
-    const root = document.documentElement;
-    const saved = localStorage.getItem('cc-theme') || 'dark';
-    root.setAttribute('data-theme', saved);
-
-    function updateIcons(t) {
-      document.querySelectorAll('#theme-toggle, #theme-toggle-desktop, #theme-toggle-mobile, [data-theme-toggle]').forEach(btn => {
-        const ic = btn.querySelector('.t-icon, .material-symbols-outlined');
-        if (ic) ic.textContent = t === 'dark' ? 'light_mode' : 'dark_mode';
-        btn.title = t === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
-      });
-      const txt = document.getElementById('theme-toggle-mobile-txt');
-      if (txt) txt.textContent = t === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
-    }
-
-    window.toggleTheme = function() {
-      const cur = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-theme', cur);
-      localStorage.setItem('cc-theme', cur);
-      updateIcons(cur);
-    };
-
-    updateIcons(saved);
-  })();
-
 })();
