@@ -7,13 +7,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
 
-/* ── Theme-aware logo switching ──────────────────────────────────── */
-/* White logo shown by default (dark backgrounds) */
+/* ── Theme-aware logo switching & sizing ── */
+.cc-logo-dark,
+.cc-logo-light {
+    height: 1.75rem !important;
+    max-height: 28px !important;
+    width: auto !important;
+    object-fit: contain !important;
+}
 .cc-logo-dark  { display: block; }
 .cc-logo-light { display: none;  }
-/* Black logo shown in light mode */
-[data-theme="light"] .cc-logo-dark  { display: none;  }
-[data-theme="light"] .cc-logo-light { display: block; }
+
+[data-theme="light"] .cc-logo-dark  { display: none !important; }
+[data-theme="light"] .cc-logo-light { display: block !important; height: 1.75rem !important; max-height: 28px !important; width: auto !important; object-fit: contain !important; }
+html.light .cc-logo-dark  { display: none !important; }
+html.light .cc-logo-light { display: block !important; height: 1.75rem !important; max-height: 28px !important; width: auto !important; object-fit: contain !important; }
 
 /* ── Base ────────────────────────────────────────────────────────── */
 body {
@@ -478,42 +486,80 @@ input:not(:placeholder-shown) ~ .floating-label {
    HEADER THEMES: Light Neumorphism vs Dark Glassmorphism
    ═══════════════════════════════════════════════════════════════════ */
 
-/* ── Light Theme Header (Neumorphic Style) ── */
+/* ── Light Theme Header (Neumorphic Style + High Contrast Text) ── */
 [data-theme="light"] header nav,
 html.light header nav {
     background: #e0e5ec !important;
     border: 1px solid rgba(255, 255, 255, 0.8) !important;
     box-shadow: 8px 8px 20px #b8c2cc, -8px -8px 20px #ffffff !important;
     backdrop-filter: none !important;
+    color: #1e293b !important;
 }
 
+/* Nav links text */
 [data-theme="light"] header nav a,
-html.light header nav a {
-    color: #334155 !important;
+[data-theme="light"] header nav span,
+[data-theme="light"] header nav button,
+html.light header nav a,
+html.light header nav span,
+html.light header nav button {
+    color: #1e293b !important;
 }
 
 [data-theme="light"] header nav a:hover,
-html.light header nav a:hover {
+[data-theme="light"] header nav button:hover,
+html.light header nav a:hover,
+html.light header nav button:hover {
     color: #0e5a6f !important;
 }
 
-[data-theme="light"] header nav .material-symbols-outlined,
-html.light header nav .material-symbols-outlined {
-    color: #334155;
+/* Active Nav Link in Light Theme */
+[data-theme="light"] header nav a.border-b-2,
+html.light header nav a.border-b-2 {
+    color: #0e5a6f !important;
+    border-color: #0e5a6f !important;
+    font-weight: 800 !important;
 }
 
+/* Icons in Light Theme */
+[data-theme="light"] header nav .material-symbols-outlined,
+html.light header nav .material-symbols-outlined {
+    color: #1e293b !important;
+}
+
+/* User Email & Role Pill in Light Theme */
+[data-theme="light"] header #desktop-user-email,
+[data-theme="light"] header #mobile-user-email,
+html.light header #desktop-user-email,
+html.light header #mobile-user-email {
+    color: #0f172a !important;
+    font-weight: 700 !important;
+}
+
+[data-theme="light"] header #desktop-user-role,
+[data-theme="light"] header #mobile-user-role,
+html.light header #desktop-user-role,
+html.light header #mobile-user-role {
+    color: #0e5a6f !important;
+    background: rgba(14, 90, 111, 0.12) !important;
+    border: 1px solid rgba(14, 90, 111, 0.25) !important;
+}
+
+/* Header Sign In Button */
 [data-theme="light"] header nav .header-signin-btn,
 html.light header nav .header-signin-btn {
     background: #e0e5ec !important;
     color: #0e5a6f !important;
     border: 1px solid rgba(255, 255, 255, 0.8) !important;
     box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
+    font-weight: 800 !important;
     transition: all 0.2s ease;
 }
 
 [data-theme="light"] header nav .header-signin-btn:hover,
 html.light header nav .header-signin-btn:hover {
     box-shadow: 6px 6px 14px #b8c2cc, -6px -6px 14px #ffffff !important;
+    color: #0b3c49 !important;
 }
 
 [data-theme="light"] header nav .header-signin-btn:active,
@@ -521,6 +567,7 @@ html.light header nav .header-signin-btn:active {
     box-shadow: inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff !important;
 }
 
+/* Theme Toggle Button */
 [data-theme="light"] header #theme-toggle-btn,
 html.light header #theme-toggle-btn {
     background: #e0e5ec !important;
@@ -529,9 +576,9 @@ html.light header #theme-toggle-btn {
     box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff !important;
 }
 
-[data-theme="light"] header #theme-toggle-btn:active,
-html.light header #theme-toggle-btn:active {
-    box-shadow: inset 2px 2px 5px #b8c2cc, inset -2px -2px 5px #ffffff !important;
+[data-theme="light"] header #theme-toggle-btn .material-symbols-outlined,
+html.light header #theme-toggle-btn .material-symbols-outlined {
+    color: #0e5a6f !important;
 }
 
 /* Light Theme Dropdowns & Mobile Panels */
@@ -543,17 +590,26 @@ html.light header #mobile-menu,
 html.light header #notif-drawer {
     background: #e0e5ec !important;
     border: 1px solid rgba(255, 255, 255, 0.8) !important;
-    box-shadow: 8px 8px 20px #b8c2cc, -8px -8px 20px #ffffff !important;
-    color: #334155 !important;
+    box-shadow: 8px 8px 22px #b8c2cc, -8px -8px 22px #ffffff !important;
+    color: #1e293b !important;
     backdrop-filter: none !important;
 }
 
+[data-theme="light"] header .glass-panel a,
 [data-theme="light"] header #mobile-menu a,
-html.light header #mobile-menu a {
-    color: #334155 !important;
+[data-theme="light"] header #notif-drawer a,
+[data-theme="light"] header #notif-drawer h3,
+html.light header .glass-panel a,
+html.light header #mobile-menu a,
+html.light header #notif-drawer a,
+html.light header #notif-drawer h3 {
+    color: #1e293b !important;
 }
 
+[data-theme="light"] header .glass-panel a:hover,
 [data-theme="light"] header #mobile-menu a:hover,
+html.light header .glass-panel a:hover,
 html.light header #mobile-menu a:hover {
+    background: rgba(14, 90, 111, 0.08) !important;
     color: #0e5a6f !important;
 }
