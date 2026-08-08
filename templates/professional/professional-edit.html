@@ -6,6 +6,7 @@
 <title>Edit Profile | Camcrew Studio</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="/static/js/tailwind-config.js"></script>
+<script src="/static/js/india-locations.js"></script>
 <link rel="stylesheet" href="/static/css/styles.css">
 <style>
   /* ── Tesla Cybertruck Theme System ──────────────────────────── */
@@ -569,30 +570,26 @@
         </div>
 
         <div class="mt-5">
-          <!-- Search input -->
-          <div style="position:relative;margin-bottom:1rem;">
-            <span class="material-symbols-outlined" style="position:absolute;left: 0.75rem;top:50%;transform:translateY(-50%);color:#849495;font-size:1.1rem;">location_on</span>
-            <input id="loc-input" class="cc-input w-full"
-              style="border:1px solid rgba(255,255,255,0.1) !important;border-radius:0.75rem !important;padding: 0.75rem 1rem 0.75rem 2.5rem !important;background:rgba(255,255,255,0.03) !important;"
-              type="text" placeholder="Type a city or region and press Enter…"
-              onkeydown="if(event.key==='Enter'){event.preventDefault();addLocation();}">
-            <div id="loc-suggestions" style="display:none;position:absolute;top:calc(100% + 4px);left: 0.75rem;right:0;z-index:20;background:#161618;border:1px solid rgba(255,255,255,0.12);border-radius:0.75rem;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.4);"></div>
+          <!-- 3-Tier Cascading Dropdown: State -> District -> City -->
+          <div class="mb-5 p-4 rounded-2xl bg-surface-container-lowest/50 border border-glass-stroke">
+            <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.1em;color:#00dbe9;text-transform:uppercase;margin-bottom:0.75rem;">Select Indian Location</p>
+            <div id="indian-location-cascader"></div>
           </div>
 
-          <!-- Quick-add -->
+          <!-- Quick-add Indian Metros -->
           <div class="mb-5">
-            <p style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;color:#475569;text-transform:uppercase;margin-bottom:0.6rem;">Quick Add</p>
+            <p style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;color:#475569;text-transform:uppercase;margin-bottom:0.6rem;">Quick Add Indian Hubs</p>
             <div class="flex flex-wrap gap-2">
-              <button class="cat-chip" onclick="quickAddLoc('Los Angeles, CA')">Los Angeles</button>
-              <button class="cat-chip" onclick="quickAddLoc('New York, NY')">New York</button>
-              <button class="cat-chip" onclick="quickAddLoc('Chicago, IL')">Chicago</button>
-              <button class="cat-chip" onclick="quickAddLoc('Miami, FL')">Miami</button>
-              <button class="cat-chip" onclick="quickAddLoc('Austin, TX')">Austin</button>
-              <button class="cat-chip" onclick="quickAddLoc('Atlanta, GA')">Atlanta</button>
-              <button class="cat-chip" onclick="quickAddLoc('Las Vegas, NV')">Las Vegas</button>
-              <button class="cat-chip" onclick="quickAddLoc('London, UK')">London</button>
-              <button class="cat-chip" onclick="quickAddLoc('Toronto, CA')">Toronto</button>
-              <button class="cat-chip" onclick="quickAddLoc('Remote / Virtual')">Remote</button>
+              <button class="cat-chip" onclick="quickAddLoc('Mumbai, MH')">Mumbai</button>
+              <button class="cat-chip" onclick="quickAddLoc('Bengaluru, KA')">Bengaluru</button>
+              <button class="cat-chip" onclick="quickAddLoc('Delhi, DL')">Delhi (NCR)</button>
+              <button class="cat-chip" onclick="quickAddLoc('Kochi, KL')">Kochi</button>
+              <button class="cat-chip" onclick="quickAddLoc('Hyderabad, TS')">Hyderabad</button>
+              <button class="cat-chip" onclick="quickAddLoc('Chennai, TN')">Chennai</button>
+              <button class="cat-chip" onclick="quickAddLoc('Goa, GA')">Goa</button>
+              <button class="cat-chip" onclick="quickAddLoc('Kolkata, WB')">Kolkata</button>
+              <button class="cat-chip" onclick="quickAddLoc('Pune, MH')">Pune</button>
+              <button class="cat-chip" onclick="quickAddLoc('Jaipur, RJ')">Jaipur</button>
             </div>
           </div>
 
@@ -900,34 +897,28 @@ function renderServices() {
 }
 
 /* ── Locations ───────────────────────────────────────────────────── */
-const locInput = document.getElementById('loc-input');
-const locSugg  = document.getElementById('loc-suggestions');
-
-locInput.addEventListener('input', () => {
-  const q = locInput.value.trim().toLowerCase();
-  if (!q) { locSugg.style.display = 'none'; return; }
-  const matches = CITY_SUGGESTIONS.filter(c => c.toLowerCase().includes(q) && !locations.includes(c)).slice(0, 6);
-  if (!matches.length) { locSugg.style.display = 'none'; return; }
-  locSugg.innerHTML = matches.map(c =>
-    `<button onclick="pickSuggestion('${c.replace(/'/g,"\\'")}');return false;"
-      style="display:block;width:100%;text-align:left;padding:0.7rem 1rem;font-size:0.92rem;font-weight:500;color:#dce4e5;background:none;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:background 0.15s;"
-      onmouseover="this.style.background='rgba(0,219,233,0.08)'" onmouseout="this.style.background='none'">
-      <span class="material-symbols-outlined" style="font-size:0.95rem;vertical-align:middle;color:#849495;margin-right:6px;">location_on</span>${c}
-    </button>`).join('');
-  locSugg.style.display = 'block';
-});
-document.addEventListener('click', e => {
-  if (!locSugg.contains(e.target) && e.target !== locInput) locSugg.style.display = 'none';
+/* ── Locations ───────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  initCascadingLocationSelector();
 });
 
-function pickSuggestion(city) {
-  locInput.value = ''; locSugg.style.display = 'none';
-  addLocTag(city);
+function initCascadingLocationSelector() {
+  const container = document.getElementById('indian-location-cascader');
+  if (!container || typeof createCascadingLocationSelector !== 'function') return;
+  container.innerHTML = '';
+  const selector = createCascadingLocationSelector({
+    idPrefix: 'pro-loc',
+    showAddButton: true,
+    addButtonLabel: '+ Add Location',
+    selectClass: 'cc-input w-full bg-surface-container-lowest border border-glass-stroke rounded-xl px-3.5 py-3 text-on-surface text-sm focus:outline-none focus:border-primary',
+    buttonClass: 'px-5 py-3 rounded-xl bg-primary-container text-obsidian-base font-extrabold text-sm hover:scale-105 transition-all shadow-md shrink-0 cursor-pointer',
+    onSelectLocation: (locStr) => {
+      addLocTag(locStr);
+    }
+  });
+  container.appendChild(selector);
 }
-function addLocation() {
-  const v = locInput.value.trim(); if (!v) return;
-  addLocTag(v); locInput.value = ''; locSugg.style.display = 'none';
-}
+
 function quickAddLoc(city) { addLocTag(city); }
 function addLocTag(city) {
   if (locations.includes(city)) { showToast('Already added', 'info', '#849495'); return; }

@@ -61,10 +61,21 @@ class _DBCursor:
 import sqlite3
 import re
 
+from datetime import datetime, timedelta, timezone
+IST = timezone(timedelta(hours=5, minutes=30))
+
+def now_ist():
+    return datetime.now(IST)
+
+def now_ist_str():
+    return datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S")
+
+
 class _DBConn:
     """
     Dual DB connection supporting PostgreSQL and automatic local SQLite fallback.
     Supports: conn.execute(sql, params), conn.commit(), context-manager.
+    Enforces Indian Standard Time (IST / Asia/Kolkata / UTC+5:30) across all DB sessions.
     """
     def __init__(self):
         url = os.environ.get("RENDER_DATABASE_URL") or os.environ.get("DATABASE_URL") or DEFAULT_DATABASE_URL
@@ -78,6 +89,11 @@ class _DBConn:
                     connect_timeout=3,
                     cursor_factory=psycopg2.extras.RealDictCursor,
                 )
+                try:
+                    with self._conn.cursor() as c:
+                        c.execute("SET TIME ZONE 'Asia/Kolkata';")
+                except Exception:
+                    pass
                 return
             except Exception as e:
                 print(f"[DB] PostgreSQL connection to Render failed ({e}). Falling back to local SQLite.")

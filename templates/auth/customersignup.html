@@ -6,6 +6,7 @@
   <title>Customer Registration | Camcrew Studio</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script src="/static/js/tailwind-config.js"></script>
+  <script src="/static/js/india-locations.js"></script>
   <link rel="stylesheet" href="/static/css/styles.css"/>
   <style>
     /* verify button */
@@ -241,18 +242,9 @@
 
             <!-- LOCATION -->
             <div>
-              <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">LOCATION</label>
-              <div class="relative group">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">location_on</span>
-                <input
-                  id="reg-location"
-                  type="text"
-                  class="w-full bg-surface-container-lowest rounded-lg border-b border-glass-stroke py-4 pl-12 pr-4 text-on-surface focus:outline-none focus:border-primary-container transition-all placeholder:text-outline/50 font-body-md rounded-t-lg"
-                  placeholder="City, Country"
-                  autocomplete="address-level2"
-                  required
-                />
-              </div>
+              <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">LOCATION (SELECT INDIAN STATE, DISTRICT & CITY)</label>
+              <div id="cust-location-cascader" class="p-3 bg-surface-container-lowest/50 border border-glass-stroke rounded-xl mb-2"></div>
+              <input id="reg-location" type="hidden" required />
             </div>
 
             <!-- Error banner -->
@@ -286,6 +278,29 @@
       const email  = params.get('email');
       if (email) {
         document.getElementById('reg-email').value = decodeURIComponent(email);
+      }
+
+      // Initialize Indian Cascading Location Selector
+      if (typeof createCascadingLocationSelector === 'function') {
+        const container = document.getElementById('cust-location-cascader');
+        if (container) {
+          const selector = createCascadingLocationSelector({
+            idPrefix: 'cust-reg-loc',
+            showAddButton: false,
+            selectClass: 'w-full bg-surface-container-lowest rounded-lg border-b border-glass-stroke py-3 px-3 text-on-surface focus:outline-none focus:border-primary-container transition-all font-body-md text-sm'
+          });
+          container.appendChild(selector);
+
+          container.addEventListener('change', () => {
+            const state = document.getElementById('cust-reg-loc-state')?.value || '';
+            const dist  = document.getElementById('cust-reg-loc-district')?.value || '';
+            const city  = document.getElementById('cust-reg-loc-city')?.value || '';
+            const hiddenInp = document.getElementById('reg-location');
+            if (hiddenInp) {
+              hiddenInp.value = (city && state) ? `${city}, ${state}` : '';
+            }
+          });
+        }
       }
     })();
 

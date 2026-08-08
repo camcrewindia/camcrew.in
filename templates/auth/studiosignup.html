@@ -6,6 +6,7 @@
 <title>Studio Signup | Camcrew Studio</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="/static/js/tailwind-config.js"></script>
+<script src="/static/js/india-locations.js"></script>
 <link rel="stylesheet" href="/static/css/styles.css">
 <style>
   .stage { transition: opacity 0.4s ease, transform 0.4s ease; }
@@ -96,12 +97,18 @@
             </div>
           </div>
 
+          <!-- Studio Location Selector -->
+          <div class="group/input relative">
+            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">STUDIO LOCATION (SELECT STATE, DISTRICT & CITY) <span class="text-error">*</span></label>
+            <div id="studio-location-cascader" class="p-3 rounded-xl bg-white/5 border border-glass-stroke mb-4"></div>
+          </div>
+
           <!-- Business Address -->
           <div class="group/input relative">
-            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 group-focus-within/input:text-primary transition-colors">BUSINESS ADDRESS <span class="text-error">*</span></label>
+            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 group-focus-within/input:text-primary transition-colors">STREET ADDRESS & BUILDING <span class="text-error">*</span></label>
             <div class="relative">
               <span class="material-symbols-outlined absolute left-0 top-3 text-on-surface-variant group-focus-within/input:text-primary transition-colors">location_on</span>
-              <textarea id="s1-address" required rows="2" placeholder="123 Film Nagar, Hyderabad, Telangana 500033"
+              <textarea id="s1-address" required rows="2" placeholder="123 Film Nagar, Road No 10"
                 class="w-full bg-transparent border-0 border-b border-glass-stroke pl-8 pb-3 text-on-surface focus:ring-0 focus:border-primary transition-all duration-300 placeholder:text-on-surface-variant/30 resize-none"></textarea>
             </div>
           </div>
@@ -274,6 +281,18 @@
     const params = new URLSearchParams(window.location.search);
     const email  = params.get('email');
     if (email) document.getElementById('s1-email').value = decodeURIComponent(email);
+
+    if (typeof createCascadingLocationSelector === 'function') {
+      const container = document.getElementById('studio-location-cascader');
+      if (container) {
+        const selector = createCascadingLocationSelector({
+          idPrefix: 'studio-reg-loc',
+          showAddButton: false,
+          selectClass: 'w-full bg-surface-container-lowest border border-glass-stroke rounded-xl p-2.5 text-on-surface text-sm focus:outline-none focus:border-primary'
+        });
+        container.appendChild(selector);
+      }
+    }
   })();
 
   /* ─── Redirect if already logged in as studio ─── */
@@ -337,16 +356,23 @@
     const address      = document.getElementById('s1-address').value.trim();
     const gst          = document.getElementById('s1-gst').value.trim().toUpperCase();
 
+    const state = document.getElementById('studio-reg-loc-state')?.value || '';
+    const dist  = document.getElementById('studio-reg-loc-district')?.value || '';
+    const city  = document.getElementById('studio-reg-loc-city')?.value || '';
+
     if (!businessName) { showError(1, 'Business name is required.'); return; }
     if (!ownerName)    { showError(1, 'Owner / contact name is required.'); return; }
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       showError(1, 'Please enter a valid email address.'); return;
     }
     if (!phone)        { showError(1, 'Phone number is required.'); return; }
-    if (!address)      { showError(1, 'Business address is required.'); return; }
+    if (!state || !dist || !city) { showError(1, 'Please select your State, District, and City.'); return; }
+    if (!address)      { showError(1, 'Street address / building is required.'); return; }
+
+    const fullAddress = `${address}, ${city}, ${dist}, ${state}`;
 
     // Store in state — account not created yet
-    studioData = { businessName, ownerName, email, phone, address, gst };
+    studioData = { businessName, ownerName, email, phone, address: fullAddress, gst };
 
     // Prepare OTP stage display
     document.getElementById('otp-email-display').textContent = email;
