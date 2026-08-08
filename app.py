@@ -1282,8 +1282,33 @@ def serve_uploads(filename):
     if os.path.exists(abs_path):
         return send_from_directory(os.path.join(ROOT_DIR, "uploads"), filename)
 
-    initial = "CC"
+    is_portfolio = "portfolio" in filename.lower()
     parts = [p for p in filename.split("/") if p]
+
+    if is_portfolio:
+        clean_name = parts[-1] if parts else "Portfolio Item"
+        display_title = clean_name.replace("-", " ").replace("_", " ").split(".")[0].title()
+        svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
+          <defs>
+            <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#090d16"/>
+              <stop offset="50%" stop-color="#111827"/>
+              <stop offset="100%" stop-color="#1e1b4b"/>
+            </linearGradient>
+            <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#00dbe9"/>
+              <stop offset="100%" stop-color="#ebb2ff"/>
+            </linearGradient>
+          </defs>
+          <rect width="600" height="400" fill="url(#bg)"/>
+          <circle cx="300" cy="160" r="55" fill="none" stroke="url(#accent)" stroke-width="3.5" opacity="0.7"/>
+          <path d="M280 160 h40 M300 140 v40" stroke="#00dbe9" stroke-width="3.5" stroke-linecap="round"/>
+          <text x="50%" y="255" dominant-baseline="middle" text-anchor="middle" fill="#dce4e5" font-family="sans-serif" font-size="20" font-weight="700">{display_title[:32]}</text>
+          <text x="50%" y="295" dominant-baseline="middle" text-anchor="middle" fill="#00dbe9" font-family="sans-serif" font-size="12" font-weight="700" letter-spacing="3">CAMCREW MEDIA VAULT</text>
+        </svg>"""
+        return Response(svg, mimetype="image/svg+xml")
+
+    initial = "CC"
     if len(parts) >= 2:
         initial = parts[1][:2].upper()
 
