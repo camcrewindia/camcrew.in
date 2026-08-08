@@ -829,11 +829,11 @@
 <!-- ══════════════════════════════════════════════════════════════
      EQUIPMENT INVENTORY
 ══════════════════════════════════════════════════════════════ -->
-<section id="inventory" class="py-8 px-5 md:px-20">
+<section id="inventory" class="py-4 px-5 md:px-20">
   <div class="max-w-7xl mx-auto">
 
     <!-- Section header -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 reveal">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6 reveal">
       <div>
         <div class="section-eyebrow">Equipment Inventory</div>
         <h2 style="font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;color:#f0f6f7;letter-spacing:-0.03em;line-height:1.1;">
@@ -850,7 +850,7 @@
     </div>
 
     <!-- Filter bar -->
-    <div class="reveal mb-8">
+    <div class="reveal mb-5">
       <div class="filter-bar">
         <button class="filter-btn active" data-cat="all" onclick="filterGear(this)">
           <span class="material-symbols-outlined">grid_view</span> All
@@ -1233,179 +1233,15 @@
 </div>
 
 
-<!-- ══════════════════════════════════════════════════════════════
-     CURATED KITS CAROUSEL
-══════════════════════════════════════════════════════════════ -->
-<section class="py-24 px-5 md:px-20 relative overflow-hidden" style="background:rgba(255,255,255,0.015);">
-  <!-- background accent -->
-  <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,219,233,0.15),transparent);"></div>
-  <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(182,0,248,0.1),transparent);"></div>
 
-  <div class="max-w-7xl mx-auto">
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-10 reveal">
-      <div>
-        <div class="section-eyebrow">Curated Collections</div>
-        <h2 style="font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;color:#f0f6f7;letter-spacing:-0.03em;line-height:1.1;">
-          Turnkey Kits
-        </h2>
-        <p style="color:#556669;margin-top:0.5rem;font-size:0.9rem;">
-          Pre-matched gear bundles — everything you need, nothing you don't.
-        </p>
-      </div>
-      <div class="flex items-center gap-3 flex-shrink-0">
-        <button class="carousel-nav-btn" id="prevBtn">
-          <span class="material-symbols-outlined">chevron_left</span>
-        </button>
-        <button class="carousel-nav-btn" id="nextBtn">
-          <span class="material-symbols-outlined">chevron_right</span>
-        </button>
-      </div>
-    </div>
-
-    <div class="kit-scroll" id="kitCarousel">
-
-      <!-- Kit 1 -->
-      <div class="kit-scroll-item" style="width:360px;">
-        <div class="kit-card">
-          <div class="kit-img">
-            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdjnF8sQFQGYU25tParylfFz1qz3ESUUJirJx2tE-k1im1Ty77KlKjCHuYu96LcE4CV0YH5pVfpXYOHwOLJAr9lG-ERCAjnp7IosUvcH096B_2iZG9tu1bU29sNQeLIj20HHpkEFqcdXAeZKkpddR0VKldUscomGF5eRuYB-4Uw7izzXsVAefiga5I7OnSCfbXNnDVVsDIYzXjb_SA2RS--JvnZRtW6IOGLsr7IayOF8GSrf0SHZgh" alt="Run and Gun">
-            <div class="kit-img-overlay"></div>
-            <span class="kit-popular-badge">Most Popular</span>
-          </div>
-          <div style="padding:1.5rem;display:flex;flex-direction:column;gap:1rem;flex:1;">
-            <div>
-              <p style="font-size:1rem;font-weight:900;color:#f0f6f7;margin-bottom:0.5rem;">The Run-and-Gun Videographer</p>
-              <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
-                <span class="kit-tag">Mirrorless Body</span>
-                <span class="kit-tag">Gimbal</span>
-                <span class="kit-tag">Wireless Lav</span>
-                <span class="kit-tag">ND Filters</span>
-              </div>
-            </div>
-            <p style="font-size:0.82rem;color:#556669;line-height:1.6;">
-              Event coverage, documentary, and fast-paced content. Lightweight. Lethal.
-            </p>
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.06);">
-              <div>
-                <span style="font-size:1.4rem;font-weight:900;color:#00dbe9;">₹189</span>
-                <span style="font-size:0.78rem;color:#556669;">/day</span>
-              </div>
-              <button class="kit-cart-btn">
-                <span class="material-symbols-outlined">add_shopping_cart</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Kit 2 -->
-      <div class="kit-scroll-item" style="width:360px;">
-        <div class="kit-card">
-          <div class="kit-img">
-            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMDdQEYaOl-QyCfvuMNJjpewqgogdR6583uvuOWjPc_Nc-CdFrXXf_e_tF8YF5CyDTidIeFsKEIqWNWOW3bsKcUEctDyyOJWC-QXf3HY10eIQUsPnwlZdfcY2O-wJtK-OnAHFuoBQWbjvjpW3Scc6GBQyey6UhGZf8j25NNtZ_BCOXonfwTX4FMjo0iRSgn1Bx9N-NV-jd0CP02kp72hnNgFDnIoHG_0PTqDjtqBaJ6fWtGhw5UcgJ" alt="Portrait Studio">
-            <div class="kit-img-overlay"></div>
-          </div>
-          <div style="padding:1.5rem;display:flex;flex-direction:column;gap:1rem;flex:1;">
-            <div>
-              <p style="font-size:1rem;font-weight:900;color:#f0f6f7;margin-bottom:0.5rem;">High-End Portrait Shooter</p>
-              <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
-                <span class="kit-tag">100MP Body</span>
-                <span class="kit-tag">Strobes</span>
-                <span class="kit-tag">Tether Kit</span>
-                <span class="kit-tag">Diffusers</span>
-              </div>
-            </div>
-            <p style="font-size:0.82rem;color:#556669;line-height:1.6;">
-              Ultimate resolution for commercial campaigns and editorial work. Studio ready.
-            </p>
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.06);">
-              <div>
-                <span style="font-size:1.4rem;font-weight:900;color:#00dbe9;">₹299</span>
-                <span style="font-size:0.78rem;color:#556669;">/day</span>
-              </div>
-              <button class="kit-cart-btn">
-                <span class="material-symbols-outlined">add_shopping_cart</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Kit 3 -->
-      <div class="kit-scroll-item" style="width:360px;">
-        <div class="kit-card">
-          <div class="kit-img">
-            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBp2wcikCAZoEeGt9VaaiBt_CKnJXtvtYIw4zcwBr73Lw1YqJAnx0HiKnXZfTnjXVafHRRmBIxcX808qNrfA1npTWcVlwP7yw87aNIgPTatnkoDsHNYs5Lsi9mcsz-8DDuL4-RlOC2ErdEdD8mQo6GpBYi0jf3WnRST379JSMQ8hS7SVMBbgDA9g6deXX8ThML1O8oPGtumlxe0n3EtGrpsloAepCWtUl75vPAUQaRrtprCkH-d5v37" alt="Interview Setup">
-            <div class="kit-img-overlay"></div>
-          </div>
-          <div style="padding:1.5rem;display:flex;flex-direction:column;gap:1rem;flex:1;">
-            <div>
-              <p style="font-size:1rem;font-weight:900;color:#f0f6f7;margin-bottom:0.5rem;">Interview & Documentary</p>
-              <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
-                <span class="kit-tag">2-Camera Setup</span>
-                <span class="kit-tag">LED Panel</span>
-                <span class="kit-tag">Shotgun Mic</span>
-              </div>
-            </div>
-            <p style="font-size:0.82rem;color:#556669;line-height:1.6;">
-              Dual-camera interview rig with matched audio. Consistent, broadcast-ready output.
-            </p>
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.06);">
-              <div>
-                <span style="font-size:1.4rem;font-weight:900;color:#00dbe9;">₹345</span>
-                <span style="font-size:0.78rem;color:#556669;">/week</span>
-              </div>
-              <button class="kit-cart-btn">
-                <span class="material-symbols-outlined">add_shopping_cart</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Kit 4 -->
-      <div class="kit-scroll-item" style="width:360px;">
-        <div class="kit-card">
-          <div class="kit-img">
-            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCukEt_8wcNOCMAgejxr8TIevfstxdzUGLBjntnF5RzRbO3zPV7jsg4sUTPREynvpDFg4N8iNZZNj0hsaB_HtqJpNYYv995iOKq4vhpZ-M6xwbsrFG3Jhb3xHINy9nBcAys5nUkJDgrPYl7dIQzmuHMMK27Em3JS0LccO2Mk2AF5Ig2Q1vsivWLXp0hq37wJzPgSpGW-WZ2YYOGialPcDde5NqsfnF2Gmgz8O6Gkcb7y3maOfTOo-Mn" alt="Aerial Drone Package">
-            <div class="kit-img-overlay"></div>
-          </div>
-          <div style="padding:1.5rem;display:flex;flex-direction:column;gap:1rem;flex:1;">
-            <div>
-              <p style="font-size:1rem;font-weight:900;color:#f0f6f7;margin-bottom:0.5rem;">Aerial Drone Package</p>
-              <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
-                <span class="kit-tag">DJI Inspire 3</span>
-                <span class="kit-tag">Spare Batteries</span>
-                <span class="kit-tag">ND Set</span>
-              </div>
-            </div>
-            <p style="font-size:0.82rem;color:#556669;line-height:1.6;">
-              Cinema-quality aerial with full 8K RAW capture. FAA-compliant flight case included.
-            </p>
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.06);">
-              <div>
-                <span style="font-size:1.4rem;font-weight:900;color:#00dbe9;">₹420</span>
-                <span style="font-size:0.78rem;color:#556669;">/day</span>
-              </div>
-              <button class="kit-cart-btn">
-                <span class="material-symbols-outlined">add_shopping_cart</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
 
 
 <!-- ══════════════════════════════════════════════════════════════
      HOW IT WORKS
 ══════════════════════════════════════════════════════════════ -->
-<section id="how-it-works" class="py-8 px-5 md:px-20">
+<section id="how-it-works" class="py-4 px-5 md:px-20">
   <div class="max-w-7xl mx-auto">
-    <div class="text-center mb-14 reveal">
+    <div class="text-center mb-6 reveal">
       <div class="section-eyebrow" style="justify-content:center;">Process</div>
       <h2 style="font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;color:#f0f6f7;letter-spacing:-0.03em;line-height:1.1;margin-top:0.5rem;">
         Three steps to on-set.
@@ -1458,14 +1294,14 @@
 <!-- ══════════════════════════════════════════════════════════════
      TRUST & PROTECTION
 ══════════════════════════════════════════════════════════════ -->
-<section class="trust-section py-8 px-5 md:px-20">
+<section class="trust-section py-4 px-5 md:px-20">
   <div class="max-w-7xl mx-auto">
     <div class="trust-card reveal">
       <!-- Background glows -->
       <div style="position:absolute;bottom:-80px;right:-80px;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(0,219,233,0.08),transparent 70%);pointer-events:none;"></div>
       <div style="position:absolute;top:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(182,0,248,0.07),transparent 70%);pointer-events:none;"></div>
 
-      <div class="relative z-10 p-8 md:p-14">
+      <div class="relative z-10 p-6 md:p-10">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
 
           <!-- Copy -->
@@ -1530,7 +1366,7 @@
 <!-- ══════════════════════════════════════════════════════════════
      CTA STRIP
 ══════════════════════════════════════════════════════════════ -->
-<section class="pt-6 pb-12 px-5 md:px-20">
+<section class="py-4 px-5 md:px-20">
   <div class="max-w-7xl mx-auto">
     <div class="cta-strip reveal">
       <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#00dbe9;margin-bottom:1rem;position:relative;z-index:1;">Start Renting Today</p>
@@ -1559,12 +1395,12 @@
 <script>
 /* ── Carousel ──────────────────────────────────────────────────────── */
 const carousel = document.getElementById('kitCarousel');
-document.getElementById('nextBtn').addEventListener('click', () => {
-  carousel.scrollBy({ left: 380, behavior: 'smooth' });
-});
-document.getElementById('prevBtn').addEventListener('click', () => {
-  carousel.scrollBy({ left: -380, behavior: 'smooth' });
-});
+if (carousel) {
+  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  if (nextBtn) nextBtn.addEventListener('click', () => carousel.scrollBy({ left: 380, behavior: 'smooth' }));
+  if (prevBtn) prevBtn.addEventListener('click', () => carousel.scrollBy({ left: -380, behavior: 'smooth' }));
+}
 
 /* ── Scroll reveal ─────────────────────────────────────────────────── */
 const revealObs = new IntersectionObserver(entries =>
