@@ -11,6 +11,7 @@
 <title>Book a Service | CamCrew Studio</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="/static/js/tailwind-config.js"></script>
+<script src="/static/js/india-locations.js"></script>
 <link rel="stylesheet" href="/static/css/styles.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
@@ -496,14 +497,14 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); cur
            STEP 2 — Date & Time
       ════════════════════ -->
       <div class="step-panel" id="step-1">
-        <h2 class="section-title">Date &amp; Time</h2>
-        <p class="section-sub">When should the professional show up?</p>
+        <h2 class="section-title">Date &amp; Time (Indian Standard Time - IST)</h2>
+        <p class="section-sub">When should the professional show up? (All timings in IST / UTC+5:30)</p>
 
         <!-- Date input -->
         <div class="mb-7">
           <label class="cc-label">
             <span class="material-symbols-outlined text-sm text-primary-container/60">calendar_month</span>
-            Date <span class="text-red-400 normal-case font-normal ml-0.5">*</span>
+            Booking Date (IST) <span class="text-red-400 normal-case font-normal ml-0.5">*</span>
           </label>
           <input type="date" id="input-date" class="cc-input"/>
         </div>
@@ -512,7 +513,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); cur
         <div class="mb-7">
           <label class="cc-label">
             <span class="material-symbols-outlined text-sm text-primary-container/60">schedule</span>
-            Start Time <span class="text-red-400 normal-case font-normal ml-0.5">*</span>
+            Start Time (IST) <span class="text-red-400 normal-case font-normal ml-0.5">*</span>
           </label>
           <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2" id="time-slots"></div>
         </div>
@@ -521,7 +522,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); cur
         <div class="mb-7">
           <label class="cc-label">
             <span class="material-symbols-outlined text-sm text-primary-container/60">schedule_send</span>
-            End Time <span class="text-on-surface-variant/40 normal-case font-normal text-xs ml-0.5">(optional)</span>
+            End Time (IST) <span class="text-on-surface-variant/40 normal-case font-normal text-xs ml-0.5">(optional)</span>
           </label>
           <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2" id="end-time-slots"></div>
         </div>
@@ -561,11 +562,20 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); cur
         <p class="section-sub">Where is this taking place?</p>
 
         <div class="mb-5">
-          <label class="cc-label">
+          <label class="cc-label mb-2">
             <span class="material-symbols-outlined text-sm text-primary-container/60">location_on</span>
-            Venue / Location <span class="text-red-400 normal-case font-normal ml-0.5">*</span>
+            State, District &amp; City (India) <span class="text-red-400 normal-case font-normal ml-0.5">*</span>
           </label>
-          <input type="text" id="input-venue" placeholder="e.g. Banquet Hall, Grand Hyatt, Mumbai" class="cc-input"/>
+          <div id="book-location-cascader" class="p-4 bg-surface-container-lowest/50 border border-glass-stroke rounded-2xl mb-3"></div>
+        </div>
+
+        <div class="mb-5">
+          <label class="cc-label">
+            <span class="material-symbols-outlined text-sm text-primary-container/60">domain</span>
+            Street Address / Building / Hall Name <span class="text-red-400 normal-case font-normal ml-0.5">*</span>
+          </label>
+          <input type="text" id="input-venue-street" placeholder="e.g. Grand Hyatt Banquet Hall, Off Western Express Highway" class="cc-input"/>
+          <input type="hidden" id="input-venue"/>
         </div>
 
         <div class="mb-5">
@@ -1137,10 +1147,39 @@ function updateSidebar() {
   document.getElementById('sb-total').textContent = total ? `₹${total.toLocaleString()}` : '—';
 }
 
+function syncBookVenue() {
+  const street = document.getElementById('input-venue-street')?.value.trim() || '';
+  const state  = document.getElementById('book-loc-state')?.value || '';
+  const dist   = document.getElementById('book-loc-district')?.value || '';
+  const city   = document.getElementById('book-loc-city')?.value || '';
+  
+  let fullLoc = '';
+  if (street) fullLoc += street;
+  if (city)   fullLoc += (fullLoc ? ', ' : '') + city;
+  if (state)  fullLoc += (fullLoc ? ', ' : '') + state;
+
+  const hiddenInp = document.getElementById('input-venue');
+  if (hiddenInp) hiddenInp.value = fullLoc;
+  updateSidebar();
+}
+
 // Live update on date/venue input
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('input-date')?.addEventListener('input', updateSidebar);
-  document.getElementById('input-venue')?.addEventListener('input', updateSidebar);
+  document.getElementById('input-venue-street')?.addEventListener('input', syncBookVenue);
+
+  if (typeof createCascadingLocationSelector === 'function') {
+    const container = document.getElementById('book-location-cascader');
+    if (container) {
+      const selector = createCascadingLocationSelector({
+        idPrefix: 'book-loc',
+        showAddButton: false,
+        selectClass: 'cc-input w-full bg-surface-container-lowest border border-glass-stroke rounded-xl px-3 py-2.5 text-on-surface text-sm focus:outline-none focus:border-primary'
+      });
+      container.appendChild(selector);
+      container.addEventListener('change', syncBookVenue);
+    }
+  }
 });
 
 /* ══════════════════════════════════════════════════════════
@@ -1196,11 +1235,36 @@ function validateStep(step) {
     return ok;
   }
   if (step === 2) {
-    const venue = document.getElementById('input-venue').value.trim();
+    syncBookVenue();
+    const state  = document.getElementById('book-loc-state')?.value || '';
+    const dist   = document.getElementById('book-loc-district')?.value || '';
+    const city   = document.getElementById('book-loc-city')?.value || '';
+    const street = document.getElementById('input-venue-street')?.value.trim() || '';
+
     const el = document.getElementById('venue-error');
-    el.classList.toggle('hidden', !!venue);
-    el.style.display = venue ? 'none' : 'flex';
-    return !!venue;
+    if (!state || !dist || !city) {
+      if (el) {
+        el.textContent = 'Please select Indian State, District, and City for the venue location.';
+        el.classList.remove('hidden');
+        el.style.display = 'flex';
+      }
+      return false;
+    }
+    if (!street) {
+      if (el) {
+        el.textContent = 'Please enter street address or building name for the venue.';
+        el.classList.remove('hidden');
+        el.style.display = 'flex';
+      }
+      return false;
+    }
+
+    const ok = !!(state && dist && city && street);
+    if (el) {
+      el.classList.toggle('hidden', ok);
+      el.style.display = ok ? 'none' : 'flex';
+    }
+    return ok;
   }
   return true;
 }
