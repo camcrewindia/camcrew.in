@@ -2956,6 +2956,15 @@ def create_booking():
         )
         booking_id = cur.fetchone()["id"]
 
+        transaction_ref = (data.get("transaction_ref") or "").strip() or None
+        payment_method  = (data.get("payment_method")  or "upi_razorpay").strip()
+
+        if amount and float(amount) > 0:
+            conn.execute("""
+                INSERT INTO escrow_payments (booking_id, client_id, professional_id, amount, payment_method, escrow_status, transaction_ref)
+                VALUES (%s, %s, %s, %s, %s, 'held', %s)
+            """, (booking_id, uid, professional_id, float(amount), payment_method, transaction_ref or f"ESCROW-TXN-{secrets.token_hex(4).upper()}"))
+
         # Cross-post to professional_requests so it appears on the pro's dashboard
         if professional_id:
             conn.execute(
@@ -2966,7 +2975,7 @@ def create_booking():
             )
             create_notification(professional_id, "New Booking Request", f"{client_name} requested a booking for {service} on {booking_date}.", ntype="booking", link="professional-dashboard.html", conn=conn)
 
-        create_notification(uid, "Booking Submitted", f"Your booking request for {service} has been submitted.", ntype="booking", link="orders.html", conn=conn)
+        create_notification(uid, "Booking Submitted", f"Your booking request for {service} has been submitted with Escrow Protection.", ntype="booking", link="orders.html", conn=conn)
 
     return jsonify({"ok": True, "booking_id": booking_id, "status": "pending"})
 
@@ -3674,9 +3683,18 @@ def place_rental_order():
              customer_name, customer_email, from_date, to_date, days, total_cost, notes)
         ).fetchone()
 
+        transaction_ref = (data.get("transaction_ref") or "").strip() or None
+        payment_method  = (data.get("payment_method")  or "upi_razorpay").strip()
+
+        if customer_id and total_cost > 0:
+            conn.execute("""
+                INSERT INTO escrow_payments (client_id, professional_id, amount, payment_method, escrow_status, transaction_ref)
+                VALUES (%s, %s, %s, %s, 'held', %s)
+            """, (customer_id, equip["professional_id"], total_cost, payment_method, transaction_ref or f"ESCROW-RENTAL-{secrets.token_hex(4).upper()}"))
+
         create_notification(equip["professional_id"], "New Rental Request", f"{customer_name} requested to rent '{equip['name']}' ({from_date} to {to_date}).", ntype="rental", link="professional-dashboard.html", conn=conn)
         if customer_id:
-            create_notification(customer_id, "Rental Request Submitted", f"Your rental request for '{equip['name']}' has been submitted.", ntype="rental", link="orders.html", conn=conn)
+            create_notification(customer_id, "Rental Request Submitted", f"Your rental request for '{equip['name']}' has been submitted with Escrow Protection.", ntype="rental", link="orders.html", conn=conn)
     return jsonify({"ok": True, "order": dict(row)}), 201
 
 

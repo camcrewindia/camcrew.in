@@ -1584,44 +1584,61 @@ async function submitReservation(e) {
     return;
   }
 
-  btn.textContent = 'Processing…';
-  errEl.style.display = 'none';
+  const price = parseFloat(document.getElementById('reserve-price-per-day').value) || 0;
+  const diffTime = Math.abs(new Date(to) - new Date(from));
+  const days  = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+  const totalAmount = (days * price) + (fulType === 'delivery' ? 250 : 0);
 
-  try {
-    const payload = {
-      equipment_id: equipId,
-      customer_name: name,
-      customer_email: email,
-      from_date: from,
-      to_date: to,
-      notes: notes,
-      fulfillment_type: fulType,
-      pickup_hub: fulType === 'pickup' ? pickupHub : null,
-      security_deposit_status: 'authorized_hold'
-    };
+  // Launch Escrow Payment Gateway Modal
+  window.openCamCrewPaymentGateway({
+    amount: totalAmount,
+    title: 'Rental Escrow Checkout & Deposit Hold',
+    subtitle: `Fulfillment: ${fulType === 'pickup' ? pickupHub : 'Express Doorstep Delivery'}`,
+    onSuccess: async (paymentResult) => {
+      btn.textContent = 'Processing…';
+      errEl.style.display = 'none';
 
-    const res  = await fetch('/api/rental-orders', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    const data = await res.json();
-    if (!data.ok) throw new Error(data.error || 'Something went wrong.');
-    closeReserveModal();
+      try {
+        const payload = {
+          equipment_id: equipId,
+          customer_name: name,
+          customer_email: email,
+          from_date: from,
+          to_date: to,
+          notes: notes,
+          fulfillment_type: fulType,
+          pickup_hub: fulType === 'pickup' ? pickupHub : null,
+          security_deposit_status: 'authorized_hold',
+          transaction_ref: paymentResult.transaction_ref,
+          escrow_id: paymentResult.escrow_id,
+          payment_method: paymentResult.payment_method
+        };
 
-    const banner = document.createElement('div');
-    banner.style.cssText = 'position:fixed;top:1.5rem;left:50%;transform:translateX(-50%);background:#0e0e10;border:1px solid rgba(0,219,233,0.3);border-radius:999px;padding:0.75rem 1.8rem;color:#00dbe9;font-size:0.88rem;font-weight:700;z-index:300;box-shadow:0 8px 24px rgba(0,0,0,0.5);';
-    banner.textContent = '✓ Booking confirmed! Security Deposit hold authorized & fulfillment details sent to email.';
-    document.body.appendChild(banner);
-    setTimeout(() => banner.remove(), 5000);
-  } catch (err) {
-    errEl.textContent = err.message;
-    errEl.style.display = 'block';
-    btn.textContent = 'Send Request';
-  }
+        const res  = await fetch('/api/rental-orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || 'Something went wrong.');
+        closeReserveModal();
+
+        const banner = document.createElement('div');
+        banner.style.cssText = 'position:fixed;top:1.5rem;left:50%;transform:translateX(-50%);background:#0e0e10;border:1px solid rgba(0,219,233,0.3);border-radius:999px;padding:0.75rem 1.8rem;color:#00dbe9;font-size:0.88rem;font-weight:700;z-index:300;box-shadow:0 8px 24px rgba(0,0,0,0.5);';
+        banner.textContent = `✓ Payment Authorized (${paymentResult.transaction_ref})! Rental locked & receipt sent to email.`;
+        document.body.appendChild(banner);
+        setTimeout(() => banner.remove(), 5000);
+      } catch (err) {
+        errEl.textContent = err.message;
+        errEl.style.display = 'block';
+        btn.textContent = 'Send Request';
+      }
+    }
+  });
 }
 </script>
 
+<script src="/static/js/payment-gateway.js"></script>
 <script src="/static/js/header-loader.js"></script>
 <script src="/static/js/footer-loader.js"></script>
 </body>
