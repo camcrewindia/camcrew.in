@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html class="dark" lang="en">
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -14,99 +14,34 @@
 <script src="/static/js/tailwind-config.js"></script>
 <link rel="stylesheet" href="/static/css/styles.css">
 <style>
-  /* ── Light Theme Base ── */
-  html.light, body {
-    background-color: #f8fafc !important;
-    color: #0f172a !important;
-  }
+  /* ── Ambient animations ──────────────────────────────── */
+  @keyframes float-slow  { 0%,100%{transform:translateY(0)}   50%{transform:translateY(-24px)} }
+  @keyframes float-mid   { 0%,100%{transform:translateY(0)}   50%{transform:translateY(-16px)} }
+  @keyframes pulse-glow  { 0%,100%{opacity:.3} 50%{opacity:.6} }
+  @keyframes scan-line   { 0%{transform:translateY(-100%)} 100%{transform:translateY(100vh)} }
+  @keyframes spin-slow   { to{transform:rotate(360deg)} }
+  @keyframes ticker-ltr  { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
 
-  /* ── Header: Solid Grey Background with White Text & White Logo ── */
-  #site-header, #site-header header, #site-header nav, nav {
-    background-color: #334155 !important;
-    background: #334155 !important;
-    color: #ffffff !important;
-    border-bottom: 1px solid #475569 !important;
+  .orb-1 { animation: float-slow 9s ease-in-out infinite, pulse-glow 5s ease-in-out infinite; }
+  .orb-2 { animation: float-mid  7s ease-in-out infinite 1.5s, pulse-glow 7s ease-in-out infinite 2s; }
+  .orb-3 { animation: float-slow 11s ease-in-out infinite 3s, pulse-glow 6s ease-in-out infinite 1s; }
+  .scan-line {
+    position:absolute; inset-x:0; height:2px;
+    background: linear-gradient(90deg, transparent, rgba(0,240,255,.15), transparent);
+    animation: scan-line 9s linear infinite;
+    pointer-events:none;
   }
-  #site-header a, #site-header button, #site-header span:not(.no-white-override), nav a, nav button {
-    color: #ffffff !important;
-  }
-  #site-header a:hover, nav a:hover {
-    color: #cbd5e1 !important;
-  }
-  #site-header img {
-    content: url('/static/img/camcrew_studio_logo_cop_y.png') !important;
-    filter: none !important;
-  }
+  .ring-spin { animation: spin-slow 20s linear infinite; }
 
-  /* ── Hero grid ── */
+  /* ── Hero grid ──────────────────────────────────────── */
   .hero-grid {
     background-image:
-      linear-gradient(#e2e8f0 1px, transparent 1px),
-      linear-gradient(90deg, #e2e8f0 1px, transparent 1px) !important;
-    background-size: 52px 52px !important;
-    background-color: #f8fafc !important;
+      linear-gradient(rgba(0,240,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,240,255,0.04) 1px, transparent 1px);
+    background-size: 52px 52px;
   }
 
-  /* ── Solid Light Cards ── */
-  .glass-panel, .value-card {
-    background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06) !important;
-    backdrop-filter: none !important;
-  }
-
-  /* ── Solid Metric & Heading Styles (NO NEON GLOWS) ── */
-  .metric-num {
-    background: none !important;
-    -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: initial !important;
-    color: #0284c7 !important;
-    font-weight: 900 !important;
-  }
-
-  .solid-title {
-    color: #0f172a !important;
-    font-weight: 900 !important;
-  }
-  .solid-subtitle {
-    color: #0284c7 !important;
-    font-weight: 800 !important;
-  }
-
-  /* ── Solid Buttons ── */
-  .btn-solid-dark {
-    background-color: #0f172a !important;
-    color: #ffffff !important;
-    border: 1px solid #1e293b !important;
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15) !important;
-  }
-  .btn-solid-dark:hover {
-    background-color: #1e293b !important;
-  }
-
-  /* ── Timeline ── */
-  .timeline-line {
-    position:absolute; left:50%; top:0; bottom:0; width:2px;
-    background: #cbd5e1 !important;
-    transform:translateX(-50%);
-  }
-  .timeline-dot {
-    width:14px; height:14px; border-radius:50%;
-    background:#0284c7 !important;
-    box-shadow: 0 0 0 4px #e0f2fe !important;
-    flex-shrink:0;
-  }
-
-  /* ── Ticker Tape ── */
-  #ticker-bar {
-    background: #e2e8f0 !important;
-    border-color: #cbd5e1 !important;
-  }
-  .ticker-inner { display:flex; width:max-content; animation: ticker-ltr 30s linear infinite; }
-  .ticker-inner:hover { animation-play-state:paused; }
-  @keyframes ticker-ltr { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-
-  /* ── Reveal ── */
+  /* ── Reveal ─────────────────────────────────────────── */
   .reveal { opacity:0; transform:translateY(36px); transition: opacity .8s cubic-bezier(.5,0,0,1), transform .8s cubic-bezier(.5,0,0,1); }
   .reveal.active { opacity:1; transform:none; }
   .reveal-left  { opacity:0; transform:translateX(-40px); transition: opacity .8s cubic-bezier(.5,0,0,1), transform .8s cubic-bezier(.5,0,0,1); }
@@ -114,51 +49,107 @@
   .reveal-right { opacity:0; transform:translateX(40px);  transition: opacity .8s cubic-bezier(.5,0,0,1), transform .8s cubic-bezier(.5,0,0,1); }
   .reveal-right.active { opacity:1; transform:none; }
 
-  /* ── Image hover zoom ── */
+  /* ── Timeline ───────────────────────────────────────── */
+  .timeline-line {
+    position:absolute; left:50%; top:0; bottom:0; width:1px;
+    background: linear-gradient(to bottom, transparent, rgba(0,240,255,.3) 20%, rgba(0,240,255,.3) 80%, transparent);
+    transform:translateX(-50%);
+  }
+  .timeline-dot {
+    width:14px; height:14px; border-radius:50%;
+    background:#00f0ff;
+    box-shadow: 0 0 0 4px rgba(0,240,255,.15), 0 0 20px rgba(0,240,255,.4);
+    flex-shrink:0;
+  }
+
+  /* ── Value card shimmer ─────────────────────────────── */
+  .value-card { position:relative; overflow:hidden; }
+  .value-card::before {
+    content:'';
+    position:absolute; inset:0;
+    background: linear-gradient(135deg, transparent 40%, rgba(0,240,255,.05) 50%, transparent 60%);
+    transform:translateX(-100%); transition:transform .6s;
+    z-index:1; pointer-events:none;
+  }
+  .value-card:hover::before { transform:translateX(100%); }
+
+  /* ── Founder card ───────────────────────────────────── */
+  .founder-ring {
+    position:absolute; inset:-12px; border-radius:9999px;
+    border:1px solid rgba(0,240,255,.18);
+    pointer-events:none;
+  }
+  .founder-ring-2 {
+    position:absolute; inset:-24px; border-radius:9999px;
+    border:1px dashed rgba(0,240,255,.08);
+    pointer-events:none;
+  }
+
+  /* ── Ticker ─────────────────────────────────────────── */
+  .ticker-inner { display:flex; width:max-content; animation: ticker-ltr 30s linear infinite; }
+  .ticker-inner:hover { animation-play-state:paused; }
+
+  /* ── Metric number ──────────────────────────────────── */
+  .metric-num {
+    background: linear-gradient(to right, #dbfcff, #00f0ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* ── Image hover zoom ───────────────────────────────── */
   .img-zoom { transition: transform .7s cubic-bezier(.4,0,.2,1); }
-  .img-zoom:hover { transform:scale(1.04); }
+  .img-zoom:hover { transform:scale(1.06); }
 </style>
 </head>
-<body class="bg-slate-50 text-slate-900 overflow-x-hidden">
+<body class="selection:bg-primary-container selection:text-on-primary overflow-x-hidden">
 
 <!-- Top Navigation -->
 <div id="site-header"></div>
 
-<main class="relative bg-slate-50">
+<main class="relative">
 
   <!-- ═══════════════════════════════════════════
        HERO
   ═══════════════════════════════════════════ -->
-  <section class="relative min-h-[85vh] flex items-center overflow-hidden hero-grid pt-32 md:pt-44 pb-20 border-b border-slate-200">
+  <section class="relative min-h-[90vh] flex items-center overflow-hidden hero-grid pt-32 md:pt-52 pb-20">
+    <!-- Orbs -->
+    <div class="orb-1 absolute top-[-8%]  right-[2%]  w-[520px] h-[520px] rounded-full bg-primary-container/10  blur-[130px] pointer-events-none"></div>
+    <div class="orb-2 absolute bottom-[0%] left-[-4%] w-[420px] h-[420px] rounded-full bg-secondary-container/10 blur-[110px] pointer-events-none"></div>
+    <div class="orb-3 absolute top-[50%]  left-[40%] w-[320px] h-[320px] rounded-full bg-primary-container/5   blur-[90px]  pointer-events-none"></div>
+    <!-- Scan line -->
+    <div class="scan-line"></div>
+
     <div class="relative z-10 w-full px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
         <!-- Copy -->
         <div>
-          <div class="inline-flex items-center gap-2 bg-slate-200 border border-slate-300 rounded-full px-4 py-2 mb-6 reveal">
-            <span class="w-2 h-2 rounded-full bg-sky-600"></span>
-            <span class="font-bold text-xs text-sky-800 tracking-widest uppercase">Our Purpose</span>
+          <div class="inline-flex items-center gap-2 bg-surface-container-high border border-glass-stroke rounded-full px-4 py-2 mb-8 reveal">
+            <span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+            <span class="font-label-caps text-label-caps text-primary-container tracking-widest uppercase">Our Purpose</span>
           </div>
-          <h1 class="font-display-lg text-[clamp(40px,6vw,76px)] font-black text-slate-900 leading-[.98] mb-6 reveal" style="letter-spacing:-0.03em">
+          <h1 class="font-display-lg text-[clamp(40px,6vw,80px)] font-black text-on-surface leading-[.95] mb-6 reveal" style="letter-spacing:-0.03em">
             Built for Creators,<br>
-            <span class="text-sky-700">by Creators.</span>
+            <span class="gradient-text">by Creators.</span>
           </h1>
-          <p class="text-lg text-slate-600 leading-relaxed max-w-lg mb-10 reveal font-medium">
+          <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed max-w-lg mb-10 reveal">
             We understand tight deadlines, the necessity of a flawless focal plane, and the frustration of a broken workflow. Our mission is to remove friction from your creative process by providing access to the best tools in the industry.
           </p>
           <!-- Inline stats -->
           <div class="flex flex-wrap gap-8 reveal">
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm min-w-[120px] text-center">
-              <div class="metric-num text-4xl font-black text-sky-700">5+</div>
-              <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Years Active</div>
+            <div>
+              <div class="metric-num text-4xl font-black">5+</div>
+              <div class="font-label-caps text-label-caps text-on-surface-variant mt-1">Years active</div>
             </div>
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm min-w-[120px] text-center">
-              <div class="metric-num text-4xl font-black text-sky-700">2K+</div>
-              <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Creators Served</div>
+            <div class="w-px bg-glass-stroke self-stretch"></div>
+            <div>
+              <div class="metric-num text-4xl font-black">2K+</div>
+              <div class="font-label-caps text-label-caps text-on-surface-variant mt-1">Creators served</div>
             </div>
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm min-w-[120px] text-center">
-              <div class="metric-num text-4xl font-black text-sky-700">500+</div>
-              <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Gear Items</div>
+            <div class="w-px bg-glass-stroke self-stretch"></div>
+            <div>
+              <div class="metric-num text-4xl font-black">500+</div>
+              <div class="font-label-caps text-label-caps text-on-surface-variant mt-1">Gear items</div>
             </div>
           </div>
         </div>
@@ -166,23 +157,26 @@
         <!-- Founder card -->
         <div class="flex justify-center lg:justify-end reveal-right">
           <div class="relative">
-            <!-- Solid Card -->
-            <div class="relative w-[340px] h-[430px] rounded-3xl overflow-hidden bg-white border border-slate-300 shadow-xl group">
+            <!-- Decorative rings -->
+            <div class="founder-ring ring-spin"></div>
+            <div class="founder-ring-2"></div>
+            <!-- Card -->
+            <div class="relative w-[340px] h-[420px] rounded-3xl overflow-hidden glass-panel border border-glass-stroke shadow-[0_0_60px_rgba(0,240,255,0.12)] group">
               <img
                 class="img-zoom w-full h-full object-cover"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBM_Da2TTGhHDSYUo7XU7rbOUDatk3tS7wwAsyFQGEFAXagVhmOb5DiiXGFS5Klgpop86T7CT4OHvB9ywUlArzhvZsgWp8zs6t-jJiNowznSZczS6E_elZoPDW9o_Y1EcDEhQRHnACHO3R2D4se0f4Sa71wh9z619Z8G7W0ydZRMNJ8beQrgeoQPkGY7HMktofx8zrlu1dDyfykGXKSaeg5nOCUd6tpjmmJSqgSve7-7u5Ib87Z6FExw2oMKmvGn-ralWtHfEFpN5MiMQ"
                 alt="Mohammad Thaha Hussain — Founder, Camcrew India"
               >
-              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent"></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-obsidian-base/80 via-obsidian-base/10 to-transparent"></div>
               <!-- Tag -->
-              <div class="absolute top-5 right-5 bg-slate-900/90 text-white border border-slate-700 rounded-full px-3.5 py-1 flex items-center gap-1.5 shadow-md">
-                <span class="w-2 h-2 rounded-full bg-sky-400"></span>
-                <span class="font-bold text-[10px] tracking-widest uppercase text-sky-300">Founder</span>
+              <div class="absolute top-5 right-5 bg-surface-container/80 backdrop-blur-md border border-glass-stroke rounded-full px-3 py-1 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                <span class="font-label-caps text-[10px] text-primary-container tracking-widest uppercase">Founder</span>
               </div>
               <!-- Name overlay -->
-              <div class="absolute bottom-0 inset-x-0 p-7 text-white">
-                <p class="font-black text-2xl leading-tight text-white">Mohammad Thaha Hussain</p>
-                <p class="text-sky-300 font-bold text-xs tracking-widest uppercase mt-1">Camcrew India</p>
+              <div class="absolute bottom-0 inset-x-0 p-7">
+                <p class="font-black text-2xl text-on-surface leading-tight">Mohammad Thaha Hussain</p>
+                <p class="text-primary-container font-label-caps text-label-caps tracking-widest mt-1">Camcrew India</p>
               </div>
             </div>
           </div>
@@ -195,8 +189,8 @@
   <!-- ═══════════════════════════════════════════
        METRICS TICKER
   ═══════════════════════════════════════════ -->
-  <div class="py-3.5 border-y border-slate-300 overflow-hidden bg-slate-200" id="ticker-bar">
-    <div class="ticker-inner text-slate-800 font-bold text-xs uppercase tracking-wider" id="ticker-wrap">
+  <div class="py-3 border-y border-glass-stroke overflow-hidden bg-surface-container-low">
+    <div class="ticker-inner" id="ticker-wrap">
       <span id="ticker-src"></span>
       <span id="ticker-clone"></span>
     </div>
@@ -205,13 +199,15 @@
   <!-- ═══════════════════════════════════════════
        OUR STORY — TIMELINE
   ═══════════════════════════════════════════ -->
-  <section class="px-margin-mobile md:px-margin-desktop py-24 relative bg-slate-50">
+  <section class="px-margin-mobile md:px-margin-desktop py-stack-xl relative">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-glass-stroke to-transparent"></div>
+
     <!-- Section header -->
     <div class="text-center mb-20 reveal">
-      <p class="font-bold text-xs text-sky-700 uppercase tracking-widest mb-2">The Origin</p>
-      <h2 class="font-display-lg text-[clamp(32px,4vw,52px)] font-black text-slate-900" style="letter-spacing:-0.02em">
+      <p class="font-label-caps text-label-caps text-primary-container uppercase tracking-widest mb-3">The Origin</p>
+      <h2 class="font-display-lg text-[clamp(32px,4vw,56px)] font-black text-on-surface" style="letter-spacing:-0.02em">
         From the Studio<br>
-        <span class="text-sky-700">to the Storefront.</span>
+        <span class="gradient-text">to the Storefront.</span>
       </h2>
     </div>
 
@@ -222,13 +218,13 @@
       <!-- Event 1 -->
       <div class="grid grid-cols-2 gap-16 mb-20 items-center">
         <div class="text-right reveal-left">
-          <span class="font-bold text-xs text-sky-700 tracking-widest uppercase">The Beginning</span>
-          <h3 class="text-2xl font-bold text-slate-900 mt-1 mb-3">Born in the Trenches</h3>
-          <p class="text-slate-600 leading-relaxed font-medium">This platform was born out of firsthand experience in the creative trenches — shooting, designing, and building single-handedly on tight schedules with limited resources.</p>
+          <span class="font-label-caps text-label-caps text-primary-container tracking-widest uppercase text-[10px]">The Beginning</span>
+          <h3 class="font-headline-md text-headline-md text-on-surface mt-1 mb-3">Born in the Trenches</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">This platform was born out of firsthand experience in the creative trenches — shooting, designing, and building single-handedly on tight schedules with limited resources.</p>
         </div>
         <div class="flex items-center">
           <div class="timeline-dot mr-8 -ml-[7px] relative z-10"></div>
-          <div class="rounded-2xl overflow-hidden aspect-video w-full bg-white border border-slate-300 shadow-md">
+          <div class="rounded-2xl overflow-hidden aspect-video w-full glass-panel border border-glass-stroke">
             <img class="img-zoom w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKhFg6IIb1zYnnofP5iR77rJLOnW9p55Ek0gfUS4JAfRW3C3OW_8h4gfmMOQ9b8hJtI30Jlvtj2l5w2EeF4CqmwIId8nbCNRd-uCJc9UOa_c5zCD_q6b-HgvtbMfjW8qxkl2atn20G7kvPTOqnKjqGY2yoa4VdgeCKtSDSshEjNeS092rQ1xkM0ZH2URysoYHbZQFF7fVaZkn0onjx31l7M71Fckv1hxxHvXSg-bD5rgMNRE2CKzzM" alt="Camera gear detail">
           </div>
         </div>
@@ -237,44 +233,44 @@
       <!-- Event 2 -->
       <div class="grid grid-cols-2 gap-16 mb-20 items-center">
         <div class="flex items-center justify-end">
-          <div class="rounded-2xl overflow-hidden aspect-video w-full bg-white border border-slate-300 shadow-md">
+          <div class="rounded-2xl overflow-hidden aspect-video w-full glass-panel border border-glass-stroke">
             <img class="img-zoom w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRg9sG7VqjYNC6H2jgBX2TPrUEJOktQKtmlR-BpahFcf_x078EH0poZI_8QOD3O6D6Bo2zYMC2Rllq2c6OOpgnTdbWmotTLhFwYCqcxwLVw9IHB4UguPeQNIV-LY38hj-8xu0tiTJLhMCf15T_5qJGj2tTvoaCGEnIreSizT1GA3Qz8AYBzRy1ptEcXTVdzeyjzotUyb8PN0dzq5DPaKb640w8bUTN3n_yISmSUEl9LscXXbzip43J" alt="Design workspace">
           </div>
           <div class="timeline-dot ml-8 -mr-[7px] relative z-10"></div>
         </div>
         <div class="reveal-right">
-          <span class="font-bold text-xs text-sky-700 tracking-widest uppercase">The Insight</span>
-          <h3 class="text-2xl font-bold text-slate-900 mt-1 mb-3">A Gap in the Market</h3>
-          <p class="text-slate-600 leading-relaxed font-medium">We realised the freelance community needed a unified hub where uncompromising quality met total flexibility — so we stopped waiting for someone else to build it.</p>
+          <span class="font-label-caps text-label-caps text-secondary tracking-widest uppercase text-[10px]">The Insight</span>
+          <h3 class="font-headline-md text-headline-md text-on-surface mt-1 mb-3">A Gap in the Market</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">We realised the freelance community needed a unified hub where uncompromising quality met total flexibility — so we stopped waiting for someone else to build it.</p>
         </div>
       </div>
 
       <!-- Event 3 -->
       <div class="grid grid-cols-2 gap-16 items-center">
         <div class="text-right reveal-left">
-          <span class="font-bold text-xs text-sky-700 tracking-widest uppercase">Today</span>
-          <h3 class="text-2xl font-bold text-slate-900 mt-1 mb-3">A Platform for the Pro</h3>
-          <p class="text-slate-600 leading-relaxed font-medium">Camcrew Studio is now a full-stack creative marketplace — gear sales, rentals, professional services, and a growing community of creators pushing the craft forward.</p>
+          <span class="font-label-caps text-label-caps text-primary-container tracking-widest uppercase text-[10px]">Today</span>
+          <h3 class="font-headline-md text-headline-md text-on-surface mt-1 mb-3">A Platform for the Pro</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">Camcrew Studio is now a full-stack creative marketplace — gear sales, rentals, professional services, and a growing community of creators pushing the craft forward.</p>
         </div>
         <div class="flex items-center">
-          <div class="timeline-dot mr-8 -ml-[7px] relative z-10"></div>
-          <div class="bg-white rounded-2xl p-6 w-full border border-slate-300 shadow-md">
+          <div class="timeline-dot mr-8 -ml-[7px] relative z-10" style="background:#b600f8; box-shadow: 0 0 0 4px rgba(182,0,248,.15), 0 0 20px rgba(182,0,248,.4);"></div>
+          <div class="glass-panel rounded-2xl p-6 w-full border border-glass-stroke">
             <div class="grid grid-cols-2 gap-4">
-              <div class="text-center p-4 bg-slate-100 rounded-xl border border-slate-200">
-                <div class="metric-num text-3xl font-black text-sky-700">10+</div>
-                <div class="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1">Cities</div>
+              <div class="text-center p-4 bg-surface-container-high rounded-xl">
+                <div class="metric-num text-3xl font-black">10+</div>
+                <div class="font-label-caps text-[10px] text-on-surface-variant mt-1 tracking-widest uppercase">Cities</div>
               </div>
-              <div class="text-center p-4 bg-slate-100 rounded-xl border border-slate-200">
-                <div class="metric-num text-3xl font-black text-sky-700">4.9★</div>
-                <div class="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1">Avg Rating</div>
+              <div class="text-center p-4 bg-surface-container-high rounded-xl">
+                <div class="metric-num text-3xl font-black">4.9★</div>
+                <div class="font-label-caps text-[10px] text-on-surface-variant mt-1 tracking-widest uppercase">Avg. rating</div>
               </div>
-              <div class="text-center p-4 bg-slate-100 rounded-xl border border-slate-200">
-                <div class="metric-num text-3xl font-black text-sky-700">2K+</div>
-                <div class="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1">Creators</div>
+              <div class="text-center p-4 bg-surface-container-high rounded-xl">
+                <div class="metric-num text-3xl font-black">2K+</div>
+                <div class="font-label-caps text-[10px] text-on-surface-variant mt-1 tracking-widest uppercase">Creators</div>
               </div>
-              <div class="text-center p-4 bg-slate-100 rounded-xl border border-slate-200">
-                <div class="metric-num text-3xl font-black text-sky-700">500+</div>
-                <div class="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1">SKUs</div>
+              <div class="text-center p-4 bg-surface-container-high rounded-xl">
+                <div class="metric-num text-3xl font-black">500+</div>
+                <div class="font-label-caps text-[10px] text-on-surface-variant mt-1 tracking-widest uppercase">SKUs</div>
               </div>
             </div>
           </div>
@@ -283,21 +279,21 @@
     </div>
 
     <!-- Mobile story (stacked) -->
-    <div class="md:hidden space-y-8 max-w-xl mx-auto">
-      <div class="bg-white rounded-2xl p-6 border border-slate-300 shadow-sm reveal">
-        <span class="font-bold text-xs text-sky-700 tracking-widest uppercase">The Beginning</span>
-        <h3 class="text-xl font-bold text-slate-900 mt-1 mb-2">Born in the Trenches</h3>
-        <p class="text-slate-600 text-sm">Born out of firsthand experience in the creative trenches — shooting, designing, and building single-handedly on tight schedules.</p>
+    <div class="md:hidden space-y-10 max-w-xl mx-auto">
+      <div class="glass-panel rounded-2xl p-6 border border-glass-stroke reveal">
+        <span class="font-label-caps text-label-caps text-primary-container tracking-widest uppercase text-[10px]">The Beginning</span>
+        <h3 class="font-headline-md text-headline-md text-on-surface mt-1 mb-2">Born in the Trenches</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant">Born out of firsthand experience in the creative trenches — shooting, designing, and building single-handedly on tight schedules.</p>
       </div>
-      <div class="bg-white rounded-2xl p-6 border border-slate-300 shadow-sm reveal">
-        <span class="font-bold text-xs text-sky-700 tracking-widest uppercase">The Insight</span>
-        <h3 class="text-xl font-bold text-slate-900 mt-1 mb-2">A Gap in the Market</h3>
-        <p class="text-slate-600 text-sm">The freelance community needed a unified hub where uncompromising quality met total flexibility.</p>
+      <div class="glass-panel rounded-2xl p-6 border border-glass-stroke reveal">
+        <span class="font-label-caps text-label-caps text-secondary tracking-widest uppercase text-[10px]">The Insight</span>
+        <h3 class="font-headline-md text-headline-md text-on-surface mt-1 mb-2">A Gap in the Market</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant">The freelance community needed a unified hub where uncompromising quality met total flexibility.</p>
       </div>
-      <div class="bg-white rounded-2xl p-6 border border-slate-300 shadow-sm reveal">
-        <span class="font-bold text-xs text-sky-700 tracking-widest uppercase">Today</span>
-        <h3 class="text-xl font-bold text-slate-900 mt-1 mb-2">A Platform for the Pro</h3>
-        <p class="text-slate-600 text-sm">A full-stack creative marketplace — gear, rentals, professional services, and a growing community of creators.</p>
+      <div class="glass-panel rounded-2xl p-6 border border-glass-stroke reveal">
+        <span class="font-label-caps text-label-caps text-primary-container tracking-widest uppercase text-[10px]">Today</span>
+        <h3 class="font-headline-md text-headline-md text-on-surface mt-1 mb-2">A Platform for the Pro</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant">A full-stack creative marketplace — gear, rentals, professional services, and a growing community of creators.</p>
       </div>
     </div>
   </section>
@@ -305,40 +301,62 @@
   <!-- ═══════════════════════════════════════════
        CORE VALUES
   ═══════════════════════════════════════════ -->
-  <section class="px-margin-mobile md:px-margin-desktop py-24 relative bg-slate-100 border-t border-slate-200">
-    <div class="text-center mb-16 reveal">
-      <p class="font-bold text-xs text-sky-700 uppercase tracking-widest mb-2">What Drives Us</p>
-      <h2 class="font-display-lg text-[clamp(32px,4vw,52px)] font-black text-slate-900" style="letter-spacing:-0.02em">Our Core Values</h2>
-      <div class="h-1 w-16 bg-sky-600 mx-auto mt-4 rounded-full"></div>
+  <section class="px-margin-mobile md:px-margin-desktop py-stack-xl relative">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-glass-stroke to-transparent"></div>
+
+    <!-- Ambient glow -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-primary-container/5 blur-[120px] rounded-full"></div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10 max-w-6xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <p class="font-label-caps text-label-caps text-primary-container uppercase tracking-widest mb-3">What drives us</p>
+      <h2 class="font-display-lg text-[clamp(32px,4vw,56px)] font-black text-on-surface" style="letter-spacing:-0.02em">Our Core Values</h2>
+      <div class="h-px w-20 bg-primary-container mx-auto mt-5 shadow-[0_0_12px_rgba(0,240,255,.6)]"></div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter relative z-10">
 
       <!-- Value 1 -->
-      <div class="bg-white p-8 rounded-2xl border border-slate-300 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 reveal">
-        <div class="w-14 h-14 mb-6 rounded-2xl bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-700">
-          <span class="material-symbols-outlined text-3xl" style="font-variation-settings:'FILL' 1">diamond</span>
+      <div class="value-card glass-panel p-8 rounded-2xl border border-glass-stroke group hover:border-primary-container/40 hover:-translate-y-2 transition-all duration-300 reveal" style="transition-delay:.05s">
+        <div class="relative w-16 h-16 mb-7">
+          <div class="absolute inset-0 rounded-2xl bg-primary-container/10 group-hover:bg-primary-container/20 transition-colors border border-primary-container/20 group-hover:border-primary-container/50"></div>
+          <div class="absolute inset-0 rounded-2xl bg-primary-container/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div class="relative flex items-center justify-center w-full h-full">
+            <span class="material-symbols-outlined text-primary-container text-3xl" style="font-variation-settings:'FILL' 1">diamond</span>
+          </div>
         </div>
-        <h3 class="text-xl font-bold text-slate-900 mb-3">Quality Over Everything</h3>
-        <p class="text-slate-600 leading-relaxed text-sm">We hand-pick every asset and piece of gear. If it doesn't meet our rigorous cinematic standards, it doesn't make the cut.</p>
+        <h3 class="font-headline-md text-headline-md text-on-surface mb-3 group-hover:text-primary transition-colors">Quality Over Everything</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">We hand-pick every asset and piece of gear. If it doesn't meet our rigorous cinematic standards, it doesn't make the cut.</p>
+        <div class="mt-6 h-px bg-gradient-to-r from-primary-container/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
       </div>
 
-      <!-- Value 2 -->
-      <div class="bg-white p-8 rounded-2xl border border-slate-300 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 reveal md:-translate-y-3">
-        <div class="w-14 h-14 mb-6 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700">
-          <span class="material-symbols-outlined text-3xl" style="font-variation-settings:'FILL' 1">groups</span>
+      <!-- Value 2 (elevated centre card) -->
+      <div class="value-card glass-panel p-8 rounded-2xl border border-secondary/30 group hover:border-secondary/60 hover:-translate-y-2 transition-all duration-300 reveal md:-translate-y-4 shadow-[0_0_40px_rgba(182,0,248,0.08)]" style="transition-delay:.1s">
+        <div class="relative w-16 h-16 mb-7">
+          <div class="absolute inset-0 rounded-2xl bg-secondary/10 group-hover:bg-secondary/20 transition-colors border border-secondary/20 group-hover:border-secondary/50"></div>
+          <div class="absolute inset-0 rounded-2xl bg-secondary/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div class="relative flex items-center justify-center w-full h-full">
+            <span class="material-symbols-outlined text-secondary text-3xl" style="font-variation-settings:'FILL' 1">groups</span>
+          </div>
         </div>
-        <h3 class="text-xl font-bold text-slate-900 mb-3">Community Driven</h3>
-        <p class="text-slate-600 leading-relaxed text-sm">We are built by creators for creators. Your feedback drives our roadmap and helps us build the tools you actually need.</p>
+        <h3 class="font-headline-md text-headline-md text-on-surface mb-3 group-hover:text-secondary transition-colors">Community Driven</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">We are built by creators for creators. Your feedback drives our roadmap and helps us build the tools you actually need.</p>
+        <div class="mt-6 h-px bg-gradient-to-r from-secondary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
       </div>
 
       <!-- Value 3 -->
-      <div class="bg-white p-8 rounded-2xl border border-slate-300 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 reveal">
-        <div class="w-14 h-14 mb-6 rounded-2xl bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-700">
-          <span class="material-symbols-outlined text-3xl" style="font-variation-settings:'FILL' 1">support_agent</span>
+      <div class="value-card glass-panel p-8 rounded-2xl border border-glass-stroke group hover:border-primary-container/40 hover:-translate-y-2 transition-all duration-300 reveal" style="transition-delay:.15s">
+        <div class="relative w-16 h-16 mb-7">
+          <div class="absolute inset-0 rounded-2xl bg-primary-container/10 group-hover:bg-primary-container/20 transition-colors border border-primary-container/20 group-hover:border-primary-container/50"></div>
+          <div class="absolute inset-0 rounded-2xl bg-primary-container/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div class="relative flex items-center justify-center w-full h-full">
+            <span class="material-symbols-outlined text-primary-container text-3xl" style="font-variation-settings:'FILL' 1">support_agent</span>
+          </div>
         </div>
-        <h3 class="text-xl font-bold text-slate-900 mb-3">Unrelenting Support</h3>
-        <p class="text-slate-600 leading-relaxed text-sm">Our mission doesn't end at checkout. We're here to troubleshoot, advise, and support your creative journey 24/7.</p>
+        <h3 class="font-headline-md text-headline-md text-on-surface mb-3 group-hover:text-primary transition-colors">Unrelenting Support</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">Our mission doesn't end at checkout. We're here to troubleshoot, advise, and support your creative journey 24/7.</p>
+        <div class="mt-6 h-px bg-gradient-to-r from-primary-container/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
       </div>
 
     </div>
@@ -347,68 +365,76 @@
   <!-- ═══════════════════════════════════════════
        WHAT WE OFFER — QUICK PILLARS
   ═══════════════════════════════════════════ -->
-  <section class="px-margin-mobile md:px-margin-desktop py-24 relative bg-slate-50 border-t border-slate-200">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
+  <section class="px-margin-mobile md:px-margin-desktop py-stack-xl relative">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-glass-stroke to-transparent"></div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
       <!-- Left text -->
       <div class="reveal-left">
-        <p class="font-bold text-xs text-sky-700 uppercase tracking-widest mb-2">What We Do</p>
-        <h2 class="font-display-lg text-[clamp(32px,4vw,48px)] font-black text-slate-900 mb-6" style="letter-spacing:-0.02em">
+        <p class="font-label-caps text-label-caps text-primary-container uppercase tracking-widest mb-3">What we do</p>
+        <h2 class="font-display-lg text-[clamp(32px,4vw,52px)] font-black text-on-surface mb-6" style="letter-spacing:-0.02em">
           One Platform.<br>
-          <span class="text-sky-700">Every Creative Need.</span>
+          <span class="gradient-text">Every Creative Need.</span>
         </h2>
-        <p class="text-slate-600 leading-relaxed mb-8 text-base">
+        <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed mb-8">
           From cinema cameras to cloud assets, Camcrew Studio is the single hub that covers every stage of the creative workflow — before, during, and after the shoot.
         </p>
-        <a href="/services.html" class="btn-solid-dark px-8 py-4 rounded-xl inline-flex items-center gap-2 font-bold text-sm hover:scale-105 transition-all">
+        <a href="/services.html" class="shimmer-btn bg-primary-container text-on-primary-fixed font-label-caps text-label-caps px-8 py-4 rounded-full inline-flex items-center gap-2 group hover:scale-105 transition-transform active:scale-95">
           Explore Services
-          <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
         </a>
       </div>
 
       <!-- Right pillars -->
       <div class="grid grid-cols-2 gap-4 reveal-right">
-        <div class="bg-white rounded-2xl p-6 border border-slate-300 shadow-sm hover:border-slate-400 transition-colors">
-          <span class="material-symbols-outlined text-sky-700 text-3xl mb-3 block" style="font-variation-settings:'FILL' 1">storefront</span>
-          <h4 class="font-bold text-slate-900 mb-1">Gear Sales</h4>
-          <p class="text-slate-600 text-xs leading-relaxed">500+ professional items, shipped insured worldwide.</p>
+        <div class="glass-panel rounded-2xl p-6 border border-glass-stroke hover:border-primary-container/30 transition-colors group">
+          <span class="material-symbols-outlined text-primary-container text-2xl mb-4 block" style="font-variation-settings:'FILL' 1">storefront</span>
+          <h4 class="font-semibold text-on-surface mb-1">Gear Sales</h4>
+          <p class="text-on-surface-variant text-sm leading-relaxed">500+ professional items, shipped insured worldwide.</p>
         </div>
-        <div class="bg-white rounded-2xl p-6 border border-slate-300 shadow-sm hover:border-slate-400 transition-colors">
-          <span class="material-symbols-outlined text-sky-700 text-3xl mb-3 block" style="font-variation-settings:'FILL' 1">camera_indoor</span>
-          <h4 class="font-bold text-slate-900 mb-1">Rentals</h4>
-          <p class="text-slate-600 text-xs leading-relaxed">Cinema-grade gear by the day — no subscriptions.</p>
+        <div class="glass-panel rounded-2xl p-6 border border-glass-stroke hover:border-primary-container/30 transition-colors group">
+          <span class="material-symbols-outlined text-primary-container text-2xl mb-4 block" style="font-variation-settings:'FILL' 1">camera_indoor</span>
+          <h4 class="font-semibold text-on-surface mb-1">Rentals</h4>
+          <p class="text-on-surface-variant text-sm leading-relaxed">Cinema-grade gear by the day — no subscriptions.</p>
         </div>
-        <div class="bg-white rounded-2xl p-6 border border-slate-300 shadow-sm hover:border-slate-400 transition-colors">
-          <span class="material-symbols-outlined text-sky-700 text-3xl mb-3 block" style="font-variation-settings:'FILL' 1">groups</span>
-          <h4 class="font-bold text-slate-900 mb-1">Pro Services</h4>
-          <p class="text-slate-600 text-xs leading-relaxed">Photographers, videographers, designers — on demand.</p>
+        <div class="glass-panel rounded-2xl p-6 border border-secondary/20 hover:border-secondary/40 transition-colors group">
+          <span class="material-symbols-outlined text-secondary text-2xl mb-4 block" style="font-variation-settings:'FILL' 1">groups</span>
+          <h4 class="font-semibold text-on-surface mb-1">Pro Services</h4>
+          <p class="text-on-surface-variant text-sm leading-relaxed">Photographers, videographers, designers — on demand.</p>
         </div>
-        <div class="bg-white rounded-2xl p-6 border border-slate-300 shadow-sm hover:border-slate-400 transition-colors">
-          <span class="material-symbols-outlined text-sky-700 text-3xl mb-3 block" style="font-variation-settings:'FILL' 1">hub</span>
-          <h4 class="font-bold text-slate-900 mb-1">Network</h4>
-          <p class="text-slate-600 text-xs leading-relaxed">A community of 2K+ creators across 10+ Indian cities.</p>
+        <div class="glass-panel rounded-2xl p-6 border border-glass-stroke hover:border-primary-container/30 transition-colors group">
+          <span class="material-symbols-outlined text-primary-container text-2xl mb-4 block" style="font-variation-settings:'FILL' 1">hub</span>
+          <h4 class="font-semibold text-on-surface mb-1">Network</h4>
+          <p class="text-on-surface-variant text-sm leading-relaxed">A community of 2K+ creators across 10+ Indian cities.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ═══════════════════════════════════════════
-       CTA — STAY IN THE LOOP
+       CTA — JOIN THE ORBIT
   ═══════════════════════════════════════════ -->
-  <section class="px-margin-mobile md:px-margin-desktop pb-24 pt-12">
-    <div class="bg-slate-900 text-white rounded-[32px] relative overflow-hidden border border-slate-800 shadow-2xl max-w-6xl mx-auto">
-      <div class="relative z-10 p-10 md:p-16">
+  <section class="px-margin-mobile md:px-margin-desktop pb-stack-xl pt-stack-md">
+    <div class="glass-panel rounded-[40px] relative overflow-hidden border border-glass-stroke">
+      <!-- Ambient -->
+      <div class="absolute -top-32 -right-32 w-80 h-80 bg-secondary-container/20 rounded-full blur-[100px] pointer-events-none"></div>
+      <div class="absolute -bottom-32 -left-32 w-80 h-80 bg-primary-container/15 rounded-full blur-[100px] pointer-events-none"></div>
+      <!-- Grid overlay -->
+      <div class="absolute inset-0 pointer-events-none" style="background-image:linear-gradient(rgba(0,240,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.03) 1px,transparent 1px);background-size:48px 48px;"></div>
+
+      <div class="relative z-10 p-12 md:p-20">
         <div class="flex flex-col md:flex-row items-center justify-between gap-12">
           <!-- Left copy -->
           <div class="max-w-xl text-center md:text-left reveal-left">
-            <div class="inline-flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-full px-4 py-1.5 mb-5">
-              <span class="w-2 h-2 rounded-full bg-sky-400"></span>
-              <span class="font-bold text-xs text-sky-300 tracking-widest uppercase">Stay in the loop</span>
+            <div class="inline-flex items-center gap-2 bg-surface-container-high border border-glass-stroke rounded-full px-4 py-2 mb-5">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
+              <span class="font-label-caps text-label-caps text-primary-container tracking-widest uppercase">Stay in the loop</span>
             </div>
-            <h2 class="font-display-lg text-[clamp(28px,4vw,48px)] font-black text-white mb-4" style="letter-spacing:-0.02em">
+            <h2 class="font-display-lg text-[clamp(28px,4vw,52px)] font-black text-on-surface mb-4" style="letter-spacing:-0.02em">
               Ready to Elevate<br>
-              <span class="text-sky-400">Your Workflow?</span>
+              <span class="gradient-text">Your Workflow?</span>
             </h2>
-            <p class="text-slate-300 text-sm leading-relaxed">
+            <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
               Subscribe for exclusive early access to new gear drops, digital asset releases, and industry insights — before anyone else.
             </p>
           </div>
@@ -418,20 +444,20 @@
               <label for="subscribe-email" class="sr-only">Studio Email</label>
               <input
                 id="subscribe-email"
-                class="w-full bg-slate-800 border border-slate-700 rounded-xl px-5 py-3.5 focus:ring-2 focus:ring-sky-400 outline-none transition-all text-white placeholder:text-slate-400 text-sm"
+                class="w-full bg-surface-container-high border border-glass-stroke rounded-full px-6 py-4 focus:ring-2 focus:ring-primary-container focus:border-transparent outline-none transition-all text-on-surface placeholder:text-on-surface-variant"
                 placeholder="Enter your studio email"
                 type="email"
                 required
                 autocomplete="email"
               >
               <button
-                class="w-full bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold px-8 py-3.5 rounded-xl transition-all shadow-md text-sm cursor-pointer"
+                class="shimmer-btn w-full bg-primary-container text-on-primary-fixed px-8 py-4 rounded-full font-label-caps text-label-caps hover:scale-105 transition-transform active:scale-95 shadow-lg"
                 type="submit"
               >
                 Subscribe Now
               </button>
             </form>
-            <p class="text-slate-400 text-xs text-center mt-3">No spam. Unsubscribe anytime.</p>
+            <p class="text-on-surface-variant text-xs text-center mt-3">No spam. Unsubscribe anytime.</p>
           </div>
         </div>
       </div>
@@ -444,37 +470,6 @@
 <div id="site-footer"></div>
 
 <script>
-  /* ── Enforce Solid Grey Header with White Text & Logo ── */
-  function applyGreyHeader() {
-    const header = document.querySelector('header') || document.querySelector('nav') || document.getElementById('site-header');
-    if (header) {
-      header.style.setProperty('background-color', '#334155', 'important');
-      header.style.setProperty('background', '#334155', 'important');
-      header.style.setProperty('color', '#ffffff', 'important');
-      header.style.setProperty('border-bottom', '1px solid #475569', 'important');
-
-      // Update all text/link items in header to white
-      header.querySelectorAll('a, button, p, h1, h2, h3, h4, h5, h6, label').forEach(el => {
-        el.style.setProperty('color', '#ffffff', 'important');
-      });
-
-      // Update logo image to white logo
-      header.querySelectorAll('img').forEach(img => {
-        img.src = '/static/img/camcrew_studio_logo_cop_y.png';
-      });
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    applyGreyHeader();
-    setTimeout(applyGreyHeader, 100);
-    setTimeout(applyGreyHeader, 400);
-    setTimeout(applyGreyHeader, 1000);
-  });
-  window.addEventListener('scroll', () => {
-    applyGreyHeader();
-  });
-
   /* ── Subscribe form ─────────────────────────────── */
   async function handleSubscribe(e) {
     e.preventDefault();
@@ -490,8 +485,7 @@
       });
       const data = await res.json();
       btn.textContent = data.ok ? '✓ Subscribed! Thank you.' : (data.error || 'Error. Try again.');
-      btn.style.background = data.ok ? '#0284c7' : '#e53e3e';
-      btn.style.color = '#ffffff';
+      btn.style.background = data.ok ? 'linear-gradient(135deg,#00dbe9,#00f0ff)' : '#e53e3e';
     } catch (_) {
       btn.textContent = 'Network error. Try again.';
       btn.disabled = false;
@@ -515,9 +509,16 @@
     '🤝 Community-Driven Platform',
     '📦 Insured Express Shipping',
   ];
-  const html = ticks.map(t => `<span class="inline-block mx-8 font-bold text-xs text-slate-700 whitespace-nowrap">${t}</span>`).join('');
+  const html = ticks.map(t => `<span class="inline-block mx-8 font-label-caps text-label-caps text-on-surface-variant whitespace-nowrap">${t}</span>`).join('');
   document.getElementById('ticker-src').innerHTML   = html;
   document.getElementById('ticker-clone').innerHTML = html;
+
+  /* ── Nav scroll blur ────────────────────────── */
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    if (!nav) return;
+    nav.style.background = window.scrollY > 50 ? 'rgba(22,22,24,0.95)' : 'rgba(22,22,24,0.8)';
+  });
 </script>
 
 <script src="/static/js/header-loader.js"></script>
