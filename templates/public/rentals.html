@@ -15,9 +15,9 @@
   html.light, :root {
     --page-bg:             #e0e5ec;
     --text-main:           #0f172a;
-    --text-muted:          #334155;
+    --text-muted:          #0f172a;
     --hero-title-color:    #0f172a;
-    --hero-desc-color:     #334155;
+    --hero-desc-color:     #0f172a;
     --accent-color:        #0e5a6f;
     --card-outer-shadow:   10px 10px 24px #b8c2cc, -10px -10px 24px #ffffff;
     --card-outer-shadow-h: 14px 14px 32px #a8b3be, -14px -14px 32px #ffffff;
@@ -35,15 +35,15 @@
     --info-bg:             #e0e5ec;
     --info-shadow:         none;
     --name-color:          #0f172a;
-    --title-color:         #64748b;
-    --loc-text-color:      #475569;
+    --title-color:         #1e293b;
+    --loc-text-color:      #0f172a;
     --rate-color:          #0e5a6f;
     
     --btn-view-bg:         #e0e5ec;
     --btn-view-shadow:     4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff;
     --btn-view-shadow-h:   6px 6px 14px #b8c2cc, -6px -6px 14px #ffffff;
     --btn-view-shadow-active: inset 4px 4px 8px #b8c2cc, inset -4px -4px 8px #ffffff;
-    --btn-view-color:      #334155;
+    --btn-view-color:      #0f172a;
     
     --btn-book-bg:         #0f4c5c;
     --btn-book-color:      #ffffff;
@@ -123,22 +123,30 @@
   }
 
   /* High contrast text in Light Mode */
+  [data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4,
+  [data-theme="light"] p, [data-theme="light"] span, [data-theme="light"] div, [data-theme="light"] label,
+  html.light h1, html.light h2, html.light h3, html.light h4,
+  html.light p, html.light span, html.light div, html.light label {
+    color: #0f172a;
+  }
   [data-theme="light"] .hero-title,
   html.light .hero-title {
     color: #0f172a !important;
   }
   [data-theme="light"] .hero-sub,
   html.light .hero-sub {
-    color: #334155 !important;
-    font-weight: 600;
+    color: #0f172a !important;
+    font-weight: 700;
   }
   [data-theme="light"] .stat-pill-num,
   html.light .stat-pill-num {
     color: #0e5a6f !important;
+    font-weight: 900;
   }
   [data-theme="light"] .stat-pill-lbl,
   html.light .stat-pill-lbl {
-    color: #475569 !important;
+    color: #0f172a !important;
+    font-weight: 800;
   }
   [data-theme="light"] .stats-bar,
   html.light .stats-bar {
@@ -154,7 +162,21 @@
   }
   [data-theme="light"] .filter-btn,
   html.light .filter-btn {
-    color: #334155 !important;
+    color: #0f172a !important;
+    font-weight: 700;
+  }
+  [data-theme="light"] [style*="color:#556669"],
+  [data-theme="light"] [style*="color:#445a5c"],
+  [data-theme="light"] [style*="color:#64748b"],
+  [data-theme="light"] [style*="color:#849495"],
+  [data-theme="light"] [style*="color:#8aacaf"],
+  html.light [style*="color:#556669"],
+  html.light [style*="color:#445a5c"],
+  html.light [style*="color:#64748b"],
+  html.light [style*="color:#849495"],
+  html.light [style*="color:#8aacaf"] {
+    color: #0f172a !important;
+    font-weight: 600 !important;
   }
   [data-theme="light"] .filter-btn.active,
   html.light .filter-btn.active {

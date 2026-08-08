@@ -10,9 +10,9 @@
   html.light, :root {
     --page-bg:             #e0e5ec;
     --text-main:           #0f172a;
-    --text-muted:          #334155;
+    --text-muted:          #0f172a;
     --hero-title-color:    #0f172a;
-    --hero-desc-color:     #334155;
+    --hero-desc-color:     #0f172a;
     --accent-color:        #0e5a6f;
     --card-outer-shadow:   10px 10px 24px #b8c2cc, -10px -10px 24px #ffffff;
     --card-outer-shadow-h: 14px 14px 32px #a8b3be, -14px -14px 32px #ffffff;
@@ -30,15 +30,15 @@
     --info-bg:             #e0e5ec;
     --info-shadow:         none;
     --name-color:          #0f172a;
-    --title-color:         #64748b;
-    --loc-text-color:      #475569;
+    --title-color:         #1e293b;
+    --loc-text-color:      #0f172a;
     --rate-color:          #0e5a6f;
     
     --btn-view-bg:         #e0e5ec;
     --btn-view-shadow:     4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff;
     --btn-view-shadow-h:   6px 6px 14px #b8c2cc, -6px -6px 14px #ffffff;
     --btn-view-shadow-active: inset 4px 4px 8px #b8c2cc, inset -4px -4px 8px #ffffff;
-    --btn-view-color:      #334155;
+    --btn-view-color:      #0f172a;
     
     --btn-book-bg:         #0f4c5c;
     --btn-book-color:      #ffffff;
@@ -107,26 +107,22 @@
   }
 
   /* High contrast text & Neumorphic Cards in Light Mode */
-  [data-theme="light"] h1,
-  [data-theme="light"] h2,
-  [data-theme="light"] h3,
-  [data-theme="light"] h4,
-  [data-theme="light"] p,
-  html.light h1,
-  html.light h2,
-  html.light h3,
-  html.light h4,
-  html.light p {
-    color: #0f172a !important;
+  [data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4,
+  [data-theme="light"] p, [data-theme="light"] span, [data-theme="light"] div, [data-theme="light"] label,
+  html.light h1, html.light h2, html.light h3, html.light h4,
+  html.light p, html.light span, html.light div, html.light label {
+    color: #0f172a;
   }
   [data-theme="light"] .text-on-surface-variant,
   html.light .text-on-surface-variant {
-    color: #334155 !important;
+    color: #0f172a !important;
+    font-weight: 600;
   }
   [data-theme="light"] .filter-chip,
   html.light .filter-chip {
     background: #e0e5ec !important;
-    color: #334155 !important;
+    color: #0f172a !important;
+    font-weight: 700 !important;
     border: 1px solid rgba(255,255,255,0.8) !important;
     box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
   }
