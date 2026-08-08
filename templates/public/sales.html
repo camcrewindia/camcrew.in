@@ -8,36 +8,36 @@
 <style>
   /* ── Dual Theme System ── */
   html.light, :root {
-    --page-bg:             #ffffff;
+    --page-bg:             #e0e5ec;
     --text-main:           #0f172a;
     --text-muted:          #334155;
     --hero-title-color:    #0f172a;
     --hero-desc-color:     #334155;
     --accent-color:        #0e5a6f;
-    --card-outer-shadow:   8px 8px 22px #cbd5e1, -8px -8px 22px #ffffff;
-    --card-outer-shadow-h: 12px 12px 30px #94a3b8, -12px -12px 30px #ffffff;
+    --card-outer-shadow:   10px 10px 24px #b8c2cc, -10px -10px 24px #ffffff;
+    --card-outer-shadow-h: 14px 14px 32px #a8b3be, -14px -14px 32px #ffffff;
     
-    --filter-card-bg:      #ffffff;
-    --filter-shadow:       6px 6px 16px #cbd5e1, -6px -6px 16px #ffffff;
-    --input-bg:            #ffffff;
-    --input-shadow:        inset 3px 3px 6px #cbd5e1, inset -3px -3px 6px #ffffff;
+    --filter-card-bg:      #e0e5ec;
+    --filter-shadow:       8px 8px 18px #b8c2cc, -8px -8px 18px #ffffff;
+    --input-bg:            #e0e5ec;
+    --input-shadow:        inset 4px 4px 8px #b8c2cc, inset -4px -4px 8px #ffffff;
     --input-text:          #0f172a;
     
-    --chip-bg:             #ffffff;
-    --chip-shadow:         4px 4px 10px #cbd5e1, -4px -4px 10px #ffffff;
-    --chip-active-shadow:  inset 3px 3px 6px #cbd5e1, inset -3px -3px 6px #ffffff;
+    --chip-bg:             #e0e5ec;
+    --chip-shadow:         4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff;
+    --chip-active-shadow:  inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff;
     
-    --info-bg:             #ffffff;
+    --info-bg:             #e0e5ec;
     --info-shadow:         none;
     --name-color:          #0f172a;
     --title-color:         #64748b;
     --loc-text-color:      #475569;
     --rate-color:          #0e5a6f;
     
-    --btn-view-bg:         #ffffff;
-    --btn-view-shadow:     4px 4px 10px #cbd5e1, -4px -4px 10px #ffffff;
-    --btn-view-shadow-h:   6px 6px 14px #cbd5e1, -6px -6px 14px #ffffff;
-    --btn-view-shadow-active: inset 4px 4px 8px #cbd5e1, inset -4px -4px 8px #ffffff;
+    --btn-view-bg:         #e0e5ec;
+    --btn-view-shadow:     4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff;
+    --btn-view-shadow-h:   6px 6px 14px #b8c2cc, -6px -6px 14px #ffffff;
+    --btn-view-shadow-active: inset 4px 4px 8px #b8c2cc, inset -4px -4px 8px #ffffff;
     --btn-view-color:      #334155;
     
     --btn-book-bg:         #0f4c5c;
@@ -46,9 +46,9 @@
     --btn-book-shadow-h:   0 8px 24px rgba(15,76,92,0.45);
     --btn-book-shadow-active: inset 0 4px 8px rgba(0,0,0,0.4);
 
-    --stat-card-bg:        #ffffff;
-    --stat-card-shadow:    6px 6px 16px #cbd5e1, -6px -6px 16px #ffffff;
-    --stat-inner-shadow:   inset 3px 3px 6px #cbd5e1, inset -3px -3px 6px #ffffff;
+    --stat-card-bg:        #e0e5ec;
+    --stat-card-shadow:    8px 8px 18px #b8c2cc, -8px -8px 18px #ffffff;
+    --stat-inner-shadow:   inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff;
   }
 
   html.dark {
@@ -106,14 +106,16 @@
     display: none !important;
   }
 
-  /* High contrast text in Light Mode */
+  /* High contrast text & Neumorphic Cards in Light Mode */
   [data-theme="light"] h1,
   [data-theme="light"] h2,
   [data-theme="light"] h3,
+  [data-theme="light"] h4,
   [data-theme="light"] p,
   html.light h1,
   html.light h2,
   html.light h3,
+  html.light h4,
   html.light p {
     color: #0f172a !important;
   }
@@ -139,6 +141,41 @@
     background: #e0e5ec !important;
     border: 1px solid rgba(255,255,255,0.8) !important;
     box-shadow: 8px 8px 20px #b8c2cc, -8px -8px 20px #ffffff !important;
+    color: #0f172a !important;
+  }
+  [data-theme="light"] .cat-card .bg-gradient-to-t,
+  html.light .cat-card .bg-gradient-to-t {
+    display: none !important;
+  }
+  [data-theme="light"] .cat-card .cat-icon,
+  html.light .cat-card .cat-icon {
+    background: #e0e5ec !important;
+    border: 1px solid rgba(255,255,255,0.8) !important;
+    box-shadow: inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff !important;
+  }
+  [data-theme="light"] #featured-inner > div,
+  html.light #featured-inner > div {
+    background: #e0e5ec !important;
+    border: 1px solid rgba(255,255,255,0.8) !important;
+    box-shadow: 10px 10px 24px #b8c2cc, -10px -10px 24px #ffffff !important;
+    color: #0f172a !important;
+  }
+  [data-theme="light"] #featured-inner .from-charcoal-surface\/60,
+  html.light #featured-inner .from-charcoal-surface\/60 {
+    display: none !important;
+  }
+  [data-theme="light"] .glass-panel,
+  html.light .glass-panel {
+    background: #e0e5ec !important;
+    border: 1px solid rgba(255,255,255,0.8) !important;
+    box-shadow: 8px 8px 20px #b8c2cc, -8px -8px 20px #ffffff !important;
+    color: #0f172a !important;
+  }
+  [data-theme="light"] .glass-panel input,
+  html.light .glass-panel input {
+    background: #e0e5ec !important;
+    box-shadow: inset 4px 4px 8px #b8c2cc, inset -4px -4px 8px #ffffff !important;
+    border: 1px solid rgba(255,255,255,0.8) !important;
     color: #0f172a !important;
   }
 
