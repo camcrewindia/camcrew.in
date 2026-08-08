@@ -817,57 +817,76 @@ document.querySelectorAll('.shipping-opt').forEach(opt => {
 document.getElementById('complete-purchase-btn').addEventListener('click', async function() {
   if (this.disabled) return;
   const btn = this;
-  btn.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite;font-size:20px">progress_activity</span>&nbsp;Processing…';
-  btn.disabled = true;
 
-  const selectedShipping = document.querySelector('input[name="shipping"]:checked')?.value || '';
-  const selectedPayment = document.querySelector('.pay-tab.active')?.dataset.method || 'card';
+  const fname = document.getElementById('fname').value.trim();
+  const addr1 = document.getElementById('addr1').value.trim();
+  const city  = document.getElementById('city').value.trim();
+
+  if (!fname || !addr1 || !city) {
+    alert('Please fill in your shipping name, address, and city.');
+    return;
+  }
+
+  const selectedShipping = document.querySelector('input[name="shipping"]:checked')?.value || 'standard';
+  const totalAmount = window.currentCheckoutTotal || 0;
+
   const payload = {
-    customer_name: document.getElementById('fname').value.trim(),
+    customer_name: fname,
     customer_phone: '',
     shipping_address: {
-      line1: document.getElementById('addr1').value.trim(),
+      line1: addr1,
       line2: document.getElementById('addr2').value.trim(),
-      city: document.getElementById('city').value.trim(),
+      city: city,
       state: document.getElementById('state').value.trim(),
       zip: document.getElementById('zip').value.trim(),
     },
     shipping_method: selectedShipping,
-    payment_method: selectedPayment,
-    payment_details: {
-      card_holder: document.getElementById('card-holder')?.value.trim() || '',
-      card_last4: (document.getElementById('card-number')?.value || '').replace(/\D/g, '').slice(-4),
-      bank_name: document.getElementById('bank-name')?.value.trim() || '',
-      routing_number: document.getElementById('routing-num')?.value.trim() || '',
-      account_number: document.getElementById('account-num')?.value.trim() || '',
-      wallet_id: document.getElementById('wallet-id')?.value.trim() || '',
-      crypto_wallet: document.getElementById('crypto-wallet')?.value.trim() || '',
-    },
     notes: document.getElementById('coupon-input')?.value.trim() || '',
   };
 
-  try {
-    const res = await fetch('/api/orders', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    const data = await res.json();
-    if (!res.ok || !data.ok) {
-      throw new Error(data.error || 'Could not place your order.');
+  // Launch Payment Gateway Modal
+  window.openCamCrewPaymentGateway({
+    amount: totalAmount,
+    title: 'Store Checkout & Order Payment',
+    subtitle: `Shipping to ${fname} (${city})`,
+    onSuccess: async (paymentResult) => {
+      btn.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite;font-size:20px">progress_activity</span>&nbsp;Processing Order…';
+      btn.disabled = true;
+
+      payload.payment_method  = paymentResult.payment_method;
+      payload.transaction_ref = paymentResult.transaction_ref;
+      payload.escrow_id       = paymentResult.escrow_id;
+      payload.payment_details = {
+        vpa: paymentResult.payment_details?.vpa || '',
+        card_last4: paymentResult.payment_details?.card_no ? paymentResult.payment_details.card_no.slice(-4) : '8910',
+        bank_name: paymentResult.payment_details?.bank || ''
+      };
+
+      try {
+        const res = await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || 'Could not place your order.');
+        }
+        btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px">check_circle</span>&nbsp;Order Confirmed!';
+        btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+        btn.style.color = '#fff';
+        btn.style.boxShadow = '0 0 32px rgba(34,197,94,0.4)';
+        setTimeout(() => { window.location.href = 'orders.html'; }, 2000);
+      } catch (err) {
+        btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px">error</span>&nbsp;Try Again';
+        btn.disabled = false;
+        btn.style.background = 'linear-gradient(135deg, #00f0ff 0%, #00dbe9 60%, #00b8c5 100%)';
+        btn.style.color = '#00363a';
+        btn.style.boxShadow = '';
+        alert(err.message || 'Could not place your order.');
+      }
     }
-    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px">check_circle</span>&nbsp;Order Confirmed!';
-    btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
-    btn.style.color = '#fff';
-    btn.style.boxShadow = '0 0 32px rgba(34,197,94,0.4)';
-  } catch (err) {
-    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px">error</span>&nbsp;Try Again';
-    btn.disabled = false;
-    btn.style.background = 'linear-gradient(135deg, #00f0ff 0%, #00dbe9 60%, #00b8c5 100%)';
-    btn.style.color = '#00363a';
-    btn.style.boxShadow = '';
-    alert(err.message || 'Could not place your order.');
-  }
+  });
 });
 
 // ── Utilities ─────────────────────────────────────────
@@ -922,6 +941,7 @@ async function loadCheckoutSummary() {
     const subtotal = data.subtotal;
     const tax = subtotal * 0.08875;
     const total = subtotal + tax;
+    window.currentCheckoutTotal = total;
     document.getElementById('checkout-subtotal').textContent = fmt(subtotal);
     document.getElementById('checkout-tax').textContent = fmt(tax);
     document.getElementById('checkout-total').textContent = fmt(total);
@@ -935,6 +955,7 @@ async function loadCheckoutSummary() {
 }
 loadCheckoutSummary();
 </script>
+<script src="/static/js/payment-gateway.js"></script>
 <script src="/static/js/header-loader.js"></script>
 <script src="/static/js/footer-loader.js"></script>
 </body>
