@@ -473,3 +473,87 @@ input:not(:placeholder-shown) ~ .floating-label {
     linear-gradient(90deg, rgba(0,240,255,0.04) 1px, transparent 1px);
   background-size: 52px 52px;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   HEADER THEMES: Light Neumorphism vs Dark Glassmorphism
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Light Theme Header (Neumorphic Style) ── */
+[data-theme="light"] header nav,
+html.light header nav {
+    background: #e0e5ec !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 8px 8px 20px #b8c2cc, -8px -8px 20px #ffffff !important;
+    backdrop-filter: none !important;
+}
+
+[data-theme="light"] header nav a,
+html.light header nav a {
+    color: #334155 !important;
+}
+
+[data-theme="light"] header nav a:hover,
+html.light header nav a:hover {
+    color: #0e5a6f !important;
+}
+
+[data-theme="light"] header nav .material-symbols-outlined,
+html.light header nav .material-symbols-outlined {
+    color: #334155;
+}
+
+[data-theme="light"] header nav .header-signin-btn,
+html.light header nav .header-signin-btn {
+    background: #e0e5ec !important;
+    color: #0e5a6f !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
+    transition: all 0.2s ease;
+}
+
+[data-theme="light"] header nav .header-signin-btn:hover,
+html.light header nav .header-signin-btn:hover {
+    box-shadow: 6px 6px 14px #b8c2cc, -6px -6px 14px #ffffff !important;
+}
+
+[data-theme="light"] header nav .header-signin-btn:active,
+html.light header nav .header-signin-btn:active {
+    box-shadow: inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff !important;
+}
+
+[data-theme="light"] header #theme-toggle-btn,
+html.light header #theme-toggle-btn {
+    background: #e0e5ec !important;
+    color: #0e5a6f !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff !important;
+}
+
+[data-theme="light"] header #theme-toggle-btn:active,
+html.light header #theme-toggle-btn:active {
+    box-shadow: inset 2px 2px 5px #b8c2cc, inset -2px -2px 5px #ffffff !important;
+}
+
+/* Light Theme Dropdowns & Mobile Panels */
+[data-theme="light"] header .glass-panel,
+[data-theme="light"] header #mobile-menu,
+[data-theme="light"] header #notif-drawer,
+html.light header .glass-panel,
+html.light header #mobile-menu,
+html.light header #notif-drawer {
+    background: #e0e5ec !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 8px 8px 20px #b8c2cc, -8px -8px 20px #ffffff !important;
+    color: #334155 !important;
+    backdrop-filter: none !important;
+}
+
+[data-theme="light"] header #mobile-menu a,
+html.light header #mobile-menu a {
+    color: #334155 !important;
+}
+
+[data-theme="light"] header #mobile-menu a:hover,
+html.light header #mobile-menu a:hover {
+    color: #0e5a6f !important;
+}
