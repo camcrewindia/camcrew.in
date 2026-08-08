@@ -168,25 +168,97 @@ def get_db():
     return _DBConn()
 
 
-def _save_uploaded_file(file, subdir):
-    filename = getattr(file, 'filename', '') or ''
-    _, ext = os.path.splitext(filename)
-    ext = ext.lower()
-    if ext not in ALLOWED_EXTENSIONS:
-        raise ValueError(f"Unsupported file type: {ext}")
+# ---------------------------------------------------------------------------
+# Persistent Cloud Object Storage (S3 / Cloudflare R2 / Cloudinary / Base64 fallback)
+# NEVER writes uploaded files to ephemeral local server disk.
+# ---------------------------------------------------------------------------
 
-    safe_name = secrets.token_hex(10) + ext
-    rel_dir = os.path.join("uploads", subdir)
-    abs_dir = os.path.join(ROOT_DIR, rel_dir)
-    os.makedirs(abs_dir, exist_ok=True)
-    abs_path = os.path.join(abs_dir, safe_name)
-    file.save(abs_path)
-    return '/' + os.path.join(rel_dir, safe_name).replace('\\', '/')
+def upload_file_to_storage(file, folder="uploads"):
+    """
+    Upload an incoming file to persistent Cloud Object Storage (AWS S3, Cloudflare R2, Cloudinary).
+    Returns the public HTTP URL of the uploaded file.
+    If no cloud credentials are configured, stores persistent Base64 Data URL in PostgreSQL.
+    """
+    if not file:
+        return None
+
+    # Option A: Cloudinary Upload (via REST API)
+    cloud_name = os.environ.get("CLOUDINARY_CLOUD_NAME")
+    upload_preset = os.environ.get("CLOUDINARY_UPLOAD_PRESET")
+    if cloud_name and upload_preset:
+        try:
+            import urllib.request
+            import urllib.parse
+            if hasattr(file, 'seek'):
+                file.seek(0)
+            file_bytes = file.read()
+            if hasattr(file, 'seek'):
+                file.seek(0)
+            
+            boundary = f"----CamCrewBoundary{secrets.token_hex(8)}"
+            body = []
+            body.append(f"--{boundary}\r\nContent-Disposition: form-data; name=\"upload_preset\"\r\n\r\n{upload_preset}\r\n".encode('utf-8'))
+            body.append(f"--{boundary}\r\nContent-Disposition: form-data; name=\"folder\"\r\n\r\n{folder}\r\n".encode('utf-8'))
+            filename = getattr(file, 'filename', 'upload') or 'upload'
+            mime_type = getattr(file, 'mimetype', 'image/jpeg') or 'image/jpeg'
+            body.append(f"--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"{filename}\"\r\nContent-Type: {mime_type}\r\n\r\n".encode('utf-8'))
+            body.append(file_bytes)
+            body.append(f"\r\n--{boundary}--\r\n".encode('utf-8'))
+
+            payload = b"".join(body)
+            url = f"https://api.cloudinary.com/v1_1/{cloud_name}/auto/upload"
+            req = urllib.request.Request(url, data=payload, headers={
+                "Content-Type": f"multipart/form-data; boundary={boundary}"
+            })
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                result = _json.loads(resp.read().decode('utf-8'))
+                if "secure_url" in result:
+                    return result["secure_url"]
+        except Exception as err:
+            print(f"[CLOUD_STORAGE] Cloudinary error: {err}")
+
+    # Option B: S3 / Cloudflare R2 / Wasabi (via boto3)
+    s3_bucket = os.environ.get("S3_BUCKET_NAME") or os.environ.get("AWS_S3_BUCKET")
+    if s3_bucket:
+        try:
+            import boto3
+            s3_client = boto3.client(
+                's3',
+                aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
+                aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
+                region_name=os.environ.get("AWS_REGION", "us-east-1"),
+                endpoint_url=os.environ.get("S3_ENDPOINT_URL")
+            )
+            filename = getattr(file, 'filename', 'upload') or 'upload'
+            ext = os.path.splitext(filename)[1] or ".jpg"
+            key = f"{folder}/{secrets.token_hex(10)}{ext}"
+            if hasattr(file, 'seek'):
+                file.seek(0)
+            mime_type = getattr(file, 'mimetype', 'image/jpeg') or 'image/jpeg'
+            s3_client.upload_fileobj(
+                file, s3_bucket, key,
+                ExtraArgs={'ContentType': mime_type, 'ACL': 'public-read'}
+            )
+            public_domain = os.environ.get("S3_PUBLIC_DOMAIN")
+            if public_domain:
+                return f"{public_domain.rstrip('/')}/{key}"
+            endpoint = os.environ.get("S3_ENDPOINT_URL")
+            if endpoint:
+                return f"{endpoint.rstrip('/')}/{s3_bucket}/{key}"
+            region = os.environ.get("AWS_REGION", "us-east-1")
+            return f"https://{s3_bucket}.s3.{region}.amazonaws.com/{key}"
+        except Exception as err:
+            print(f"[CLOUD_STORAGE] S3 error: {err}")
+
+    # Option C: Persistent Base64 Data URL (saved in PostgreSQL DB rows)
+    return _file_to_data_url(file)
 
 
 def _file_to_data_url(file):
     """Convert an uploaded image file into a persistent Base64 Data URL for PostgreSQL storage."""
     try:
+        if not file:
+            return None
         if hasattr(file, 'seek'):
             file.seek(0)
         data = file.read() if hasattr(file, 'read') else None
@@ -210,11 +282,12 @@ def _file_to_data_url(file):
         elif ext in ('mp4', 'mov', 'webm'):
             mime = f'video/{ext}'
         else:
-            mime = 'image/png'
+            mime = 'image/jpeg'
+        import base64
         encoded = base64.b64encode(data).decode('utf-8')
         return f"data:{mime};base64,{encoded}"
     except Exception as e:
-        print(f"[AVATAR] Error encoding data url: {e}")
+        print(f"[DATA_URL] Error encoding data url: {e}")
         return None
 
 
@@ -1649,9 +1722,7 @@ def update_profile():
     avatar_url = (data.get("avatar_url") or "").strip() or None
     if avatar_file:
         try:
-            data_url = _file_to_data_url(avatar_file)
-            disk_url = _save_uploaded_file(avatar_file, f"profiles/{uid}/avatar")
-            avatar_url = data_url or disk_url
+            avatar_url = upload_file_to_storage(avatar_file, folder=f"profiles/{uid}/avatar")
         except ValueError as exc:
             return jsonify({"ok": False, "error": str(exc)}), 400
 
@@ -1730,9 +1801,7 @@ def update_profile():
 
             for file in portfolio_files:
                 try:
-                    data_url = _file_to_data_url(file)
-                    disk_url = _save_uploaded_file(file, f"profiles/{uid}/portfolio")
-                    file_url = data_url or disk_url
+                    file_url = upload_file_to_storage(file, folder=f"profiles/{uid}/portfolio")
                 except ValueError as exc:
                     return jsonify({"ok": False, "error": str(exc)}), 400
                 _, ext = os.path.splitext(file.filename or "")
