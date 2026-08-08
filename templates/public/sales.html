@@ -8,36 +8,36 @@
 <style>
   /* ── Dual Theme System ── */
   html.light, :root {
-    --page-bg:             #e0e5ec;
+    --page-bg:             #ffffff;
     --text-main:           #0f172a;
     --text-muted:          #334155;
     --hero-title-color:    #0f172a;
     --hero-desc-color:     #334155;
     --accent-color:        #0e5a6f;
-    --card-outer-shadow:   10px 10px 24px #b8c2cc, -10px -10px 24px #ffffff;
-    --card-outer-shadow-h: 14px 14px 32px #a8b3be, -14px -14px 32px #ffffff;
+    --card-outer-shadow:   8px 8px 22px #cbd5e1, -8px -8px 22px #ffffff;
+    --card-outer-shadow-h: 12px 12px 30px #94a3b8, -12px -12px 30px #ffffff;
     
-    --filter-card-bg:      #e0e5ec;
-    --filter-shadow:       8px 8px 18px #b8c2cc, -8px -8px 18px #ffffff;
-    --input-bg:            #e0e5ec;
-    --input-shadow:        inset 4px 4px 8px #b8c2cc, inset -4px -4px 8px #ffffff;
+    --filter-card-bg:      #ffffff;
+    --filter-shadow:       6px 6px 16px #cbd5e1, -6px -6px 16px #ffffff;
+    --input-bg:            #ffffff;
+    --input-shadow:        inset 3px 3px 6px #cbd5e1, inset -3px -3px 6px #ffffff;
     --input-text:          #0f172a;
     
-    --chip-bg:             #e0e5ec;
-    --chip-shadow:         4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff;
-    --chip-active-shadow:  inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff;
+    --chip-bg:             #ffffff;
+    --chip-shadow:         4px 4px 10px #cbd5e1, -4px -4px 10px #ffffff;
+    --chip-active-shadow:  inset 3px 3px 6px #cbd5e1, inset -3px -3px 6px #ffffff;
     
-    --info-bg:             #e0e5ec;
+    --info-bg:             #ffffff;
     --info-shadow:         none;
     --name-color:          #0f172a;
     --title-color:         #64748b;
     --loc-text-color:      #475569;
     --rate-color:          #0e5a6f;
     
-    --btn-view-bg:         #e0e5ec;
-    --btn-view-shadow:     4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff;
-    --btn-view-shadow-h:   6px 6px 14px #b8c2cc, -6px -6px 14px #ffffff;
-    --btn-view-shadow-active: inset 4px 4px 8px #b8c2cc, inset -4px -4px 8px #ffffff;
+    --btn-view-bg:         #ffffff;
+    --btn-view-shadow:     4px 4px 10px #cbd5e1, -4px -4px 10px #ffffff;
+    --btn-view-shadow-h:   6px 6px 14px #cbd5e1, -6px -6px 14px #ffffff;
+    --btn-view-shadow-active: inset 4px 4px 8px #cbd5e1, inset -4px -4px 8px #ffffff;
     --btn-view-color:      #334155;
     
     --btn-book-bg:         #0f4c5c;
@@ -46,9 +46,9 @@
     --btn-book-shadow-h:   0 8px 24px rgba(15,76,92,0.45);
     --btn-book-shadow-active: inset 0 4px 8px rgba(0,0,0,0.4);
 
-    --stat-card-bg:        #e0e5ec;
-    --stat-card-shadow:    8px 8px 18px #b8c2cc, -8px -8px 18px #ffffff;
-    --stat-inner-shadow:   inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff;
+    --stat-card-bg:        #ffffff;
+    --stat-card-shadow:    6px 6px 16px #cbd5e1, -6px -6px 16px #ffffff;
+    --stat-inner-shadow:   inset 3px 3px 6px #cbd5e1, inset -3px -3px 6px #ffffff;
   }
 
   html.dark {
@@ -278,62 +278,76 @@
 <main class="relative">
 
   <!-- ═══════════════════════════════════════
-       HERO SECTION
+       HERO SECTION WITH FEATURED BANNER
   ═══════════════════════════════════════ -->
-  <section class="relative min-h-[88vh] flex flex-col justify-center overflow-hidden hero-grid pt-24 md:pt-40 pb-16">
-    <!-- Ambient orbs -->
-    <div class="orb-1 absolute top-[-10%] right-[5%]  w-[500px] h-[500px] rounded-full bg-primary-container/10 blur-[120px] pointer-events-none"></div>
-    <div class="orb-2 absolute bottom-[5%]  left-[-5%] w-[400px] h-[400px] rounded-full bg-secondary-container/10 blur-[100px] pointer-events-none"></div>
-    <div class="orb-3 absolute top-[40%]   left-[30%] w-[300px] h-[300px] rounded-full bg-primary-container/6  blur-[80px]  pointer-events-none"></div>
-    <!-- Scan line -->
-    <div class="scan-line"></div>
-
-    <div class="relative z-10 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto w-full">
-      <!-- Eyebrow -->
-      <div class="inline-flex items-center gap-2 bg-surface-container-high border border-glass-stroke rounded-full px-4 py-2 mb-8 reveal">
-        <span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
-        <span class="font-label-caps text-label-caps text-primary-container tracking-widest uppercase">New Arrivals — Season Drop 2026</span>
-      </div>
-
-      <!-- Headline -->
-      <h1 class="font-display-lg text-display-lg-mobile md:text-[72px] lg:text-[88px] leading-[.95] font-black text-on-surface mb-6 max-w-5xl reveal" style="letter-spacing:-0.03em">
-        Gear Built for
-        <span class="block gradient-text">Serious Creators.</span>
-      </h1>
-      <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mb-10 leading-relaxed reveal">
-        Professional cameras, cinema lighting, studio audio, and workspace essentials — curated for the modern visual artist.
-      </p>
-
-      <!-- Hero CTA row -->
-      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-16 reveal">
-        <a href="#product-listings" class="shimmer-btn bg-primary-container text-on-primary-fixed font-label-caps text-label-caps px-10 py-4 rounded-full inline-flex items-center gap-2 group hover:scale-105 transition-transform active:scale-95">
-          Shop All Gear
-          <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
-        </a>
-        <button class="glass-panel font-label-caps text-label-caps text-on-surface px-8 py-4 rounded-full inline-flex items-center gap-2 hover:border-primary-container/50 transition-colors">
-          <span class="material-symbols-outlined text-primary-container text-sm">play_circle</span>
-          Watch Gear Review
-        </button>
-      </div>
-
-      <!-- Stats bar -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-gutter reveal">
-        <div class="glass-panel rounded-2xl p-5 text-center border border-glass-stroke">
-          <div class="font-display-lg text-[28px] font-black gradient-text stat-num">500+</div>
-          <div class="font-label-caps text-label-caps text-on-surface-variant mt-1">SKUs in stock</div>
+  <section class="hero-section py-16 md:py-24 px-5 md:px-20">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Left Copy -->
+        <div class="lg:col-span-7">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-widest mb-6" style="background:rgba(14,90,111,0.1);color:var(--accent-color);border:1px solid rgba(14,90,111,0.2);">
+            <span class="w-2 h-2 rounded-full animate-pulse" style="background:var(--accent-color);"></span>
+            Camera & Cinema Sales Marketplace
+          </div>
+          <h1 class="text-4xl md:text-6xl font-black leading-tight mb-6" style="color:var(--hero-title-color);letter-spacing:-0.03em;">
+            Gear Built for<br>
+            <span style="background:linear-gradient(135deg,#0e5a6f 0%,#00f0ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Serious Creators.</span>
+          </h1>
+          <p class="text-lg font-medium mb-8 max-w-xl" style="color:var(--hero-desc-color);line-height:1.65;">
+            Buy verified pre-owned & brand new cinema cameras, prime lenses, studio lighting, and audio gear from India's top studios and creators.
+          </p>
+          <div class="flex flex-wrap gap-4 mb-12">
+            <a href="#product-grid" class="btn-book-now" style="padding:0.85rem 2rem;font-size:0.9rem;border-radius:999px;display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;">
+              <span class="material-symbols-outlined text-base">shopping_bag</span> Shop Gear Marketplace
+            </a>
+            <a href="signup.html" class="btn-view-profile" style="padding:0.85rem 1.75rem;font-size:0.9rem;border-radius:999px;display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;">
+              Sell Your Equipment
+            </a>
+          </div>
+          <!-- Stats Row -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="p-4 rounded-2xl text-center" style="background:var(--stat-card-bg);box-shadow:var(--stat-card-shadow);">
+              <div class="text-2xl font-black" style="color:var(--accent-color);">500+</div>
+              <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Verified Items</div>
+            </div>
+            <div class="p-4 rounded-2xl text-center" style="background:var(--stat-card-bg);box-shadow:var(--stat-card-shadow);">
+              <div class="text-2xl font-black" style="color:var(--accent-color);">100%</div>
+              <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Insured Shipping</div>
+            </div>
+            <div class="p-4 rounded-2xl text-center" style="background:var(--stat-card-bg);box-shadow:var(--stat-card-shadow);">
+              <div class="text-2xl font-black" style="color:var(--accent-color);">4.9★</div>
+              <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Buyer Rating</div>
+            </div>
+            <div class="p-4 rounded-2xl text-center" style="background:var(--stat-card-bg);box-shadow:var(--stat-card-shadow);">
+              <div class="text-2xl font-black" style="color:var(--accent-color);">24/7</div>
+              <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Escrow Protect</div>
+            </div>
+          </div>
         </div>
-        <div class="glass-panel rounded-2xl p-5 text-center border border-glass-stroke">
-          <div class="font-display-lg text-[28px] font-black gradient-text stat-num">4.9★</div>
-          <div class="font-label-caps text-label-caps text-on-surface-variant mt-1">Avg. rating</div>
+
+        <!-- Right Hero Banner Showcase Card -->
+        <div class="lg:col-span-5">
+          <div class="pro-card" style="box-shadow:var(--card-outer-shadow);">
+            <div class="pro-card-banner" style="height:360px;">
+              <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=1000" alt="Cinema Camera Equipment Showcase" class="pro-card-img"/>
+              <span class="badge-intl" style="background:#0e5a6f;">FEATURED GEAR</span>
+              <div class="badge-verified" title="Official Camcrew Guarantee">
+                <span class="material-symbols-outlined text-sm text-teal-700 font-bold">verified</span>
+              </div>
+            </div>
+            <div class="pro-card-info" style="margin-top:-50px;">
+              <h3 class="pro-card-name">Sony FX6 Full-Frame Cinema Line</h3>
+              <p class="pro-card-title">Body & Lens Kit · Mint Condition</p>
+              <div class="pro-card-loc">
+                <div class="loc-pin-icon"><span class="material-symbols-outlined">navigation</span></div>
+                <span class="loc-text">Mumbai, Maharashtra</span>
+              </div>
+              <div class="pro-card-rate">₹3,45,000</div>
+            </div>
+          </div>
         </div>
-        <div class="glass-panel rounded-2xl p-5 text-center border border-glass-stroke">
-          <div class="font-display-lg text-[28px] font-black gradient-text stat-num">48hr</div>
-          <div class="font-label-caps text-label-caps text-on-surface-variant mt-1">Express ship</div>
-        </div>
-        <div class="glass-panel rounded-2xl p-5 text-center border border-glass-stroke">
-          <div class="font-display-lg text-[28px] font-black gradient-text stat-num">1yr</div>
-          <div class="font-label-caps text-label-caps text-on-surface-variant mt-1">Pro warranty</div>
-        </div>
+
       </div>
     </div>
   </section>
