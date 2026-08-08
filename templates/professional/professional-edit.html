@@ -726,11 +726,15 @@ function updateCharCount(el, countId, max) {
 document.getElementById('avatar-file').addEventListener('change', function() {
   const file = this.files[0];
   if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { showToast('Photo must be under 5 MB', 'error', '#ffb4ab'); return; }
+  if (file.size > 8 * 1024 * 1024) { showToast('Photo must be under 8 MB', 'error', '#ffb4ab'); return; }
   avatarFile = file;
-  avatarUrl = URL.createObjectURL(file);
-  showAvatarPreview(avatarUrl, file.name);
-  markDirty();
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    avatarUrl = e.target.result;
+    showAvatarPreview(avatarUrl, file.name);
+    markDirty();
+  };
+  reader.readAsDataURL(file);
 });
 
 function showAvatarPreview(url, name) {
@@ -771,12 +775,17 @@ document.getElementById('cat-chips').addEventListener('click', e => {
 function handlePortfolioFiles(files) {
   Array.from(files).forEach(file => {
     if (mediaFiles.length >= 12) { showToast('Max 12 files reached', 'warning', '#ffb4ab'); return; }
+    if (file.size > 12 * 1024 * 1024) { showToast('File must be under 12 MB', 'error', '#ffb4ab'); return; }
     const id  = Date.now() + Math.random();
-    const url = URL.createObjectURL(file);
     const isVideo = file.type.startsWith('video');
-    mediaFiles.push({ id, itemId: null, url, type: isVideo ? 'video' : 'image', file, name: file.name, isExisting: false });
-    appendThumb({ id, url, isVideo });
-    markDirty();
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+      mediaFiles.push({ id, itemId: null, url: dataUrl, dataUrl: dataUrl, type: isVideo ? 'video' : 'image', file, name: file.name, isExisting: false });
+      appendThumb({ id, url: dataUrl, isVideo });
+      markDirty();
+    };
+    reader.readAsDataURL(file);
   });
   updatePortfolioCount();
 }
