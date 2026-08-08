@@ -1314,6 +1314,7 @@ _TEMPLATE_MAP = {
 
 # Alias map: incoming filename -> actual filename in _TEMPLATE_MAP
 _ALIAS_MAP = {
+    "About.html":            "about.html",
     "login.html":            "signin.html",
     "register.html":         "signup.html",
     "organizers.html":       "organisers.html",
