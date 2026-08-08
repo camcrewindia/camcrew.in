@@ -197,7 +197,7 @@
     background: #e0e5ec;
     border-radius: 24px;
     padding: 1.25rem 1.2rem 1.1rem;
-    box-shadow: 0 -4px 18px rgba(0,0,0,0.06), 6px 6px 16px #b8c2cc, -6px -6px 16px #ffffff;
+    box-shadow: 6px 6px 16px #b8c2cc, -6px -6px 16px #ffffff;
     display: flex; flex-direction: column;
   }
 
@@ -438,32 +438,62 @@
 <!-- Footer container -->
 <div id="site-footer" class="relative z-10 mt-16"></div>
 
-<script src="/static/js/location-selector.js"></script>
+<script src="/static/js/india-locations.js"></script>
 <script src="/static/js/header-loader.js"></script>
 <script src="/static/js/footer-loader.js"></script>
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   Location Cascade Setup (Indian State -> District -> City)
+   Real Indian Location Cascade (State -> District -> City)
 ═══════════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
-  if (typeof initCascadingLocationSelector === 'function') {
-    initCascadingLocationSelector({
-      stateId: 'filter-state',
-      districtId: 'filter-district',
-      cityId: 'filter-city'
+  const stateEl = document.getElementById('filter-state');
+  if (stateEl && typeof INDIA_LOCATIONS !== 'undefined') {
+    stateEl.innerHTML = '<option value="">All States</option>';
+    Object.keys(INDIA_LOCATIONS).sort().forEach(st => {
+      stateEl.innerHTML += `<option value="${st}">${st}</option>`;
     });
   }
 });
 
 function onStateChange() {
-  if (typeof handleStateDropdownChange === 'function') {
-    handleStateDropdownChange('filter-state', 'filter-district', 'filter-city');
+  const stateEl = document.getElementById('filter-state');
+  const distEl  = document.getElementById('filter-district');
+  const cityEl  = document.getElementById('filter-city');
+
+  const selectedState = stateEl.value;
+  distEl.innerHTML = '<option value="">All Districts</option>';
+  cityEl.innerHTML = '<option value="">All Cities</option>';
+  cityEl.disabled = true;
+
+  if (selectedState && typeof INDIA_LOCATIONS !== 'undefined' && INDIA_LOCATIONS[selectedState]) {
+    const districts = Object.keys(INDIA_LOCATIONS[selectedState]).sort();
+    districts.forEach(d => {
+      distEl.innerHTML += `<option value="${d}">${d}</option>`;
+    });
+    distEl.disabled = false;
+  } else {
+    distEl.disabled = true;
   }
 }
+
 function onDistrictChange() {
-  if (typeof handleDistrictDropdownChange === 'function') {
-    handleDistrictDropdownChange('filter-district', 'filter-city');
+  const stateEl = document.getElementById('filter-state');
+  const distEl  = document.getElementById('filter-district');
+  const cityEl  = document.getElementById('filter-city');
+
+  const selectedState = stateEl.value;
+  const selectedDist  = distEl.value;
+  cityEl.innerHTML = '<option value="">All Cities</option>';
+
+  if (selectedState && selectedDist && INDIA_LOCATIONS[selectedState] && INDIA_LOCATIONS[selectedState][selectedDist]) {
+    const cities = INDIA_LOCATIONS[selectedState][selectedDist];
+    cities.forEach(c => {
+      cityEl.innerHTML += `<option value="${c}">${c}</option>`;
+    });
+    cityEl.disabled = false;
+  } else {
+    cityEl.disabled = true;
   }
 }
 
