@@ -45,11 +45,15 @@
     /* Buttons */
     --btn-view-bg:         #e0e5ec;
     --btn-view-shadow:     4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff;
+    --btn-view-shadow-h:   6px 6px 14px #b8c2cc, -6px -6px 14px #ffffff;
+    --btn-view-shadow-active: inset 4px 4px 8px #b8c2cc, inset -4px -4px 8px #ffffff;
     --btn-view-color:      #334155;
     
     --btn-book-bg:         #0f4c5c;
     --btn-book-color:      #ffffff;
     --btn-book-shadow:     0 6px 16px rgba(15,76,92,0.35);
+    --btn-book-shadow-h:   0 8px 24px rgba(15,76,92,0.45);
+    --btn-book-shadow-active: inset 0 4px 8px rgba(0,0,0,0.4);
 
     --stat-card-bg:        #e0e5ec;
     --stat-card-shadow:    8px 8px 18px #b8c2cc, -8px -8px 18px #ffffff;
@@ -87,11 +91,15 @@
     /* Buttons */
     --btn-view-bg:         rgba(255,255,255,0.06);
     --btn-view-shadow:     0 0 0 1px rgba(255,255,255,0.12);
+    --btn-view-shadow-h:   0 0 15px rgba(0,240,255,0.3), 0 0 0 1px #00f0ff;
+    --btn-view-shadow-active: inset 0 3px 6px rgba(0,0,0,0.7), 0 0 20px rgba(0,240,255,0.5);
     --btn-view-color:      #dce4e5;
     
     --btn-book-bg:         linear-gradient(135deg, #00f0ff 0%, #00c8e0 100%);
     --btn-book-color:      #001f22;
     --btn-book-shadow:     0 6px 20px rgba(0,240,255,0.35);
+    --btn-book-shadow-h:   0 8px 28px rgba(0,240,255,0.55);
+    --btn-book-shadow-active: inset 0 3px 6px rgba(0,0,0,0.5), 0 0 30px rgba(0,240,255,0.8);
 
     --stat-card-bg:        rgba(22, 22, 24, 0.75);
     --stat-card-shadow:    0 20px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.12);
@@ -319,10 +327,16 @@
     color: var(--btn-view-color); font-weight: 700; font-size: 0.82rem;
     padding: 0.7rem 0.5rem; text-align: center;
     text-decoration: none; display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
+    transition: all 0.15s ease-in-out;
+    cursor: pointer; user-select: none;
   }
   .btn-view-profile:hover {
-    opacity: 0.9;
+    box-shadow: var(--btn-view-shadow-h);
+    transform: translateY(-2px);
+  }
+  .btn-view-profile:active {
+    box-shadow: var(--btn-view-shadow-active) !important;
+    transform: translateY(1px) !important;
   }
 
   .btn-book-now {
@@ -332,11 +346,16 @@
     padding: 0.7rem 0.5rem; text-align: center;
     text-decoration: none; display: flex; align-items: center; justify-content: center;
     box-shadow: var(--btn-book-shadow);
-    transition: all 0.2s;
+    transition: all 0.15s ease-in-out;
+    cursor: pointer; user-select: none;
   }
   .btn-book-now:hover {
-    transform: translateY(-1px);
-    opacity: 0.95;
+    box-shadow: var(--btn-book-shadow-h);
+    transform: translateY(-2px);
+  }
+  .btn-book-now:active {
+    box-shadow: var(--btn-book-shadow-active) !important;
+    transform: translateY(1px) !important;
   }
 
   /* Skeleton Loader */
