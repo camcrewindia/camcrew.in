@@ -925,15 +925,17 @@ async function loadCheckoutSummary() {
         ? `<img class="w-full h-full object-cover" src="${item.image_url}" alt="${item.name}">`
         : `<div class="w-full h-full flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-[20px]">photo_camera</span></div>`;
       const row = document.createElement('div');
-      row.className = 'flex gap-3 items-start';
+      row.className = 'flex gap-3 items-center py-1.5';
       row.innerHTML = `
-        <div class="order-item-img">${imgEl}</div>
+        <div class="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center p-1" style="background: var(--chip-bg, rgba(255,255,255,0.04)); border: 1px solid var(--border-color, rgba(0,0,0,0.1));">
+          ${imgEl}
+        </div>
         <div class="flex-grow min-w-0">
-          <h4 class="text-sm font-bold text-on-surface leading-tight truncate">${item.name}</h4>
-          ${item.category ? `<p class="text-[10px] uppercase tracking-wider text-on-surface-variant mt-0.5">${item.category}</p>` : ''}
-          <div class="flex justify-between items-center mt-1.5">
-            <span class="text-[11px] text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">Qty: ${item.quantity}</span>
-            <span class="text-sm font-bold text-primary-container">${fmt(lineTotal)}</span>
+          <h4 class="text-xs font-bold leading-snug truncate" style="color: var(--text-main, #0f172a);">${item.name}</h4>
+          ${item.category ? `<p class="text-[10px] uppercase font-bold tracking-wider opacity-75" style="color: var(--text-muted, #64748b);">${item.category}</p>` : ''}
+          <div class="flex justify-between items-center mt-1">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full" style="background: rgba(14, 90, 111, 0.12); color: #0e5a6f;">Qty: ${item.quantity}</span>
+            <span class="text-xs font-extrabold" style="color: var(--accent-color, #0e5a6f);">${fmt(lineTotal)}</span>
           </div>
         </div>`;
       list.appendChild(row);

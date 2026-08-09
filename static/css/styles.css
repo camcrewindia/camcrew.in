@@ -1372,6 +1372,128 @@ html.light .coupon-btn {
   box-shadow: 0 4px 10px rgba(14, 90, 111, 0.3) !important;
 }
 
+/* ── Checkout Page Light Theme Component Overrides ── */
+
+/* 1. Shipping Option Cards in Light Mode */
+[data-theme="light"] .shipping-opt,
+html.light .shipping-opt {
+  background: #e0e5ec !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff !important;
+}
+
+[data-theme="light"] .shipping-opt p,
+[data-theme="light"] .shipping-opt span,
+html.light .shipping-opt p,
+html.light .shipping-opt span {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .shipping-opt:has(input:checked),
+html.light .shipping-opt:has(input:checked) {
+  background: rgba(14, 90, 111, 0.12) !important;
+  border: 2px solid #0e5a6f !important;
+  box-shadow: inset 2px 2px 5px #b8c2cc, inset -2px -2px 5px #ffffff !important;
+}
+
+[data-theme="light"] .shipping-opt:has(input:checked) span.text-primary-container,
+[data-theme="light"] .shipping-opt:has(input:checked) p,
+html.light .shipping-opt:has(input:checked) span.text-primary-container,
+html.light .shipping-opt:has(input:checked) p {
+  color: #0e5a6f !important;
+  font-weight: 800 !important;
+}
+
+/* 2. Payment Method Tabs in Light Mode */
+[data-theme="light"] .pay-tab,
+html.light .pay-tab {
+  background: #e0e5ec !important;
+  color: #334155 !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff !important;
+}
+
+[data-theme="light"] .pay-tab .pay-icon,
+[data-theme="light"] .pay-tab .pay-label,
+html.light .pay-tab .pay-icon,
+html.light .pay-tab .pay-label {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .pay-tab.active,
+[data-theme="light"] .pay-tab:hover,
+html.light .pay-tab.active,
+html.light .pay-tab:hover {
+  background: #0e5a6f !important;
+  border-color: #0e5a6f !important;
+  box-shadow: 0 4px 12px rgba(14, 90, 111, 0.35) !important;
+}
+
+[data-theme="light"] .pay-tab.active .pay-icon,
+[data-theme="light"] .pay-tab.active .pay-label,
+[data-theme="light"] .pay-tab:hover .pay-icon,
+[data-theme="light"] .pay-tab:hover .pay-label,
+html.light .pay-tab.active .pay-icon,
+html.light .pay-tab.active .pay-label,
+html.light .pay-tab:hover .pay-icon,
+html.light .pay-tab:hover .pay-label {
+  color: #ffffff !important;
+}
+
+/* 3. Credit Card Visual Preview in Light Mode */
+[data-theme="light"] .card-face,
+html.light .card-face {
+  background: linear-gradient(135deg, #ffffff 0%, #e0e5ec 100%) !important;
+  border: 1px solid rgba(14, 90, 111, 0.3) !important;
+  box-shadow: 6px 6px 20px #b8c2cc, -6px -6px 20px #ffffff !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .card-back,
+html.light .card-back {
+  background: linear-gradient(135deg, #e0e5ec 0%, #cbd5e1 100%) !important;
+  border: 1px solid rgba(14, 90, 111, 0.2) !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .card-number-display,
+[data-theme="light"] #card-name-display,
+[data-theme="light"] #card-exp-display,
+html.light .card-number-display,
+html.light #card-name-display,
+html.light #card-exp-display {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .card-face div,
+html.light .card-face div {
+  color: #0f172a !important;
+}
+
+/* 4. Order Summary Item Qty Badge in Light Mode */
+[data-theme="light"] #checkout-items-list span.bg-surface-container,
+[data-theme="light"] #checkout-items-list span[class*="bg-"],
+html.light #checkout-items-list span.bg-surface-container,
+html.light #checkout-items-list span[class*="bg-"] {
+  background: rgba(14, 90, 111, 0.12) !important;
+  color: #0e5a6f !important;
+  font-weight: 800 !important;
+}
+
+/* 5. Toggle Switch Controls in Light Mode */
+[data-theme="light"] .bg-surface-container-high,
+html.light .bg-surface-container-high {
+  background-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] .bg-on-surface-variant,
+html.light .bg-on-surface-variant {
+  background-color: #64748b !important;
+}
+
 /* Headings in Light Mode */
 [data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4, [data-theme="light"] h5, [data-theme="light"] h6,
 html.light h1, html.light h2, html.light h3, html.light h4, html.light h5, html.light h6 {
