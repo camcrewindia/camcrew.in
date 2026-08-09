@@ -1858,3 +1858,81 @@ html.light .site-footer .footer-bottom-bar {
 html.light .site-footer .footer-copy {
   color: #64748b !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   ELEGANT CART QUANTITY STEPPER (LIGHT & DARK DUAL THEME)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Dark Mode Stepper */
+.cart-qty-stepper {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.cart-qty-stepper .qty-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: #00f0ff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.cart-qty-stepper .qty-btn:hover {
+  background: rgba(0, 240, 255, 0.2);
+  color: #ffffff;
+}
+
+.cart-qty-stepper .qty-input {
+  color: #ffffff !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Light Mode Stepper (Clean, Elegant Neumorphism) */
+[data-theme="light"] .cart-qty-stepper,
+html.light .cart-qty-stepper {
+  background: #e0e5ec !important;
+  border: none !important;
+  box-shadow: inset 3px 3px 7px #b8c2cc, inset -3px -3px 7px #ffffff !important;
+}
+
+[data-theme="light"] .cart-qty-stepper .qty-btn,
+html.light .cart-qty-stepper .qty-btn {
+  background: #e0e5ec !important;
+  color: #0e5a6f !important;
+  border: none !important;
+  box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff !important;
+}
+
+[data-theme="light"] .cart-qty-stepper .qty-btn:hover,
+html.light .cart-qty-stepper .qty-btn:hover {
+  background: #0e5a6f !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(14, 90, 111, 0.35) !important;
+}
+
+[data-theme="light"] .cart-qty-stepper .qty-input,
+html.light .cart-qty-stepper .qty-input {
+  color: #0f172a !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-weight: 800 !important;
+}
+
+/* Image Thumbnail Container in Light Mode */
+.cart-img-frame {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] .cart-img-frame,
+html.light .cart-img-frame {
+  background: #e0e5ec !important;
+  border: none !important;
+  box-shadow: inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff !important;
+}
+
+[data-theme="light"] .cart-img-frame .material-symbols-outlined,
+html.light .cart-img-frame .material-symbols-outlined {
+  color: #475569 !important;
+}

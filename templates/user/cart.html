@@ -306,14 +306,14 @@ function renderItems() {
     const img = item.image_url
       ? `<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 rounded-lg" src="${item.image_url}" alt="${item.name}">`
       : `<div class="w-full h-full flex items-center justify-center text-slate-400">
-           <span class="material-symbols-outlined text-[42px]">photo_camera</span>
+           <span class="material-symbols-outlined text-[36px]">photo_camera</span>
          </div>`;
 
     const card = document.createElement('div');
     card.className = 'glass-panel rounded-2xl p-5 md:p-6 flex flex-col md:flex-row items-center gap-6 transition-all duration-300 group shadow-sm';
     card.dataset.itemId = item.id;
     card.innerHTML = `
-      <div class="w-28 h-28 md:w-36 md:h-36 rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center p-2" style="background: var(--chip-bg, rgba(255,255,255,0.04)); border: 1px solid var(--border-color, rgba(255,255,255,0.1));">
+      <div class="cart-img-frame w-28 h-28 md:w-32 md:h-32 rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center p-2">
         ${img}
       </div>
       <div class="flex-grow w-full flex flex-col justify-between gap-3">
@@ -321,12 +321,12 @@ function renderItems() {
           <div>
             <h3 class="font-extrabold text-base md:text-lg mb-1" style="color: var(--text-main, #0f172a);">${item.name}</h3>
             ${item.category ? `<span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider mb-2" style="background: rgba(14, 90, 111, 0.1); color: #0e5a6f;">${item.category}</span>` : ''}
-            <div class="flex items-center gap-3 text-xs font-semibold" style="color: var(--text-muted, #64748b);">
+            <div class="flex items-center gap-3 text-xs font-semibold">
               <span class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                 <span class="material-symbols-outlined text-sm">check_circle</span> In Stock
               </span>
               <span>•</span>
-              <span class="flex items-center gap-1">
+              <span class="flex items-center gap-1" style="color: var(--text-muted, #64748b);">
                 <span class="material-symbols-outlined text-sm">local_shipping</span> Express Delivery
               </span>
             </div>
@@ -336,25 +336,25 @@ function renderItems() {
             <p class="text-xs opacity-75 mt-0.5" style="color: var(--text-muted, #64748b);">${fmt(item.price)} each</p>
           </div>
         </div>
-        <div class="flex items-center justify-between pt-2 border-t" style="border-color: rgba(128,128,128,0.15);">
-          <div class="flex items-center gap-1 rounded-full px-2 py-1" style="background: var(--chip-bg, #e0e5ec); box-shadow: var(--chip-shadow, 3px 3px 6px #b8c2cc, -3px -3px 6px #ffffff);">
-            <button onclick="changeQty(${item.id}, ${item.quantity - 1})"
-              class="w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm hover:text-teal-600 transition-colors">
+        <div class="flex items-center justify-between pt-3 border-t" style="border-color: rgba(128,128,128,0.15);">
+          <!-- Elegant Stepper Pill -->
+          <div class="cart-qty-stepper flex items-center gap-1 rounded-full px-1.5 py-1">
+            <button type="button" onclick="changeQty(${item.id}, ${item.quantity - 1})"
+              class="qty-btn w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm transition-all">
               <span class="material-symbols-outlined text-sm">remove</span>
             </button>
             <input type="number" value="${item.quantity}" min="1"
-              class="w-10 text-center border-none focus:ring-0 font-extrabold text-sm qty-input bg-transparent"
-              style="color: var(--text-main, #0f172a);"
+              class="qty-input w-10 text-center border-none focus:outline-none font-extrabold text-sm bg-transparent px-0"
               onchange="changeQty(${item.id}, parseInt(this.value) || 1)"/>
-            <button onclick="changeQty(${item.id}, ${item.quantity + 1})"
-              class="w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm hover:text-teal-600 transition-colors">
+            <button type="button" onclick="changeQty(${item.id}, ${item.quantity + 1})"
+              class="qty-btn w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm transition-all">
               <span class="material-symbols-outlined text-sm">add</span>
             </button>
           </div>
-          <button onclick="removeItem(${item.id})"
-            class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-rose-500 hover:bg-rose-500/10 transition-colors">
+          <button type="button" onclick="removeItem(${item.id})"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold text-rose-500 hover:bg-rose-500/10 transition-colors">
             <span class="material-symbols-outlined text-sm">delete</span>
-            Remove
+            REMOVE
           </button>
         </div>
       </div>`;
