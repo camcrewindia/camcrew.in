@@ -20,12 +20,12 @@
   }
 
   // ── 2. Active nav link ───────────────────────────────────────────────────
-  const page = window.location.pathname.split('/').pop() || 'index.html';
+  const page = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
 
   const activeKey = {
     'index.html':        'home',
     '':                  'home',
-    'About.html':        'about',
+    'about.html':        'about',
     'rentals.html':      'rentals',
     'sales.html':        'sales',
     'cart.html':         'cart',
