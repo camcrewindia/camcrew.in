@@ -263,14 +263,6 @@ html.light .url-display {
 .profile-grid {
   max-width: 960px; margin: 0 auto;
   padding: 0 1.5rem 5rem;
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 2rem;
-  align-items: start;
-}
-@media (max-width: 768px) {
-  .profile-grid { grid-template-columns: 1fr; }
-  .profile-sidebar { order: -1; }
 }
 
 /* ── Name block ── */
@@ -715,6 +707,9 @@ html.light .url-display {
         <a href="professional-dashboard.html" class="btn-ghost" title="Dashboard">
           <span class="material-symbols-outlined" style="font-size:0.9rem;">dashboard</span> Dashboard
         </a>
+        <a id="pp-public-link-btn" href="#" target="_blank" class="btn-ghost" title="View Public Profile">
+          <span class="material-symbols-outlined" style="font-size:0.9rem;">open_in_new</span> View Public Profile
+        </a>
         <a href="professional-edit.html" class="btn-book-cta" style="padding:0.65rem 1.25rem;">
           <span class="material-symbols-outlined" style="font-size:0.9rem;">edit</span> Edit Profile
         </a>
@@ -998,164 +993,115 @@ function render(vaultFiles, jobs) {
     ? `${window.location.origin}/@${S.username}`
     : `${window.location.origin}/public-profile.html${(S.pro?.user_id || S.user?.id) ? '?id=' + (S.pro?.user_id || S.user?.id) : ''}`;
 
-  /* ─ Render Grid Layout ─ */
+  const publicLinkBtn = document.getElementById('pp-public-link-btn');
+  if (publicLinkBtn) publicLinkBtn.href = publicShareUrl;
+
+  /* ─ Render Layout ─ */
   if (skeletonMain) skeletonMain.style.display = 'none';
-  content.style.display = 'grid';
+  content.style.display = 'block';
   content.innerHTML = `
-
-    <!-- LEFT COLUMN: Main Content -->
-    <div>
-      <!-- Stats bar -->
-      <div class="stats-bar">
-        <div class="stat-cell">
-          <span class="stat-num">${totalPortfolio}</span>
-          <span class="stat-lbl">Portfolio</span>
-        </div>
-        <div class="stat-cell">
-          <span class="stat-num">${services.length}</span>
-          <span class="stat-lbl">Services</span>
-        </div>
-        <div class="stat-cell">
-          <span class="stat-num">${completedJobs}</span>
-          <span class="stat-lbl">Completed</span>
-        </div>
-        <div class="stat-cell">
-          <span class="stat-num">${locations.length}</span>
-          <span class="stat-lbl">Cities</span>
-        </div>
+    <!-- Stats bar -->
+    <div class="stats-bar">
+      <div class="stat-cell">
+        <span class="stat-num">${totalPortfolio}</span>
+        <span class="stat-lbl">Portfolio</span>
       </div>
-
-      <!-- Bio -->
-      ${bio ? `<p class="profile-bio">${esc(bio)}</p>` : ''}
-
-      <!-- Website -->
-      ${website ? `<a href="${website.startsWith('http') ? esc(website) : 'https://'+esc(website)}"
-        target="_blank" rel="noopener noreferrer" class="website-link">
-        <span class="material-symbols-outlined" style="font-size:0.9rem;">open_in_new</span>
-        ${esc(website.replace(/^https?:\/\//,''))}
-      </a>` : ''}
-
-      <!-- Verified Certification Badges -->
-      ${(certifications && certifications.length) ? `<div class="chips-row mb-3">${certifications.map(c=>`
-        <span class="chip">
-          <span class="material-symbols-outlined" style="font-size:0.75rem;">verified</span>
-          ${esc(c)}
-        </span>`).join('')}</div>` : ''}
-
-      <!-- Categories chips -->
-      ${categories.length ? `<div class="chips-row">${categories.map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div>` : ''}
-
-      <!-- Location chips -->
-      ${locations.length ? `<div class="chips-row">${locations.map(l=>`
-        <span class="chip chip-loc">
-          <span class="material-symbols-outlined" style="font-size:0.7rem;">location_on</span>
-          ${esc(l)}
-        </span>`).join('')}</div>` : ''}
-
-      <!-- Equipment Roster section -->
-      ${(equipmentRoster && equipmentRoster.length) ? `
-        <div class="section-head">
-          <span class="section-head-title">Equipment Roster</span>
-          <span class="section-head-count">${equipmentRoster.length}</span>
-          <div class="section-head-line"></div>
-        </div>
-        <div class="flex flex-wrap gap-2 mb-6">
-          ${equipmentRoster.map(eq => `
-            <div class="gear-card" style="padding:0.5rem 0.8rem;border-radius:0.75rem;font-size:0.78rem;">
-              <span style="font-size:0.65rem;font-weight:800;color:var(--pp-accent);text-transform:uppercase;display:block;">[${esc(eq.category || 'Gear')}]</span>
-              <span style="font-weight:600;color:var(--pp-text-main);">${esc(eq.item || '')}</span>
-            </div>`).join('')}
-        </div>` : ''}
-
-      <!-- Social links -->
-      ${socialsHTML ? `<div class="socials-row">${socialsHTML}</div>` : ''}
-
-      <!-- Share Profile Card -->
-      <div class="section-head">
-        <span class="section-head-title">Share Profile</span>
-        <div class="section-head-line"></div>
+      <div class="stat-cell">
+        <span class="stat-num">${services.length}</span>
+        <span class="stat-lbl">Services</span>
       </div>
-      <div class="share-card">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
-          <div>
-            <p class="share-title">Your public profile link</p>
-            <p class="share-sub">Share with clients — no login required to view.</p>
-          </div>
-          <button onclick="copyProfileLink()" class="btn-book-cta" style="padding:0.55rem 1.15rem;font-size:0.8rem;">
-            <span class="material-symbols-outlined" style="font-size:0.95rem;">content_copy</span>
-            Copy Link
-          </button>
-        </div>
-        <div class="url-display">
-          <span class="material-symbols-outlined">link</span>
-          <span class="url-text">${esc(publicShareUrl)}</span>
-        </div>
+      <div class="stat-cell">
+        <span class="stat-num">${completedJobs}</span>
+        <span class="stat-lbl">Completed</span>
       </div>
-
-      <!-- Portfolio Section -->
-      <div class="section-head">
-        <span class="section-head-title">Portfolio</span>
-        ${allMedia.length ? `<span class="section-head-count">${allMedia.length}</span>` : ''}
-        <div class="section-head-line"></div>
-      </div>
-      <div class="portfolio-grid" id="portfolio-grid">${gridCells}</div>
-
-      <!-- Services Section -->
-      <div class="section-head">
-        <span class="section-head-title">Services</span>
-        ${services.length ? `<span class="section-head-count">${services.length}</span>` : ''}
-        <div class="section-head-line"></div>
-      </div>
-      ${svcHTML}
-    </div>
-
-    <!-- RIGHT COLUMN: Management Sidebar -->
-    <div class="profile-sidebar">
-      <div class="sidebar-card">
-        <p class="sidebar-card-title">Profile Management</p>
-
-        <!-- Mini avatar + name -->
-        <div style="display:flex;align-items:center;gap:0.85rem;margin-bottom:1.25rem;">
-          <div style="width:2.8rem;height:2.8rem;border-radius:50%;flex-shrink:0;overflow:hidden;background:linear-gradient(135deg,hsl(${hue},50%,12%),hsl(${(hue+60)%360},60%,18%));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.95rem;color:hsl(${hue},80%,72%);position:relative;">
-            ${avatarPhoto ? `<img src="${esc(avatarPhoto)}" alt="${esc(displayName)}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">` : initial}
-          </div>
-          <div style="min-width:0;">
-            <p style="font-weight:800;font-size:0.9rem;color:var(--pp-text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(displayName)}</p>
-            ${title ? `<p style="font-size:0.72rem;color:var(--pp-accent);font-weight:600;">${esc(title)}</p>` : ''}
-          </div>
-        </div>
-
-        <!-- Available services summary -->
-        ${services.length ? `
-        <div style="margin-bottom:1.25rem;">
-          <p style="font-size:0.63rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--pp-text-muted);margin-bottom:0.65rem;">Configured Services</p>
-          <div style="display:flex;flex-direction:column;gap:0.45rem;">
-            ${services.slice(0,4).map(s=>`
-            <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0.4rem 0;border-bottom:1px solid var(--pp-card-border);">
-              <span style="font-size:0.8rem;color:var(--pp-text-muted);font-weight:600;">${esc(s.name)}</span>
-              ${s.price ? `<span style="font-size:0.78rem;color:var(--pp-accent);font-weight:800;flex-shrink:0;margin-left:0.5rem;">₹${Number(s.price).toLocaleString('en-IN')}</span>` : ''}
-            </div>`).join('')}
-          </div>
-        </div>` : ''}
-
-        <!-- CTAs -->
-        <a href="professional-edit.html" class="btn-book-cta" style="width:100%;justify-content:center;margin-bottom:0.65rem;">
-          <span class="material-symbols-outlined" style="font-size:1rem;">tune</span>
-          Edit Profile Details
-        </a>
-
-        <a href="${esc(publicShareUrl)}" target="_blank" class="btn-ghost" style="width:100%;justify-content:center;font-size:0.82rem;padding:0.65rem 1rem;">
-          <span class="material-symbols-outlined" style="font-size:0.95rem;">open_in_new</span>
-          View Public Profile
-        </a>
-
-        <!-- Trust badge -->
-        <div style="display:flex;align-items:center;gap:0.4rem;margin-top:0.85rem;justify-content:center;">
-          <span class="material-symbols-outlined" style="font-size:0.82rem;color:var(--pp-text-muted);font-variation-settings:'FILL' 1">shield</span>
-          <p style="font-size:0.7rem;color:var(--pp-text-muted);">Verified Professional Account</p>
-        </div>
+      <div class="stat-cell">
+        <span class="stat-num">${locations.length}</span>
+        <span class="stat-lbl">Cities</span>
       </div>
     </div>
+
+    <!-- Bio -->
+    ${bio ? `<p class="profile-bio">${esc(bio)}</p>` : ''}
+
+    <!-- Website -->
+    ${website ? `<a href="${website.startsWith('http') ? esc(website) : 'https://'+esc(website)}"
+      target="_blank" rel="noopener noreferrer" class="website-link">
+      <span class="material-symbols-outlined" style="font-size:0.9rem;">open_in_new</span>
+      ${esc(website.replace(/^https?:\/\//,''))}
+    </a>` : ''}
+
+    <!-- Verified Certification Badges -->
+    ${(certifications && certifications.length) ? `<div class="chips-row mb-3">${certifications.map(c=>`
+      <span class="chip">
+        <span class="material-symbols-outlined" style="font-size:0.75rem;">verified</span>
+        ${esc(c)}
+      </span>`).join('')}</div>` : ''}
+
+    <!-- Categories chips -->
+    ${categories.length ? `<div class="chips-row">${categories.map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div>` : ''}
+
+    <!-- Location chips -->
+    ${locations.length ? `<div class="chips-row">${locations.map(l=>`
+      <span class="chip chip-loc">
+        <span class="material-symbols-outlined" style="font-size:0.7rem;">location_on</span>
+        ${esc(l)}
+      </span>`).join('')}</div>` : ''}
+
+    <!-- Equipment Roster section -->
+    ${(equipmentRoster && equipmentRoster.length) ? `
+      <div class="section-head">
+        <span class="section-head-title">Equipment Roster</span>
+        <span class="section-head-count">${equipmentRoster.length}</span>
+        <div class="section-head-line"></div>
+      </div>
+      <div class="flex flex-wrap gap-2 mb-6">
+        ${equipmentRoster.map(eq => `
+          <div class="gear-card" style="padding:0.5rem 0.8rem;border-radius:0.75rem;font-size:0.78rem;">
+            <span style="font-size:0.65rem;font-weight:800;color:var(--pp-accent);text-transform:uppercase;display:block;">[${esc(eq.category || 'Gear')}]</span>
+            <span style="font-weight:600;color:var(--pp-text-main);">${esc(eq.item || '')}</span>
+          </div>`).join('')}
+      </div>` : ''}
+
+    <!-- Social links -->
+    ${socialsHTML ? `<div class="socials-row">${socialsHTML}</div>` : ''}
+
+    <!-- Share Profile Card -->
+    <div class="section-head">
+      <span class="section-head-title">Share Profile</span>
+      <div class="section-head-line"></div>
+    </div>
+    <div class="share-card">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+        <div>
+          <p class="share-title">Your public profile link</p>
+          <p class="share-sub">Share with clients — no login required to view.</p>
+        </div>
+        <button onclick="copyProfileLink()" class="btn-book-cta" style="padding:0.55rem 1.15rem;font-size:0.8rem;">
+          <span class="material-symbols-outlined" style="font-size:0.95rem;">content_copy</span>
+          Copy Link
+        </button>
+      </div>
+      <div class="url-display">
+        <span class="material-symbols-outlined">link</span>
+        <span class="url-text">${esc(publicShareUrl)}</span>
+      </div>
+    </div>
+
+    <!-- Portfolio Section -->
+    <div class="section-head">
+      <span class="section-head-title">Portfolio</span>
+      ${allMedia.length ? `<span class="section-head-count">${allMedia.length}</span>` : ''}
+      <div class="section-head-line"></div>
+    </div>
+    <div class="portfolio-grid" id="portfolio-grid">${gridCells}</div>
+
+    <!-- Services Section -->
+    <div class="section-head">
+      <span class="section-head-title">Services</span>
+      ${services.length ? `<span class="section-head-count">${services.length}</span>` : ''}
+      <div class="section-head-line"></div>
+    </div>
+    ${svcHTML}
   `;
 
   window._lightboxMedia = allMedia;
