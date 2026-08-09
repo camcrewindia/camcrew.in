@@ -91,7 +91,7 @@
 
   /* ── Metric number ──────────────────────────────────── */
   .metric-num {
-    background: linear-gradient(to right, #dbfcff, #00f0ff);
+    background: linear-gradient(to right, #00f0ff, #dbfcff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -99,6 +99,46 @@
   /* ── Image hover zoom ───────────────────────────────── */
   .img-zoom { transition: transform .7s cubic-bezier(.4,0,.2,1); }
   .img-zoom:hover { transform:scale(1.06); }
+
+  /* ── Light Mode High-Contrast Readability Overrides ─── */
+  [data-theme="light"] body, html.light body {
+    background-color: #e4e9f0 !important;
+    color: #0f172a !important;
+  }
+  [data-theme="light"] .text-on-surface, html.light .text-on-surface {
+    color: #0f172a !important;
+  }
+  [data-theme="light"] .text-on-surface-variant, html.light .text-on-surface-variant {
+    color: #334155 !important;
+    font-weight: 500 !important;
+  }
+  [data-theme="light"] .text-primary-container, html.light .text-primary-container {
+    color: #0e5a6f !important;
+  }
+  [data-theme="light"] .metric-num, html.light .metric-num {
+    background: linear-gradient(135deg, #0e5a6f, #008ba3) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+  }
+  [data-theme="light"] .shimmer-btn, html.light .shimmer-btn {
+    background-color: #0e5a6f !important;
+    background-image: none !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(14, 90, 111, 0.35) !important;
+  }
+  [data-theme="light"] .shimmer-btn *, html.light .shimmer-btn * {
+    color: #ffffff !important;
+  }
+  [data-theme="light"] .glass-panel, html.light .glass-panel {
+    background: rgba(237, 240, 245, 0.95) !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 4px 4px 12px #c8cfd8, -4px -4px 12px #ffffff !important;
+  }
+  [data-theme="light"] input#subscribe-email, html.light input#subscribe-email {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border-color: rgba(0,0,0,0.15) !important;
+  }
 </style>
 </head>
 <body class="selection:bg-primary-container selection:text-on-primary overflow-x-hidden">
