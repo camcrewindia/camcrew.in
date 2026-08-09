@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html class="dark" lang="en">
 <head>
+<script>
+  (function(){
+    const t = localStorage.getItem('cc-theme') || 'dark';
+    document.documentElement.className = t;
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Create Account | CamCrew Studio</title>
@@ -8,6 +15,35 @@
 <script src="/static/js/tailwind-config.js"></script>
 <link rel="stylesheet" href="/static/css/styles.css">
 <link rel="icon" href="/static/img/camcrew_studio_logo_cop_y.png" type="image/png"/>
+<style>
+  [data-theme="light"] body,
+  html.light body {
+    background-color: #e0e5ec !important;
+    color: #0f172a !important;
+  }
+  [data-theme="light"] .glass-panel,
+  html.light .glass-panel {
+    background: #e0e5ec !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 6px 6px 16px #b8c2cc, -6px -6px 16px #ffffff !important;
+    color: #0f172a !important;
+  }
+  [data-theme="light"] .role-card,
+  html.light .role-card {
+    background: #e0e5ec !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
+    color: #0f172a !important;
+  }
+  [data-theme="light"] .text-on-surface,
+  html.light .text-on-surface {
+    color: #0f172a !important;
+  }
+  [data-theme="light"] .text-on-surface-variant,
+  html.light .text-on-surface-variant {
+    color: #475569 !important;
+  }
+</style>
 </head>
 <body class="bg-obsidian-base min-h-screen flex flex-col items-center justify-center p-margin-mobile md:p-margin-desktop">
 <!-- Atmospheric Background -->

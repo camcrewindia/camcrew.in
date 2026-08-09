@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="/static/css/styles.css">
 <style>
   /* ── Tesla Cybertruck Theme System ──────────────────────────── */
-  :root, 
+  :root, [data-theme="dark"] {
     --pe-bg:     #16161e;
     --pe-dark:   #0d0d16;
     --pe-light:  #1f1f2c;
@@ -22,15 +22,16 @@
     --pe-card:   rgba(22,22,30,0.8);
   }
   
-    --pe-bg:     #eef1f8;
-    --pe-dark:   #c5cad8;
+  [data-theme="light"], html.light {
+    --pe-bg:     #e0e5ec;
+    --pe-dark:   #b8c2cc;
     --pe-light:  #ffffff;
-    --pe-accent: #0060cc;
-    --pe-accent-glow: rgba(0,96,204,0.2);
-    --pe-text:   #1a1a2e;
-    --pe-muted:  #5a6880;
+    --pe-accent: #0e5a6f;
+    --pe-accent-glow: rgba(14,90,111,0.2);
+    --pe-text:   #0f172a;
+    --pe-muted:  #475569;
     --pe-border: rgba(0,0,0,0.1);
-    --pe-card:   rgba(238,241,248,0.9);
+    --pe-card:   #e0e5ec;
   }
   
   
