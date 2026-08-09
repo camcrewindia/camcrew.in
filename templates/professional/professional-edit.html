@@ -8,7 +8,7 @@
 <script src="/static/js/tailwind-config.js"></script>
 <script src="/static/js/india-locations.js"></script>
 <link rel="stylesheet" href="/static/css/styles.css">
-<<script>
+<script>
   (function(){
     const t = localStorage.getItem('cc-theme') || 'dark';
     document.documentElement.className = t;
@@ -16,225 +16,753 @@
   })();
 </script>
 <style>
-  /* ── Camcrew Design System Theme Engine ──────────────────────────── */
-  :root, [data-theme="dark"] {
-    --pe-bg:             #06080a;
-    --pe-card-bg:        rgba(10, 13, 17, 0.95);
-    --pe-card-border:    rgba(255, 255, 255, 0.08);
-    --pe-card-shadow:    0 20px 40px rgba(0, 0, 0, 0.6);
-    --pe-text-main:      #f8fafc;
-    --pe-text-muted:     #94a3b8;
-    --pe-accent:         #00f0ff;
-    --pe-accent-glow:    rgba(0, 240, 255, 0.25);
-    --pe-input-bg:       rgba(255, 255, 255, 0.03);
-    --pe-input-border:   rgba(255, 255, 255, 0.12);
-    --pe-input-shadow:   inset 2px 2px 5px rgba(0, 0, 0, 0.5);
-    --pe-chip-bg:        rgba(255, 255, 255, 0.05);
-    --pe-chip-border:    rgba(255, 255, 255, 0.12);
-    --pe-btn-bg:         linear-gradient(135deg, #00f0ff, #00b8d9);
-    --pe-btn-text:       #001f22;
-    --pe-btn-shadow:     0 6px 20px rgba(0, 240, 255, 0.35);
-  }
-  
-  [data-theme="light"], html.light {
-    --pe-bg:             #e0e5ec !important;
-    --pe-card-bg:        #e0e5ec !important;
-    --pe-card-border:    rgba(0, 0, 0, 0.08) !important;
-    --pe-card-shadow:    6px 6px 16px #b8c2cc, -6px -6px 16px #ffffff !important;
-    --pe-text-main:      #0f172a !important;
-    --pe-text-muted:     #475569 !important;
-    --pe-accent:         #0e5a6f !important;
-    --pe-accent-glow:    rgba(14, 90, 111, 0.2) !important;
-    --pe-input-bg:       #e0e5ec !important;
-    --pe-input-border:   rgba(0, 0, 0, 0.12) !important;
-    --pe-input-shadow:   inset 2px 2px 5px #b8c2cc, inset -2px -2px 5px #ffffff !important;
-    --pe-chip-bg:        #e0e5ec !important;
-    --pe-chip-border:    rgba(0, 0, 0, 0.12) !important;
-    --pe-btn-bg:         #0e5a6f !important;
-    --pe-btn-text:       #ffffff !important;
-    --pe-btn-shadow:     0 6px 20px rgba(14, 90, 111, 0.35) !important;
-  }
+/* ═══════════════════════════════════════════════════════════════════
+   Camcrew Design System — professional-edit.html
+   Dual Theme: Dark Obsidian + Light Neumorphic
+═══════════════════════════════════════════════════════════════════ */
 
-  body {
-    background-color: var(--pe-bg) !important;
-    color: var(--pe-text-main) !important;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    transition: background-color 0.25s, color 0.25s;
-  }
+/* ── Theme Variables ──────────────────────────────────────────────── */
+:root, [data-theme="dark"], html.dark {
+  --pe-bg:              #06080a;
+  --pe-surface:         rgba(14, 18, 24, 0.96);
+  --pe-border:          rgba(255, 255, 255, 0.08);
+  --pe-border-hover:    rgba(255, 255, 255, 0.16);
+  --pe-shadow:          0 4px 20px rgba(0, 0, 0, 0.45);
+  --pe-shadow-lg:       0 12px 40px rgba(0, 0, 0, 0.65);
+  --pe-text:            #f1f5f9;
+  --pe-text-sub:        #94a3b8;
+  --pe-text-faint:      #475569;
+  --pe-accent:          #00dbe9;
+  --pe-accent-glow:     rgba(0, 219, 233, 0.15);
+  --pe-accent-hover:    rgba(0, 219, 233, 0.08);
+  --pe-input-bg:        rgba(255, 255, 255, 0.04);
+  --pe-input-border:    rgba(255, 255, 255, 0.10);
+  --pe-chip-bg:         rgba(255, 255, 255, 0.05);
+  --pe-chip-border:     rgba(255, 255, 255, 0.10);
+  --pe-chip-active-bg:  rgba(0, 219, 233, 0.12);
+  --pe-chip-active-txt: #00dbe9;
+  --pe-btn-bg:          #00dbe9;
+  --pe-btn-text:        #001f22;
+  --pe-btn-glow:        0 6px 24px rgba(0, 219, 233, 0.35);
+  --pe-danger:          #ff6b6b;
+  --pe-stripe:          linear-gradient(180deg, #00dbe9 0%, rgba(0,219,233,0.1) 100%);
+}
 
-  /* ── Section Cards ─────────────────────────────────────────────── */
-  .edit-section {
-    background: var(--pe-card-bg) !important;
-    border: 1px solid var(--pe-card-border) !important;
-    box-shadow: var(--pe-card-shadow) !important;
-    border-radius: 1.5rem !important;
-    padding: 2rem !important;
-    backdrop-filter: blur(16px);
-    position: relative;
-    overflow: hidden;
-  }
-  .edit-section::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; bottom: 0;
-    width: 3px;
-    background: linear-gradient(to bottom, var(--pe-accent), var(--pe-accent-glow));
-    border-radius: 2px 0 0 2px;
-  }
+[data-theme="light"], html.light {
+  --pe-bg:              #e4e9f0;
+  --pe-surface:         #edf0f5;
+  --pe-border:          rgba(0, 0, 0, 0.07);
+  --pe-border-hover:    rgba(0, 0, 0, 0.14);
+  --pe-shadow:          4px 4px 12px #c8cfd8, -4px -4px 12px #ffffff;
+  --pe-shadow-lg:       6px 6px 20px #bdc4ce, -6px -6px 20px #ffffff;
+  --pe-text:            #0f172a;
+  --pe-text-sub:        #475569;
+  --pe-text-faint:      #94a3b8;
+  --pe-accent:          #0e6a80;
+  --pe-accent-glow:     rgba(14, 106, 128, 0.14);
+  --pe-accent-hover:    rgba(14, 106, 128, 0.06);
+  --pe-input-bg:        #e4e9f0;
+  --pe-input-border:    rgba(0, 0, 0, 0.10);
+  --pe-chip-bg:         #e4e9f0;
+  --pe-chip-border:     rgba(0, 0, 0, 0.10);
+  --pe-chip-active-bg:  rgba(14, 106, 128, 0.12);
+  --pe-chip-active-txt: #0e6a80;
+  --pe-btn-bg:          #0e6a80;
+  --pe-btn-text:        #ffffff;
+  --pe-btn-glow:        0 6px 24px rgba(14, 106, 128, 0.35);
+  --pe-danger:          #dc2626;
+  --pe-stripe:          linear-gradient(180deg, #0e6a80 0%, rgba(14,106,128,0.1) 100%);
+}
 
-  .section-title {
-    font-size: 1.05rem; font-weight: 800; color: var(--pe-text-main) !important;
-    margin-bottom: 0.25rem;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-  }
-  .section-subtitle {
-    font-size: 0.88rem; color: var(--pe-text-muted) !important;
-    margin-bottom: 1.5rem;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-  }
-  .section-divider {
-    display: flex; align-items: center; gap: 0.75rem;
-    margin-bottom: 1.25rem;
-  }
-  .section-divider-icon {
-    width: 2.2rem; height: 2.2rem; border-radius: 0.65rem;
-    background: var(--pe-accent-glow) !important;
-    border: 1px solid var(--pe-accent) !important;
-    color: var(--pe-accent) !important;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
+/* ── Base ─────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  background-color: var(--pe-bg);
+  color: var(--pe-text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+  min-height: 100vh;
+}
 
-  /* ── Inputs & Textareas ───────────────────────────────────────── */
-  .cc-input, .cc-textarea, select.cc-input {
-    width: 100%;
-    background: var(--pe-input-bg) !important;
-    border: 1px solid var(--pe-input-border) !important;
-    border-radius: 0.85rem !important;
-    box-shadow: var(--pe-input-shadow) !important;
-    color: var(--pe-text-main) !important;
-    padding: 0.75rem 1rem;
-    font-size: 0.95rem;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-  .cc-input:focus, .cc-textarea:focus, select.cc-input:focus {
-    border-color: var(--pe-accent) !important;
-  }
-  .cc-input::placeholder, .cc-textarea::placeholder {
-    color: var(--pe-text-muted) !important;
-    opacity: 0.6;
-  }
-  .cc-input:read-only { opacity: 0.6; cursor: not-allowed; }
+/* ── Page Wrapper ─────────────────────────────────────────────────── */
+.pe-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 6.5rem 1.25rem 7rem;
+}
 
-  .cc-label {
-    display: block;
-    font-size: 0.72rem; font-weight: 800;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--pe-text-muted) !important;
-    margin-bottom: 0.4rem;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-  }
+/* ── Page Heading ─────────────────────────────────────────────────── */
+.pe-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--pe-text-sub);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: 0.7rem;
+  transition: color 0.2s;
+}
+.pe-back-link:hover { color: var(--pe-accent); }
+.pe-back-link .material-symbols-outlined { font-size: 1rem; }
 
-  /* ── Avatar upload ring ───────────────────────────────────────── */
-  #avatar-ring {
-    width: 7rem; height: 7rem; border-radius: 50%;
-    border: 2px dashed var(--pe-accent);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; position: relative; overflow: hidden;
-    transition: all 0.25s ease;
-    background: var(--pe-accent-glow);
-  }
-  #avatar-ring:hover {
-    border-color: var(--pe-accent);
-    box-shadow: 0 0 0 6px var(--pe-accent-glow);
-  }
-  #avatar-preview { width: 100%; height: 100%; object-fit: cover; display: none; }
+.pe-page-title {
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--pe-text) 0%, var(--pe-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+  margin-bottom: 0.35rem;
+}
+.pe-page-desc {
+  font-size: 0.85rem;
+  color: var(--pe-text-sub);
+  line-height: 1.5;
+}
 
-  /* ── Category chip ────────────────────────────────────────────── */
-  .cat-chip {
-    padding: 0.45rem 0.95rem; border-radius: 999px;
-    border: 1px solid var(--pe-chip-border);
-    background: var(--pe-chip-bg);
-    color: var(--pe-text-muted); font-size: 0.82rem; font-weight: 600;
-    cursor: pointer; transition: all 0.2s;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-  }
-  .cat-chip:hover {
-    border-color: var(--pe-accent);
-    color: var(--pe-accent);
-  }
-  .cat-chip.selected {
-    background: var(--pe-accent-glow) !important;
-    border-color: var(--pe-accent) !important;
-    color: var(--pe-accent) !important;
-    font-weight: 800;
-  }
+/* ── Section Cards ────────────────────────────────────────────────── */
+.pe-section {
+  background: var(--pe-surface);
+  border: 1px solid var(--pe-border);
+  border-radius: 1.25rem;
+  box-shadow: var(--pe-shadow);
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.25s, border-color 0.25s;
+  margin-bottom: 1.1rem;
+}
+.pe-section:hover {
+  border-color: var(--pe-border-hover);
+  box-shadow: var(--pe-shadow-lg);
+}
+.pe-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 3px;
+  background: var(--pe-stripe);
+}
 
-  /* ── Location tag ─────────────────────────────────────────────── */
-  .loc-tag {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    padding: 0.45rem 0.95rem; border-radius: 999px;
-    background: var(--pe-accent-glow) !important;
-    border: 1px solid var(--pe-accent) !important;
-    color: var(--pe-accent) !important; font-size: 0.82rem; font-weight: 700;
-  }
-  .loc-tag button {
-    background: none; border: none; color: var(--pe-accent);
-    cursor: pointer; line-height: 1; padding: 0; font-size: 1rem;
-    display: flex; align-items: center; transition: color 0.15s;
-  }
-  .loc-tag button:hover { color: #ff5252; }
+/* Section header */
+.pe-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.3rem 1.6rem 0 1.6rem;
+}
+.pe-section-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.55rem;
+  background: var(--pe-accent-glow);
+  border: 1px solid var(--pe-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.pe-section-icon .material-symbols-outlined {
+  font-size: 0.95rem;
+  color: var(--pe-accent);
+}
+.pe-section-title {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--pe-text);
+  line-height: 1.2;
+}
+.pe-section-desc {
+  font-size: 0.76rem;
+  color: var(--pe-text-sub);
+  margin-top: 0.1rem;
+}
 
-  /* ── Floating save bar ────────────────────────────────────────── */
-  #save-bar {
-    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
-    z-index: 100;
-    background: var(--pe-card-bg) !important;
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--pe-accent-glow) !important;
-    border-radius: 999px;
-    padding: 0.65rem 0.65rem 0.65rem 1.4rem;
-    display: flex; align-items: center; gap: 1rem;
-    box-shadow: var(--pe-card-shadow) !important;
-    transition: opacity 0.3s, transform 0.3s;
-    white-space: nowrap;
-  }
-  #save-bar.hidden-bar {
-    opacity: 0; pointer-events: none;
-    transform: translateX(-50%) translateY(1rem);
-  }
-  #save-bar-text {
-    font-size: 0.88rem; font-weight: 700; color: var(--pe-text-muted) !important;
-  }
-  #save-bar-text.dirty { color: var(--pe-text-main) !important; }
+/* Thin horizontal divider inside section */
+.pe-divider {
+  height: 1px;
+  background: var(--pe-border);
+  margin: 1rem 1.6rem 0;
+}
 
-  /* ── Save Button ──────────────────────────────────────────────── */
-  .btn-save-cta {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    padding: 0.65rem 1.4rem; border-radius: 999px;
-    font-size: 0.88rem; font-weight: 900; cursor: pointer; border: none;
-    background: var(--pe-btn-bg) !important;
-    color: var(--pe-btn-text) !important;
-    box-shadow: var(--pe-btn-shadow) !important;
-    transition: all 0.2s ease;
-  }
-  .btn-save-cta:hover { transform: translateY(-2px); }
+/* Section body */
+.pe-section-body {
+  padding: 1.2rem 1.6rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
 
-  /* ── Unsaved indicator dot ────────────────────────────────────── */
-  .unsaved-dot {
-    display: inline-block; width: 7px; height: 7px;
-    border-radius: 50%; background: var(--pe-accent);
-    animation: pulse-dot 1.5s ease-in-out infinite;
-    margin-right: 0.3rem;
-  }
-  @keyframes pulse-dot {
-    0%,100% { opacity: 1; transform: scale(1); }
-    50%      { opacity: 0.5; transform: scale(0.7); }
+/* ── Labels ───────────────────────────────────────────────────────── */
+.pe-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--pe-text-sub);
+  margin-bottom: 0.38rem;
+}
+.pe-hint {
+  font-size: 0.7rem;
+  color: var(--pe-text-faint);
+  margin-top: 0.28rem;
+  line-height: 1.4;
+}
+
+/* ── Inputs ───────────────────────────────────────────────────────── */
+.pe-input, .pe-textarea, .pe-select {
+  display: block;
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  background: var(--pe-input-bg);
+  border: 1px solid var(--pe-input-border);
+  border-radius: 0.7rem;
+  color: var(--pe-text);
+  font-size: 0.88rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.pe-input:focus, .pe-textarea:focus, .pe-select:focus {
+  border-color: var(--pe-accent);
+  box-shadow: 0 0 0 3px var(--pe-accent-glow);
+}
+.pe-input::placeholder, .pe-textarea::placeholder {
+  color: var(--pe-text-faint);
+  opacity: 0.7;
+}
+.pe-input[readonly] { opacity: 0.5; cursor: not-allowed; }
+.pe-textarea { resize: vertical; min-height: 96px; line-height: 1.6; }
+.pe-select option { background: #1a1f28; color: #f1f5f9; }
+
+/* Input with leading icon */
+.pe-input-icon-wrap { position: relative; }
+.pe-input-icon-wrap .pe-icon-pre {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--pe-text-faint);
+  font-size: 1rem;
+  pointer-events: none;
+}
+.pe-input-icon-wrap .pe-input { padding-left: 2.3rem; }
+
+/* Char counter */
+.pe-char-count {
+  font-size: 0.68rem;
+  color: var(--pe-text-faint);
+  text-align: right;
+  margin-top: 0.28rem;
+}
+.pe-char-count.warn { color: #f59e0b; }
+
+/* ── 2-column field row ───────────────────────────────────────────── */
+.pe-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+@media (max-width: 500px) { .pe-field-row { grid-template-columns: 1fr; } }
+
+/* ── Avatar ───────────────────────────────────────────────────────── */
+.pe-avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+.pe-avatar-ring {
+  width: 5.25rem;
+  height: 5.25rem;
+  border-radius: 50%;
+  border: 2px dashed var(--pe-accent);
+  background: var(--pe-accent-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.2rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.25s;
+  flex-shrink: 0;
+}
+.pe-avatar-ring:hover { box-shadow: 0 0 0 5px var(--pe-accent-glow); }
+#avatar-preview {
+  width: 100%; height: 100%;
+  object-fit: cover; border-radius: 50%;
+  display: none;
+}
+.pe-avatar-placeholder {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 0.15rem;
+  pointer-events: none;
+}
+.pe-avatar-placeholder .material-symbols-outlined {
+  font-size: 1.5rem;
+  color: var(--pe-accent);
+}
+.pe-avatar-placeholder .pe-upload-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--pe-text-sub);
+}
+.pe-avatar-meta { flex: 1; }
+.pe-avatar-name {
+  font-size: 0.88rem; font-weight: 700;
+  color: var(--pe-text); margin-bottom: 0.22rem;
+}
+.pe-avatar-hint {
+  font-size: 0.7rem; color: var(--pe-text-sub);
+  margin-bottom: 0.35rem;
+}
+.pe-avatar-remove {
+  background: none; border: none;
+  font-size: 0.7rem; font-weight: 700;
+  color: var(--pe-danger); cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  padding: 0; display: none;
+  transition: opacity 0.2s;
+}
+.pe-avatar-remove:hover { opacity: 0.75; }
+
+/* ── Chips ────────────────────────────────────────────────────────── */
+.pe-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.4rem;
+}
+.pe-chip {
+  padding: 0.38rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--pe-chip-border);
+  background: var(--pe-chip-bg);
+  color: var(--pe-text-sub);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+.pe-chip:hover {
+  border-color: var(--pe-accent);
+  color: var(--pe-accent);
+  background: var(--pe-accent-hover);
+}
+.pe-chip.active {
+  background: var(--pe-chip-active-bg);
+  border-color: var(--pe-accent);
+  color: var(--pe-chip-active-txt);
+  font-weight: 800;
+}
+
+/* ── Social rows ──────────────────────────────────────────────────── */
+.pe-social-rows { display: flex; flex-direction: column; gap: 0.55rem; margin-top: 0.4rem; }
+.pe-social-row { display: flex; align-items: center; gap: 0.65rem; }
+.pe-social-icon {
+  width: 2rem; height: 2rem;
+  border-radius: 0.45rem;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; overflow: hidden;
+}
+
+/* ── Drop zone ────────────────────────────────────────────────────── */
+.pe-drop-zone {
+  border: 2px dashed var(--pe-border-hover);
+  border-radius: 0.9rem;
+  padding: 1.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--pe-input-bg);
+  text-align: center;
+}
+.pe-drop-zone:hover, .pe-drop-zone.drag-over {
+  border-color: var(--pe-accent);
+  background: var(--pe-accent-hover);
+}
+.pe-drop-zone .material-symbols-outlined {
+  font-size: 1.9rem;
+  color: var(--pe-accent);
+  opacity: 0.7;
+}
+.pe-drop-title { font-size: 0.85rem; font-weight: 700; color: var(--pe-text); }
+.pe-drop-title span { color: var(--pe-accent); }
+.pe-drop-hint { font-size: 0.72rem; color: var(--pe-text-sub); }
+
+/* ── Embed block ──────────────────────────────────────────────────── */
+.pe-embed-block {
+  background: var(--pe-input-bg);
+  border: 1px solid var(--pe-border);
+  border-radius: 0.8rem;
+  padding: 0.9rem 1rem;
+}
+.pe-embed-title {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.82rem; font-weight: 700; color: var(--pe-text);
+  margin-bottom: 0.22rem;
+}
+.pe-embed-title .material-symbols-outlined { font-size: 0.95rem; color: var(--pe-accent); }
+.pe-embed-desc { font-size: 0.72rem; color: var(--pe-text-sub); margin-bottom: 0.6rem; }
+.pe-embed-row { display: flex; gap: 0.55rem; align-items: stretch; flex-wrap: wrap; }
+.pe-embed-row .pe-input { flex: 1; min-width: 0; }
+
+/* ── Portfolio grid ───────────────────────────────────────────────── */
+#portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.55rem;
+}
+@media (max-width: 480px) { #portfolio-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.pe-thumb {
+  position: relative;
+  border-radius: 0.55rem;
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: var(--pe-input-bg);
+  border: 1px solid var(--pe-border);
+}
+.pe-thumb img, .pe-thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pe-thumb-remove {
+  position: absolute;
+  top: 0.28rem; right: 0.28rem;
+  background: rgba(0,0,0,0.62);
+  border: none; border-radius: 50%;
+  width: 1.35rem; height: 1.35rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #fff;
+  transition: background 0.15s;
+}
+.pe-thumb-remove:hover { background: rgba(220,38,38,0.8); }
+.pe-thumb-remove .material-symbols-outlined { font-size: 0.75rem; }
+.pe-vid-badge {
+  position: absolute;
+  bottom: 0.28rem; left: 0.28rem;
+  background: rgba(0,0,0,0.7);
+  border-radius: 0.22rem;
+  padding: 0.04rem 0.3rem;
+  font-size: 0.56rem; font-weight: 800; color: #fff;
+  letter-spacing: 0.04em;
+}
+.pe-portfolio-count {
+  font-size: 0.7rem; color: var(--pe-text-sub);
+  text-align: right; margin-top: 0.4rem;
+}
+
+/* ── Form block (service add form) ───────────────────────────────── */
+.pe-form-block {
+  background: var(--pe-input-bg);
+  border: 1px solid var(--pe-border);
+  border-radius: 0.8rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* ── Service cards ────────────────────────────────────────────────── */
+.pe-service-card {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.7rem 0.85rem;
+  background: var(--pe-input-bg);
+  border: 1px solid var(--pe-border);
+  border-radius: 0.7rem;
+  transition: border-color 0.2s;
+}
+.pe-service-card:hover { border-color: var(--pe-border-hover); }
+.pe-service-body { flex: 1; min-width: 0; }
+.pe-service-name {
+  font-size: 0.88rem; font-weight: 700; color: var(--pe-text);
+  display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+  margin-bottom: 0.08rem;
+}
+.pe-service-cat-badge {
+  display: inline-flex; align-items: center;
+  padding: 0.08rem 0.42rem;
+  border-radius: 999px;
+  font-size: 0.62rem; font-weight: 700;
+  background: var(--pe-chip-active-bg);
+  color: var(--pe-chip-active-txt);
+  border: 1px solid var(--pe-accent);
+  opacity: 0.85;
+}
+.pe-service-desc { font-size: 0.75rem; color: var(--pe-text-sub); }
+.pe-service-price { text-align: right; flex-shrink: 0; }
+.pe-service-price-val { font-size: 0.92rem; font-weight: 800; color: var(--pe-accent); }
+.pe-service-price-unit { font-size: 0.68rem; color: var(--pe-text-sub); }
+.pe-service-delete {
+  background: none; border: none;
+  cursor: pointer; color: var(--pe-text-faint);
+  display: flex; align-items: center;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+.pe-service-delete:hover { color: var(--pe-danger); }
+.pe-service-delete .material-symbols-outlined { font-size: 1.05rem; }
+
+/* ── Toggle row ───────────────────────────────────────────────────── */
+.pe-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 0.9rem;
+  background: var(--pe-input-bg);
+  border: 1px solid var(--pe-border);
+  border-radius: 0.7rem;
+}
+.pe-toggle-label { font-size: 0.85rem; font-weight: 700; color: var(--pe-text); }
+.pe-toggle-sub { font-size: 0.72rem; color: var(--pe-text-sub); margin-top: 0.08rem; }
+.pe-toggle-btn {
+  position: relative;
+  width: 2.6rem; height: 1.5rem;
+  border-radius: 999px;
+  background: var(--pe-chip-bg);
+  border: 1px solid var(--pe-border);
+  cursor: pointer;
+  transition: background 0.25s, border-color 0.25s;
+  flex-shrink: 0;
+}
+.pe-toggle-btn.on {
+  background: var(--pe-chip-active-bg);
+  border-color: var(--pe-accent);
+}
+.pe-toggle-thumb {
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 1.1rem; height: 1.1rem;
+  border-radius: 50%;
+  background: var(--pe-text-faint);
+  transition: all 0.25s;
+}
+.pe-toggle-btn.on .pe-toggle-thumb {
+  background: var(--pe-accent);
+  left: calc(100% - 1.15rem);
+}
+
+/* ── Location tags ────────────────────────────────────────────────── */
+.pe-loc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.32rem 0.7rem;
+  border-radius: 999px;
+  background: var(--pe-chip-active-bg);
+  border: 1px solid var(--pe-accent);
+  color: var(--pe-chip-active-txt);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+.pe-loc-tag .material-symbols-outlined { font-size: 0.82rem; }
+.pe-loc-tag button {
+  background: none; border: none;
+  color: var(--pe-chip-active-txt);
+  cursor: pointer;
+  display: flex; align-items: center;
+  transition: color 0.15s;
+}
+.pe-loc-tag button:hover { color: var(--pe-danger); }
+.pe-loc-tag button .material-symbols-outlined { font-size: 0.82rem; }
+
+/* ── iCal block ───────────────────────────────────────────────────── */
+.pe-ical-block {
+  background: var(--pe-input-bg);
+  border: 1px solid var(--pe-border);
+  border-radius: 0.8rem;
+  padding: 0.9rem 1rem;
+}
+.pe-ical-row { display: flex; gap: 0.55rem; align-items: stretch; }
+.pe-ical-row .pe-input { flex: 1; }
+
+/* ── Inline add row ───────────────────────────────────────────────── */
+.pe-add-row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+.pe-add-row > div { flex: 1; min-width: 110px; }
+
+/* ── Blocked date rows ────────────────────────────────────────────── */
+.pe-date-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--pe-input-bg);
+  border: 1px solid var(--pe-border);
+  border-radius: 0.65rem;
+}
+.pe-date-info { display: flex; align-items: center; gap: 0.5rem; }
+.pe-date-info .material-symbols-outlined { font-size: 0.95rem; color: var(--pe-danger); }
+.pe-date-label { font-size: 0.83rem; font-weight: 700; color: var(--pe-text); }
+.pe-date-reason { font-size: 0.7rem; color: var(--pe-text-sub); }
+.pe-date-delete {
+  background: none; border: none;
+  cursor: pointer; color: var(--pe-text-faint);
+  display: flex; align-items: center;
+  transition: color 0.15s;
+}
+.pe-date-delete:hover { color: var(--pe-danger); }
+.pe-date-delete .material-symbols-outlined { font-size: 0.95rem; }
+
+/* ── Empty state ──────────────────────────────────────────────────── */
+.pe-empty {
+  text-align: center;
+  padding: 0.6rem;
+  font-size: 0.8rem;
+  color: var(--pe-text-faint);
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────── */
+.pe-btn-primary {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.62rem 1.35rem;
+  border-radius: 999px; border: none;
+  background: var(--pe-btn-bg);
+  color: var(--pe-btn-text);
+  font-size: 0.85rem; font-weight: 800;
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  box-shadow: var(--pe-btn-glow);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.pe-btn-primary:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.pe-btn-primary .material-symbols-outlined { font-size: 0.88rem; }
+
+.pe-btn-secondary {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.62rem 1.1rem;
+  border-radius: 0.65rem;
+  border: 1px solid var(--pe-accent);
+  background: var(--pe-accent-hover);
+  color: var(--pe-accent);
+  font-size: 0.8rem; font-weight: 700;
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.pe-btn-secondary:hover { background: var(--pe-chip-active-bg); }
+.pe-btn-secondary .material-symbols-outlined { font-size: 0.88rem; }
+
+.pe-btn-ghost {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.62rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--pe-border);
+  background: transparent;
+  color: var(--pe-text-sub);
+  font-size: 0.8rem; font-weight: 600;
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.pe-btn-ghost:hover { border-color: var(--pe-border-hover); color: var(--pe-text); }
+
+/* ── Save Bar ─────────────────────────────────────────────────────── */
+#save-bar {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  z-index: 100;
+  background: var(--pe-surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--pe-accent);
+  border-radius: 999px;
+  padding: 0.5rem 0.55rem 0.5rem 1.15rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  box-shadow: var(--pe-shadow-lg), 0 0 0 1px var(--pe-accent-glow);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  white-space: nowrap;
+}
+#save-bar.hidden-bar {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(1.5rem);
+}
+#save-bar-text {
+  font-size: 0.8rem; font-weight: 700;
+  color: var(--pe-text-sub);
+}
+#save-bar-text.dirty { color: var(--pe-text); }
+
+/* ── Unsaved dot ──────────────────────────────────────────────────── */
+.unsaved-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--pe-accent);
+  margin-right: 0.28rem;
+  vertical-align: middle;
+  animation: pe-pulse 1.4s ease-in-out infinite;
+}
+@keyframes pe-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.6); }
+}
+
+/* ── Toast ────────────────────────────────────────────────────────── */
+#success-toast {
+  position: fixed;
+  bottom: 5.5rem; left: 50%;
+  transform: translateX(-50%) translateY(1rem);
+  z-index: 200;
+  background: var(--pe-surface);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--pe-border);
+  border-radius: 999px;
+  padding: 0.6rem 1.35rem;
+  display: flex; align-items: center; gap: 0.55rem;
+  opacity: 0; pointer-events: none;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+#success-toast.show {
+  opacity: 1; transform: translateX(-50%) translateY(0);
+}
+#toast-text { font-size: 0.82rem; font-weight: 700; }
+#toast-icon.material-symbols-outlined { font-size: 1.05rem; }
+
+/* ── Spin / Reveal ────────────────────────────────────────────────── */
+@keyframes pe-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.spin { animation: pe-spin 0.8s linear infinite; }
+
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.4s ease, transform 0.4s ease; }
+.reveal.active { opacity: 1; transform: translateY(0); }
+.reveal:nth-child(1)  { transition-delay: 0.04s; }
+.reveal:nth-child(2)  { transition-delay: 0.08s; }
+.reveal:nth-child(3)  { transition-delay: 0.13s; }
+.reveal:nth-child(4)  { transition-delay: 0.18s; }
+.reveal:nth-child(5)  { transition-delay: 0.22s; }
+.reveal:nth-child(6)  { transition-delay: 0.27s; }
+.reveal:nth-child(7)  { transition-delay: 0.31s; }
+.reveal:nth-child(8)  { transition-delay: 0.36s; }
+.reveal:nth-child(9)  { transition-delay: 0.40s; }
 </style>
 </head>
-<body class="font-body-md antialiased min-h-screen flex flex-col">
+<body>
 
 <!-- Background -->
 <div class="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
@@ -254,494 +782,473 @@
 </div>
 
 <!-- Main -->
-<main id="edit-main" class="hidden flex-grow px-margin-mobile md:px-margin-desktop pt-28 pb-40">
-  <div class="max-w-2xl mx-auto">
+<main id="edit-main" class="hidden">
+  <div class="pe-page">
 
-    <!-- Page heading -->
-    <div class="mb-8">
-      <div class="flex items-center gap-3 mb-1">
-        <a href="professional-profile.html" class="flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors text-sm font-semibold">
-          <span class="material-symbols-outlined" style="font-size:1.1rem;">arrow_back</span> My Profile
-        </a>
-      </div>
-      <h1 class="font-display-lg text-display-lg-mobile md:text-[2.2rem] gradient-text mt-3">Edit Profile</h1>
-      <p class="text-on-surface-variant text-sm mt-1">All changes save to your profile. Keep your info fresh so clients can find you.</p>
+    <!-- Heading -->
+    <div class="pe-page-head reveal">
+      <a href="professional-profile.html" class="pe-back-link">
+        <span class="material-symbols-outlined">arrow_back</span>
+        Back to Profile
+      </a>
+      <h1 class="pe-page-title">Edit Profile</h1>
+      <p class="pe-page-desc">All changes save to your public profile. Keep your info fresh so clients can find you.</p>
     </div>
 
-    <div class="space-y-5">
-
-      <!-- ══ SECTION 1 · PROFILE IDENTITY ═══════════════════════════ -->
-      <div class="edit-section reveal">
-        <div class="section-divider">
-          <div class="section-divider-icon">
-            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">person</span>
-          </div>
-          <div>
-            <div class="section-title">Profile Identity</div>
-            <div class="section-subtitle" style="margin-bottom:0;">Your public name, title, and bio</div>
-          </div>
+    <!-- ══ 1 · PROFILE IDENTITY ═══════════════════════════════════ -->
+    <div class="pe-section reveal">
+      <div class="pe-section-header">
+        <div class="pe-section-icon"><span class="material-symbols-outlined">person</span></div>
+        <div>
+          <div class="pe-section-title">Profile Identity</div>
+          <div class="pe-section-desc">Your public name, photo, title, and bio</div>
         </div>
+      </div>
+      <div class="pe-divider"></div>
+      <div class="pe-section-body">
 
         <!-- Avatar -->
-        <div class="flex items-center gap-5 mb-7 mt-5">
-          <div id="avatar-ring" onclick="document.getElementById('avatar-file').click()" title="Click to change photo">
+        <div class="pe-avatar-row">
+          <div class="pe-avatar-ring" id="avatar-ring" onclick="document.getElementById('avatar-file').click()" title="Click to change photo">
             <img id="avatar-preview" alt="Profile photo">
-            <div id="avatar-placeholder" class="flex flex-col items-center gap-1 text-center px-2">
-              <span class="material-symbols-outlined" style="font-size:2rem;color:#00dbe9;">add_photo_alternate</span>
-              <span style="font-size:0.7rem;font-weight:700;color:#849495;line-height:1.3;">Upload photo</span>
+            <div class="pe-avatar-placeholder" id="avatar-placeholder">
+              <span class="material-symbols-outlined">add_photo_alternate</span>
+              <span class="pe-upload-label">Upload photo</span>
             </div>
           </div>
           <input type="file" id="avatar-file" accept="image/*" class="hidden">
-          <div>
-            <p style="font-size:0.9rem;font-weight:700;color:#dce4e5;" id="avatar-name-preview">—</p>
-            <p style="font-size:0.78rem;color:#849495;margin-top:0.25rem;">JPG · PNG · WEBP · Max 5 MB</p>
-            <button id="avatar-remove-btn" onclick="removeAvatar()" style="display:none;margin-top:0.5rem;font-size:0.78rem;font-weight:700;color:#ffb4ab;background:none;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;padding:0;">Remove photo</button>
+          <div class="pe-avatar-meta">
+            <div class="pe-avatar-name" id="avatar-name-preview">—</div>
+            <div class="pe-avatar-hint">JPG · PNG · WEBP · Max 5 MB</div>
+            <button class="pe-avatar-remove" id="avatar-remove-btn" onclick="removeAvatar()">Remove photo</button>
           </div>
         </div>
 
         <!-- Full Name -->
-        <div class="mb-6">
-          <label class="cc-label" for="inp-name">Full Name</label>
-          <input class="cc-input w-full" id="inp-name" type="text" placeholder="e.g. Jordan Rivera" maxlength="60" autocomplete="name" oninput="markDirty()">
+        <div>
+          <label class="pe-label" for="inp-name">Full Name</label>
+          <input class="pe-input" id="inp-name" type="text" placeholder="e.g. Jordan Rivera" maxlength="60" autocomplete="name" oninput="markDirty()">
         </div>
 
         <!-- Title -->
-        <div class="mb-6">
-          <label class="cc-label" for="inp-title">Professional Title</label>
-          <input class="cc-input w-full" id="inp-title" type="text" placeholder="e.g. Cinematic Videographer · Director of Photography" maxlength="80" oninput="markDirty()">
-          <p style="font-size:0.75rem;color:#849495;margin-top:0.35rem;">Shown under your name on your public profile.</p>
+        <div>
+          <label class="pe-label" for="inp-title">Professional Title</label>
+          <input class="pe-input" id="inp-title" type="text" placeholder="e.g. Cinematic Videographer · Director of Photography" maxlength="80" oninput="markDirty()">
+          <p class="pe-hint">Shown under your name on your public profile.</p>
         </div>
 
         <!-- Categories -->
-        <div class="mb-6">
-          <label class="cc-label">Your Category</label>
-          <div class="flex flex-wrap gap-2 mt-2" id="cat-chips">
-            <button class="cat-chip" data-cat="Videographer">Videographer</button>
-            <button class="cat-chip" data-cat="Photographer">Photographer</button>
-            <button class="cat-chip" data-cat="Director">Director</button>
-            <button class="cat-chip" data-cat="Editor">Editor</button>
-            <button class="cat-chip" data-cat="Colorist">Colorist</button>
-            <button class="cat-chip" data-cat="Sound Designer">Sound Designer</button>
-            <button class="cat-chip" data-cat="Drone Pilot">Drone Pilot</button>
-            <button class="cat-chip" data-cat="Lighting Tech">Lighting Tech</button>
-            <button class="cat-chip" data-cat="Motion Designer">Motion Designer</button>
-            <button class="cat-chip" data-cat="Producer">Producer</button>
+        <div>
+          <label class="pe-label">Your Category</label>
+          <div class="pe-chips" id="cat-chips">
+            <button class="pe-chip" data-cat="Videographer">Videographer</button>
+            <button class="pe-chip" data-cat="Photographer">Photographer</button>
+            <button class="pe-chip" data-cat="Director">Director</button>
+            <button class="pe-chip" data-cat="Editor">Editor</button>
+            <button class="pe-chip" data-cat="Colorist">Colorist</button>
+            <button class="pe-chip" data-cat="Sound Designer">Sound Designer</button>
+            <button class="pe-chip" data-cat="Drone Pilot">Drone Pilot</button>
+            <button class="pe-chip" data-cat="Lighting Tech">Lighting Tech</button>
+            <button class="pe-chip" data-cat="Motion Designer">Motion Designer</button>
+            <button class="pe-chip" data-cat="Producer">Producer</button>
           </div>
         </div>
 
         <!-- Bio -->
         <div>
-          <label class="cc-label" for="inp-bio">Bio</label>
-          <textarea class="cc-textarea w-full" id="inp-bio" rows="4"
+          <label class="pe-label" for="inp-bio">Bio</label>
+          <textarea class="pe-textarea" id="inp-bio" rows="4"
             placeholder="Tell clients about your style, experience, and what makes your work unique…"
             maxlength="300" oninput="updateCharCount(this,'bio-count',300);markDirty()"></textarea>
-          <p class="char-count mt-1" id="bio-count">0 / 300</p>
+          <div class="pe-char-count" id="bio-count">0 / 300</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ 2 · CONTACT DETAILS ════════════════════════════════════ -->
+    <div class="pe-section reveal">
+      <div class="pe-section-header">
+        <div class="pe-section-icon"><span class="material-symbols-outlined">contact_page</span></div>
+        <div>
+          <div class="pe-section-title">Contact Details</div>
+          <div class="pe-section-desc">How clients can reach you</div>
         </div>
       </div>
+      <div class="pe-divider"></div>
+      <div class="pe-section-body">
 
-      <!-- ══ SECTION 2 · CONTACT DETAILS ════════════════════════════ -->
-      <div class="edit-section reveal">
-        <div class="section-divider">
-          <div class="section-divider-icon">
-            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">contact_page</span>
-          </div>
-          <div>
-            <div class="section-title">Contact Details</div>
-            <div class="section-subtitle" style="margin-bottom:0;">How clients can reach you</div>
+        <!-- Email -->
+        <div>
+          <label class="pe-label" for="inp-email">
+            Email Address
+            <span style="margin-left:0.4rem;font-size:0.63rem;padding:0.08rem 0.42rem;background:var(--pe-chip-active-bg);color:var(--pe-accent);border-radius:999px;letter-spacing:0.04em;text-transform:none;font-weight:700;">Verified</span>
+          </label>
+          <div class="pe-input-icon-wrap">
+            <span class="material-symbols-outlined pe-icon-pre">alternate_email</span>
+            <input class="pe-input" id="inp-email" type="email" readonly>
           </div>
         </div>
-        <div class="mt-5 space-y-6">
 
-          <!-- Email (read-only) -->
+        <!-- Phone + Website -->
+        <div class="pe-field-row">
           <div>
-            <label class="cc-label" for="inp-email">
-              Email Address
-              <span style="margin-left:0.5rem;font-size:0.65rem;padding:0.15rem 0.5rem;background:rgba(0,219,233,0.1);color:#00dbe9;border-radius:999px;letter-spacing:0.05em;text-transform:none;font-weight:700;">Verified</span>
-            </label>
-            <div style="position:relative;">
-              <span class="material-symbols-outlined" style="position:absolute;left: 0.75rem;top:50%;transform:translateY(-50%);color:#849495;font-size:1.1rem;">alternate_email</span>
-              <input class="cc-input w-full" style="padding-left: 2.25rem !important;" id="inp-email" type="email" readonly>
+            <label class="pe-label" for="inp-phone">Mobile Number</label>
+            <div class="pe-input-icon-wrap">
+              <span class="material-symbols-outlined pe-icon-pre">phone_iphone</span>
+              <input class="pe-input" id="inp-phone" type="tel" placeholder="+91 98765 43210" autocomplete="tel" oninput="markDirty()">
             </div>
           </div>
-
-          <!-- Mobile -->
           <div>
-            <label class="cc-label" for="inp-phone">Mobile Number</label>
-            <div style="position:relative;">
-              <span class="material-symbols-outlined" style="position:absolute;left: 0.75rem;top:50%;transform:translateY(-50%);color:#849495;font-size:1.1rem;">phone_iphone</span>
-              <input class="cc-input w-full" style="padding-left: 2.25rem !important;" id="inp-phone" type="tel" placeholder="+1 (555) 000-0000" autocomplete="tel" oninput="markDirty()">
+            <label class="pe-label" for="inp-website">Website / Portfolio</label>
+            <div class="pe-input-icon-wrap">
+              <span class="material-symbols-outlined pe-icon-pre">link</span>
+              <input class="pe-input" id="inp-website" type="url" placeholder="https://yourportfolio.com" oninput="markDirty()">
             </div>
           </div>
+        </div>
 
-          <!-- Website -->
-          <div>
-            <label class="cc-label" for="inp-website">Website / Portfolio URL</label>
-            <div style="position:relative;">
-              <span class="material-symbols-outlined" style="position:absolute;left: 0.75rem;top:50%;transform:translateY(-50%);color:#849495;font-size:1.1rem;">link</span>
-              <input class="cc-input w-full" style="padding-left: 2.25rem !important;" id="inp-website" type="url" placeholder="https://yourportfolio.com" oninput="markDirty()">
-            </div>
-          </div>
-
-          <!-- Social Links -->
-          <div>
-            <label class="cc-label" style="margin-bottom:0.75rem;">Social Profiles <span style="text-transform:none;letter-spacing:0;font-weight:400;color:#849495;">(optional)</span></label>
-            <div class="space-y-4">
-              <div class="social-row">
-                <div class="social-icon-wrap">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="5" fill="#E1306C"/><path d="M12 7.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zm0 7.4a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8zm4.65-7.6a1.05 1.05 0 1 1-2.1 0 1.05 1.05 0 0 1 2.1 0z" fill="#fff"/></svg>
-                </div>
-                <input class="cc-input w-full" id="inp-instagram" style="border-bottom-color:rgba(255,255,255,0.08);" type="text" placeholder="instagram.com/yourhandle" oninput="markDirty()">
+        <!-- Social Profiles -->
+        <div>
+          <label class="pe-label">Social Profiles <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--pe-text-faint);">(optional)</span></label>
+          <div class="pe-social-rows">
+            <div class="pe-social-row">
+              <div class="pe-social-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#E1306C"/><path d="M12 7.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zm0 7.4a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8zm4.65-7.6a1.05 1.05 0 1 1-2.1 0 1.05 1.05 0 0 1 2.1 0z" fill="#fff"/></svg>
               </div>
-              <div class="social-row">
-                <div class="social-icon-wrap">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="5" fill="#1877F2"/><path d="M16 8h-2a1 1 0 0 0-1 1v2h3l-.5 3H13v7h-3v-7H8v-3h2V9a4 4 0 0 1 4-4h2v3z" fill="#fff"/></svg>
-                </div>
-                <input class="cc-input w-full" id="inp-facebook" style="border-bottom-color:rgba(255,255,255,0.08);" type="text" placeholder="facebook.com/yourpage" oninput="markDirty()">
+              <input class="pe-input" id="inp-instagram" type="text" placeholder="instagram.com/yourhandle" oninput="markDirty()">
+            </div>
+            <div class="pe-social-row">
+              <div class="pe-social-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#1877F2"/><path d="M16 8h-2a1 1 0 0 0-1 1v2h3l-.5 3H13v7h-3v-7H8v-3h2V9a4 4 0 0 1 4-4h2v3z" fill="#fff"/></svg>
               </div>
-              <div class="social-row" style="border-bottom:none;">
-                <div class="social-icon-wrap">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.77 1.52V6.76a4.85 4.85 0 01-1-.07z"/></svg>
-                </div>
-                <input class="cc-input w-full" id="inp-tiktok" style="border-bottom:none;" type="text" placeholder="tiktok.com/@yourhandle" oninput="markDirty()">
+              <input class="pe-input" id="inp-facebook" type="text" placeholder="facebook.com/yourpage" oninput="markDirty()">
+            </div>
+            <div class="pe-social-row">
+              <div class="pe-social-icon" style="background:#000;border-radius:0.45rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.77 1.52V6.76a4.85 4.85 0 01-1-.07z"/></svg>
               </div>
+              <input class="pe-input" id="inp-tiktok" type="text" placeholder="tiktok.com/@yourhandle" oninput="markDirty()">
             </div>
           </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ 3 · PORTFOLIO ═════════════════════════════════════════ -->
+    <div class="pe-section reveal">
+      <div class="pe-section-header">
+        <div class="pe-section-icon"><span class="material-symbols-outlined">photo_library</span></div>
+        <div>
+          <div class="pe-section-title">Portfolio</div>
+          <div class="pe-section-desc">Up to 12 photos or videos — best work first</div>
         </div>
       </div>
+      <div class="pe-divider"></div>
+      <div class="pe-section-body">
 
-      <!-- ══ SECTION 3 · PORTFOLIO ═══════════════════════════════════ -->
-      <div class="edit-section reveal">
-        <div class="section-divider">
-          <div class="section-divider-icon">
-            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">photo_library</span>
+        <div class="pe-drop-zone" id="portfolio-drop-zone"
+          onclick="document.getElementById('portfolio-file').click()"
+          ondragover="event.preventDefault();this.classList.add('drag-over')"
+          ondragleave="this.classList.remove('drag-over')"
+          ondrop="handlePortfolioDrop(event)">
+          <span class="material-symbols-outlined">cloud_upload</span>
+          <p class="pe-drop-title">Drop files here or <span>browse</span></p>
+          <p class="pe-drop-hint">JPG · PNG · WEBP · MP4 · MOV &nbsp;·&nbsp; Max 50 MB per file</p>
+        </div>
+        <input type="file" id="portfolio-file" accept="image/*,video/*" multiple class="hidden" onchange="handlePortfolioFiles(this.files)">
+
+        <div class="pe-embed-block">
+          <div class="pe-embed-title">
+            <span class="material-symbols-outlined">smart_display</span>
+            Embed YouTube, Vimeo, or Instagram Reel
           </div>
-          <div>
-            <div class="section-title">Portfolio</div>
-            <div class="section-subtitle" style="margin-bottom:0;">Up to 12 photos or videos. Best work first.</div>
+          <div class="pe-embed-desc">Paste a link to showcase videos directly in your portfolio</div>
+          <div class="pe-embed-row">
+            <input type="text" id="embed-url-inp" class="pe-input" placeholder="https://www.youtube.com/watch?v=...">
+            <button type="button" onclick="submitEmbedUrl()" class="pe-btn-secondary">
+              <span class="material-symbols-outlined">add_link</span> Embed
+            </button>
           </div>
         </div>
 
-        <div class="mt-5">
-          <!-- Drop zone -->
-          <div id="portfolio-drop-zone"
-            style="border:2px dashed rgba(0,219,233,0.25);border-radius:1rem;padding:1.75rem;margin-bottom:1.25rem;transition:all 0.2s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.5rem;cursor:pointer;"
-            onclick="document.getElementById('portfolio-file').click()"
-            ondragover="event.preventDefault();this.classList.add('drag-over')"
-            ondragleave="this.classList.remove('drag-over')"
-            ondrop="handlePortfolioDrop(event)">
-            <span class="material-symbols-outlined" style="font-size:2.25rem;color:#00dbe9;opacity:0.7;">cloud_upload</span>
-            <p style="font-size:0.92rem;font-weight:700;color:#dce4e5;">Drop files here or <span style="color:#00dbe9;">browse</span></p>
-            <p style="font-size:0.78rem;color:#849495;">JPG · PNG · WEBP · MP4 · MOV &nbsp;·&nbsp; Max 50 MB per file</p>
-          </div>
-          <input type="file" id="portfolio-file" accept="image/*,video/*" multiple class="hidden" onchange="handlePortfolioFiles(this.files)">
+        <div id="portfolio-grid"></div>
+        <p class="pe-portfolio-count"><span id="portfolio-count-num">0</span> / 12 items</p>
 
-          <!-- Embed Video / Reel URL -->
-          <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:1rem;padding:1.25rem;margin-bottom:1.25rem;">
-            <p style="font-size:0.88rem;font-weight:700;color:#fff;margin-bottom:0.4rem;">
-              <span class="material-symbols-outlined" style="font-size:1.1rem;color:#00dbe9;vertical-align:middle;margin-right:0.3rem;">link</span>
-              Embed YouTube, Vimeo, or Instagram Reel
-            </p>
-            <p style="font-size:0.78rem;color:#849495;margin-bottom:0.75rem;">Paste a link to showcase your videos or Instagram Reels directly in your portfolio</p>
-            <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;">
-              <input type="text" id="embed-url-inp" class="cc-input" style="flex:1;min-width:200px;" placeholder="https://www.youtube.com/watch?v=... or instagram.com/reel/...">
-              <button type="button" onclick="submitEmbedUrl()" style="padding:0.65rem 1.25rem;border-radius:0.65rem;border:none;background:#00dbe9;color:#001f22;font-weight:800;font-size:0.85rem;cursor:pointer;">
-                Embed Video
-              </button>
-            </div>
-          </div>
+      </div>
+    </div>
 
-          <div class="grid grid-cols-3 sm:grid-cols-4 gap-3" id="portfolio-grid"></div>
-
-          <p id="portfolio-count" style="font-size:0.78rem;color:#849495;margin-top:0.75rem;text-align:right;">
-            <span id="portfolio-count-num">0</span> / 12 items
-          </p>
+    <!-- ══ 4 · SERVICES & RATES ══════════════════════════════════ -->
+    <div class="pe-section reveal">
+      <div class="pe-section-header">
+        <div class="pe-section-icon"><span class="material-symbols-outlined">sell</span></div>
+        <div>
+          <div class="pe-section-title">Services &amp; Rates</div>
+          <div class="pe-section-desc">List what you offer and what you charge</div>
         </div>
       </div>
+      <div class="pe-divider"></div>
+      <div class="pe-section-body">
 
-      <!-- ══ SECTION 4 · SERVICES & RATES ═══════════════════════════ -->
-      <div class="edit-section reveal">
-        <div class="section-divider">
-          <div class="section-divider-icon">
-            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">sell</span>
-          </div>
-          <div>
-            <div class="section-title">Services &amp; Rates</div>
-            <div class="section-subtitle" style="margin-bottom:0;">List services and what you charge</div>
-          </div>
-        </div>
-
-        <!-- Add service form -->
-        <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:1rem;padding:1.25rem;margin-top:1.25rem;margin-bottom:1.25rem;">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-            <div class="sm:col-span-2">
-              <label class="cc-label" for="svc-name">Service Name</label>
-              <input class="cc-input w-full" id="svc-name" type="text" placeholder="e.g. Full-Day Video Shoot" maxlength="60">
+        <div class="pe-form-block">
+          <div class="pe-field-row" style="grid-template-columns:2fr 1fr;">
+            <div>
+              <label class="pe-label" for="svc-name">Service Name</label>
+              <input class="pe-input" id="svc-name" type="text" placeholder="e.g. Full-Day Video Shoot" maxlength="60">
             </div>
             <div>
-              <label class="cc-label" for="svc-price">Rate</label>
-              <div style="position:relative;">
-                <span style="position:absolute;left: 0.75rem;top:50%;transform:translateY(-50%);color:#849495;font-weight:700;">₹</span>
-                <input class="cc-input w-full" style="padding-left: 1.5rem !important;" id="svc-price" type="number" min="0" placeholder="0">
-              </div>
+              <label class="pe-label" for="svc-price">Rate (₹)</label>
+              <input class="pe-input" id="svc-price" type="number" min="0" placeholder="0">
             </div>
           </div>
-          <div class="mb-4">
-            <label class="cc-label">Pricing Unit</label>
-            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.35rem;" id="svc-unit-chips">
-              <button class="cat-chip selected" data-unit="per day" onclick="selectUnit(this)">per day</button>
-              <button class="cat-chip" data-unit="per hour" onclick="selectUnit(this)">per hour</button>
-              <button class="cat-chip" data-unit="per project" onclick="selectUnit(this)">per project</button>
-              <button class="cat-chip" data-unit="per event" onclick="selectUnit(this)">per event</button>
-              <button class="cat-chip" data-unit="custom" onclick="selectUnit(this)">custom</button>
+
+          <div>
+            <label class="pe-label">Pricing Unit</label>
+            <div class="pe-chips" id="svc-unit-chips">
+              <button class="pe-chip active" data-unit="per day" onclick="selectUnit(this)">per day</button>
+              <button class="pe-chip" data-unit="per hour" onclick="selectUnit(this)">per hour</button>
+              <button class="pe-chip" data-unit="per project" onclick="selectUnit(this)">per project</button>
+              <button class="pe-chip" data-unit="per event" onclick="selectUnit(this)">per event</button>
+              <button class="pe-chip" data-unit="custom" onclick="selectUnit(this)">custom</button>
             </div>
           </div>
-          <div class="mb-4">
-            <label class="cc-label">Service Category <span style="color:#ff6b6b;margin-left:2px;">*</span></label>
-            <p style="font-size:0.75rem;color:#849495;margin-bottom:0.4rem;">Select the category this service belongs to (required)</p>
-            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.35rem;" id="svc-cat-chips">
-              <button class="cat-chip" data-svc-cat="Photography" onclick="selectSvcCat(this)">Photography</button>
-              <button class="cat-chip" data-svc-cat="Videography" onclick="selectSvcCat(this)">Videography</button>
-              <button class="cat-chip" data-svc-cat="Developer" onclick="selectSvcCat(this)">Developer</button>
-              <button class="cat-chip" data-svc-cat="Designer" onclick="selectSvcCat(this)">Designer</button>
-              <button class="cat-chip" data-svc-cat="Organiser" onclick="selectSvcCat(this)">Organiser</button>
-              <button class="cat-chip" data-svc-cat="Caterer" onclick="selectSvcCat(this)">Caterer</button>
+
+          <div>
+            <label class="pe-label">Service Category <span style="color:var(--pe-danger);">*</span></label>
+            <div class="pe-chips" id="svc-cat-chips">
+              <button class="pe-chip" data-svc-cat="Photography" onclick="selectSvcCat(this)">Photography</button>
+              <button class="pe-chip" data-svc-cat="Videography" onclick="selectSvcCat(this)">Videography</button>
+              <button class="pe-chip" data-svc-cat="Developer" onclick="selectSvcCat(this)">Developer</button>
+              <button class="pe-chip" data-svc-cat="Designer" onclick="selectSvcCat(this)">Designer</button>
+              <button class="pe-chip" data-svc-cat="Organiser" onclick="selectSvcCat(this)">Organiser</button>
+              <button class="pe-chip" data-svc-cat="Caterer" onclick="selectSvcCat(this)">Caterer</button>
             </div>
-            <p id="svc-cat-error" style="display:none;font-size:0.75rem;color:#ffb4ab;margin-top:0.35rem;">Please select a service category.</p>
+            <p id="svc-cat-error" style="display:none;font-size:0.72rem;color:var(--pe-danger);margin-top:0.28rem;">Please select a service category.</p>
           </div>
-          <div class="mb-4">
-            <label class="cc-label" for="svc-desc">Short Description <span style="text-transform:none;letter-spacing:0;font-weight:400;color:#849495;">(optional)</span></label>
-            <input class="cc-input w-full" id="svc-desc" type="text" placeholder="What's included in this service…" maxlength="120">
+
+          <div>
+            <label class="pe-label" for="svc-desc">Short Description <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--pe-text-faint);">(optional)</span></label>
+            <input class="pe-input" id="svc-desc" type="text" placeholder="What's included in this service…" maxlength="120">
           </div>
-          <button onclick="addService()" style="
-            display:inline-flex;align-items:center;gap:0.4rem;
-            padding:0.6rem 1.25rem;border-radius:0.65rem;border:1px solid rgba(0,219,233,0.4);
-            background:rgba(0,219,233,0.07);color:#00dbe9;
-            font-size:0.88rem;font-weight:700;cursor:pointer;
-            font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.15s;"
-            onmouseover="this.style.background='rgba(0,219,233,0.14)'" onmouseout="this.style.background='rgba(0,219,233,0.07)'">
-            <span class="material-symbols-outlined" style="font-size:1rem;">add</span> Add Service
+
+          <div>
+            <button class="pe-btn-secondary" onclick="addService()">
+              <span class="material-symbols-outlined">add_circle</span>
+              Add Service
+            </button>
+          </div>
+        </div>
+
+        <div id="services-list" style="display:flex;flex-direction:column;gap:0.45rem;"></div>
+        <p id="services-empty" class="pe-empty">No services added yet.</p>
+
+      </div>
+    </div>
+
+    <!-- ══ 5 · WORK LOCATIONS ════════════════════════════════════ -->
+    <div class="pe-section reveal">
+      <div class="pe-section-header">
+        <div class="pe-section-icon"><span class="material-symbols-outlined">location_on</span></div>
+        <div>
+          <div class="pe-section-title">Work Locations</div>
+          <div class="pe-section-desc">Cities or regions where you're available to shoot</div>
+        </div>
+      </div>
+      <div class="pe-divider"></div>
+      <div class="pe-section-body">
+
+        <div>
+          <label class="pe-label" style="color:var(--pe-accent);">Select Indian Location</label>
+          <div id="indian-location-cascader"></div>
+        </div>
+
+        <div>
+          <label class="pe-label">Quick Add Indian Hubs</label>
+          <div class="pe-chips">
+            <button class="pe-chip" onclick="quickAddLoc('Mumbai, MH')">Mumbai</button>
+            <button class="pe-chip" onclick="quickAddLoc('Bengaluru, KA')">Bengaluru</button>
+            <button class="pe-chip" onclick="quickAddLoc('Delhi, DL')">Delhi (NCR)</button>
+            <button class="pe-chip" onclick="quickAddLoc('Kochi, KL')">Kochi</button>
+            <button class="pe-chip" onclick="quickAddLoc('Hyderabad, TS')">Hyderabad</button>
+            <button class="pe-chip" onclick="quickAddLoc('Chennai, TN')">Chennai</button>
+            <button class="pe-chip" onclick="quickAddLoc('Goa, GA')">Goa</button>
+            <button class="pe-chip" onclick="quickAddLoc('Kolkata, WB')">Kolkata</button>
+            <button class="pe-chip" onclick="quickAddLoc('Pune, MH')">Pune</button>
+            <button class="pe-chip" onclick="quickAddLoc('Jaipur, RJ')">Jaipur</button>
+          </div>
+        </div>
+
+        <div class="pe-toggle-row">
+          <div>
+            <div class="pe-toggle-label">Willing to travel internationally</div>
+            <div class="pe-toggle-sub">Additional travel fees may apply</div>
+          </div>
+          <button id="travel-toggle" class="pe-toggle-btn" onclick="toggleTravel()" role="switch" aria-checked="false">
+            <span class="pe-toggle-thumb" id="travel-thumb"></span>
           </button>
         </div>
 
-        <div class="space-y-2" id="services-list"></div>
-        <p id="services-empty" style="font-size:0.88rem;color:#475569;text-align:center;padding:1.25rem 0;">No services added yet.</p>
-      </div>
+        <div>
+          <div class="pe-chips" id="loc-tags"></div>
+          <p id="loc-empty" class="pe-empty">No locations added yet.</p>
+        </div>
 
-      <!-- ══ SECTION 5 · WORK LOCATIONS ═════════════════════════════ -->
-      <div class="edit-section reveal">
-        <div class="section-divider">
-          <div class="section-divider-icon">
-            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">location_on</span>
-          </div>
+      </div>
+    </div>
+
+    <!-- ══ 6 · AVAILABILITY & BLOCKED DATES ═════════════════════ -->
+    <div class="pe-section reveal">
+      <div class="pe-section-header">
+        <div class="pe-section-icon"><span class="material-symbols-outlined">event_busy</span></div>
+        <div>
+          <div class="pe-section-title">Availability &amp; Blocked Dates</div>
+          <div class="pe-section-desc">Block dates when you're unavailable or already booked</div>
+        </div>
+      </div>
+      <div class="pe-divider"></div>
+      <div class="pe-section-body">
+
+        <div class="pe-add-row">
           <div>
-            <div class="section-title">Work Locations</div>
-            <div class="section-subtitle" style="margin-bottom:0;">Cities or regions where you're available</div>
+            <label class="pe-label" for="block-date-inp">Date</label>
+            <input class="pe-input" id="block-date-inp" type="date">
+          </div>
+          <div style="flex:1.8;">
+            <label class="pe-label" for="block-reason-inp">Reason <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--pe-text-faint);">(optional)</span></label>
+            <input class="pe-input" id="block-reason-inp" type="text" placeholder="e.g. Private Wedding Shoot">
+          </div>
+          <div style="flex:none;align-self:flex-end;">
+            <button class="pe-btn-primary" onclick="addBlockedDate()">Block Date</button>
           </div>
         </div>
 
-        <div class="mt-5">
-          <!-- 3-Tier Cascading Dropdown: State -> District -> City -->
-          <div class="mb-5 p-4 rounded-2xl bg-surface-container-lowest/50 border border-glass-stroke">
-            <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.1em;color:#00dbe9;text-transform:uppercase;margin-bottom:0.75rem;">Select Indian Location</p>
-            <div id="indian-location-cascader"></div>
-          </div>
+        <div id="blocked-dates-list" style="display:flex;flex-direction:column;gap:0.45rem;"></div>
+        <p id="blocked-dates-empty" class="pe-empty">No blocked dates. You're available every day!</p>
 
-          <!-- Quick-add Indian Metros -->
-          <div class="mb-5">
-            <p style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;color:#475569;text-transform:uppercase;margin-bottom:0.6rem;">Quick Add Indian Hubs</p>
-            <div class="flex flex-wrap gap-2">
-              <button class="cat-chip" onclick="quickAddLoc('Mumbai, MH')">Mumbai</button>
-              <button class="cat-chip" onclick="quickAddLoc('Bengaluru, KA')">Bengaluru</button>
-              <button class="cat-chip" onclick="quickAddLoc('Delhi, DL')">Delhi (NCR)</button>
-              <button class="cat-chip" onclick="quickAddLoc('Kochi, KL')">Kochi</button>
-              <button class="cat-chip" onclick="quickAddLoc('Hyderabad, TS')">Hyderabad</button>
-              <button class="cat-chip" onclick="quickAddLoc('Chennai, TN')">Chennai</button>
-              <button class="cat-chip" onclick="quickAddLoc('Goa, GA')">Goa</button>
-              <button class="cat-chip" onclick="quickAddLoc('Kolkata, WB')">Kolkata</button>
-              <button class="cat-chip" onclick="quickAddLoc('Pune, MH')">Pune</button>
-              <button class="cat-chip" onclick="quickAddLoc('Jaipur, RJ')">Jaipur</button>
-            </div>
-          </div>
+      </div>
+    </div>
 
-          <!-- Travel toggle -->
-          <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:1rem;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;">
-            <div>
-              <p style="font-size:0.92rem;font-weight:700;color:#dce4e5;">Willing to travel internationally</p>
-              <p style="font-size:0.82rem;color:#849495;margin-top:2px;">Additional travel fees may apply</p>
-            </div>
-            <button id="travel-toggle" onclick="toggleTravel()" role="switch" aria-checked="false"
-              style="width:3rem;height:1.75rem;border-radius:999px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);position:relative;cursor:pointer;transition:all 0.25s;flex-shrink:0;">
-              <span id="travel-thumb" style="position:absolute;top:3px;left:3px;width:1.25rem;height:1.25rem;border-radius:50%;background:#849495;transition:all 0.25s;"></span>
+    <!-- ══ 7 · EQUIPMENT ROSTER ══════════════════════════════════ -->
+    <div class="pe-section reveal">
+      <div class="pe-section-header">
+        <div class="pe-section-icon"><span class="material-symbols-outlined">photo_camera</span></div>
+        <div>
+          <div class="pe-section-title">Equipment Roster</div>
+          <div class="pe-section-desc">Cameras, lenses, drones, lighting, and audio gear</div>
+        </div>
+      </div>
+      <div class="pe-divider"></div>
+      <div class="pe-section-body">
+
+        <div class="pe-add-row">
+          <div style="flex:1.1;">
+            <label class="pe-label" for="eq-cat-inp">Category</label>
+            <select class="pe-select" id="eq-cat-inp">
+              <option value="Cameras">Cameras</option>
+              <option value="Lenses">Lenses</option>
+              <option value="Drones">Drones</option>
+              <option value="Lighting">Lighting</option>
+              <option value="Audio">Audio</option>
+              <option value="Gimbals & Support">Gimbals &amp; Support</option>
+              <option value="Accessories">Accessories</option>
+            </select>
+          </div>
+          <div style="flex:2.5;">
+            <label class="pe-label" for="eq-item-inp">Equipment Name &amp; Model</label>
+            <input class="pe-input" id="eq-item-inp" type="text" placeholder="e.g. Sony FX3 / DJI Mavic 3 Cine" onkeydown="if(event.key==='Enter'){event.preventDefault();addEquipmentItem();}">
+          </div>
+          <div style="flex:none;align-self:flex-end;">
+            <button class="pe-btn-secondary" onclick="addEquipmentItem()">
+              <span class="material-symbols-outlined">add</span> Add Gear
             </button>
           </div>
+        </div>
 
-          <!-- Tags -->
-          <div class="flex flex-wrap gap-2 min-h-[2.5rem]" id="loc-tags"></div>
-          <p id="loc-empty" style="font-size:0.88rem;color:#475569;text-align:center;padding:1rem 0;">No locations added yet.</p>
+        <div class="pe-chips" id="equipment-roster-tags"></div>
+        <p id="equipment-roster-empty" class="pe-empty">No equipment added yet.</p>
+
+      </div>
+    </div>
+
+    <!-- ══ 8 · VERIFIED SKILLS & BADGES ═════════════════════════ -->
+    <div class="pe-section reveal">
+      <div class="pe-section-header">
+        <div class="pe-section-icon"><span class="material-symbols-outlined">verified</span></div>
+        <div>
+          <div class="pe-section-title">Verified Skills &amp; Certification Badges</div>
+          <div class="pe-section-desc">Build trust with clients by displaying industry certifications</div>
         </div>
       </div>
-
-      <!-- ══ SECTION 6 · AVAILABILITY & BLOCKED DATES ════════════════ -->
-      <div class="edit-section reveal">
-        <div class="section-divider">
-          <div class="section-divider-icon">
-            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">event_busy</span>
-          </div>
-          <div>
-            <h2 class="section-title">Availability & Blocked Dates</h2>
-            <p class="section-subtitle">Block dates when you are unavailable or booked for private shoots</p>
+      <div class="pe-divider"></div>
+      <div class="pe-section-body">
+        <div>
+          <label class="pe-label" style="color:var(--pe-accent);">Select Your Verified Badges</label>
+          <div class="pe-chips" id="cert-badge-options">
+            <button type="button" class="pe-chip cert-badge-toggle" onclick="toggleCertBadge('DGCA Certified Drone Pilot')" data-cert="DGCA Certified Drone Pilot">🚁 DGCA Certified Drone Pilot</button>
+            <button type="button" class="pe-chip cert-badge-toggle" onclick="toggleCertBadge('RED Cinema Operator')" data-cert="RED Cinema Operator">🎥 RED Cinema Operator</button>
+            <button type="button" class="pe-chip cert-badge-toggle" onclick="toggleCertBadge('ARRI Lighting Specialist')" data-cert="ARRI Lighting Specialist">💡 ARRI Lighting Specialist</button>
+            <button type="button" class="pe-chip cert-badge-toggle" onclick="toggleCertBadge('Adobe Certified Expert')" data-cert="Adobe Certified Expert">🎬 Adobe Certified Expert</button>
+            <button type="button" class="pe-chip cert-badge-toggle" onclick="toggleCertBadge('Apple Final Cut Pro Certified')" data-cert="Apple Final Cut Pro Certified">🍏 Apple FCP Certified</button>
+            <button type="button" class="pe-chip cert-badge-toggle" onclick="toggleCertBadge('DaVinci Resolve Certified Colorist')" data-cert="DaVinci Resolve Certified Colorist">🎨 DaVinci Resolve Colorist</button>
+            <button type="button" class="pe-chip cert-badge-toggle" onclick="toggleCertBadge('Steadicam / Gimbal Operator')" data-cert="Steadicam / Gimbal Operator">⚡ Steadicam Operator</button>
+            <button type="button" class="pe-chip cert-badge-toggle" onclick="toggleCertBadge('Sennheiser / Sound Devices Audio Pro')" data-cert="Sennheiser / Sound Devices Audio Pro">🎙️ Professional Sound Engineer</button>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div class="space-y-4">
-          <div style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap;">
-            <div style="flex:1;min-width:160px;">
-              <label class="cc-label" for="block-date-inp">Select Date</label>
-              <input class="cc-input w-full" id="block-date-inp" type="date">
-            </div>
-            <div style="flex:1.5;min-width:200px;">
-              <label class="cc-label" for="block-reason-inp">Reason / Event Name (Optional)</label>
-              <input class="cc-input w-full" id="block-reason-inp" type="text" placeholder="e.g. Private Wedding Shoot">
-            </div>
-            <button onclick="addBlockedDate()" style="padding:0.65rem 1.2rem;border-radius:0.65rem;border:none;background:#00dbe9;color:#001f22;font-weight:800;font-size:0.85rem;cursor:pointer;">
-              Block Date
+    <!-- ══ 9 · ICAL CALENDAR SYNC ════════════════════════════════ -->
+    <div class="pe-section reveal">
+      <div class="pe-section-header">
+        <div class="pe-section-icon"><span class="material-symbols-outlined">sync</span></div>
+        <div>
+          <div class="pe-section-title">Live iCal Calendar Sync</div>
+          <div class="pe-section-desc">Export to Google &amp; Apple Calendar or import external calendars</div>
+        </div>
+      </div>
+      <div class="pe-divider"></div>
+      <div class="pe-section-body">
+
+        <div class="pe-ical-block">
+          <label class="pe-label" style="color:var(--pe-accent);margin-bottom:0.45rem;">Your Live iCal Feed URL</label>
+          <div class="pe-ical-row">
+            <input type="text" id="ical-export-url" class="pe-input" readonly value="Loading calendar feed URL...">
+            <button type="button" onclick="copyICalUrl()" class="pe-btn-secondary">
+              <span class="material-symbols-outlined">content_copy</span> Copy
             </button>
           </div>
-
-          <div id="blocked-dates-list" class="space-y-2 mt-4"></div>
-          <p id="blocked-dates-empty" style="font-size:0.85rem;color:#475569;text-align:center;padding:1rem 0;">No blocked dates. You are available for bookings every day!</p>
+          <p class="pe-hint" style="margin-top:0.45rem;">Paste this URL into Google Calendar ("From URL") or Apple Calendar ("New Calendar Subscription").</p>
         </div>
+
+        <div>
+          <label class="pe-label" for="ical-import-url">External iCal Import URL <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--pe-text-faint);">(optional)</span></label>
+          <input type="url" id="ical-import-url" class="pe-input" placeholder="https://calendar.google.com/calendar/ical/your_feed.ics" onchange="markDirty()">
+          <p class="pe-hint">Paste an external Google or Apple iCal link to automatically block busy dates.</p>
+        </div>
+
       </div>
+    </div>
 
-      <!-- ══ SECTION 7 · EQUIPMENT ROSTER LISTING ════════════════ -->
-      <div class="edit-section reveal">
-        <div class="section-divider">
-          <div class="section-divider-icon">
-            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">photo_camera</span>
-          </div>
-          <div>
-            <h2 class="section-title">Equipment Roster Listing</h2>
-            <p class="section-subtitle">Display your camera loadouts, lenses, drones, lighting, and audio gear</p>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <div style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap;">
-            <div style="flex:1;min-width:140px;">
-              <label class="cc-label" for="eq-cat-inp">Category</label>
-              <select class="cc-input w-full" id="eq-cat-inp">
-                <option value="Cameras">Cameras</option>
-                <option value="Lenses">Lenses</option>
-                <option value="Drones">Drones</option>
-                <option value="Lighting">Lighting</option>
-                <option value="Audio">Audio</option>
-                <option value="Gimbals & Support">Gimbals & Support</option>
-                <option value="Accessories">Accessories</option>
-              </select>
-            </div>
-            <div style="flex:2;min-width:200px;">
-              <label class="cc-label" for="eq-item-inp">Equipment Name & Model</label>
-              <input class="cc-input w-full" id="eq-item-inp" type="text" placeholder="e.g. Sony FX3 / Aputure 600d Pro / DJI Mavic 3 Cine" onkeydown="if(event.key==='Enter'){event.preventDefault();addEquipmentItem();}">
-            </div>
-            <button onclick="addEquipmentItem()" style="padding:0.65rem 1.2rem;border-radius:0.65rem;border:none;background:#00dbe9;color:#001f22;font-weight:800;font-size:0.85rem;cursor:pointer;">
-              + Add Gear
-            </button>
-          </div>
-
-          <div id="equipment-roster-tags" class="flex flex-wrap gap-2 pt-2"></div>
-          <p id="equipment-roster-empty" style="font-size:0.85rem;color:#475569;text-align:center;padding:1rem 0;">No equipment added to your roster yet.</p>
-        </div>
-      </div>
-
-      <!-- ══ SECTION 8 · VERIFIED SKILLS & CERTIFICATION BADGES ════════════════ -->
-      <div class="edit-section reveal">
-        <div class="section-divider">
-          <div class="section-divider-icon">
-            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">verified</span>
-          </div>
-          <div>
-            <h2 class="section-title">Verified Skills & Certification Badges</h2>
-            <p class="section-subtitle">Display industry certifications to build trust with high-value clients</p>
-          </div>
-        </div>
-
-        <div class="space-y-3">
-          <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.1em;color:#00dbe9;text-transform:uppercase;">Select Your Verified Badges</p>
-          <div class="flex flex-wrap gap-2.5" id="cert-badge-options">
-            <button type="button" class="cat-chip cert-badge-toggle" onclick="toggleCertBadge('DGCA Certified Drone Pilot')" data-cert="DGCA Certified Drone Pilot">🚁 DGCA Certified Drone Pilot</button>
-            <button type="button" class="cat-chip cert-badge-toggle" onclick="toggleCertBadge('RED Cinema Operator')" data-cert="RED Cinema Operator">🎥 RED Cinema Operator</button>
-            <button type="button" class="cat-chip cert-badge-toggle" onclick="toggleCertBadge('ARRI Lighting Specialist')" data-cert="ARRI Lighting Specialist">💡 ARRI Lighting Specialist</button>
-            <button type="button" class="cat-chip cert-badge-toggle" onclick="toggleCertBadge('Adobe Certified Expert')" data-cert="Adobe Certified Expert">🎬 Adobe Certified Expert</button>
-            <button type="button" class="cat-chip cert-badge-toggle" onclick="toggleCertBadge('Apple Final Cut Pro Certified')" data-cert="Apple Final Cut Pro Certified">🍏 Apple FCP Certified</button>
-            <button type="button" class="cat-chip cert-badge-toggle" onclick="toggleCertBadge('DaVinci Resolve Certified Colorist')" data-cert="DaVinci Resolve Certified Colorist">🎨 DaVinci Resolve Colorist</button>
-            <button type="button" class="cat-chip cert-badge-toggle" onclick="toggleCertBadge('Steadicam / Gimbal Operator')" data-cert="Steadicam / Gimbal Operator">⚡ Steadicam Operator</button>
-            <button type="button" class="cat-chip cert-badge-toggle" onclick="toggleCertBadge('Sennheiser / Sound Devices Audio Pro')" data-cert="Sennheiser / Sound Devices Audio Pro">🎙️ Professional Sound Engineer</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ══ SECTION 9 · LIVE iCAL CALENDAR SYNC ════════════════ -->
-      <div class="edit-section reveal">
-        <div class="section-divider">
-          <div class="section-divider-icon">
-            <span class="material-symbols-outlined" style="font-size:1rem;color:#00dbe9;">sync</span>
-          </div>
-          <div>
-            <h2 class="section-title">Live iCal Calendar Sync (Google &amp; Apple iCal)</h2>
-            <p class="section-subtitle">Export your CamCrew schedule or import external iCal calendar links</p>
-          </div>
-        </div>
-
-        <div class="space-y-4">
-          <!-- Export iCal -->
-          <div class="p-4 rounded-xl bg-surface-container-lowest/50 border border-glass-stroke">
-            <label class="cc-label" style="margin-bottom:0.4rem;color:#00dbe9;">Your Live iCal Feed URL (Export to Google Calendar / Apple iCal)</label>
-            <div class="flex gap-2 items-center">
-              <input type="text" id="ical-export-url" class="cc-input flex-1" readonly value="Loading calendar feed URL...">
-              <button type="button" onclick="copyICalUrl()" style="padding:0.75rem 1.25rem;border-radius:0.75rem;background:rgba(0,219,233,0.15);border:1px solid rgba(0,219,233,0.3);color:#00dbe9;font-weight:700;font-size:0.85rem;cursor:pointer;shrink:0;">
-                Copy Feed Link
-              </button>
-            </div>
-            <p style="font-size:0.75rem;color:#849495;margin-top:0.4rem;">Paste this feed URL into Google Calendar ("From URL") or Apple Calendar ("New Calendar Subscription") to keep your devices synced live.</p>
-          </div>
-
-          <!-- Import iCal -->
-          <div>
-            <label class="cc-label" for="ical-import-url">External iCal Import URL (Optional)</label>
-            <input type="url" id="ical-import-url" class="cc-input w-full" placeholder="https://calendar.google.com/calendar/ical/your_feed.ics" onchange="markDirty()">
-            <p style="font-size:0.75rem;color:#849495;margin-top:0.3rem;">Paste an external Google Calendar or Apple iCal link to automatically block off dates you are busy elsewhere.</p>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /space-y-5 -->
-  </div>
+  </div><!-- /pe-page -->
 </main>
 
-<!-- ── Floating save bar ──────────────────────────────────────────── -->
+<!-- Floating Save Bar -->
 <div id="save-bar" class="hidden-bar">
   <span id="save-bar-text">All changes saved</span>
-  <button onclick="saveChanges()" id="save-btn"
-    style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.6rem 1.4rem;border-radius:999px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;font-weight:800;letter-spacing:0.01em;color:#001f22;background:#00dbe9;transition:all 0.2s;position:relative;overflow:hidden;"
-    onmouseover="this.style.background='#00f0ff';this.style.boxShadow='0 0 20px rgba(0,240,255,0.4)'"
-    onmouseout="this.style.background='#00dbe9';this.style.boxShadow='none'">
-    <span class="material-symbols-outlined" style="font-size:1rem;">save</span> Save Changes
+  <button id="save-btn" onclick="saveChanges()" class="pe-btn-primary">
+    <span class="material-symbols-outlined">save</span>
+    Save Changes
   </button>
-  <a href="professional-profile.html"
-    style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.6rem 1rem;border-radius:999px;border:1px solid rgba(255,255,255,0.12);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.85rem;font-weight:700;color:#849495;background:none;text-decoration:none;transition:all 0.2s;"
-    onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='#dce4e5'"
-    onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='#849495'">
-    Cancel
-  </a>
+  <a href="professional-profile.html" class="pe-btn-ghost">Cancel</a>
 </div>
 
 <!-- Toast -->
-<div id="success-toast" class="fixed bottom-28 left-1/2 -translate-x-1/2 glass-panel px-8 py-4 rounded-full border border-primary/50 flex items-center space-x-3 opacity-0 translate-y-10 transition-all duration-500 pointer-events-none z-[200]">
-  <span id="toast-icon" class="material-symbols-outlined text-primary">check_circle</span>
-  <span id="toast-text" class="font-body-md text-primary text-sm font-semibold"></span>
+<div id="success-toast">
+  <span id="toast-icon" class="material-symbols-outlined">check_circle</span>
+  <span id="toast-text"></span>
 </div>
 
-<!-- Unsaved-changes warning -->
 <script>
   window.addEventListener('beforeunload', e => {
     if (window._isDirty) { e.preventDefault(); e.returnValue = ''; }
@@ -749,26 +1256,26 @@
 </script>
 
 <script>
-/* ═══════════════════════════════════════════════════════════════════
-   Edit profile — state + logic
-═══════════════════════════════════════════════════════════════════ */
-let services         = [];
-let locations        = [];
-let mediaFiles       = [];   // { id, itemId, url, type, file|null, name, isExisting }
-let travelIntl       = false;
-let selectedUnit     = 'per day';
-let avatarUrl        = null;   // current avatar preview URL
-let avatarFile       = null;   // actual selected file to upload
+/* ═══════════════════════════════════════════════════════════════
+   professional-edit — state + logic
+═══════════════════════════════════════════════════════════════ */
+let services            = [];
+let locations           = [];
+let mediaFiles          = [];
+let travelIntl          = false;
+let selectedUnit        = 'per day';
+let avatarUrl           = null;
+let avatarFile          = null;
 let removedPortfolioIds = [];
-let equipmentRoster  = [];   // [{ category, item }]
-let certifications   = [];   // ['DGCA Certified Drone Pilot', ...]
-window._isDirty     = false;
+let equipmentRoster     = [];
+let certifications      = [];
+window._isDirty         = false;
 
-/* ── Equipment Roster ───────────────────────────────────────────── */
+/* ── Equipment Roster ──────────────────────────────────────────── */
 function addEquipmentItem() {
-  const cat = document.getElementById('eq-cat-inp').value;
+  const cat  = document.getElementById('eq-cat-inp').value;
   const item = document.getElementById('eq-item-inp').value.trim();
-  if (!item) return;
+  if (!item) { showToast('Enter equipment name', 'error_outline', '#ff6b6b'); return; }
   equipmentRoster.push({ category: cat, item });
   document.getElementById('eq-item-inp').value = '';
   renderEquipmentRoster();
@@ -780,78 +1287,46 @@ function removeEquipmentItem(idx) {
   markDirty();
 }
 function renderEquipmentRoster() {
-  const wrap = document.getElementById('equipment-roster-tags');
+  const wrap  = document.getElementById('equipment-roster-tags');
   const empty = document.getElementById('equipment-roster-empty');
-  if (!wrap) return;
   wrap.innerHTML = '';
   empty.style.display = equipmentRoster.length ? 'none' : 'block';
   equipmentRoster.forEach((eq, idx) => {
-    const el = document.createElement('div');
-    el.className = 'loc-tag';
-    el.style.background = 'rgba(0,219,233,0.06)';
-    el.style.border = '1px solid rgba(0,219,233,0.2)';
-    el.innerHTML = `
-      <span style="font-size:0.7rem;font-weight:800;color:#00dbe9;text-transform:uppercase;margin-right:4px;">[${esc(eq.category)}]</span>
-      <span style="font-weight:600;color:#dce4e5;">${esc(eq.item)}</span>
-      <button type="button" onclick="removeEquipmentItem(${idx})" style="background:none;border:none;color:#849495;cursor:pointer;margin-left:6px;display:inline-flex;align-items:center;">
-        <span class="material-symbols-outlined" style="font-size:0.95rem;">close</span>
-      </button>
-    `;
-    wrap.appendChild(el);
+    const tag = document.createElement('div');
+    tag.className = 'pe-loc-tag';
+    tag.innerHTML = `
+      <span class="material-symbols-outlined">videocam</span>
+      <span style="font-size:0.68rem;color:var(--pe-text-faint);margin-right:0.2rem;">${esc(eq.category)} ·</span>${esc(eq.item)}
+      <button onclick="removeEquipmentItem(${idx})"><span class="material-symbols-outlined">close</span></button>`;
+    wrap.appendChild(tag);
   });
 }
 
-/* ── Certifications ─────────────────────────────────────────────── */
+/* ── Certifications ────────────────────────────────────────────── */
 function toggleCertBadge(certName) {
-  if (certifications.includes(certName)) {
-    certifications = certifications.filter(c => c !== certName);
-  } else {
-    certifications.push(certName);
-  }
+  certifications.includes(certName)
+    ? (certifications = certifications.filter(c => c !== certName))
+    : certifications.push(certName);
   renderCertBadges();
   markDirty();
 }
 function renderCertBadges() {
   const set = new Set(certifications);
   document.querySelectorAll('#cert-badge-options .cert-badge-toggle').forEach(btn => {
-    const cert = btn.dataset.cert;
-    if (set.has(cert)) {
-      btn.style.background = 'rgba(0,219,233,0.2)';
-      btn.style.borderColor = '#00dbe9';
-      btn.style.color = '#00dbe9';
-    } else {
-      btn.style.background = '';
-      btn.style.borderColor = '';
-      btn.style.color = '';
-    }
+    btn.classList.toggle('active', set.has(btn.dataset.cert));
   });
 }
 
-/* ── iCal ────────────────────────────────────────────────────────── */
+/* ── iCal ──────────────────────────────────────────────────────── */
 function copyICalUrl() {
   const input = document.getElementById('ical-export-url');
   if (!input || !input.value) return;
   navigator.clipboard.writeText(input.value).then(() => {
-    showToast('iCal Feed URL copied to clipboard!', 'success', '#00dbe9');
-  }).catch(() => {
-    input.select();
-    document.execCommand('copy');
-    showToast('iCal Feed URL copied!', 'success', '#00dbe9');
-  });
+    showToast('iCal URL copied!', 'content_copy', 'var(--pe-accent)');
+  }).catch(() => { input.select(); document.execCommand('copy'); showToast('iCal URL copied!', 'content_copy', 'var(--pe-accent)'); });
 }
 
-const CITY_SUGGESTIONS = [
-  'Los Angeles, CA','New York, NY','Chicago, IL','Houston, TX','Phoenix, AZ',
-  'San Diego, CA','Dallas, TX','San Jose, CA','Austin, TX','Jacksonville, FL',
-  'San Francisco, CA','Seattle, WA','Denver, CO','Nashville, TN','Miami, FL',
-  'Atlanta, GA','Las Vegas, NV','Portland, OR','Minneapolis, MN','Boston, MA',
-  'Detroit, MI','Louisville, KY','Baltimore, MD','Milwaukee, WI',
-  'London, UK','Manchester, UK','Toronto, CA','Vancouver, CA','Montreal, CA',
-  'Sydney, AU','Melbourne, AU','Dubai, UAE','Singapore','Tokyo, JP',
-  'Remote / Virtual'
-];
-
-/* ── Dirty tracking ─────────────────────────────────────────────── */
+/* ── Dirty tracking ────────────────────────────────────────────── */
 function markDirty() {
   window._isDirty = true;
   const bar  = document.getElementById('save-bar');
@@ -861,79 +1336,66 @@ function markDirty() {
   text.classList.add('dirty');
 }
 
-/* ── Char counter ────────────────────────────────────────────────── */
+/* ── Char counter ──────────────────────────────────────────────── */
 function updateCharCount(el, countId, max) {
   const c = document.getElementById(countId);
   c.textContent = `${el.value.length} / ${max}`;
   c.classList.toggle('warn', el.value.length > max * 0.9);
 }
 
-/* ── Avatar ──────────────────────────────────────────────────────── */
+/* ── Avatar ────────────────────────────────────────────────────── */
 document.getElementById('avatar-file').addEventListener('change', function() {
   const file = this.files[0];
   if (!file) return;
-  if (file.size > 8 * 1024 * 1024) { showToast('Photo must be under 8 MB', 'error', '#ffb4ab'); return; }
+  if (file.size > 8 * 1024 * 1024) { showToast('Photo must be under 8 MB', 'error_outline', '#ff6b6b'); return; }
   avatarFile = file;
   const reader = new FileReader();
-  reader.onload = (e) => {
-    avatarUrl = e.target.result;
-    showAvatarPreview(avatarUrl, file.name);
-    markDirty();
-  };
+  reader.onload = (e) => { avatarUrl = e.target.result; showAvatarPreview(avatarUrl, file.name); markDirty(); };
   reader.readAsDataURL(file);
 });
 
 function showAvatarPreview(url, name) {
-  const preview     = document.getElementById('avatar-preview');
-  const placeholder = document.getElementById('avatar-placeholder');
-  const removeBtn   = document.getElementById('avatar-remove-btn');
-  const namePreview = document.getElementById('avatar-name-preview');
-  preview.src = url;
-  preview.style.display = 'block';
-  placeholder.style.display = 'none';
-  removeBtn.style.display = 'inline';
-  namePreview.textContent = name || 'Photo uploaded';
+  document.getElementById('avatar-preview').src = url;
+  document.getElementById('avatar-preview').style.display = 'block';
+  document.getElementById('avatar-placeholder').style.display = 'none';
+  document.getElementById('avatar-remove-btn').style.display = 'inline';
+  document.getElementById('avatar-name-preview').textContent = name || 'Photo uploaded';
 }
 
 function removeAvatar() {
-  avatarFile = null;
-  avatarUrl = null;
-  const preview     = document.getElementById('avatar-preview');
-  const placeholder = document.getElementById('avatar-placeholder');
-  const removeBtn   = document.getElementById('avatar-remove-btn');
-  const namePreview = document.getElementById('avatar-name-preview');
-  preview.src = ''; preview.style.display = 'none';
-  placeholder.style.display = 'flex';
-  removeBtn.style.display = 'none';
-  namePreview.textContent = '—';
+  avatarFile = null; avatarUrl = null;
+  document.getElementById('avatar-preview').src = '';
+  document.getElementById('avatar-preview').style.display = 'none';
+  document.getElementById('avatar-placeholder').style.display = 'flex';
+  document.getElementById('avatar-remove-btn').style.display = 'none';
+  document.getElementById('avatar-name-preview').textContent = '—';
   markDirty();
 }
 
-/* ── Category chips ──────────────────────────────────────────────── */
+/* ── Category chips ────────────────────────────────────────────── */
 document.getElementById('cat-chips').addEventListener('click', e => {
-  const btn = e.target.closest('.cat-chip');
+  const btn = e.target.closest('.pe-chip');
   if (!btn) return;
-  btn.classList.toggle('selected');
+  btn.classList.toggle('active');
   markDirty();
 });
 
-/* ── Portfolio ───────────────────────────────────────────────────── */
+/* ── Portfolio ─────────────────────────────────────────────────── */
 function handlePortfolioFiles(files) {
   Array.from(files).forEach(file => {
-    if (mediaFiles.length >= 12) { showToast('Max 12 files reached', 'warning', '#ffb4ab'); return; }
-    if (file.size > 12 * 1024 * 1024) { showToast('File must be under 12 MB', 'error', '#ffb4ab'); return; }
-    const id  = Date.now() + Math.random();
+    if (mediaFiles.length >= 12) { showToast('Max 12 files reached', 'warning', '#f59e0b'); return; }
+    if (file.size > 50 * 1024 * 1024) { showToast('File must be under 50 MB', 'error_outline', '#ff6b6b'); return; }
+    const id = Date.now() + Math.random();
     const isVideo = file.type.startsWith('video');
     const reader = new FileReader();
     reader.onload = (e) => {
-      const dataUrl = e.target.result;
-      mediaFiles.push({ id, itemId: null, url: dataUrl, dataUrl: dataUrl, type: isVideo ? 'video' : 'image', file, name: file.name, isExisting: false });
-      appendThumb({ id, url: dataUrl, isVideo });
+      mediaFiles.push({ id, itemId: null, url: e.target.result, type: isVideo ? 'video' : 'image', file, name: file.name, isExisting: false });
+      appendThumb({ id, url: e.target.result, isVideo });
+      updatePortfolioCount();
       markDirty();
     };
     reader.readAsDataURL(file);
   });
-  updatePortfolioCount();
 }
 
 function handlePortfolioDrop(e) {
@@ -945,78 +1407,66 @@ function handlePortfolioDrop(e) {
 function appendThumb({ id, url, isVideo }) {
   const grid  = document.getElementById('portfolio-grid');
   const thumb = document.createElement('div');
-  thumb.className = 'media-thumb';
+  thumb.className = 'pe-thumb';
   thumb.dataset.id = id;
   thumb.innerHTML = isVideo
-    ? `<video src="${url}" muted playsinline></video>
-       <div style="position:absolute;bottom:0.4rem;left:0.4rem;background:rgba(0,0,0,0.7);border-radius:0.3rem;padding:1px 5px;font-size:0.62rem;font-weight:800;color:#fff;">VIDEO</div>`
+    ? `<video src="${url}" muted playsinline></video><div class="pe-vid-badge">VIDEO</div>`
     : `<img src="${url}" alt="portfolio item">`;
-  thumb.innerHTML += `<button class="remove-btn" onclick="removeMedia(${id}, this.closest('.media-thumb'))">
-    <span class="material-symbols-outlined" style="font-size:0.85rem;">close</span></button>`;
+  thumb.innerHTML += `<button class="pe-thumb-remove" onclick="removeMedia(${id},this.closest('.pe-thumb'))"><span class="material-symbols-outlined">close</span></button>`;
   grid.appendChild(thumb);
 }
 
 function removeMedia(id, el) {
   const removed = mediaFiles.find(m => m.id === id);
-  if (removed && removed.isExisting && removed.itemId) {
-    removedPortfolioIds.push(removed.itemId);
-  }
+  if (removed && removed.isExisting && removed.itemId) removedPortfolioIds.push(removed.itemId);
   mediaFiles = mediaFiles.filter(m => m.id !== id);
   el.remove();
   updatePortfolioCount();
   markDirty();
 }
-
 function updatePortfolioCount() {
   document.getElementById('portfolio-count-num').textContent = mediaFiles.length;
 }
 
-/* ── Services ────────────────────────────────────────────────────── */
+/* ── Services ──────────────────────────────────────────────────── */
 function selectUnit(btn) {
-  document.querySelectorAll('#svc-unit-chips .cat-chip').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
+  document.querySelectorAll('#svc-unit-chips .pe-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
   selectedUnit = btn.dataset.unit;
 }
-
 function selectSvcCat(btn) {
-  const already = btn.classList.contains('selected');
-  document.querySelectorAll('#svc-cat-chips .cat-chip').forEach(b => b.classList.remove('selected'));
-  if (!already) btn.classList.add('selected'); // clicking same chip deselects it
+  const already = btn.classList.contains('active');
+  document.querySelectorAll('#svc-cat-chips .pe-chip').forEach(b => b.classList.remove('active'));
+  if (!already) btn.classList.add('active');
 }
-
 function addService() {
-  const name  = document.getElementById('svc-name').value.trim();
-  const price = document.getElementById('svc-price').value.trim();
-  const desc  = document.getElementById('svc-desc').value.trim();
-  const catBtn = document.querySelector('#svc-cat-chips .cat-chip.selected');
+  const name     = document.getElementById('svc-name').value.trim();
+  const price    = document.getElementById('svc-price').value.trim();
+  const desc     = document.getElementById('svc-desc').value.trim();
+  const catBtn   = document.querySelector('#svc-cat-chips .pe-chip.active');
   const category = catBtn ? catBtn.dataset.svcCat : '';
-  if (!name)  { showToast('Enter a service name', 'error', '#ffb4ab'); return; }
-  if (!price) { showToast('Enter a rate', 'error', '#ffb4ab'); return; }
+  if (!name)  { showToast('Enter a service name', 'error_outline', '#ff6b6b'); return; }
+  if (!price) { showToast('Enter a rate', 'error_outline', '#ff6b6b'); return; }
   if (!category) {
-    const errEl = document.getElementById('svc-cat-error');
-    if (errEl) errEl.style.display = 'block';
-    showToast('Select a service category', 'error', '#ffb4ab');
+    document.getElementById('svc-cat-error').style.display = 'block';
+    showToast('Select a service category', 'error_outline', '#ff6b6b');
     return;
   }
-  const errEl = document.getElementById('svc-cat-error');
-  if (errEl) errEl.style.display = 'none';
-  const id = Date.now();
-  services.push({ id, name, price, unit: selectedUnit, desc, category });
+  document.getElementById('svc-cat-error').style.display = 'none';
+  services.push({ id: Date.now(), name, price, unit: selectedUnit, desc, category });
   renderServices();
   document.getElementById('svc-name').value  = '';
   document.getElementById('svc-price').value = '';
   document.getElementById('svc-desc').value  = '';
-  document.querySelectorAll('#svc-cat-chips .cat-chip').forEach(b => b.classList.remove('selected'));
-  showToast('Service added', 'check_circle', '#00dbe9');
+  document.querySelectorAll('#svc-cat-chips .pe-chip').forEach(b => b.classList.remove('active'));
+  showToast('Service added', 'check_circle', 'var(--pe-accent)');
   markDirty();
 }
-
 function removeService(id) {
   services = services.filter(s => s.id !== id);
   renderServices();
   markDirty();
 }
-
 function renderServices() {
   const list  = document.getElementById('services-list');
   const empty = document.getElementById('services-empty');
@@ -1024,32 +1474,28 @@ function renderServices() {
   empty.style.display = services.length ? 'none' : 'block';
   services.forEach(s => {
     const el = document.createElement('div');
-    el.className = 'service-item';
+    el.className = 'pe-service-card';
     el.innerHTML = `
-      <div style="min-width:0;">
-        <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.15rem;">
-          <p style="font-size:0.95rem;font-weight:700;color:#dce4e5;margin:0;">${esc(s.name)}</p>
-          ${s.category ? `<span style="display:inline-flex;align-items:center;padding:0.15rem 0.55rem;border-radius:999px;font-size:0.66rem;font-weight:700;letter-spacing:0.05em;background:rgba(0,219,233,0.1);color:#00dbe9;border:1px solid rgba(0,219,233,0.2);">${esc(s.category)}</span>` : ''}
+      <div class="pe-service-body">
+        <div class="pe-service-name">
+          ${esc(s.name)}
+          ${s.category ? `<span class="pe-service-cat-badge">${esc(s.category)}</span>` : ''}
         </div>
-        ${s.desc ? `<p style="font-size:0.8rem;color:#849495;margin:0;">${esc(s.desc)}</p>` : ''}
+        ${s.desc ? `<div class="pe-service-desc">${esc(s.desc)}</div>` : ''}
       </div>
-      <div style="text-align:right;flex-shrink:0;">
-        <p style="font-size:0.95rem;font-weight:800;color:#00dbe9;">₹${Number(s.price).toLocaleString()}</p>
-        <p style="font-size:0.72rem;color:#849495;">${esc(s.unit)}</p>
+      <div class="pe-service-price">
+        <div class="pe-service-price-val">₹${Number(s.price).toLocaleString()}</div>
+        <div class="pe-service-price-unit">${esc(s.unit)}</div>
       </div>
-      <button onclick="removeService(${s.id})" style="background:none;border:none;cursor:pointer;color:#475569;display:flex;align-items:center;transition:color 0.15s;flex-shrink:0;"
-        onmouseover="this.style.color='#ffb4ab'" onmouseout="this.style.color='#475569'">
-        <span class="material-symbols-outlined" style="font-size:1.1rem;">delete</span>
+      <button class="pe-service-delete" onclick="removeService(${s.id})">
+        <span class="material-symbols-outlined">delete</span>
       </button>`;
     list.appendChild(el);
   });
 }
 
-/* ── Locations ───────────────────────────────────────────────────── */
-/* ── Locations ───────────────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', () => {
-  initCascadingLocationSelector();
-});
+/* ── Locations ─────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => { initCascadingLocationSelector(); });
 
 function initCascadingLocationSelector() {
   const container = document.getElementById('indian-location-cascader');
@@ -1059,18 +1505,16 @@ function initCascadingLocationSelector() {
     idPrefix: 'pro-loc',
     showAddButton: true,
     addButtonLabel: '+ Add Location',
-    selectClass: 'cc-input w-full bg-surface-container-lowest border border-glass-stroke rounded-xl px-3.5 py-3 text-on-surface text-sm focus:outline-none focus:border-primary',
-    buttonClass: 'px-5 py-3 rounded-xl bg-primary-container text-obsidian-base font-extrabold text-sm hover:scale-105 transition-all shadow-md shrink-0 cursor-pointer',
-    onSelectLocation: (locStr) => {
-      addLocTag(locStr);
-    }
+    selectClass: 'pe-select',
+    buttonClass: 'pe-btn-secondary',
+    onSelectLocation: (locStr) => addLocTag(locStr)
   });
   container.appendChild(selector);
 }
 
 function quickAddLoc(city) { addLocTag(city); }
 function addLocTag(city) {
-  if (locations.includes(city)) { showToast('Already added', 'info', '#849495'); return; }
+  if (locations.includes(city)) { showToast('Already added', 'info', 'var(--pe-text-sub)'); return; }
   locations.push(city); renderLocations(); markDirty();
 }
 function removeLocation(city) {
@@ -1083,169 +1527,125 @@ function renderLocations() {
   empty.style.display = locations.length ? 'none' : 'block';
   locations.forEach(loc => {
     const tag = document.createElement('div');
-    tag.className = 'loc-tag';
+    tag.className = 'pe-loc-tag';
     tag.innerHTML = `
-      <span class="material-symbols-outlined" style="font-size:0.9rem;">location_on</span>
+      <span class="material-symbols-outlined">location_on</span>
       ${esc(loc)}
       <button onclick="removeLocation('${loc.replace(/'/g,"\\'")}')">
-        <span class="material-symbols-outlined" style="font-size:0.9rem;">close</span>
+        <span class="material-symbols-outlined">close</span>
       </button>`;
     wrap.appendChild(tag);
   });
 }
 
-/* ── Travel toggle ───────────────────────────────────────────────── */
+/* ── Travel toggle ─────────────────────────────────────────────── */
 function toggleTravel(forceTo) {
   travelIntl = (forceTo !== undefined) ? forceTo : !travelIntl;
-  const thumb = document.getElementById('travel-thumb');
-  const btn   = document.getElementById('travel-toggle');
+  const btn = document.getElementById('travel-toggle');
   btn.setAttribute('aria-checked', travelIntl);
-  if (travelIntl) {
-    btn.style.background = 'rgba(0,219,233,0.2)'; btn.style.borderColor = '#00dbe9';
-    thumb.style.background = '#00dbe9'; thumb.style.left = 'calc(100% - 1.5rem)';
-  } else {
-    btn.style.background = 'rgba(255,255,255,0.1)'; btn.style.borderColor = 'rgba(255,255,255,0.15)';
-    thumb.style.background = '#849495'; thumb.style.left = '3px';
-  }
+  btn.classList.toggle('on', travelIntl);
   if (forceTo === undefined) markDirty();
 }
 
-/* ── Pre-fill from localStorage ──────────────────────────────────── */
+/* ── Pre-fill ──────────────────────────────────────────────────── */
 function prefillFromStorage(pro) {
   if (!pro) return;
-
-  // Name + title
   document.getElementById('inp-name').value  = pro.name || pro.display_name || '';
   document.getElementById('inp-title').value = pro.title || '';
-
-  // Bio
   const bioEl = document.getElementById('inp-bio');
   bioEl.value = pro.bio || '';
   updateCharCount(bioEl, 'bio-count', 300);
 
-  // Avatar preview restore on page load
   const existingAvatar = pro.avatarUrl || pro.avatar_url;
   if (existingAvatar && existingAvatar.trim() !== '') {
-    avatarFile = null;
-    avatarUrl = existingAvatar;
+    avatarFile = null; avatarUrl = existingAvatar;
     showAvatarPreview(existingAvatar, 'Current photo');
   } else {
-    avatarFile = null;
-    avatarUrl = null;
-    document.getElementById('avatar-preview').src = '';
+    avatarFile = null; avatarUrl = null;
     document.getElementById('avatar-preview').style.display = 'none';
     document.getElementById('avatar-placeholder').style.display = 'flex';
     document.getElementById('avatar-remove-btn').style.display = 'none';
     document.getElementById('avatar-name-preview').textContent = pro.name || pro.display_name || '—';
   }
 
-  // Categories
   const selected = new Set(pro.categories || []);
-  document.querySelectorAll('#cat-chips .cat-chip').forEach(btn => {
-    btn.classList.toggle('selected', selected.has(btn.dataset.cat));
-  });
+  document.querySelectorAll('#cat-chips .pe-chip').forEach(btn => btn.classList.toggle('active', selected.has(btn.dataset.cat)));
 
-  // Phone / website
   document.getElementById('inp-phone').value   = pro.phone   || '';
   document.getElementById('inp-website').value = pro.website || '';
-
-  // Socials
   document.getElementById('inp-instagram').value = (pro.socials && pro.socials.instagram) || '';
   document.getElementById('inp-facebook').value  = (pro.socials && pro.socials.facebook)  || '';
   document.getElementById('inp-tiktok').value    = (pro.socials && pro.socials.tiktok)    || '';
 
-  // Portfolio — restore existing items (URL only, no File object)
   mediaFiles = [];
-  const grid = document.getElementById('portfolio-grid');
-  grid.innerHTML = '';
+  document.getElementById('portfolio-grid').innerHTML = '';
   (pro.portfolio || []).forEach(item => {
     const id = Date.now() + Math.random();
-    mediaFiles.push({ id, itemId: item.id || null, url: item.url || item.file_url, type: item.type || item.file_type, file: null, name: item.name || item.title || '', isExisting: true });
+    mediaFiles.push({ id, itemId: item.id || null, url: item.url || item.file_url, type: item.type || item.file_type, file: null, name: item.name || '', isExisting: true });
     appendThumb({ id, url: item.url, isVideo: item.type === 'video' });
   });
   updatePortfolioCount();
 
-  // Services
   services = (pro.services || []).map(s => ({ ...s, id: s.id || Date.now() + Math.random() }));
   renderServices();
 
-  // Locations
   locations = [...(pro.locations || [])];
   renderLocations();
 
-  // Equipment Roster & Certifications
   equipmentRoster = [...(pro.equipment_roster || pro.equipmentRoster || [])];
   renderEquipmentRoster();
 
   certifications = [...(pro.certifications || [])];
   renderCertBadges();
 
-  if (document.getElementById('ical-import-url')) {
+  if (document.getElementById('ical-import-url'))
     document.getElementById('ical-import-url').value = pro.ical_url || pro.icalUrl || '';
-  }
-  const proId = pro.user_id || pro.userId || pro.id;
-  if (proId && document.getElementById('ical-export-url')) {
-    document.getElementById('ical-export-url').value = `${window.location.origin}/api/professionals/${proId}/calendar.ics`;
-  }
 
-  // Travel
+  const proId = pro.user_id || pro.userId || pro.id;
+  if (proId && document.getElementById('ical-export-url'))
+    document.getElementById('ical-export-url').value = `${window.location.origin}/api/professionals/${proId}/calendar.ics`;
+
   toggleTravel(!!pro.travelIntl);
 }
 
-/* ── Save ────────────────────────────────────────────────────────── */
+/* ── Save ──────────────────────────────────────────────────────── */
 async function saveChanges() {
   const name = document.getElementById('inp-name').value.trim();
-  if (!name) { showToast('Please enter your full name', 'error', '#ffb4ab'); return; }
+  if (!name) { showToast('Please enter your full name', 'error_outline', '#ff6b6b'); return; }
 
   const btn = document.getElementById('save-btn');
   btn.disabled = true;
-  btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:1rem;animation:spin 0.8s linear infinite;">progress_activity</span> Saving…`;
+  btn.innerHTML = `<span class="material-symbols-outlined spin">progress_activity</span> Saving…`;
 
-  const selectedCats = Array.from(document.querySelectorAll('#cat-chips .cat-chip.selected'))
-    .map(b => b.dataset.cat);
-
+  const selectedCats = Array.from(document.querySelectorAll('#cat-chips .pe-chip.active')).map(b => b.dataset.cat);
   const profileValues = {
     display_name: name,
-    title:        document.getElementById('inp-title').value.trim(),
-    categories:   selectedCats,
-    bio:          document.getElementById('inp-bio').value.trim(),
-    phone:        document.getElementById('inp-phone').value.trim(),
-    website:      document.getElementById('inp-website').value.trim(),
+    title:       document.getElementById('inp-title').value.trim(),
+    categories:  selectedCats,
+    bio:         document.getElementById('inp-bio').value.trim(),
+    phone:       document.getElementById('inp-phone').value.trim(),
+    website:     document.getElementById('inp-website').value.trim(),
     socials: {
       instagram: document.getElementById('inp-instagram').value.trim(),
       facebook:  document.getElementById('inp-facebook').value.trim(),
       tiktok:    document.getElementById('inp-tiktok').value.trim(),
     },
-    services,
-    locations,
+    services, locations,
     equipment_roster: equipmentRoster,
     certifications,
     ical_url: document.getElementById('ical-import-url')?.value.trim() || '',
     travel_international: travelIntl,
   };
 
-  const currentAvatarUrl = (typeof avatarUrl === 'string' && (avatarUrl.startsWith('/') || avatarUrl.startsWith('http')))
-    ? avatarUrl
-    : null;
-
-  if (currentAvatarUrl) {
-    profileValues.avatar_url = currentAvatarUrl;
-  }
+  const currentAvatarUrl = (typeof avatarUrl === 'string' && (avatarUrl.startsWith('/') || avatarUrl.startsWith('http'))) ? avatarUrl : null;
+  if (currentAvatarUrl) profileValues.avatar_url = currentAvatarUrl;
 
   const portfolioState = mediaFiles.map(m => ({ url: m.url, type: m.type, name: m.name || '', itemId: m.itemId || null }));
-  const payloadForStorage = {
-    name,
-    ...profileValues,
-    avatarUrl: currentAvatarUrl,
-    portfolio: portfolioState,
-    savedAt: new Date().toISOString(),
-  };
-
-  try { localStorage.setItem('cc_pro_profile', JSON.stringify(payloadForStorage)); } catch(_) {}
+  try { localStorage.setItem('cc_pro_profile', JSON.stringify({ name, ...profileValues, avatarUrl: currentAvatarUrl, portfolio: portfolioState, savedAt: new Date().toISOString() })); } catch(_) {}
 
   let res;
   try {
-    const newFiles = mediaFiles.filter(m => m.file);
+    const newFiles  = mediaFiles.filter(m => m.file);
     const deleteIds = removedPortfolioIds.slice();
     if (newFiles.length || avatarFile || deleteIds.length) {
       const form = new FormData();
@@ -1253,60 +1653,31 @@ async function saveChanges() {
         if (value === undefined || value === null) continue;
         form.append(key, typeof value === 'object' ? JSON.stringify(value) : value);
       }
-      if (currentAvatarUrl && !avatarFile) {
-        form.append('avatar_url', currentAvatarUrl);
-      }
-      if (deleteIds.length) {
-        form.append('remove_portfolio_ids', JSON.stringify(deleteIds));
-      }
-      if (avatarFile) {
-        form.append('avatar', avatarFile, avatarFile.name);
-      }
-      newFiles.forEach((m, idx) => {
-        form.append(`portfolio_file_${idx}`, m.file, m.name || `portfolio-${idx}`);
-      });
-
-      res = await fetch('/api/profile', {
-        method: 'PATCH',
-        body: form,
-      });
+      if (currentAvatarUrl && !avatarFile) form.append('avatar_url', currentAvatarUrl);
+      if (deleteIds.length) form.append('remove_portfolio_ids', JSON.stringify(deleteIds));
+      if (avatarFile) form.append('avatar', avatarFile, avatarFile.name);
+      newFiles.forEach((m, idx) => form.append(`portfolio_file_${idx}`, m.file, m.name || `portfolio-${idx}`));
+      res = await fetch('/api/profile', { method: 'PATCH', body: form });
     } else {
-      if (currentAvatarUrl) {
-        profileValues.avatar_url = currentAvatarUrl;
-      }
-      if (deleteIds.length) {
-        profileValues.remove_portfolio_ids = deleteIds;
-      }
-      res = await fetch('/api/profile', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(profileValues),
-      });
+      if (currentAvatarUrl) profileValues.avatar_url = currentAvatarUrl;
+      if (deleteIds.length) profileValues.remove_portfolio_ids = deleteIds;
+      res = await fetch('/api/profile', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(profileValues) });
     }
     const data = await res.json();
     if (!data.ok) throw new Error(data.error || 'Unable to save profile.');
-  } catch(err) {
-    console.error('Profile save error:', err);
-  }
+  } catch(err) { console.error('Profile save error:', err); }
 
-  // Reset dirty state
   window._isDirty = false;
   btn.disabled = false;
-  btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:1rem;">save</span> Save Changes`;
-  const bar  = document.getElementById('save-bar');
-  const text = document.getElementById('save-bar-text');
-  text.innerHTML = 'All changes saved';
-  text.classList.remove('dirty');
-
-  showToast('Profile saved successfully!', 'check_circle', '#00dbe9');
-
-  // Redirect to profile after a short delay
+  btn.innerHTML = `<span class="material-symbols-outlined">save</span> Save Changes`;
+  document.getElementById('save-bar-text').innerHTML = 'All changes saved';
+  document.getElementById('save-bar-text').classList.remove('dirty');
+  showToast('Profile saved successfully!', 'check_circle', 'var(--pe-accent)');
   setTimeout(() => { window.location.href = 'professional-profile.html'; }, 1400);
 }
 
-/* ── Boot ────────────────────────────────────────────────────────── */
+/* ── Boot ──────────────────────────────────────────────────────── */
 async function boot() {
-  // Auth check
   let apiProfile = null;
   try {
     const res  = await fetch('/api/profile');
@@ -1323,168 +1694,106 @@ async function boot() {
     return;
   }
 
-  // Show main content
   const main = document.getElementById('edit-main');
   main.classList.remove('hidden');
   main.style.display = 'block';
 
-  // Show save bar
   document.getElementById('save-bar').classList.remove('hidden-bar');
   document.getElementById('save-bar-text').textContent = 'All changes saved';
-
-  // Set email (read-only)
   document.getElementById('inp-email').value = apiProfile.email;
 
-  // Pre-fill from localStorage if available, otherwise use saved profile from the server.
   const raw = localStorage.getItem('cc_pro_profile');
-  const pro  = raw ? JSON.parse(raw) : apiProfile;
-  prefillFromStorage(pro);
+  prefillFromStorage(raw ? JSON.parse(raw) : apiProfile);
 
-  // Trigger reveal animations
   requestAnimationFrame(() => {
     document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
   });
 }
 
-/* ── Toast ───────────────────────────────────────────────────────── */
+/* ── Toast ─────────────────────────────────────────────────────── */
 function showToast(msg, icon, color) {
   const toast = document.getElementById('success-toast');
   document.getElementById('toast-text').textContent = msg;
+  document.getElementById('toast-text').style.color = color;
   const ico = document.getElementById('toast-icon');
   ico.textContent = icon; ico.style.color = color;
-  document.getElementById('toast-text').style.color = color;
-  toast.style.borderColor = color + '80';
-  toast.classList.remove('opacity-0', 'translate-y-10');
-  toast.classList.add('opacity-100', 'translate-y-0');
+  toast.style.borderColor = color;
+  toast.classList.add('show');
   clearTimeout(toast._t);
-  toast._t = setTimeout(() => {
-    toast.classList.remove('opacity-100', 'translate-y-0');
-    toast.classList.add('opacity-0', 'translate-y-10');
-  }, 3000);
+  toast._t = setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-/* ── Util ────────────────────────────────────────────────────────── */
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-/* ── Spin keyframe ───────────────────────────────────────────────── */
-const spinStyle = document.createElement('style');
-spinStyle.textContent = `@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`;
-document.head.appendChild(spinStyle);
-
+/* ── Embed URL ─────────────────────────────────────────────────── */
 async function submitEmbedUrl() {
   const inp = document.getElementById('embed-url-inp');
   const url = inp ? inp.value.trim() : '';
-  if (!url) { showToast('Please enter a video URL', 'error'); return; }
-
+  if (!url) { showToast('Please enter a video URL', 'error_outline', '#ff6b6b'); return; }
   try {
-    const res = await fetch('/api/portfolio/embed', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url })
-    });
+    const res  = await fetch('/api/portfolio/embed', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url }) });
     const data = await res.json();
-    if (data.ok) {
-      showToast('Video embedded successfully!', 'success');
-      if (inp) inp.value = '';
-      loadProfile();
-    } else {
-      showToast(data.error || 'Failed to embed video', 'error');
-    }
-  } catch(e) {
-    showToast('Failed to embed video', 'error');
-  }
+    if (data.ok) { showToast('Video embedded!', 'check_circle', 'var(--pe-accent)'); if (inp) inp.value = ''; }
+    else { showToast(data.error || 'Failed to embed', 'error_outline', '#ff6b6b'); }
+  } catch(e) { showToast('Failed to embed video', 'error_outline', '#ff6b6b'); }
 }
 
-/* ── Blocked Dates Handlers ──────────────────────────────────────── */
+/* ── Blocked Dates ─────────────────────────────────────────────── */
 let _blockedDatesList = [];
-
 async function loadBlockedDates() {
   try {
-    const meRes = await fetch('/api/me');
-    const meData = await meRes.json();
+    const meData = await (await fetch('/api/me')).json();
     if (!meData.ok || !meData.user) return;
-    const uid = meData.user.id;
-    const res = await fetch(`/api/calendar/blocked-dates/${uid}`);
-    const data = await res.json();
-    if (data.ok) {
-      _blockedDatesList = data.blocked_dates || [];
-      renderBlockedDates();
-    }
+    const data = await (await fetch(`/api/calendar/blocked-dates/${meData.user.id}`)).json();
+    if (data.ok) { _blockedDatesList = data.blocked_dates || []; renderBlockedDates(); }
   } catch (e) { console.error('Error loading blocked dates:', e); }
 }
-
 function renderBlockedDates() {
   const container = document.getElementById('blocked-dates-list');
-  const emptyEl = document.getElementById('blocked-dates-empty');
+  const emptyEl   = document.getElementById('blocked-dates-empty');
   if (!container) return;
-
   if (!_blockedDatesList.length) {
     container.innerHTML = '';
     if (emptyEl) emptyEl.style.display = 'block';
     return;
   }
-
   if (emptyEl) emptyEl.style.display = 'none';
   container.innerHTML = _blockedDatesList.map(b => `
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.9rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:0.6rem;">
-      <div style="display:flex;align-items:center;gap:0.6rem;">
-        <span class="material-symbols-outlined" style="font-size:1.1rem;color:#ff6b6b;">event_busy</span>
+    <div class="pe-date-row">
+      <div class="pe-date-info">
+        <span class="material-symbols-outlined">event_busy</span>
         <div>
-          <span style="font-weight:700;color:#fff;font-size:0.88rem;">${b.blocked_date}</span>
-          ${b.reason ? `<span style="font-size:0.78rem;color:#849495;margin-left:0.5rem;">(${b.reason})</span>` : ''}
+          <div class="pe-date-label">${b.blocked_date}</div>
+          ${b.reason ? `<div class="pe-date-reason">${b.reason}</div>` : ''}
         </div>
       </div>
-      <button onclick="deleteBlockedDate(${b.id})" style="background:none;border:none;color:#ff6b6b;cursor:pointer;" title="Unblock Date">
-        <span class="material-symbols-outlined" style="font-size:1.1rem;">delete</span>
+      <button class="pe-date-delete" onclick="deleteBlockedDate(${b.id})">
+        <span class="material-symbols-outlined">delete</span>
       </button>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
-
 async function addBlockedDate() {
-  const dateInp = document.getElementById('block-date-inp');
+  const dateInp   = document.getElementById('block-date-inp');
   const reasonInp = document.getElementById('block-reason-inp');
-  const bdate = dateInp ? dateInp.value : '';
+  const bdate  = dateInp ? dateInp.value : '';
   const reason = reasonInp ? reasonInp.value.trim() : '';
-
-  if (!bdate) { showToast('Please select a date to block', 'error'); return; }
-
+  if (!bdate) { showToast('Please select a date', 'error_outline', '#ff6b6b'); return; }
   try {
-    const res = await fetch('/api/calendar/block', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ blocked_date: bdate, reason })
-    });
-    const data = await res.json();
-    if (data.ok) {
-      showToast(`Date ${bdate} blocked successfully!`, 'success');
-      if (dateInp) dateInp.value = '';
-      if (reasonInp) reasonInp.value = '';
-      loadBlockedDates();
-    } else {
-      showToast(data.error || 'Failed to block date', 'error');
-    }
-  } catch (e) {
-    showToast('Failed to block date', 'error');
-  }
+    const data = await (await fetch('/api/calendar/block', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ blocked_date: bdate, reason }) })).json();
+    if (data.ok) { showToast(`${bdate} blocked!`, 'check_circle', 'var(--pe-accent)'); if (dateInp) dateInp.value = ''; if (reasonInp) reasonInp.value = ''; loadBlockedDates(); }
+    else { showToast(data.error || 'Failed to block', 'error_outline', '#ff6b6b'); }
+  } catch (e) { showToast('Failed to block date', 'error_outline', '#ff6b6b'); }
 }
-
 async function deleteBlockedDate(id) {
   if (!confirm('Unblock this date?')) return;
   try {
-    const res = await fetch(`/api/calendar/block/${id}`, { method: 'DELETE' });
-    const data = await res.json();
-    if (data.ok) {
-      showToast('Date unblocked successfully!', 'success');
-      loadBlockedDates();
-    } else {
-      showToast(data.error || 'Failed to unblock date', 'error');
-    }
-  } catch (e) {
-    showToast('Failed to unblock date', 'error');
-  }
+    const data = await (await fetch(`/api/calendar/block/${id}`, { method: 'DELETE' })).json();
+    if (data.ok) { showToast('Date unblocked!', 'check_circle', 'var(--pe-accent)'); loadBlockedDates(); }
+    else { showToast(data.error || 'Failed to unblock', 'error_outline', '#ff6b6b'); }
+  } catch (e) { showToast('Failed to unblock date', 'error_outline', '#ff6b6b'); }
+}
+
+/* ── Util ──────────────────────────────────────────────────────── */
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 boot();
@@ -1493,9 +1802,5 @@ loadBlockedDates();
 
 <script src="/static/js/header-loader.js"></script>
 <script src="/static/js/footer-loader.js"></script>
-<script>
-</script>
 </body>
 </html>
-
-
