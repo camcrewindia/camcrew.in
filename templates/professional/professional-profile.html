@@ -527,7 +527,7 @@
      LIGHTBOX
   ══════════════════════════════════════ */
   .lightbox-overlay {
-    position: fixed; inset: 0; z-index: 300;
+    position: fixed; inset: 0; z-index: 99999;
     background: rgba(0,0,0,0.94); backdrop-filter: blur(12px);
     display: none; align-items: center; justify-content: center;
     padding: 1rem;
@@ -558,7 +558,7 @@
     color: #dce4e5; border-radius: 999px; padding: 0.65rem 1.4rem;
     font-size: 0.82rem; font-weight: 700;
     box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-    z-index: 400; opacity: 0; transition: opacity 0.25s;
+    z-index: 999999; opacity: 0; transition: opacity 0.25s;
     white-space: nowrap;
   }
   #pp-toast.show { opacity: 1; }
@@ -576,28 +576,92 @@
   .skel-banner { height: 200px; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.08); border-radius: 0 0 1.25rem 1.25rem; animation: skel-pulse 1.5s ease-in-out infinite; margin-bottom: 1.5rem; }
 
   /* ══════════════════════════════════════
-     LIGHT MODE
+     LIGHT MODE STYLES
   ══════════════════════════════════════ */
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  [data-theme="light"] body,
+  html.light body {
+    background: #e0e5ec !important;
+    color: #0f172a !important;
+  }
+
+  [data-theme="light"] .profile-banner,
+  html.light .profile-banner {
+    background: #cbd5e1 !important;
+    border-bottom-color: rgba(0, 0, 0, 0.1) !important;
+  }
+
+  [data-theme="light"] .profile-name,
+  [data-theme="light"] .section-title,
+  [data-theme="light"] .stat-num,
+  [data-theme="light"] .service-name,
+  [data-theme="light"] .share-title,
+  [data-theme="light"] .portfolio-card-title,
+  html.light .profile-name,
+  html.light .section-title,
+  html.light .stat-num,
+  html.light .service-name,
+  html.light .share-title,
+  html.light .portfolio-card-title {
+    color: #0f172a !important;
+  }
+
+  [data-theme="light"] .profile-handle,
+  [data-theme="light"] .profile-bio,
+  [data-theme="light"] .meta-item,
+  [data-theme="light"] .stat-lbl,
+  [data-theme="light"] .service-desc,
+  [data-theme="light"] .share-sub,
+  html.light .profile-handle,
+  html.light .profile-bio,
+  html.light .meta-item,
+  html.light .stat-lbl,
+  html.light .service-desc,
+  html.light .share-sub {
+    color: #475569 !important;
+  }
+
+  [data-theme="light"] .stat-cell,
+  [data-theme="light"] .service-card,
+  [data-theme="light"] .share-card,
+  [data-theme="light"] .portfolio-card,
+  html.light .stat-cell,
+  html.light .service-card,
+  html.light .share-card,
+  html.light .portfolio-card {
+    background: #e0e5ec !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
+  }
+
+  [data-theme="light"] .btn-ghost,
+  [data-theme="light"] .btn-icon,
+  [data-theme="light"] .social-link,
+  html.light .btn-ghost,
+  html.light .btn-icon,
+  html.light .social-link {
+    background: #e0e5ec !important;
+    color: #0f172a !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff !important;
+  }
+
+  [data-theme="light"] .btn-primary,
+  html.light .btn-primary {
+    background: #0e5a6f !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(14, 90, 111, 0.35) !important;
+  }
+
+  [data-theme="light"] .url-display,
+  html.light .url-display {
+    background: rgba(14, 90, 111, 0.08) !important;
+    border: 1px solid rgba(14, 90, 111, 0.2) !important;
+  }
+
+  [data-theme="light"] .url-text,
+  html.light .url-text {
+    color: #0e5a6f !important;
+  }
 </style>
 </head>
 <body>
@@ -874,9 +938,6 @@ function render(vaultFiles, jobs) {
                 <span class="material-symbols-outlined" style="font-size:0.88rem;">edit</span>
                 Edit Profile
               </a>
-              <a href="professional-edit.html" class="btn-icon" title="Edit Profile">
-                <span class="material-symbols-outlined">tune</span>
-              </a>
             </div>
           </div>
 
@@ -965,12 +1026,10 @@ function render(vaultFiles, jobs) {
             Copy Link
           </button>
         </div>
-        ${S.username
-          ? `<div class="url-display">
-              <span class="material-symbols-outlined">link</span>
-              <span class="url-text">${esc(window.location.origin)}/@${esc(S.username)}</span>
-             </div>`
-          : `<p style="font-size:0.78rem;color:#4d666a;">Profile link appears once your data is saved.</p>`}
+        <div class="url-display">
+          <span class="material-symbols-outlined">link</span>
+          <span class="url-text">${esc(S.username ? (window.location.origin + '/@' + S.username) : (window.location.origin + '/public-profile.html' + ((S.pro?.user_id || S.user?.id) ? '?id=' + (S.pro?.user_id || S.user?.id) : '')))}</span>
+        </div>
       </div>
 
     </div><!-- /page-wrap -->
@@ -1039,7 +1098,7 @@ document.addEventListener('keydown', e => {
 function copyProfileLink() {
   const url = S.username
     ? window.location.origin + '/@' + S.username
-    : window.location.origin + '/professional-profile.html';
+    : window.location.origin + '/public-profile.html' + ((S.pro?.user_id || S.user?.id) ? '?id=' + (S.pro?.user_id || S.user?.id) : '');
   navigator.clipboard.writeText(url)
     .then(() => showToast('Link copied to clipboard'))
     .catch(() => showToast('Could not copy link.'));
