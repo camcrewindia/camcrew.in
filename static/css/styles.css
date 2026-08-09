@@ -1362,24 +1362,145 @@ html.light textarea::placeholder {
   color: #64748b !important;
 }
 
-/* Footer Light Theme */
-[data-theme="light"] footer,
-html.light footer {
-  background: #e0e5ec !important;
-  color: #0f172a !important;
-  border-top: 1px solid rgba(0,0,0,0.08) !important;
+/* ═══════════════════════════════════════════════════════════════════
+   SITE FOOTER EXACT REFERENCE DESIGN (DUAL THEME COMPATIBLE)
+   ═══════════════════════════════════════════════════════════════════ */
+
+footer.site-footer,
+.site-footer {
+  background-color: #050506 !important;
+  color: #cbd5e1 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
-[data-theme="light"] footer a,
-[data-theme="light"] footer p,
-[data-theme="light"] footer span,
-html.light footer a,
-html.light footer p,
-html.light footer span {
+.site-footer h5 {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  font-size: 1rem !important;
+  margin-bottom: 0.85rem !important;
+  letter-spacing: -0.01em !important;
+}
+
+.site-footer a.footer-link {
+  color: #94a3b8 !important;
+  font-size: 0.88rem !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease, transform 0.2s ease !important;
+  display: inline-block !important;
+}
+
+.site-footer a.footer-link:hover {
+  color: #00f0ff !important;
+  transform: translateX(2px) !important;
+}
+
+.site-footer .footer-social-btn {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  text-decoration: none !important;
+}
+
+.site-footer .footer-social-btn:hover {
+  background: rgba(0, 240, 255, 0.15) !important;
+  border-color: #00f0ff !important;
+  color: #00f0ff !important;
+  transform: translateY(-2px) !important;
+}
+
+.site-footer .app-download-card {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  border-radius: 0.85rem !important;
+  padding: 0.6rem 0.9rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  color: #ffffff !important;
+  transition: all 0.2s ease !important;
+}
+
+.site-footer .app-download-card:hover {
+  border-color: rgba(0, 240, 255, 0.3) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.site-footer .footer-bottom-bar {
+  border-top-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.site-footer .footer-copy {
+  color: #64748b !important;
+}
+
+/* ── Light Mode Footer Overrides (Matches bottom half of user screenshot) ── */
+[data-theme="light"] footer.site-footer,
+[data-theme="light"] .site-footer,
+html.light footer.site-footer,
+html.light .site-footer {
+  background-color: #f8fafc !important;
   color: #334155 !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
-[data-theme="light"] footer a:hover,
-html.light footer a:hover {
+[data-theme="light"] .site-footer h5,
+html.light .site-footer h5 {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .site-footer a.footer-link,
+html.light .site-footer a.footer-link {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .site-footer a.footer-link:hover,
+html.light .site-footer a.footer-link:hover {
   color: #0e5a6f !important;
+}
+
+[data-theme="light"] .site-footer .footer-social-btn,
+html.light .site-footer .footer-social-btn {
+  background: #e0e5ec !important;
+  border: none !important;
+  box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .site-footer .footer-social-btn:hover,
+html.light .site-footer .footer-social-btn:hover {
+  color: #0e5a6f !important;
+  box-shadow: 5px 5px 12px #b8c2cc, -5px -5px 12px #ffffff !important;
+}
+
+[data-theme="light"] .site-footer .app-download-card,
+html.light .site-footer .app-download-card {
+  background: #e0e5ec !important;
+  border: none !important;
+  box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .site-footer .app-download-card:hover,
+html.light .site-footer .app-download-card:hover {
+  box-shadow: 5px 5px 12px #b8c2cc, -5px -5px 12px #ffffff !important;
+  color: #0e5a6f !important;
+}
+
+[data-theme="light"] .site-footer .footer-bottom-bar,
+html.light .site-footer .footer-bottom-bar {
+  border-top-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="light"] .site-footer .footer-copy,
+html.light .site-footer .footer-copy {
+  color: #64748b !important;
 }
