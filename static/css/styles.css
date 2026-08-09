@@ -641,7 +641,7 @@ html.light header #mobile-menu .mobile-nav-heading .material-symbols-outlined {
 [data-theme="light"] header #mobile-menu .mobile-nav-pill-active,
 html.light header #mobile-menu .mobile-nav-pill-active {
     background: #e0e5ec !important;
-    border-color: #0e5a6f !important;
+    border: none !important;
     box-shadow: inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff !important;
     color: #0e5a6f !important;
 }
@@ -651,7 +651,7 @@ html.light header #mobile-menu .mobile-nav-pill-active {
 html.light header #mobile-menu .mobile-nav-pill,
 html.light header #mobile-menu .mobile-service-chip {
     background: #e0e5ec !important;
-    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    border: none !important;
     box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
     color: #0f172a !important;
     font-weight: 700 !important;
@@ -682,7 +682,7 @@ html.light header #mobile-menu .mobile-service-chip:active {
 [data-theme="light"] header #mobile-menu .mobile-user-card,
 html.light header #mobile-menu .mobile-user-card {
     background: #e0e5ec !important;
-    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    border: none !important;
     box-shadow: inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff !important;
 }
 
@@ -696,7 +696,7 @@ html.light header #mobile-user-email {
 html.light header #mobile-user-role {
     color: #0e5a6f !important;
     background: rgba(14, 90, 111, 0.12) !important;
-    border: 1px solid rgba(14, 90, 111, 0.3) !important;
+    border: none !important;
     font-weight: 800 !important;
     padding: 2px 8px !important;
     border-radius: 9999px !important;
@@ -705,7 +705,7 @@ html.light header #mobile-user-role {
 
 /* Mobile Sign Out Button in Light Mode */
 .mobile-signout-btn {
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: none !important;
     color: #dce4e5;
 }
 
@@ -720,7 +720,7 @@ html.light header #mobile-menu .mobile-signout-btn * {
 [data-theme="light"] header #mobile-menu .mobile-signout-btn,
 html.light header #mobile-menu .mobile-signout-btn {
     background: #e0e5ec !important;
-    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    border: none !important;
     box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
     transition: all 0.2s ease !important;
 }
