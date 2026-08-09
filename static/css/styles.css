@@ -1311,36 +1311,101 @@ html.light .cc-btn-ghost:hover {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   GLOBAL LIGHT THEME OVERRIDES (ALL PAGES EXCEPT index.html)
+   ULTRA-HIGH CONTRAST & READABILITY SYSTEM FOR LIGHT THEME
+   (Applies to ALL pages except index.html when Light Mode is active)
    ═══════════════════════════════════════════════════════════════════ */
 
 [data-theme="light"] body,
 html.light body {
   background-color: #e0e5ec !important;
-  color: #1e293b !important;
-}
-
-[data-theme="light"] main h1,
-[data-theme="light"] main h2,
-[data-theme="light"] main h3,
-[data-theme="light"] main h4,
-[data-theme="light"] main h5,
-html.light main h1,
-html.light main h2,
-html.light main h3,
-html.light main h4,
-html.light main h5 {
   color: #0f172a !important;
 }
 
-[data-theme="light"] main p,
-[data-theme="light"] main label,
-html.light main p,
-html.light main label {
-  color: #334155 !important;
+/* Headings in Light Mode */
+[data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4, [data-theme="light"] h5, [data-theme="light"] h6,
+html.light h1, html.light h2, html.light h3, html.light h4, html.light h5, html.light h6 {
+  color: #0f172a !important;
 }
 
-/* Light Theme Cards, Forms, Modals & Dashboards */
+/* Paragraphs, labels, spans, list items, table text, descriptions in Light Mode */
+[data-theme="light"] p,
+[data-theme="light"] label,
+[data-theme="light"] li,
+[data-theme="light"] td,
+[data-theme="light"] th,
+[data-theme="light"] dt,
+[data-theme="light"] dd,
+[data-theme="light"] small,
+html.light p,
+html.light label,
+html.light li,
+html.light td,
+html.light th,
+html.light dt,
+html.light dd,
+html.light small {
+  color: #1e293b !important;
+}
+
+/* Override all light-colored text utility classes in Light Mode */
+[data-theme="light"] .text-white,
+[data-theme="light"] .text-slate-100,
+[data-theme="light"] .text-slate-200,
+[data-theme="light"] .text-slate-300,
+[data-theme="light"] .text-slate-400,
+[data-theme="light"] .text-slate-500,
+[data-theme="light"] .text-gray-100,
+[data-theme="light"] .text-gray-200,
+[data-theme="light"] .text-gray-300,
+[data-theme="light"] .text-gray-400,
+[data-theme="light"] .text-gray-500,
+[data-theme="light"] .text-on-surface-variant,
+[data-theme="light"] .text-on-surface,
+[data-theme="light"] [class*="text-white/"],
+[data-theme="light"] [class*="text-slate-200/"],
+[data-theme="light"] [class*="text-slate-300/"],
+[data-theme="light"] [class*="text-slate-400/"],
+html.light .text-white,
+html.light .text-slate-100,
+html.light .text-slate-200,
+html.light .text-slate-300,
+html.light .text-slate-400,
+html.light .text-slate-500,
+html.light .text-gray-100,
+html.light .text-gray-200,
+html.light .text-gray-300,
+html.light .text-gray-400,
+html.light .text-gray-500,
+html.light .text-on-surface-variant,
+html.light .text-on-surface,
+html.light [class*="text-white/"],
+html.light [class*="text-slate-200/"],
+html.light [class*="text-slate-300/"],
+html.light [class*="text-slate-400/"] {
+  color: #1e293b !important;
+}
+
+/* Keep Brand Accent Colors Crisp */
+[data-theme="light"] .text-primary,
+[data-theme="light"] .text-accent,
+[data-theme="light"] .accent,
+[data-theme="light"] .text-cyan-400,
+[data-theme="light"] .text-teal-400,
+html.light .text-primary,
+html.light .text-accent,
+html.light .accent,
+html.light .text-cyan-400,
+html.light .text-teal-400 {
+  color: #0e5a6f !important;
+}
+
+/* Material Symbols Icons in Light Mode */
+[data-theme="light"] .material-symbols-outlined:not(.text-teal-700):not(.text-red-400):not(.text-red-500),
+html.light .material-symbols-outlined:not(.text-teal-700):not(.text-red-400):not(.text-red-500) {
+  color: #1e293b !important;
+}
+
+/* Cards, Glass Panels, Hero Cards, Auth Cards, Modals in Light Mode */
 [data-theme="light"] .glass-panel,
 [data-theme="light"] .glass-card,
 [data-theme="light"] .pro-card-info,
@@ -1350,6 +1415,12 @@ html.light main label {
 [data-theme="light"] .profile-card,
 [data-theme="light"] .dashboard-card,
 [data-theme="light"] .modal-content,
+[data-theme="light"] .stat-pill,
+[data-theme="light"] .stats-bar,
+[data-theme="light"] .trust-stat,
+[data-theme="light"] .kit-card,
+[data-theme="light"] .gear-card,
+[data-theme="light"] .hero-mini-card,
 html.light .glass-panel,
 html.light .glass-card,
 html.light .pro-card-info,
@@ -1358,7 +1429,13 @@ html.light .step-card,
 html.light .auth-card,
 html.light .profile-card,
 html.light .dashboard-card,
-html.light .modal-content {
+html.light .modal-content,
+html.light .stat-pill,
+html.light .stats-bar,
+html.light .trust-stat,
+html.light .kit-card,
+html.light .gear-card,
+html.light .hero-mini-card {
   background: #e0e5ec !important;
   border: 1px solid rgba(255, 255, 255, 0.8) !important;
   box-shadow: 8px 8px 24px #b8c2cc, -8px -8px 24px #ffffff !important;
@@ -1366,6 +1443,7 @@ html.light .modal-content {
   backdrop-filter: none !important;
 }
 
+/* Form Fields, Selects, Inputs in Light Mode */
 [data-theme="light"] input,
 [data-theme="light"] select,
 [data-theme="light"] textarea,
@@ -1376,7 +1454,7 @@ html.light textarea {
   color: #0f172a !important;
   border: none !important;
   box-shadow: inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff !important;
-  font-weight: 600 !important;
+  font-weight: 700 !important;
 }
 
 [data-theme="light"] input::placeholder,
@@ -1384,6 +1462,12 @@ html.light textarea {
 html.light input::placeholder,
 html.light textarea::placeholder {
   color: #64748b !important;
+}
+
+[data-theme="light"] option,
+html.light option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
