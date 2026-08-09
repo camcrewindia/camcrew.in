@@ -1494,72 +1494,65 @@ html.light .bg-on-surface-variant {
   background-color: #64748b !important;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   CHECKOUT LIGHT THEME SUB-PANELS, PROGRESS BAR & BUTTON SYSTEM
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* Wallet & Crypto Payment Sub-Panels in Light Mode */
+/* 6. Wallet Panel Buttons & Crypto Options in Light Mode */
 [data-theme="light"] #panel-wallet button,
 [data-theme="light"] #panel-crypto > div,
-[data-theme="light"] #panel-bank > div,
 html.light #panel-wallet button,
-html.light #panel-crypto > div,
-html.light #panel-bank > div {
+html.light #panel-crypto > div {
   background: #e0e5ec !important;
+  color: #0f172a !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
-  color: #0f172a !important;
+  box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff !important;
 }
 
-[data-theme="light"] #panel-wallet p,
-[data-theme="light"] #panel-wallet span,
+[data-theme="light"] #panel-wallet button p,
+[data-theme="light"] #panel-wallet button span,
 [data-theme="light"] #panel-crypto p,
-[data-theme="light"] #panel-crypto span,
-html.light #panel-wallet p,
-html.light #panel-wallet span,
-html.light #panel-crypto p,
-html.light #panel-crypto span {
+html.light #panel-wallet button p,
+html.light #panel-wallet button span,
+html.light #panel-crypto p {
   color: #0f172a !important;
 }
 
-[data-theme="light"] #panel-crypto .text-on-surface-variant,
-html.light #panel-crypto .text-on-surface-variant {
-  color: #334155 !important;
+[data-theme="light"] #panel-wallet p.text-on-surface-variant,
+html.light #panel-wallet p.text-on-surface-variant {
+  color: #475569 !important;
 }
 
-/* Dark Progress Bar & Step Rail in Light Mode */
-[data-theme="light"] .step-connector.active::after,
-html.light .step-connector.active::after {
-  background: #0f172a !important;
-}
-
+/* 7. Step Rail Progress Bar Dark Color System in Light Mode */
 [data-theme="light"] .step-connector,
 html.light .step-connector {
-  background: rgba(0, 0, 0, 0.15) !important;
+  background: #cbd5e1 !important;
 }
 
-/* Dark Colored Buttons with White Text in Light Theme */
+[data-theme="light"] .step-connector.active::after,
+html.light .step-connector.active::after {
+  background: #0e5a6f !important;
+  box-shadow: 0 0 8px rgba(14, 90, 111, 0.5) !important;
+}
+
+/* 8. Consistent Action Buttons in Light Mode (Teal background with white text) */
 [data-theme="light"] #complete-purchase-btn,
 [data-theme="light"] .coupon-btn,
 [data-theme="light"] #checkout-btn,
-[data-theme="light"] .btn-primary-dark,
+[data-theme="light"] .btn-primary,
 html.light #complete-purchase-btn,
 html.light .coupon-btn,
 html.light #checkout-btn,
-html.light .btn-primary-dark {
-  background: #0f172a !important;
+html.light .btn-primary {
+  background: #0e5a6f !important;
   color: #ffffff !important;
-  border: none !important;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.35) !important;
   font-weight: 800 !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(14, 90, 111, 0.35) !important;
 }
 
-[data-theme="light"] #complete-purchase-btn .material-symbols-outlined,
-[data-theme="light"] .coupon-btn .material-symbols-outlined,
-[data-theme="light"] #checkout-btn .material-symbols-outlined,
-html.light #complete-purchase-btn .material-symbols-outlined,
-html.light .coupon-btn .material-symbols-outlined,
-html.light #checkout-btn .material-symbols-outlined {
+[data-theme="light"] #complete-purchase-btn *,
+[data-theme="light"] .coupon-btn *,
+[data-theme="light"] #checkout-btn *,
+html.light #complete-purchase-btn *,
+html.light .coupon-btn *,
+html.light #checkout-btn * {
   color: #ffffff !important;
 }
 
@@ -1570,8 +1563,8 @@ html.light #complete-purchase-btn:hover,
 html.light .coupon-btn:hover,
 html.light #checkout-btn:hover {
   background: #0b3c49 !important;
+  box-shadow: 0 6px 18px rgba(14, 90, 111, 0.45) !important;
   color: #ffffff !important;
-  box-shadow: 0 6px 18px rgba(11, 60, 73, 0.45) !important;
 }
 
 /* Headings in Light Mode */
