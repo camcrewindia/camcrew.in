@@ -757,12 +757,14 @@ html.light header #mobile-menu a:hover {
    ═══════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 767px) {
-  /* Hero Banner: Sitting cleanly below fixed header */
+  /* Main Container & Hero Clearance (Bring hero down below fixed header) */
+  main {
+    padding-top: 5rem !important;
+  }
   .neu-hero {
-    margin-top: 1.25rem !important;
-    padding-top: 1.5rem !important;
-    padding-bottom: 0.5rem !important;
     margin-bottom: 0.75rem !important;
+    padding-top: 1rem !important;
+    padding-bottom: 0.5rem !important;
     gap: 0.5rem !important;
   }
   .neu-hero-title {
@@ -807,18 +809,23 @@ html.light header #mobile-menu a:hover {
     cursor: pointer;
   }
 
-  /* 2-Column Cards Grid with Increased Image Height & 50% Reduced Elevation Overlap */
+  /* 2-Column Compact Cards Grid (Increased 175px Image Height & 50% Reduced Elevation) */
   .pro-card {
-    border-radius: 24px !important;
+    border-radius: 20px !important;
   }
   .pro-card-banner {
-    height: 165px !important;
-    border-radius: 24px 24px 0 0 !important;
+    height: 175px !important;
+    border-radius: 20px 20px 0 0 !important;
   }
   .pro-card-info {
-    margin-top: -12px !important; /* Elevation overlay overlap reduced by 50% */
-    padding: 0.75rem 0.6rem 0.65rem !important;
-    border-radius: 20px !important;
+    margin-top: -12px !important;
+    padding: 0.75rem 0.65rem 0.75rem !important;
+    border-radius: 16px !important;
+    box-shadow: 2px 2px 6px #b8c2cc, -2px -2px 6px #ffffff !important;
+  }
+  html.dark .pro-card-info,
+  [data-theme="dark"] .pro-card-info {
+    box-shadow: 0 6px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08) !important;
   }
   .pro-card-name {
     font-size: 0.88rem !important;
@@ -852,12 +859,12 @@ html.light header #mobile-menu a:hover {
   .btn-book-now {
     padding: 0.5rem 0.35rem !important;
     font-size: 0.7rem !important;
-    font-weight: 800 !important;
+    font-weight: 700 !important;
     border-radius: 999px !important;
+    text-align: center !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    text-align: center !important;
   }
   .badge-intl {
     font-size: 0.52rem !important;
@@ -875,8 +882,7 @@ html.light header #mobile-menu a:hover {
     font-size: 0.75rem !important;
   }
   .skel-card {
-    height: 290px !important;
-    border-radius: 24px !important;
+    height: 310px !important;
+    border-radius: 20px !important;
   }
-}
 }
