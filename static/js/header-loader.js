@@ -57,17 +57,25 @@
   const mobileMenu = document.getElementById('mobile-menu');
 
   if (mobileBtn && mobileMenu) {
+    const closeMenu = () => {
+      mobileMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+      mobileMenu.classList.add('opacity-0', 'invisible', 'translate-y-[-10px]');
+      mobileBtn.textContent = 'menu';
+    };
+
     mobileBtn.addEventListener('click', () => {
       const open = mobileMenu.classList.contains('opacity-100');
       if (open) {
-        mobileMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
-        mobileMenu.classList.add('opacity-0', 'invisible', 'translate-y-[-10px]');
-        mobileBtn.textContent = 'menu';
+        closeMenu();
       } else {
         mobileMenu.classList.remove('opacity-0', 'invisible', 'translate-y-[-10px]');
         mobileMenu.classList.add('opacity-100', 'visible', 'translate-y-0');
         mobileBtn.textContent = 'close';
       }
+    });
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeMenu);
     });
   }
 
