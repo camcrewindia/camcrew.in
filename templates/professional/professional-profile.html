@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="light" lang="en" data-theme="light">
+<html class="dark" lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -11,59 +11,57 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 <style>
-  :root {
-    --ac: #0e5a6f;
-    --ac2: #0088a8;
-  }
+  :root { --ac: #00dbe9; --ac2: #ebb2ff; }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: #e0e5ec;
-    color: #0f172a;
-    font-family: 'Google Sans', 'Product Sans', 'Plus Jakarta Sans', sans-serif;
+      background: #0A0A0B;
+      background-image: radial-gradient(circle at top right, rgba(0,219,233,0.03), transparent 40%), radial-gradient(circle at bottom left, rgba(235,178,255,0.03), transparent 40%);
+      background-attachment: fixed;
+    color: #dce4e5;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     min-height: 100vh;
-    transition: background 0.3s, color 0.3s;
   }
 
   /* ── Page wrapper ── */
   .page-wrap {
-    max-width: 1040px;
+    max-width: 960px;
     margin: 0 auto;
-    padding: 0 1.25rem 6rem;
+    padding: 0 1rem 5rem;
   }
 
   /* ══════════════════════════════════════
-     COVER BANNER (ELEGANT LIGHT & DARK)
+     COVER BANNER
   ══════════════════════════════════════ */
-  .profile-banner {
-    position: relative;
-    height: 220px;
-    background: linear-gradient(135deg, #0e5a6f 0%, #0088a8 60%, #0f172a 100%);
-    overflow: hidden;
-    border-radius: 0 0 1.75rem 1.75rem;
-    box-shadow: 0 8px 24px rgba(14, 90, 111, 0.25);
-  }
+  .profile-banner { position: relative; height: 200px; background: rgba(0,0,0,0.3); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.08); overflow: hidden; border-radius: 0 0 1.25rem 1.25rem; }
+
+  @media (min-width: 640px) { .profile-banner { position: relative; height: 200px; background: rgba(0,0,0,0.3); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.08); overflow: hidden; border-radius: 0 0 1.25rem 1.25rem; } }
 
   .banner-lines {
     position: absolute; inset: 0; pointer-events: none;
     background-image:
-      linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+      linear-gradient(rgba(0,219,233,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,219,233,0.04) 1px, transparent 1px);
     background-size: 48px 48px;
   }
 
   .banner-glow-left {
-    position: absolute; top: -80px; left: -80px;
-    width: 340px; height: 340px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(0, 240, 255, 0.25) 0%, transparent 70%);
+    position: absolute; top: -60px; left: -60px;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,219,233,0.12) 0%, transparent 70%);
     pointer-events: none;
   }
   .banner-glow-right {
     position: absolute; bottom: -80px; right: -40px;
-    width: 320px; height: 320px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(235, 178, 255, 0.2) 0%, transparent 70%);
+    width: 280px; height: 280px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(235,178,255,0.10) 0%, transparent 70%);
     pointer-events: none;
+  }
+
+  .banner-actions {
+    position: absolute; top: 1rem; right: 1rem;
+    display: flex; gap: 0.5rem;
   }
 
   /* ══════════════════════════════════════
@@ -71,162 +69,166 @@
   ══════════════════════════════════════ */
   .identity-block {
     position: relative;
-    padding: 0 1rem 1.5rem;
-    margin-bottom: 2rem;
+    padding: 0 1.5rem 1.5rem;
+    margin-bottom: 1.5rem;
   }
 
   .avatar-positioner {
     display: flex;
     align-items: flex-end;
     gap: 1.25rem;
-    margin-top: -60px;
-    margin-bottom: 1.25rem;
+    margin-top: -48px;
+    margin-bottom: 1rem;
     flex-wrap: wrap;
   }
 
+  @media (min-width: 540px) { .avatar-positioner { margin-top: -56px; } }
+
   .avatar-ring {
-    width: 120px; height: 120px;
+    width: 104px; height: 104px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #0e5a6f, #0088a8);
+    background: linear-gradient(135deg, #00dbe9, #ebb2ff);
     display: flex; align-items: center; justify-content: center;
-    font-size: 3rem; font-weight: 900; color: #ffffff;
-    border: 4px solid #ffffff;
-    box-shadow: 6px 6px 18px #b8c2cc, -6px -6px 18px #ffffff;
+    font-size: 2.6rem; font-weight: 900; color: #001f22;
+    border: 3px solid rgba(255,255,255,0.1);
+    box-shadow: 0 0 0 1px rgba(0,219,233,0.3), 0 8px 32px rgba(0,0,0,0.6);
     overflow: hidden; position: relative; flex-shrink: 0;
+    transform: none !important; animation: none !important;
+  }
+
+  @media (min-width: 540px) {
+    .avatar-ring { width: 120px; height: 120px; font-size: 3rem; }
+  }
+
+  .avatar-ring img, .avatar-ring span {
+    transform: none !important; animation: none !important;
   }
 
   .avatar-ring img {
     width: 100%; height: 100%; object-fit: cover;
-    position: absolute; inset: 0; border-radius: 50%; z-index: 2;
-  }
-
-  .avatar-ring span {
-    position: relative; z-index: 1; color: #ffffff; font-weight: 900;
+    position: absolute; inset: 0; border-radius: 50%;
   }
 
   .avatar-actions {
-    display: flex; gap: 0.6rem; flex-wrap: wrap;
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
     align-items: center; padding-bottom: 0.5rem;
     margin-left: auto;
   }
 
   /* ── Identity text ── */
   .profile-name {
-    font-size: 2rem; font-weight: 900; color: #0f172a;
-    line-height: 1.15; margin-bottom: 0.25rem;
+    font-size: 1.65rem; font-weight: 900; color: #f0f6f7;
+    line-height: 1.15; margin-bottom: 0.2rem;
     letter-spacing: -0.02em;
   }
 
+  @media (min-width: 540px) { .profile-name { font-size: 2rem; } }
+
   .profile-handle {
-    font-size: 0.88rem; font-weight: 700; color: #475569;
-    margin-bottom: 0.4rem; letter-spacing: 0.01em;
+    font-size: 0.82rem; font-weight: 600; color: #556669;
+    margin-bottom: 0.35rem; letter-spacing: 0.01em;
   }
 
   .profile-title {
     display: inline-flex; align-items: center; gap: 0.4rem;
-    font-size: 0.95rem; font-weight: 800; color: #0e5a6f;
-    margin-bottom: 0.75rem;
+    font-size: 0.88rem; font-weight: 700; color: var(--ac);
+    margin-bottom: 0.6rem;
   }
 
   .pro-badge {
     display: inline-flex; align-items: center; gap: 0.3rem;
-    padding: 0.25rem 0.75rem; border-radius: 999px;
-    font-size: 0.7rem; font-weight: 800; letter-spacing: 0.07em;
+    padding: 0.2rem 0.6rem; border-radius: 999px;
+    font-size: 0.68rem; font-weight: 800; letter-spacing: 0.07em;
     text-transform: uppercase;
-    background: rgba(14, 90, 111, 0.12);
-    border: 1px solid rgba(14, 90, 111, 0.25);
-    color: #0e5a6f;
+    background: rgba(0,219,233,0.12);
+    border: 1px solid rgba(0,219,233,0.3);
+    color: var(--ac);
     vertical-align: middle;
   }
 
   .profile-bio {
-    font-size: 0.92rem; color: #334155; line-height: 1.75;
-    max-width: 580px; margin-bottom: 1.25rem;
-    white-space: pre-wrap; font-weight: 500;
+    font-size: 0.88rem; color: #8fa8ab; line-height: 1.7;
+    max-width: 520px; margin-bottom: 1rem;
+    white-space: pre-wrap;
   }
 
   /* ── Meta row (website, member since, location) ── */
   .meta-row {
-    display: flex; flex-wrap: wrap; gap: 1rem;
-    margin-bottom: 1.25rem; align-items: center;
+    display: flex; flex-wrap: wrap; gap: 0.9rem;
+    margin-bottom: 1rem; align-items: center;
   }
 
   .meta-item {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    font-size: 0.82rem; font-weight: 700; color: #475569;
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    font-size: 0.8rem; font-weight: 600; color: #556669;
     text-decoration: none;
   }
 
-  .meta-item.link { color: #0e5a6f; }
+  .meta-item.link { color: var(--ac); }
   .meta-item.link:hover { text-decoration: underline; }
-  .meta-item .material-symbols-outlined { font-size: 1rem; }
+  .meta-item .material-symbols-outlined { font-size: 0.95rem; }
 
   /* ── Category / location chips ── */
-  .chips-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+  .chips-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
 
   .chip {
-    display: inline-flex; align-items: center; gap: 0.35rem;
-    padding: 0.35rem 0.9rem; border-radius: 999px;
-    font-size: 0.75rem; font-weight: 800; letter-spacing: 0.03em;
-    background: #e0e5ec; color: #0e5a6f;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff;
-    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    padding: 0.3rem 0.8rem; border-radius: 999px;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em;
+    background: rgba(0,219,233,0.08); color: #6fd8e0;
+    border: 1px solid rgba(0,219,233,0.18);
+    transition: border-color 0.2s;
   }
+  .chip:hover { border-color: rgba(0,219,233,0.4); }
 
   .chip-location {
-    color: #0284c7;
+    background: rgba(235,178,255,0.08); color: #d9a8f5;
+    border: 1px solid rgba(235,178,255,0.18);
   }
+  .chip-location:hover { border-color: rgba(235,178,255,0.4); }
 
   /* ── Social links ── */
-  .socials-row { display: flex; gap: 0.65rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+  .socials-row { display: flex; gap: 0.55rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
 
   .social-link {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    padding: 0.45rem 1rem; border-radius: 0.75rem;
-    font-size: 0.78rem; font-weight: 800;
-    background: #e0e5ec;
-    border: 1px solid rgba(0,0,0,0.08);
-    box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff;
-    color: #334155; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.35rem 0.9rem; border-radius: 0.6rem;
+    font-size: 0.75rem; font-weight: 700;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #849495; text-decoration: none;
     transition: all 0.2s;
   }
   .social-link:hover {
-    color: #0e5a6f;
-    box-shadow: 5px 5px 12px #b8c2cc, -5px -5px 12px #ffffff;
+    color: var(--ac);
+    border-color: rgba(0,219,233,0.3);
+    background: rgba(0,219,233,0.06);
   }
+  .social-link .material-symbols-outlined { font-size: 0.95rem; }
 
   /* ══════════════════════════════════════
-     STATS STRIP (ELEGANT NEUMORPHISM)
+     STATS STRIP
   ══════════════════════════════════════ */
   .stats-strip {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    margin-bottom: 2.5rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 2rem;
   }
 
-  @media (min-width: 640px) {
-    .stats-strip { grid-template-columns: repeat(4, 1fr); }
-  }
-
-  .stat-cell {
-    padding: 1.25rem 1rem;
-    border-radius: 1.25rem;
-    background: #e0e5ec;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 5px 5px 14px #b8c2cc, -5px -5px 14px #ffffff;
-    text-align: center;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-  }
+  .stat-cell { padding: 1rem 1.25rem; border-radius: 1rem; background: rgba(22, 22, 24, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
   .stat-num {
-    font-size: 1.75rem; font-weight: 900; color: #0e5a6f;
-    line-height: 1; letter-spacing: -0.03em; margin-bottom: 0.35rem;
+    font-size: 1.5rem; font-weight: 900; color: #f0f6f7;
+    line-height: 1; letter-spacing: -0.03em;
   }
 
   .stat-lbl {
-    font-size: 0.72rem; font-weight: 800; color: #475569;
+    font-size: 0.68rem; font-weight: 700; color: #4a6466;
     text-transform: uppercase; letter-spacing: 0.08em;
   }
 
@@ -235,80 +237,90 @@
   ══════════════════════════════════════ */
   .btn-primary {
     display: inline-flex; align-items: center; gap: 0.45rem;
-    padding: 0.6rem 1.35rem; border-radius: 999px;
+    padding: 0.6rem 1.35rem; border-radius: 0.75rem;
     font-size: 0.83rem; font-weight: 800; cursor: pointer; border: none;
-    background: #0e5a6f;
-    color: #ffffff; text-decoration: none;
-    transition: all 0.2s; font-family: inherit;
-    box-shadow: 0 4px 14px rgba(14, 90, 111, 0.35);
+    background: linear-gradient(135deg, #00dbe9, #00b5c0);
+    color: #001f22; text-decoration: none;
+    transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif;
+    box-shadow: 0 4px 16px rgba(0,219,233,0.25);
   }
-  .btn-primary:hover {
-    background: #0b3c49;
-    box-shadow: 0 6px 18px rgba(14, 90, 111, 0.45);
-    transform: translateY(-1px);
-  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,219,233,0.38); }
 
   .btn-ghost {
     display: inline-flex; align-items: center; gap: 0.45rem;
-    padding: 0.58rem 1.15rem; border-radius: 999px;
-    font-size: 0.83rem; font-weight: 800; cursor: pointer;
-    background: #e0e5ec;
-    border: 1px solid rgba(0,0,0,0.08);
-    box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff;
-    color: #0f172a; text-decoration: none;
-    transition: all 0.2s; font-family: inherit;
+    padding: 0.58rem 1.15rem; border-radius: 0.75rem;
+    font-size: 0.83rem; font-weight: 700; cursor: pointer;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #b8cbce; text-decoration: none;
+    transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif;
   }
   .btn-ghost:hover {
-    color: #0e5a6f;
-    box-shadow: 5px 5px 12px #b8c2cc, -5px -5px 12px #ffffff;
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.18);
+    color: #dce4e5;
   }
+
+  .btn-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 2.3rem; height: 2.3rem; border-radius: 0.65rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #849495; cursor: pointer; text-decoration: none;
+    transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .btn-icon:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); color: #dce4e5; }
+  .btn-icon .material-symbols-outlined { font-size: 1rem; }
 
   /* ══════════════════════════════════════
      SECTION HEADINGS
   ══════════════════════════════════════ */
   .section-head {
     display: flex; align-items: center; justify-content: space-between;
-    gap: 1rem; margin: 3rem 0 1.25rem;
+    gap: 1rem; margin: 2.5rem 0 1.25rem;
   }
 
   .section-title {
-    font-size: 0.88rem; font-weight: 900; letter-spacing: 0.12em;
-    text-transform: uppercase; color: #0f172a;
+    font-size: 0.78rem; font-weight: 800; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #556669;
     display: flex; align-items: center; gap: 0.6rem;
   }
 
   .section-title::before {
     content: '';
     display: inline-block;
-    width: 4px; height: 16px; border-radius: 2px;
-    background: #0e5a6f;
+    width: 3px; height: 14px; border-radius: 2px;
+    background: linear-gradient(to bottom, var(--ac), var(--ac2));
     flex-shrink: 0;
   }
 
   /* ══════════════════════════════════════
-     PORTFOLIO GRID (NEUMORPHIC CARDS)
+     PORTFOLIO GRID
   ══════════════════════════════════════ */
+  /* ── Portfolio Grid & Card System ── */
   .portfolio-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 1.25rem;
   }
 
   .portfolio-card {
-    background: #e0e5ec;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 6px 6px 16px #b8c2cc, -6px -6px 16px #ffffff;
-    border-radius: 1.25rem;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
     overflow: visible;
     position: relative;
-    transition: all 0.25s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
   }
 
   .portfolio-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 8px 8px 22px #b8c2cc, -8px -8px 22px #ffffff;
+    border-color: rgba(0, 240, 255, 0.3);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.1);
+    transform: translateY(-3px);
   }
 
   .portfolio-media-wrap {
@@ -316,9 +328,9 @@
     width: 100%;
     aspect-ratio: 4 / 3;
     overflow: hidden;
-    border-top-left-radius: 1.25rem;
-    border-top-right-radius: 1.25rem;
-    background: #cbd5e1;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    background: rgba(0, 0, 0, 0.4);
     cursor: pointer;
   }
 
@@ -339,148 +351,180 @@
     top: 0.6rem; right: 0.6rem;
     width: 2.2rem; height: 2.2rem;
     border-radius: 50%;
-    background: rgba(225, 230, 236, 0.85);
+    background: rgba(11, 12, 16, 0.75);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    color: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
     z-index: 20;
     transition: all 0.2s;
-    box-shadow: 2px 2px 6px #b8c2cc;
   }
 
   .manage-menu-btn:hover {
-    background: #0e5a6f;
-    color: #ffffff;
-    border-color: #0e5a6f;
+    background: #00f0ff;
+    color: #0b0c10;
+    border-color: #00f0ff;
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
   }
 
   .manage-dropdown {
     position: absolute;
     top: 3.2rem; right: 0.6rem;
     width: 165px;
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(18, 20, 26, 0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 0.75rem;
     padding: 0.35rem;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
     z-index: 30;
     display: none;
+    animation: menuFadeIn 0.15s ease-out;
   }
 
-  .manage-dropdown.active { display: block; }
+  .manage-dropdown.active {
+    display: block;
+  }
+
+  @keyframes menuFadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 
   .manage-item {
     display: flex; align-items: center; gap: 0.6rem;
     width: 100%; padding: 0.5rem 0.65rem;
-    font-size: 0.78rem; font-weight: 700; color: #0f172a;
+    font-size: 0.78rem; font-weight: 600; color: #e2e8f0;
     background: transparent; border: none; border-radius: 0.5rem;
     cursor: pointer; transition: all 0.15s; text-align: left;
+    font-family: inherit;
   }
 
   .manage-item:hover {
-    background: rgba(14, 90, 111, 0.1);
-    color: #0e5a6f;
+    background: rgba(0, 240, 255, 0.12);
+    color: #00f0ff;
   }
 
   .manage-item.danger:hover {
-    background: rgba(225, 29, 72, 0.1);
-    color: #e11d48;
+    background: rgba(255, 77, 77, 0.15);
+    color: #ff4d4d;
+  }
+
+  .manage-item .material-symbols-outlined {
+    font-size: 1rem;
   }
 
   .portfolio-card-info {
-    padding: 0.85rem 1rem;
+    padding: 0.7rem 0.85rem;
     display: flex; align-items: center; justify-content: space-between;
-    background: #e0e5ec;
-    border-bottom-left-radius: 1.25rem;
-    border-bottom-right-radius: 1.25rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .portfolio-card-title {
-    font-size: 0.85rem; font-weight: 800; color: #0f172a;
+    font-size: 0.82rem; font-weight: 700; color: #fff;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
   .portfolio-card-badge {
     font-size: 0.62rem; font-weight: 800; letter-spacing: 0.05em;
-    padding: 0.2rem 0.5rem; border-radius: 0.4rem;
-    background: rgba(14, 90, 111, 0.12); color: #0e5a6f;
-    border: 1px solid rgba(14, 90, 111, 0.2); text-transform: uppercase;
+    padding: 0.15rem 0.45rem; border-radius: 0.35rem;
+    background: rgba(0, 240, 255, 0.1); color: #00f0ff;
+    border: 1px solid rgba(0, 240, 255, 0.2); text-transform: uppercase;
+  }
+
+  /* ── Empty state ── */
+  .grid-empty {
+    grid-column: 1 / -1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.75rem; padding: 4rem 2rem; text-align: center;
+    background: rgba(255,255,255,0.01);
+  }
+
+  .empty-icon-wrap {
+    width: 4.5rem; height: 4.5rem; border-radius: 1.25rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 0.25rem;
   }
 
   /* ══════════════════════════════════════
-     SERVICES GRID (NEUMORPHIC CARDS)
+     SERVICES GRID
   ══════════════════════════════════════ */
   .services-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1rem;
   }
 
-  .service-card {
-    background: #e0e5ec;
-    border: 1px solid rgba(0,0,0,0.08);
-    box-shadow: 6px 6px 16px #b8c2cc, -6px -6px 16px #ffffff;
-    border-radius: 1.25rem; padding: 1.5rem;
-    display: flex; flex-direction: column; height: 100%;
-    transition: all 0.3s ease; cursor: pointer;
+  .service-card { background: rgba(22, 22, 24, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 1rem; padding: 1.5rem; display: flex; flex-direction: column; height: 100%; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+  .service-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--ac), var(--ac2));
+    opacity: 0; transition: opacity 0.25s;
   }
-  .service-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 8px 8px 22px #b8c2cc, -8px -8px 22px #ffffff;
-  }
+  .service-card:hover { transform: translateY(-5px); border-color: rgba(0,219,233,0.4); background: rgba(30, 30, 34, 0.8); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .service-card:hover::before { opacity: 1; }
 
   .service-icon {
-    width: 2.5rem; height: 2.5rem; border-radius: 0.75rem;
-    background: rgba(14, 90, 111, 0.12); border: 1px solid rgba(14, 90, 111, 0.2);
+    width: 2.25rem; height: 2.25rem; border-radius: 0.65rem;
+    background: rgba(0,219,233,0.1); border: 1px solid rgba(0,219,233,0.15);
     display: flex; align-items: center; justify-content: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
   }
-  .service-icon .material-symbols-outlined { font-size: 1.15rem; color: #0e5a6f; }
+  .service-icon .material-symbols-outlined { font-size: 1.05rem; color: var(--ac); }
 
-  .service-name { font-size: 0.95rem; font-weight: 900; color: #0f172a; }
+  .service-name { font-size: 0.92rem; font-weight: 800; color: #e0ebec; }
   .service-price {
-    font-size: 0.85rem; font-weight: 800; color: #0e5a6f;
-    display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.2rem;
+    font-size: 0.8rem; font-weight: 700; color: var(--ac);
+    display: inline-flex; align-items: center; gap: 0.25rem;
   }
-  .service-desc { font-size: 0.8rem; color: #475569; line-height: 1.6; margin-top: 0.35rem; }
+  .service-desc { font-size: 0.78rem; color: #5a7a7d; line-height: 1.55; margin-top: 0.1rem; }
 
   /* ══════════════════════════════════════
      SHARE PROFILE CARD
   ══════════════════════════════════════ */
   .share-card {
-    background: #e0e5ec;
-    border: 1px solid rgba(0,0,0,0.08);
-    box-shadow: inset 4px 4px 10px #b8c2cc, inset -4px -4px 10px #ffffff;
-    border-radius: 1.25rem;
-    padding: 1.6rem;
+    background: rgba(0,219,233,0.04);
+    border: 1px solid rgba(0,219,233,0.12);
+    border-radius: 1rem;
+    padding: 1.4rem 1.6rem;
     display: flex; flex-direction: column; gap: 1rem;
   }
 
-  .share-title { font-size: 0.95rem; font-weight: 900; color: #0f172a; margin-bottom: 0.2rem; }
-  .share-sub   { font-size: 0.8rem; color: #475569; }
+  .share-card-top {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 1rem; flex-wrap: wrap;
+  }
+
+  .share-title { font-size: 0.92rem; font-weight: 800; color: #dce4e5; margin-bottom: 0.2rem; }
+  .share-sub   { font-size: 0.78rem; color: #4d666a; }
 
   .url-display {
-    display: flex; align-items: center; gap: 0.6rem;
-    background: #e0e5ec;
-    border: 1px solid rgba(0,0,0,0.08);
-    box-shadow: inset 2px 2px 6px #b8c2cc, inset -2px -2px 6px #ffffff;
-    border-radius: 0.75rem;
-    padding: 0.7rem 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(0,219,233,0.12);
+    border-radius: 0.65rem;
+    padding: 0.6rem 0.9rem;
     overflow: hidden;
   }
-  .url-display .material-symbols-outlined { font-size: 1rem; color: #0e5a6f; flex-shrink: 0; }
+  .url-display .material-symbols-outlined { font-size: 0.95rem; color: #4d666a; flex-shrink: 0; }
   .url-text {
-    font-size: 0.85rem; color: #0e5a6f; font-weight: 800;
-    font-family: ui-monospace, 'Cascadia Code', monospace;
+    font-size: 0.8rem; color: var(--ac); font-weight: 700;
+    font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
 
   /* ══════════════════════════════════════
-     LIGHTBOX & TOAST
+     LIGHTBOX
   ══════════════════════════════════════ */
   .lightbox-overlay {
     position: fixed; inset: 0; z-index: 99999;
@@ -496,110 +540,127 @@
   }
   .lightbox-close {
     position: absolute; top: -3rem; right: 0;
-    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 0.5rem; color: #ffffff; cursor: pointer;
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 0.5rem; color: #dce4e5; cursor: pointer;
     font-size: 1.25rem; display: flex; align-items: center; justify-content: center;
     width: 2.25rem; height: 2.25rem;
+    transition: background 0.2s;
   }
+  .lightbox-close:hover { background: rgba(255,255,255,0.14); }
 
+  /* ══════════════════════════════════════
+     TOAST
+  ══════════════════════════════════════ */
   #pp-toast {
     position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
-    background: #0f172a;
-    color: #ffffff; border-radius: 999px; padding: 0.65rem 1.4rem;
-    font-size: 0.82rem; font-weight: 800;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    background: rgba(20,20,20,0.96);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #dce4e5; border-radius: 999px; padding: 0.65rem 1.4rem;
+    font-size: 0.82rem; font-weight: 700;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
     z-index: 999999; opacity: 0; transition: opacity 0.25s;
     white-space: nowrap;
   }
   #pp-toast.show { opacity: 1; }
 
   /* ══════════════════════════════════════
-     DARK THEME OVERRIDES (TOGGLEABLE)
+     SKELETON
   ══════════════════════════════════════ */
-  [data-theme="dark"] body,
-  html.dark body {
-    background: #0A0A0B !important;
-    color: #f8fafc !important;
+  @keyframes skeleton-pulse {
+    0%, 100% { opacity: 0.04; }
+    50%       { opacity: 0.09; }
   }
 
-  [data-theme="dark"] .profile-name,
-  [data-theme="dark"] .section-title,
-  [data-theme="dark"] .stat-num,
-  [data-theme="dark"] .service-name,
-  [data-theme="dark"] .share-title,
-  [data-theme="dark"] .portfolio-card-title,
-  html.dark .profile-name,
-  html.dark .section-title,
-  html.dark .stat-num,
-  html.dark .service-name,
-  html.dark .share-title,
-  html.dark .portfolio-card-title {
-    color: #f8fafc !important;
+  .skel { background: rgba(22, 22, 24, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); animation: skel-pulse 1.5s ease-in-out infinite; }
+
+  .skel-banner { height: 200px; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.08); border-radius: 0 0 1.25rem 1.25rem; animation: skel-pulse 1.5s ease-in-out infinite; margin-bottom: 1.5rem; }
+
+  /* ══════════════════════════════════════
+     LIGHT MODE STYLES
+  ══════════════════════════════════════ */
+  [data-theme="light"] body,
+  html.light body {
+    background: #e0e5ec !important;
+    color: #0f172a !important;
   }
 
-  [data-theme="dark"] .stat-num,
-  [data-theme="dark"] .profile-title,
-  [data-theme="dark"] .service-price,
-  [data-theme="dark"] .url-text,
-  html.dark .stat-num,
-  html.dark .profile-title,
-  html.dark .service-price,
-  html.dark .url-text {
-    color: #00f0ff !important;
+  [data-theme="light"] .profile-banner,
+  html.light .profile-banner {
+    background: #cbd5e1 !important;
+    border-bottom-color: rgba(0, 0, 0, 0.1) !important;
   }
 
-  [data-theme="dark"] .profile-handle,
-  [data-theme="dark"] .profile-bio,
-  [data-theme="dark"] .meta-item,
-  [data-theme="dark"] .stat-lbl,
-  [data-theme="dark"] .service-desc,
-  [data-theme="dark"] .share-sub,
-  html.dark .profile-handle,
-  html.dark .profile-bio,
-  html.dark .meta-item,
-  html.dark .stat-lbl,
-  html.dark .service-desc,
-  html.dark .share-sub {
-    color: #94a3b8 !important;
+  [data-theme="light"] .profile-name,
+  [data-theme="light"] .section-title,
+  [data-theme="light"] .stat-num,
+  [data-theme="light"] .service-name,
+  [data-theme="light"] .share-title,
+  [data-theme="light"] .portfolio-card-title,
+  html.light .profile-name,
+  html.light .section-title,
+  html.light .stat-num,
+  html.light .service-name,
+  html.light .share-title,
+  html.light .portfolio-card-title {
+    color: #0f172a !important;
   }
 
-  [data-theme="dark"] .stat-cell,
-  [data-theme="dark"] .service-card,
-  [data-theme="dark"] .share-card,
-  [data-theme="dark"] .portfolio-card,
-  html.dark .stat-cell,
-  html.dark .service-card,
-  html.dark .share-card,
-  html.dark .portfolio-card {
-    background: rgba(22, 22, 24, 0.8) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    box-shadow: none !important;
+  [data-theme="light"] .profile-handle,
+  [data-theme="light"] .profile-bio,
+  [data-theme="light"] .meta-item,
+  [data-theme="light"] .stat-lbl,
+  [data-theme="light"] .service-desc,
+  [data-theme="light"] .share-sub,
+  html.light .profile-handle,
+  html.light .profile-bio,
+  html.light .meta-item,
+  html.light .stat-lbl,
+  html.light .service-desc,
+  html.light .share-sub {
+    color: #475569 !important;
   }
 
-  [data-theme="dark"] .btn-ghost,
-  [data-theme="dark"] .btn-icon,
-  [data-theme="dark"] .social-link,
-  html.dark .btn-ghost,
-  html.dark .btn-icon,
-  html.dark .social-link {
-    background: rgba(255, 255, 255, 0.05) !important;
-    color: #f8fafc !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    box-shadow: none !important;
+  [data-theme="light"] .stat-cell,
+  [data-theme="light"] .service-card,
+  [data-theme="light"] .share-card,
+  [data-theme="light"] .portfolio-card,
+  html.light .stat-cell,
+  html.light .service-card,
+  html.light .share-card,
+  html.light .portfolio-card {
+    background: #e0e5ec !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
   }
 
-  [data-theme="dark"] .btn-primary,
-  html.dark .btn-primary {
-    background: linear-gradient(135deg, #00f0ff 0%, #00c8e0 100%) !important;
-    color: #001f22 !important;
-    box-shadow: 0 0 18px rgba(0, 240, 255, 0.4) !important;
+  [data-theme="light"] .btn-ghost,
+  [data-theme="light"] .btn-icon,
+  [data-theme="light"] .social-link,
+  html.light .btn-ghost,
+  html.light .btn-icon,
+  html.light .social-link {
+    background: #e0e5ec !important;
+    color: #0f172a !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff !important;
   }
 
-  [data-theme="dark"] .url-display,
-  html.dark .url-display {
-    background: rgba(0, 0, 0, 0.4) !important;
-    border: 1px solid rgba(0, 240, 255, 0.2) !important;
-    box-shadow: none !important;
+  [data-theme="light"] .btn-primary,
+  html.light .btn-primary {
+    background: #0e5a6f !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(14, 90, 111, 0.35) !important;
+  }
+
+  [data-theme="light"] .url-display,
+  html.light .url-display {
+    background: rgba(14, 90, 111, 0.08) !important;
+    border: 1px solid rgba(14, 90, 111, 0.2) !important;
+  }
+
+  [data-theme="light"] .url-text,
+  html.light .url-text {
+    color: #0e5a6f !important;
   }
 </style>
 </head>
@@ -618,7 +679,7 @@
     <div class="fixed inset-0 z-[-1] pointer-events-none"><div class="hero-grid absolute inset-0 opacity-15"></div><div class="orb-1"></div><div class="orb-2"></div></div>
     <div class="page-wrap relative z-10">
       <div style="display:flex;align-items:flex-end;gap:1.25rem;margin-top:-52px;margin-bottom:1.25rem;flex-wrap:wrap;">
-        <div class="skel" style="width:110px;height:110px;border-radius:50%;flex-shrink:0;border:4px solid #e0e5ec;"></div>
+        <div class="skel" style="width:110px;height:110px;border-radius:50%;flex-shrink:0;border:4px solid #0a0a0b;"></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:0.6rem;padding-bottom:0.5rem;">
           <div class="skel" style="height:1.8rem;max-width:200px;"></div>
           <div class="skel" style="height:0.9rem;max-width:140px;"></div>
@@ -626,6 +687,9 @@
       </div>
       <div class="skel" style="height:3.5rem;border-radius:1rem;margin-bottom:2rem;"></div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;border-radius:1rem;overflow:hidden;">
+        <div class="skel" style="aspect-ratio:1;"></div>
+        <div class="skel" style="aspect-ratio:1;"></div>
+        <div class="skel" style="aspect-ratio:1;"></div>
         <div class="skel" style="aspect-ratio:1;"></div>
         <div class="skel" style="aspect-ratio:1;"></div>
         <div class="skel" style="aspect-ratio:1;"></div>
@@ -662,10 +726,9 @@
 const S = { user: null, pro: null, username: null };
 
 (async function boot() {
-  // Theme — Default to Light Theme
-  const theme = localStorage.getItem('cc-theme') || 'light';
+  // Theme
+  const theme = localStorage.getItem('cc-theme') || 'dark';
   document.documentElement.className = theme;
-  document.documentElement.setAttribute('data-theme', theme);
 
   // Load vault for portfolio count
   let vaultFiles = [];
@@ -745,7 +808,7 @@ function render(vaultFiles, jobs) {
 
   const avatarPhoto = S.pro?.avatar_url || S.pro?.avatarUrl || S.pro?.photo || S.user?.avatar_url || null;
   const avatarHTML  = avatarPhoto
-    ? `<img src="${esc(avatarPhoto)}" alt="${esc(displayName)}" onerror="this.style.display='none';"/><span>${initial}</span>`
+    ? `<img src="${esc(avatarPhoto)}" alt="${esc(displayName)}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:2;border-radius:50%;" onerror="this.style.display='none';"/><span>${initial}</span>`
     : `<span>${initial}</span>`;
 
   const memberSince = joinedAt
@@ -764,8 +827,8 @@ function render(vaultFiles, jobs) {
         if (!url) {
           return `<div class="portfolio-card">
             <div class="portfolio-media-wrap">
-              <div class="flex items-center justify-center h-full text-slate-400">
-                <span class="material-symbols-outlined text-[32px]">${isVideo ? 'movie' : 'image'}</span>
+              <div class="cell-placeholder">
+                <span class="material-symbols-outlined" style="font-size:1.75rem;color:rgba(255,255,255,0.15);">${isVideo ? 'movie' : 'image'}</span>
               </div>
             </div>
           </div>`;
@@ -775,12 +838,17 @@ function render(vaultFiles, jobs) {
           <div class="portfolio-media-wrap" onclick="openLightbox(${i})">
             ${isVideo
               ? `<video src="${esc(url)}" muted playsinline preload="metadata" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0" onerror="this.parentElement.style.display='none'"></video>`
-              : `<img src="${esc(url)}" alt="${esc(title)}" loading="lazy"/>`}
+              : `<img src="${esc(url)}" alt="${esc(title)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'cell-placeholder\\'><span class=\\'material-symbols-outlined\\' style=\\'font-size:1.75rem;color:rgba(255,255,255,0.15);\\'>image</span></div>'"/>`}
+            <div class="cell-overlay">
+              <div class="cell-overlay-icon">
+                <span class="material-symbols-outlined">${isVideo ? 'play_arrow' : 'zoom_in'}</span>
+              </div>
+            </div>
           </div>
 
           <!-- 3-Dot Manage Button -->
           <button class="manage-menu-btn" title="Manage item" onclick="toggleManageMenu(${i}, event)">
-            <span class="material-symbols-outlined text-lg">more_vert</span>
+            <span class="material-symbols-outlined" style="font-size:1.25rem;">more_vert</span>
           </button>
 
           <!-- Floating Dropdown Menu -->
@@ -805,11 +873,13 @@ function render(vaultFiles, jobs) {
           </div>
         </div>`;
       }).join('')
-    : `<div class="p-12 text-center col-span-full rounded-2xl" style="background:#e0e5ec;box-shadow:inset 3px 3px 8px #b8c2cc, inset -3px -3px 8px #ffffff;">
-        <span class="material-symbols-outlined text-4xl text-slate-400 block mb-2">photo_library</span>
-        <p class="font-bold text-sm text-slate-600 mb-2">No portfolio items uploaded yet.</p>
-        <a href="professional-edit.html" class="inline-flex items-center gap-1 font-extrabold text-xs uppercase tracking-wider text-teal-700 hover:underline">
-          Set up profile →
+    : `<div class="grid-empty">
+        <div class="empty-icon-wrap">
+          <span class="material-symbols-outlined" style="font-size:1.75rem;color:rgba(255,255,255,0.15);">photo_library</span>
+        </div>
+        <p style="color:#4d666a;font-size:0.85rem;font-weight:600;">No portfolio items yet.</p>
+        <a href="professional-edit.html" style="font-size:0.8rem;color:var(--ac);font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:0.3rem;">
+          Set up profile <span class="material-symbols-outlined" style="font-size:0.85rem;">arrow_forward</span>
         </a>
       </div>`;
 
@@ -822,13 +892,13 @@ function render(vaultFiles, jobs) {
               <span class="material-symbols-outlined">camera</span>
             </div>
             <p class="service-name">${esc(s.name)}</p>
-            ${s.price ? `<p class="service-price"><span class="material-symbols-outlined" style="font-size:0.85rem;">currency_rupee</span>${fmtPrice(s)}</p>` : ''}
+            ${s.price ? `<p class="service-price"><span class="material-symbols-outlined" style="font-size:0.8rem;">currency_rupee</span>${fmtPrice(s)}</p>` : ''}
             ${s.desc  ? `<p class="service-desc">${esc(s.desc)}</p>` : ''}
           </div>`).join('')}
        </div>`
-    : `<div class="p-8 text-center rounded-2xl" style="background:#e0e5ec;box-shadow:inset 3px 3px 8px #b8c2cc, inset -3px -3px 8px #ffffff;">
-        <p class="font-bold text-xs uppercase tracking-wider text-slate-500 mb-1">No services listed yet.</p>
-        <a href="professional-edit.html" class="font-extrabold text-xs text-teal-700 hover:underline">Add services →</a>
+    : `<div style="padding:2rem 0;text-align:center;">
+        <p style="color:#4d666a;font-size:0.85rem;font-weight:600;">No services listed yet.</p>
+        <a href="professional-edit.html" style="font-size:0.8rem;color:var(--ac);font-weight:700;text-decoration:none;">Add services →</a>
        </div>`;
 
   /* ─ Social links ─ */
@@ -861,10 +931,6 @@ function render(vaultFiles, jobs) {
     </span>`);
   }
 
-  const publicShareUrl = S.username
-    ? `${window.location.origin}/@${S.username}`
-    : `${window.location.origin}/public-profile.html${(S.pro?.user_id || S.user?.id) ? '?id=' + (S.pro?.user_id || S.user?.id) : ''}`;
-
   /* ─ Render ─ */
   content.innerHTML = `
     <!-- Cover Banner -->
@@ -872,41 +938,43 @@ function render(vaultFiles, jobs) {
       <div class="banner-lines"></div>
       <div class="banner-glow-left"></div>
       <div class="banner-glow-right"></div>
+      
     </div>
 
     <!-- Identity Block -->
+    <div class="fixed inset-0 z-[-1] pointer-events-none"><div class="hero-grid absolute inset-0 opacity-15"></div><div class="orb-1"></div><div class="orb-2"></div></div>
     <div class="page-wrap relative z-10">
       <div class="identity-block">
         <!-- Avatar row -->
         <div class="avatar-positioner">
           <div class="avatar-ring">${avatarHTML}</div>
           <div class="avatar-actions">
-            <a href="index.html" class="btn-ghost" title="Go to Home">
-              <span class="material-symbols-outlined text-sm">home</span>
-              Home
-            </a>
-            <a href="professional-dashboard.html" class="btn-primary">
-              <span class="material-symbols-outlined text-sm">dashboard</span>
-              Dashboard
-            </a>
-            <a href="professional-edit.html" class="btn-ghost">
-              <span class="material-symbols-outlined text-sm">edit</span>
-              Edit Profile
-            </a>
+              <a href="index.html" class="btn-ghost" style="font-size:0.78rem;padding:0.45rem 0.9rem;" title="Go to Home">
+                <span class="material-symbols-outlined" style="font-size:0.88rem;">home</span>
+                Home
+              </a>
+              <a href="professional-dashboard.html" class="btn-primary" style="padding:0.45rem 0.9rem;font-size:0.78rem;">
+                <span class="material-symbols-outlined" style="font-size:0.88rem;">dashboard</span>
+                Dashboard
+              </a>
+              <a href="professional-edit.html" class="btn-ghost" style="font-size:0.78rem;padding:0.45rem 0.9rem;">
+                <span class="material-symbols-outlined" style="font-size:0.88rem;">edit</span>
+                Edit Profile
+              </a>
+            </div>
           </div>
-        </div>
 
         <!-- Name & title -->
         <h1 class="profile-name">
           ${esc(displayName)}
-          <span class="pro-badge">
-            <span class="material-symbols-outlined text-xs">verified</span>
+          <span class="pro-badge" style="font-size:0.58rem;vertical-align:middle;margin-left:0.5rem;">
+            <span class="material-symbols-outlined" style="font-size:0.7rem;fill:1;">verified</span>
             Pro
           </span>
         </h1>
         ${S.username ? `<p class="profile-handle">@${esc(S.username)}</p>` : ''}
         ${title ? `<p class="profile-title">
-          <span class="material-symbols-outlined text-base">photo_camera</span>
+          <span class="material-symbols-outlined" style="font-size:0.95rem;">photo_camera</span>
           ${esc(title)}
         </p>` : ''}
 
@@ -920,7 +988,7 @@ function render(vaultFiles, jobs) {
 
         ${locations.length ? `<div class="chips-row">
           ${locations.map(l => `<span class="chip chip-location">
-            <span class="material-symbols-outlined text-xs">location_on</span>${esc(l)}
+            <span class="material-symbols-outlined" style="font-size:0.75rem;">location_on</span>${esc(l)}
           </span>`).join('')}
         </div>` : ''}
 
@@ -931,53 +999,59 @@ function render(vaultFiles, jobs) {
       <div class="stats-strip">
         <div class="stat-cell">
           <span class="stat-num">${totalPortfolio}</span>
-          <span class="stat-lbl">Portfolio Items</span>
+          <span class="stat-lbl">Portfolio</span>
         </div>
         <div class="stat-cell">
           <span class="stat-num">${services.length}</span>
-          <span class="stat-lbl">Active Services</span>
+          <span class="stat-lbl">Services</span>
         </div>
         <div class="stat-cell">
           <span class="stat-num">${completedJobs}</span>
-          <span class="stat-lbl">Jobs Completed</span>
+          <span class="stat-lbl">Completed</span>
         </div>
         <div class="stat-cell">
           <span class="stat-num">${locations.length}</span>
-          <span class="stat-lbl">Service Cities</span>
+          <span class="stat-lbl">Cities</span>
         </div>
       </div>
 
-      <!-- Portfolio Section -->
+      <!-- Portfolio -->
       <div class="section-head">
-        <h2 class="section-title">Portfolio Showcase</h2>
-        ${allMedia.length ? `<span class="text-xs font-bold uppercase tracking-wider text-slate-500">${allMedia.length} item${allMedia.length !== 1 ? 's' : ''}</span>` : ''}
+        <h2 class="section-title">Portfolio</h2>
+        ${allMedia.length ? `<span style="font-size:0.75rem;color:#4d666a;font-weight:600;">${allMedia.length} item${allMedia.length !== 1 ? 's' : ''}</span>` : ''}
       </div>
       <div class="portfolio-grid" id="portfolio-grid">${gridCells}</div>
 
-      <!-- Services Section -->
+      <!-- Services -->
       <div class="section-head">
-        <h2 class="section-title">Services &amp; Pricing</h2>
+        <h2 class="section-title">Services</h2>
       </div>
       ${servicesHTML}
 
-      <!-- Share Profile Section -->
+      <!-- Share Profile -->
       <div class="section-head">
-        <h2 class="section-title">Share Public Profile</h2>
+        <h2 class="section-title">Share Profile</h2>
       </div>
       <div class="share-card">
-        <div class="share-card-top flex items-center justify-between gap-4 flex-wrap">
+        <div class="share-card-top">
           <div>
-            <p class="share-title">Your Public Profile Link</p>
-            <p class="share-sub">Share with prospective clients — no login required to view your portfolio &amp; services.</p>
+            <p class="share-title">Your public profile link</p>
+            <p class="share-sub">Share with clients — no login required to view.</p>
           </div>
-          <button onclick="copyProfileLink()" class="btn-primary">
-            <span class="material-symbols-outlined text-sm">content_copy</span>
+          <button onclick="copyProfileLink()" style="
+            display:inline-flex;align-items:center;gap:0.45rem;
+            padding:0.55rem 1.15rem;border-radius:0.7rem;border:none;cursor:pointer;
+            background:rgba(0,219,233,0.14);color:var(--ac);font-weight:800;font-size:0.8rem;
+            font-family:'Plus Jakarta Sans',sans-serif;transition:background 0.2s;flex-shrink:0;"
+            onmouseover="this.style.background='rgba(0,219,233,0.24)'"
+            onmouseout="this.style.background='rgba(0,219,233,0.14)'">
+            <span class="material-symbols-outlined" style="font-size:0.95rem;">content_copy</span>
             Copy Link
           </button>
         </div>
         <div class="url-display">
           <span class="material-symbols-outlined">link</span>
-          <span class="url-text">${esc(publicShareUrl)}</span>
+          <span class="url-text">${esc(S.username ? (window.location.origin + '/@' + S.username) : (window.location.origin + '/public-profile.html' + ((S.pro?.user_id || S.user?.id) ? '?id=' + (S.pro?.user_id || S.user?.id) : '')))}</span>
         </div>
       </div>
 
@@ -1002,6 +1076,7 @@ function openLightbox(idx) {
   const lb = document.getElementById('lightbox-content');
   if (isEmbed) {
     if (isInstagram) {
+      // Instagram Reels are 9:16 vertical — use portrait aspect-ratio wrapper
       lb.innerHTML = `
         <div style="position:relative;width:min(340px,90vw);max-height:90vh;border-radius:0.85rem;overflow:hidden;">
           <iframe src="${esc(url)}" frameborder="0" scrolling="no"
@@ -1012,6 +1087,7 @@ function openLightbox(idx) {
           <div style="padding-top:177.78%;"></div>
         </div>`;
     } else {
+      // YouTube / Vimeo — standard 16:9 landscape player
       lb.innerHTML = `
         <div style="position:relative;width:min(850px,90vw);border-radius:0.85rem;overflow:hidden;">
           <iframe src="${esc(url)}" frameborder="0"
@@ -1075,7 +1151,6 @@ function showToast(msg) {
 function toggleTheme() {
   const next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
   document.documentElement.className = next;
-  document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('cc-theme', next);
 }
 
@@ -1202,22 +1277,23 @@ async function savePortfolioTitle() {
 </script>
 
 <!-- Edit Title Modal -->
-<div id="edit-title-modal" style="display:none;position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);align-items:center;justify-content:center;">
-  <div style="background:#e0e5ec;border:1px solid rgba(0,0,0,0.1);border-radius:1.25rem;padding:1.75rem;width:90%;max-width:420px;box-shadow:8px 8px 24px #b8c2cc, -8px -8px 24px #ffffff;">
+<div id="edit-title-modal" style="display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);align-items:center;justify-content:center;">
+  <div style="background:#12141a;border:1px solid rgba(255,255,255,0.15);border-radius:1rem;padding:1.5rem;width:90%;max-width:420px;box-shadow:0 20px 50px rgba(0,0,0,0.8);">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-      <h3 style="font-size:1.1rem;font-weight:900;color:#0f172a;">Change Image Name</h3>
-      <button onclick="closeEditTitleModal()" style="background:none;border:none;color:#475569;cursor:pointer;"><span class="material-symbols-outlined">close</span></button>
+      <h3 style="font-size:1.1rem;font-weight:800;color:#fff;">Change Image Name</h3>
+      <button onclick="closeEditTitleModal()" style="background:none;border:none;color:#849495;cursor:pointer;"><span class="material-symbols-outlined">close</span></button>
     </div>
     <div style="margin-bottom:1.25rem;">
-      <label style="display:block;font-size:0.75rem;font-weight:800;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">New Title / Name</label>
-      <input type="text" id="edit-title-input" class="cc-input" style="width:100%;padding:0.75rem 1rem;border-radius:0.75rem;background:#e0e5ec;border:none;box-shadow:inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff;color:#0f172a;font-size:0.9rem;font-weight:700;" placeholder="Enter image title…"/>
+      <label style="display:block;font-size:0.75rem;font-weight:700;color:#849495;text-transform:uppercase;margin-bottom:0.4rem;">New Title / Name</label>
+      <input type="text" id="edit-title-input" class="cc-input" style="width:100%;padding:0.7rem 0.9rem;border-radius:0.6rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.15);color:#fff;font-size:0.9rem;" placeholder="Enter image title…"/>
     </div>
     <div style="display:flex;gap:0.75rem;justify-content:flex-end;">
-      <button onclick="closeEditTitleModal()" class="btn-ghost">Cancel</button>
-      <button id="save-title-btn" onclick="savePortfolioTitle()" class="btn-primary">Save Name</button>
+      <button onclick="closeEditTitleModal()" style="padding:0.6rem 1rem;border-radius:0.6rem;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#fff;font-weight:700;cursor:pointer;">Cancel</button>
+      <button id="save-title-btn" onclick="savePortfolioTitle()" style="padding:0.6rem 1.25rem;border-radius:0.6rem;border:none;background:#00f0ff;color:#0b0c10;font-weight:800;cursor:pointer;">Save Name</button>
     </div>
   </div>
 </div>
 
 </body>
 </html>
+

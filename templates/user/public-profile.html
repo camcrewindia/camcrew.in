@@ -17,15 +17,130 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 <style>
-/* ── Base ── */
+/* ── Base & Theme System ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root,
+[data-theme="dark"],
+html.dark {
+  --pp-bg: #06080a;
+  --pp-text-main: #f8fafc;
+  --pp-text-muted: #94a3b8;
+  --pp-accent: #00f0ff;
+  --pp-card-bg: rgba(10, 13, 17, 0.95);
+  --pp-card-border: rgba(255, 255, 255, 0.08);
+  --pp-chip-bg: rgba(0, 240, 255, 0.08);
+  --pp-chip-text: #00f0ff;
+  --pp-btn-bg: linear-gradient(135deg, #00f0ff, #00b8d9);
+  --pp-btn-text: #001f22;
+}
+
+[data-theme="light"],
+html.light {
+  --pp-bg: #e0e5ec !important;
+  --pp-text-main: #0f172a !important;
+  --pp-text-muted: #475569 !important;
+  --pp-accent: #0e5a6f !important;
+  --pp-card-bg: #e0e5ec !important;
+  --pp-card-border: rgba(0, 0, 0, 0.08) !important;
+  --pp-chip-bg: rgba(14, 90, 111, 0.1) !important;
+  --pp-chip-text: #0e5a6f !important;
+  --pp-btn-bg: #0e5a6f !important;
+  --pp-btn-text: #ffffff !important;
+}
+
 body {
-  background: #06080a;
-  color: #dce4e5;
+  background: var(--pp-bg);
+  color: var(--pp-text-main);
   font-family: 'Plus Jakarta Sans', sans-serif;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+/* Light Mode Overrides */
+[data-theme="light"] body,
+html.light body {
+  background-color: #e0e5ec !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .hero-cover,
+html.light .hero-cover {
+  background: linear-gradient(135deg, rgba(14, 90, 111, 0.15) 0%, #cbd5e1 50%, rgba(14, 90, 111, 0.1) 100%) !important;
+}
+
+[data-theme="light"] .hero-cover::after,
+html.light .hero-cover::after {
+  background: linear-gradient(to bottom, transparent, #e0e5ec) !important;
+}
+
+[data-theme="light"] .display-name-lg,
+[data-theme="light"] .stat-num,
+[data-theme="light"] .svc-name,
+[data-theme="light"] .sidebar-card-title,
+html.light .display-name-lg,
+html.light .stat-num,
+html.light .svc-name,
+html.light .sidebar-card-title {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .username-tag,
+[data-theme="light"] .profile-bio,
+[data-theme="light"] .stat-lbl,
+[data-theme="light"] .svc-desc,
+[data-theme="light"] .member-badge,
+html.light .username-tag,
+html.light .profile-bio,
+html.light .stat-lbl,
+html.light .svc-desc,
+html.light .member-badge {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .stats-bar,
+[data-theme="light"] .sidebar-card,
+[data-theme="light"] .svc-card,
+[data-theme="light"] .gear-card,
+html.light .stats-bar,
+html.light .sidebar-card,
+html.light .svc-card,
+html.light .gear-card {
+  background: #e0e5ec !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
+}
+
+[data-theme="light"] .btn-book-cta,
+html.light .btn-book-cta {
+  background: #0e5a6f !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 14px rgba(14, 90, 111, 0.35) !important;
+}
+
+[data-theme="light"] .btn-book-cta:hover,
+html.light .btn-book-cta:hover {
+  background: #0b3c49 !important;
+  box-shadow: 0 6px 18px rgba(14, 90, 111, 0.45) !important;
+}
+
+[data-theme="light"] .social-btn,
+html.light .social-btn {
+  background: #e0e5ec !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff !important;
+}
+
+[data-theme="light"] .svc-price,
+[data-theme="light"] .website-link,
+[data-theme="light"] .pro-title-badge,
+html.light .svc-price,
+html.light .website-link,
+html.light .pro-title-badge {
+  color: #0e5a6f !important;
 }
 
 /* ── Ambient background ── */
@@ -69,7 +184,7 @@ body {
 .hero-cover::after {
   content: '';
   position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
-  background: linear-gradient(to bottom, transparent, #06080a);
+  background: linear-gradient(to bottom, transparent, var(--pp-bg));
 }
 .hero-cover-glow {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -113,7 +228,7 @@ body {
   background: linear-gradient(135deg, #00f0ff, #00b8d9);
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 0 14px rgba(0,240,255,0.6);
-  border: 2.5px solid #06080a;
+  border: 2.5px solid var(--pp-bg);
   z-index: 10;
 }
 
@@ -133,43 +248,43 @@ body {
 
 /* ── Name block ── */
 .display-name-lg {
-  font-size: 1.75rem; font-weight: 900; color: #fff;
+  font-size: 1.75rem; font-weight: 900; color: var(--pp-text-main);
   letter-spacing: -0.02em; line-height: 1.1;
 }
 .username-tag {
-  font-size: 0.88rem; font-weight: 600; color: #4a7a80;
+  font-size: 0.88rem; font-weight: 600; color: var(--pp-text-muted);
   margin-top: 0.2rem;
 }
 .pro-title-badge {
   display: inline-flex; align-items: center; gap: 0.4rem;
   padding: 0.3rem 0.85rem; border-radius: 999px; margin-top: 0.75rem;
   font-size: 0.75rem; font-weight: 800; letter-spacing: 0.04em;
-  background: rgba(0,240,255,0.08);
-  border: 1px solid rgba(0,240,255,0.2);
-  color: #00f0ff;
+  background: var(--pp-chip-bg);
+  border: 1px solid var(--pp-chip-border);
+  color: var(--pp-chip-text);
 }
 
 /* ── Stats bar ── */
 .stats-bar {
   display: flex; gap: 0; margin: 1.5rem 0;
   border-radius: 1rem; overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.07);
-  background: rgba(10,13,17,0.9);
+  border: 1px solid var(--pp-card-border);
+  background: var(--pp-card-bg);
   backdrop-filter: blur(10px);
 }
 .stat-cell {
   flex: 1; padding: 1rem 0.5rem; text-align: center;
-  border-right: 1px solid rgba(255,255,255,0.06);
+  border-right: 1px solid var(--pp-card-border);
   transition: background 0.2s;
 }
 .stat-cell:last-child { border-right: none; }
 .stat-cell:hover { background: rgba(0,240,255,0.03); }
-.stat-num { font-size: 1.4rem; font-weight: 900; color: #fff; display: block; line-height: 1; }
-.stat-lbl { font-size: 0.63rem; font-weight: 700; color: #4a7a80; text-transform: uppercase; letter-spacing: 0.07em; margin-top: 0.3rem; display: block; }
+.stat-num { font-size: 1.4rem; font-weight: 900; color: var(--pp-text-main); display: block; line-height: 1; }
+.stat-lbl { font-size: 0.63rem; font-weight: 700; color: var(--pp-text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 0.3rem; display: block; }
 
 /* ── Bio ── */
 .profile-bio {
-  font-size: 0.9rem; color: #8aa0a3; line-height: 1.75;
+  font-size: 0.9rem; color: var(--pp-text-muted); line-height: 1.75;
   white-space: pre-wrap; max-width: 520px;
 }
 
@@ -179,9 +294,9 @@ body {
   display: inline-flex; align-items: center; gap: 0.25rem;
   padding: 0.28rem 0.75rem; border-radius: 999px;
   font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em;
-  background: rgba(0,240,255,0.07);
-  border: 1px solid rgba(0,240,255,0.18);
-  color: #00f0ff;
+  background: var(--pp-chip-bg);
+  border: 1px solid var(--pp-chip-border);
+  color: var(--pp-chip-text);
 }
 .chip-loc {
   background: rgba(139,92,246,0.08);
@@ -197,13 +312,13 @@ body {
   font-size: 0.75rem; font-weight: 700;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
-  color: #6a8a8d; text-decoration: none;
+  color: var(--pp-text-muted); text-decoration: none;
   transition: all 0.2s;
 }
 .social-btn:hover {
-  background: rgba(0,240,255,0.07);
-  border-color: rgba(0,240,255,0.25);
-  color: #00f0ff;
+  background: var(--pp-chip-bg);
+  border-color: var(--pp-chip-border);
+  color: var(--pp-accent);
   transform: translateY(-1px);
 }
 .social-btn .material-symbols-outlined { font-size: 0.88rem; }
@@ -211,7 +326,7 @@ body {
 /* ── Website link ── */
 .website-link {
   display: inline-flex; align-items: center; gap: 0.35rem;
-  font-size: 0.82rem; color: #00f0ff; font-weight: 700;
+  font-size: 0.82rem; color: var(--pp-accent); font-weight: 700;
   text-decoration: none; margin: 0.5rem 0 0;
 }
 .website-link:hover { text-decoration: underline; }
@@ -219,7 +334,7 @@ body {
 /* ── Member since ── */
 .member-badge {
   display: inline-flex; align-items: center; gap: 0.35rem;
-  font-size: 0.7rem; color: #4a7a80; font-weight: 600;
+  font-size: 0.7rem; color: var(--pp-text-muted); font-weight: 600;
   margin: 0.75rem 0 0;
 }
 
@@ -228,22 +343,21 @@ body {
   display: inline-flex; align-items: center; gap: 0.5rem;
   padding: 0.85rem 1.75rem; border-radius: 0.875rem;
   font-size: 0.9rem; font-weight: 900; cursor: pointer; border: none;
-  background: linear-gradient(135deg, #00f0ff, #00b8d9);
-  color: #001f22;
-  box-shadow: 0 4px 24px rgba(0,240,255,0.3);
+  background: var(--pp-btn-bg);
+  color: var(--pp-btn-text);
+  box-shadow: var(--pp-btn-shadow);
   text-decoration: none; transition: all 0.25s;
   letter-spacing: 0.01em;
 }
 .btn-book-cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 36px rgba(0,240,255,0.42);
   filter: brightness(1.05);
 }
 
 /* ── Sidebar card ── */
 .sidebar-card {
-  background: rgba(10,13,17,0.95);
-  border: 1px solid rgba(255,255,255,0.07);
+  background: var(--pp-card-bg);
+  border: 1px solid var(--pp-card-border);
   border-radius: 1.25rem;
   padding: 1.5rem;
   backdrop-filter: blur(16px);
@@ -251,7 +365,7 @@ body {
 }
 .sidebar-card-title {
   font-size: 0.65rem; font-weight: 800; letter-spacing: 0.09em;
-  text-transform: uppercase; color: rgba(255,255,255,0.25);
+  text-transform: uppercase; color: var(--pp-text-muted);
   margin-bottom: 1.25rem;
 }
 
@@ -262,25 +376,25 @@ body {
 }
 .section-head-line {
   flex: 1; height: 1px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.07), transparent);
+  background: linear-gradient(90deg, var(--pp-card-border), transparent);
 }
 .section-head-title {
   font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em;
-  text-transform: uppercase; color: #4a7a80;
+  text-transform: uppercase; color: var(--pp-text-muted);
   white-space: nowrap;
 }
 .section-head-count {
   font-size: 0.65rem; font-weight: 700;
-  background: rgba(0,240,255,0.08);
-  border: 1px solid rgba(0,240,255,0.15);
-  color: #00f0ff; padding: 0.15rem 0.55rem; border-radius: 999px;
+  background: var(--pp-chip-bg);
+  border: 1px solid var(--pp-chip-border);
+  color: var(--pp-chip-text); padding: 0.15rem 0.55rem; border-radius: 999px;
 }
 
 /* ── Portfolio grid ── */
 .portfolio-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
+  gap: 6px;
   border-radius: 1.1rem;
   overflow: hidden;
 }
@@ -310,7 +424,7 @@ body {
   grid-column: 1/-1; display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 0.75rem;
   padding: 4rem 2rem; text-align: center;
-  border: 1px dashed rgba(255,255,255,0.08); border-radius: 1rem;
+  border: 1px dashed var(--pp-card-border); border-radius: 1rem;
 }
 
 /* ── Services grid ── */
@@ -320,8 +434,8 @@ body {
   gap: 1rem;
 }
 .svc-card {
-  background: rgba(10,13,17,0.95);
-  border: 1px solid rgba(255,255,255,0.07);
+  background: var(--pp-card-bg);
+  border: 1px solid var(--pp-card-border);
   border-radius: 1.1rem;
   padding: 1.3rem 1.4rem;
   transition: all 0.25s cubic-bezier(.4,0,.2,1);
@@ -330,27 +444,26 @@ body {
 }
 .svc-card::before {
   content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2.5px;
-  background: linear-gradient(to bottom, #00f0ff, rgba(0,240,255,0.2));
+  background: linear-gradient(to bottom, var(--pp-accent), rgba(0,240,255,0.2));
   border-radius: 2px 0 0 2px;
 }
 .svc-card:hover {
-  border-color: rgba(0,240,255,0.2);
+  border-color: var(--pp-chip-border);
   transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,240,255,0.07);
 }
 .svc-icon {
   width: 2.2rem; height: 2.2rem; border-radius: 0.65rem;
-  background: rgba(0,240,255,0.07); border: 1px solid rgba(0,240,255,0.13);
+  background: var(--pp-chip-bg); border: 1px solid var(--pp-chip-border);
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 0.85rem;
 }
-.svc-name  { font-size: 0.9rem; font-weight: 800; color: #dce4e5; margin-bottom: 0.3rem; }
-.svc-price { font-size: 0.82rem; font-weight: 700; color: #00f0ff; margin-bottom: 0.3rem; }
-.svc-desc  { font-size: 0.78rem; color: #5a7a7d; line-height: 1.55; }
+.svc-name  { font-size: 0.9rem; font-weight: 800; color: var(--pp-text-main); margin-bottom: 0.3rem; }
+.svc-price { font-size: 0.82rem; font-weight: 700; color: var(--pp-accent); margin-bottom: 0.3rem; }
+.svc-desc  { font-size: 0.78rem; color: var(--pp-text-muted); line-height: 1.55; }
 
 /* ── Lightbox ── */
 .lb-overlay {
-  position: fixed; inset: 0; z-index: 300;
+  position: fixed; inset: 0; z-index: 99999;
   background: rgba(0,0,0,0.93);
   backdrop-filter: blur(16px);
   display: none; align-items: center; justify-content: center; padding: 1.5rem;
@@ -390,16 +503,6 @@ body {
   background-size: 200%;
   animation: shimmer 1.8s infinite;
 }
-
-/* ── Footer ── */
-.site-footer {
-  position: relative; z-index: 1;
-  text-align: center; padding: 2rem 1rem;
-  border-top: 1px solid rgba(255,255,255,0.05);
-  font-size: 0.78rem; color: #3a5a5d;
-}
-.site-footer a { color: #00f0ff; font-weight: 700; text-decoration: none; }
-.site-footer a:hover { text-decoration: underline; }
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 4px; }
@@ -494,33 +597,35 @@ body {
   </div>
 </div>
 
-<!-- Footer -->
-<footer class="site-footer" style="position:relative;z-index:1;">
-  Powered by <a href="/">CamCrew Studio</a> — Connect with creative professionals
-</footer>
-
-<div id="site-footer-loader" style="display:none;"></div>
+<!-- Dynamic Site Footer -->
+<div id="site-footer"></div>
 <script src="/static/js/header-loader.js"></script>
+<script src="/static/js/footer-loader.js"></script>
 
 <script>
 /* ══════════════════════════════════════════════════════════════
-   Boot
+   Boot & Universal Profile URL Resolution
 ══════════════════════════════════════════════════════════════ */
 (async function () {
+  const urlParams = new URLSearchParams(window.location.search);
+  const paramUser = urlParams.get('username') || urlParams.get('pro') || urlParams.get('id');
+
   const pathParts = window.location.pathname.split('/').filter(Boolean);
   const atPart    = pathParts.find(p => p.startsWith('@'));
-  const username  = atPart ? atPart.slice(1) : null;
+  const pathUser  = atPart ? atPart.slice(1) : null;
 
-  if (!username || !/^[a-z0-9][a-z0-9._]{2,29}$/.test(username)) {
-    showError('link_off', 'Invalid profile link.', 'This URL doesn\'t look like a valid CamCrew profile.');
+  const targetQuery = paramUser || pathUser;
+
+  if (!targetQuery) {
+    showError('link_off', 'Invalid profile link.', 'This URL doesn\'t specify a valid CamCrew profile.');
     return;
   }
 
-  document.title = `@${username} | CamCrew`;
+  document.title = `@${targetQuery} | CamCrew`;
 
   let data;
   try {
-    const res = await fetch(`/api/profile/@${encodeURIComponent(username)}`);
+    const res = await fetch(`/api/profile/@${encodeURIComponent(targetQuery)}`);
     data = await res.json();
   } catch (_) {
     showError('wifi_off', 'Unable to load profile.', 'Please check your connection and try again.');
@@ -566,7 +671,7 @@ function renderProfile(p) {
     avatarEl.style.background = `linear-gradient(135deg,hsl(${hue},50%,12%),hsl(${(hue+60)%360},60%,18%))`;
   }
 
-  document.getElementById('pp-name').innerHTML     = `${esc(p.display_name || p.username)} <span class="material-symbols-outlined" style="font-size:1.2rem;color:#00f0ff;vertical-align:middle;margin-left:0.2rem;" title="Official Verified Professional">verified</span>`;
+  document.getElementById('pp-name').innerHTML     = `${esc(p.display_name || p.username)} <span class="material-symbols-outlined" style="font-size:1.2rem;color:var(--pp-accent);vertical-align:middle;margin-left:0.2rem;" title="Official Verified Professional">verified</span>`;
   document.getElementById('pp-username').textContent = `@${p.username}`;
 
   if (p.title) {
@@ -583,7 +688,6 @@ function renderProfile(p) {
   document.getElementById('profile-upper-content').style.display = 'block';
 
   /* ── Portfolio grid ── */
-  const ICONS = ['photo_camera','videocam','palette','music_note','mic','movie','flight','star'];
   const gridCells = portfolio.length
     ? portfolio.map((item, i) => {
         const isVid = item.file_type === 'video';
@@ -591,7 +695,7 @@ function renderProfile(p) {
           return `<div class="p-cell">
             <div class="p-cell-placeholder">
               <span class="material-symbols-outlined" style="font-size:1.8rem;color:rgba(255,255,255,0.1);">${isVid?'movie':'image'}</span>
-              <span style="font-size:0.7rem;color:#4a7a80;">${esc(item.title||'')}</span>
+              <span style="font-size:0.7rem;color:var(--pp-text-muted);">${esc(item.title||'')}</span>
             </div>
           </div>`;
         }
@@ -607,7 +711,7 @@ function renderProfile(p) {
       }).join('')
     : `<div class="grid-empty">
         <span class="material-symbols-outlined" style="font-size:3.5rem;color:rgba(255,255,255,0.07);">photo_library</span>
-        <p style="color:#4a7a80;font-size:0.88rem;">No portfolio items shared yet.</p>
+        <p style="color:var(--pp-text-muted);font-size:0.88rem;">No portfolio items shared yet.</p>
       </div>`;
 
   /* ── Services ── */
@@ -616,14 +720,14 @@ function renderProfile(p) {
     ? `<div class="services-grid">${services.map((s, i) => `
         <div class="svc-card">
           <div class="svc-icon">
-            <span class="material-symbols-outlined" style="font-size:1rem;color:#00f0ff;">${svcIcons[i%svcIcons.length]}</span>
+            <span class="material-symbols-outlined" style="font-size:1rem;color:var(--pp-accent);">${svcIcons[i%svcIcons.length]}</span>
           </div>
           <p class="svc-name">${esc(s.name)}</p>
           ${s.price ? `<p class="svc-price">${fmtPrice(s)}</p>` : ''}
           ${s.desc  ? `<p class="svc-desc">${esc(s.desc)}</p>`  : ''}
         </div>`).join('')}</div>`
     : `<div class="grid-empty"><span class="material-symbols-outlined" style="font-size:2.5rem;color:rgba(255,255,255,0.07);">work_outline</span>
-        <p style="color:#4a7a80;font-size:0.88rem;">No services listed yet.</p></div>`;
+        <p style="color:var(--pp-text-muted);font-size:0.88rem;">No services listed yet.</p></div>`;
 
   /* ── Socials ── */
   const socialDefs = [
@@ -675,7 +779,7 @@ function renderProfile(p) {
 
       <!-- Verified Certification Badges -->
       ${(p.certifications && p.certifications.length) ? `<div class="chips-row mb-3">${p.certifications.map(c=>`
-        <span class="chip" style="background:rgba(0,219,233,0.12);border-color:#00dbe9;color:#00dbe9;font-weight:800;">
+        <span class="chip">
           <span class="material-symbols-outlined" style="font-size:0.75rem;">verified</span>
           ${esc(c)}
         </span>`).join('')}</div>` : ''}
@@ -699,9 +803,9 @@ function renderProfile(p) {
         </div>
         <div class="flex flex-wrap gap-2 mb-6">
           ${p.equipment_roster.map(eq => `
-            <div style="padding:0.5rem 0.8rem;border-radius:0.75rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);font-size:0.78rem;">
-              <span style="font-size:0.65rem;font-weight:800;color:#00f0ff;text-transform:uppercase;display:block;">[${esc(eq.category || 'Gear')}]</span>
-              <span style="font-weight:600;color:#dce4e5;">${esc(eq.item || '')}</span>
+            <div class="gear-card" style="padding:0.5rem 0.8rem;border-radius:0.75rem;font-size:0.78rem;">
+              <span style="font-size:0.65rem;font-weight:800;color:var(--pp-accent);text-transform:uppercase;display:block;">[${esc(eq.category || 'Gear')}]</span>
+              <span style="font-weight:600;color:var(--pp-text-main);">${esc(eq.item || '')}</span>
             </div>`).join('')}
         </div>` : ''}
 
@@ -742,22 +846,22 @@ function renderProfile(p) {
             ${(p.avatar_url || p.avatarUrl) ? `<img src="${esc(p.avatar_url || p.avatarUrl)}" alt="${esc(p.display_name||p.username)}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">` : initial}
           </div>
           <div style="min-width:0;">
-            <p style="font-weight:800;font-size:0.9rem;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(p.display_name||p.username)}</p>
-            ${p.title ? `<p style="font-size:0.72rem;color:#00f0ff;font-weight:600;">${esc(p.title)}</p>` : ''}
+            <p style="font-weight:800;font-size:0.9rem;color:var(--pp-text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(p.display_name||p.username)}</p>
+            ${p.title ? `<p style="font-size:0.72rem;color:var(--pp-accent);font-weight:600;">${esc(p.title)}</p>` : ''}
           </div>
         </div>
 
         <!-- Services quick list -->
         ${services.length ? `
         <div style="margin-bottom:1.25rem;">
-          <p style="font-size:0.63rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:0.65rem;">Available Services</p>
+          <p style="font-size:0.63rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--pp-text-muted);margin-bottom:0.65rem;">Available Services</p>
           <div style="display:flex;flex-direction:column;gap:0.45rem;">
             ${services.slice(0,4).map(s=>`
-            <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0.4rem 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-              <span style="font-size:0.8rem;color:#8aa0a3;font-weight:600;">${esc(s.name)}</span>
-              ${s.price ? `<span style="font-size:0.78rem;color:#00f0ff;font-weight:800;flex-shrink:0;margin-left:0.5rem;">₹${Number(s.price).toLocaleString('en-IN')}</span>` : ''}
+            <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0.4rem 0;border-bottom:1px solid var(--pp-card-border);">
+              <span style="font-size:0.8rem;color:var(--pp-text-muted);font-weight:600;">${esc(s.name)}</span>
+              ${s.price ? `<span style="font-size:0.78rem;color:var(--pp-accent);font-weight:800;flex-shrink:0;margin-left:0.5rem;">₹${Number(s.price).toLocaleString('en-IN')}</span>` : ''}
             </div>`).join('')}
-            ${services.length > 4 ? `<p style="font-size:0.7rem;color:#4a7a80;margin-top:0.25rem;">+${services.length-4} more services</p>` : ''}
+            ${services.length > 4 ? `<p style="font-size:0.7rem;color:var(--pp-text-muted);margin-top:0.25rem;">+${services.length-4} more services</p>` : ''}
           </div>
         </div>` : ''}
 
@@ -769,8 +873,8 @@ function renderProfile(p) {
 
         <!-- Trust note -->
         <div style="display:flex;align-items:center;gap:0.4rem;margin-top:0.85rem;justify-content:center;">
-          <span class="material-symbols-outlined" style="font-size:0.82rem;color:#4a7a80;font-variation-settings:'FILL' 1">shield</span>
-          <p style="font-size:0.7rem;color:#4a7a80;">No payment now · confirm first</p>
+          <span class="material-symbols-outlined" style="font-size:0.82rem;color:var(--pp-text-muted);font-variation-settings:'FILL' 1">shield</span>
+          <p style="font-size:0.7rem;color:var(--pp-text-muted);">No payment now · confirm first</p>
         </div>
       </div>
     </div>
@@ -790,7 +894,6 @@ function openLb(i) {
   const container = document.getElementById('lb-content');
   if (isEmbed) {
     if (isInstagram) {
-      // Instagram Reels are 9:16 vertical — use portrait aspect-ratio wrapper
       container.innerHTML = `
         <div style="position:relative;width:min(340px,90vw);max-height:90vh;border-radius:1rem;overflow:hidden;">
           <iframe src="${esc(url)}" frameborder="0" scrolling="no"
@@ -801,7 +904,6 @@ function openLb(i) {
           <div style="padding-top:177.78%;"></div>
         </div>`;
     } else {
-      // YouTube / Vimeo — standard 16:9 landscape player
       container.innerHTML = `
         <div style="position:relative;width:min(850px,90vw);border-radius:1rem;overflow:hidden;">
           <iframe src="${esc(url)}" frameborder="0"
@@ -833,9 +935,9 @@ function showError(icon, heading, sub) {
   const pc = document.getElementById('profile-content');
   pc.innerHTML = `
     <div class="state-box" style="grid-column:1/-1;">
-      <span class="material-symbols-outlined" style="font-size:4rem;color:rgba(255,255,255,0.08);">${icon}</span>
-      <h2 style="font-weight:900;font-size:1.2rem;letter-spacing:-0.01em;">${esc(heading)}</h2>
-      ${sub ? `<p style="color:#4a7a80;font-size:0.88rem;max-width:360px;">${esc(sub)}</p>` : ''}
+      <span class="material-symbols-outlined" style="font-size:4rem;color:var(--pp-text-muted);">${icon}</span>
+      <h2 style="font-weight:900;font-size:1.2rem;letter-spacing:-0.01em;color:var(--pp-text-main);">${esc(heading)}</h2>
+      ${sub ? `<p style="color:var(--pp-text-muted);font-size:0.88rem;max-width:360px;">${esc(sub)}</p>` : ''}
       <a href="/" class="btn-book-cta" style="margin-top:0.75rem;">
         <span class="material-symbols-outlined" style="font-size:1rem;">home</span>
         Go to CamCrew
