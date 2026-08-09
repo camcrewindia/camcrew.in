@@ -204,8 +204,13 @@
   window.toggleSiteTheme = toggleSiteTheme;
   window.applyTheme = applyTheme;
 
-  // Initial theme sync
-  const savedTheme = localStorage.getItem('camcrew-theme') || (document.documentElement.classList.contains('light') ? 'light' : 'dark');
-  applyTheme(savedTheme);
+  // Initial theme sync: index.html is strictly Dark Theme. All other pages default to Light Theme.
+  const isIndexPage = page === 'index.html' || page === '' || page === 'index';
+  if (isIndexPage) {
+    applyTheme('dark');
+  } else {
+    const savedTheme = localStorage.getItem('camcrew-theme') || 'light';
+    applyTheme(savedTheme);
+  }
 
 })();

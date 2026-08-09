@@ -1285,3 +1285,101 @@ html.light .cc-btn-ghost:hover {
   color: #0e5a6f !important;
   box-shadow: 6px 6px 14px #b8c2cc, -6px -6px 14px #ffffff !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   GLOBAL LIGHT THEME OVERRIDES (ALL PAGES EXCEPT index.html)
+   ═══════════════════════════════════════════════════════════════════ */
+
+[data-theme="light"] body,
+html.light body {
+  background-color: #e0e5ec !important;
+  color: #1e293b !important;
+}
+
+[data-theme="light"] main h1,
+[data-theme="light"] main h2,
+[data-theme="light"] main h3,
+[data-theme="light"] main h4,
+[data-theme="light"] main h5,
+html.light main h1,
+html.light main h2,
+html.light main h3,
+html.light main h4,
+html.light main h5 {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] main p,
+[data-theme="light"] main label,
+html.light main p,
+html.light main label {
+  color: #334155 !important;
+}
+
+/* Light Theme Cards, Forms, Modals & Dashboards */
+[data-theme="light"] .glass-panel,
+[data-theme="light"] .glass-card,
+[data-theme="light"] .pro-card-info,
+[data-theme="light"] .hero-floating-card,
+[data-theme="light"] .step-card,
+[data-theme="light"] .auth-card,
+[data-theme="light"] .profile-card,
+[data-theme="light"] .dashboard-card,
+[data-theme="light"] .modal-content,
+html.light .glass-panel,
+html.light .glass-card,
+html.light .pro-card-info,
+html.light .hero-floating-card,
+html.light .step-card,
+html.light .auth-card,
+html.light .profile-card,
+html.light .dashboard-card,
+html.light .modal-content {
+  background: #e0e5ec !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 8px 8px 24px #b8c2cc, -8px -8px 24px #ffffff !important;
+  color: #0f172a !important;
+  backdrop-filter: none !important;
+}
+
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea,
+html.light input,
+html.light select,
+html.light textarea {
+  background: #e0e5ec !important;
+  color: #0f172a !important;
+  border: none !important;
+  box-shadow: inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff !important;
+  font-weight: 600 !important;
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder,
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Footer Light Theme */
+[data-theme="light"] footer,
+html.light footer {
+  background: #e0e5ec !important;
+  color: #0f172a !important;
+  border-top: 1px solid rgba(0,0,0,0.08) !important;
+}
+
+[data-theme="light"] footer a,
+[data-theme="light"] footer p,
+[data-theme="light"] footer span,
+html.light footer a,
+html.light footer p,
+html.light footer span {
+  color: #334155 !important;
+}
+
+[data-theme="light"] footer a:hover,
+html.light footer a:hover {
+  color: #0e5a6f !important;
+}
