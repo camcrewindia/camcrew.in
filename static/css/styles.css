@@ -11,6 +11,36 @@
 :root {
     --font-sans: 'Google Sans', 'Product Sans', 'Open Sans', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     --font-hero: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+    /* Theme Variable Defaults (Dark Mode Default) */
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent-color: #00f0ff;
+    --chip-bg: rgba(255, 255, 255, 0.05);
+    --chip-shadow: none;
+    --border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Dark Mode Theme Variable System */
+[data-theme="dark"],
+html.dark {
+    --text-main: #f8fafc !important;
+    --text-muted: #94a3b8 !important;
+    --accent-color: #00f0ff !important;
+    --chip-bg: rgba(255, 255, 255, 0.06) !important;
+    --chip-shadow: none !important;
+    --border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Light Mode Theme Variable System */
+[data-theme="light"],
+html.light {
+    --text-main: #0f172a !important;
+    --text-muted: #475569 !important;
+    --accent-color: #0e5a6f !important;
+    --chip-bg: #e0e5ec !important;
+    --chip-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
+    --border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 *, ::before, ::after {
@@ -1935,4 +1965,86 @@ html.light .cart-img-frame {
 [data-theme="light"] .cart-img-frame .material-symbols-outlined,
 html.light .cart-img-frame .material-symbols-outlined {
   color: #475569 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   DUAL THEME COMPONENT SPECIFICS FOR CART & CHECKOUT
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Protection Badge */
+.pro-protection-badge {
+  background: var(--chip-bg, #e0e5ec);
+  color: var(--text-main, #0f172a);
+  box-shadow: var(--chip-shadow, 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff);
+}
+
+[data-theme="dark"] .pro-protection-badge,
+html.dark .pro-protection-badge {
+  background: rgba(0, 240, 255, 0.1) !important;
+  color: #00f0ff !important;
+  border: 1px solid rgba(0, 240, 255, 0.3) !important;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.2) !important;
+}
+
+/* Promo Code Input Field */
+.promo-input-field {
+  background: var(--chip-bg, #e0e5ec);
+  color: var(--text-main, #0f172a);
+  border: 1px solid var(--border-color, rgba(0,0,0,0.1));
+}
+
+[data-theme="dark"] .promo-input-field,
+html.dark .promo-input-field {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: none !important;
+}
+
+[data-theme="dark"] .promo-input-field::placeholder,
+html.dark .promo-input-field::placeholder {
+  color: #64748b !important;
+}
+
+/* Buttons in Dark Theme */
+[data-theme="dark"] #checkout-btn,
+[data-theme="dark"] #complete-purchase-btn,
+[data-theme="dark"] .promo-apply-btn,
+html.dark #checkout-btn,
+html.dark #complete-purchase-btn,
+html.dark .promo-apply-btn {
+  background: linear-gradient(135deg, #00f0ff 0%, #00c8e0 100%) !important;
+  color: #001f22 !important;
+  font-weight: 900 !important;
+  border: none !important;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4) !important;
+}
+
+[data-theme="dark"] #checkout-btn *,
+[data-theme="dark"] #complete-purchase-btn *,
+[data-theme="dark"] .promo-apply-btn *,
+html.dark #checkout-btn *,
+html.dark #complete-purchase-btn *,
+html.dark .promo-apply-btn * {
+  color: #001f22 !important;
+}
+
+[data-theme="dark"] #checkout-btn:hover,
+[data-theme="dark"] #complete-purchase-btn:hover,
+[data-theme="dark"] .promo-apply-btn:hover,
+html.dark #checkout-btn:hover,
+html.dark #complete-purchase-btn:hover,
+html.dark .promo-apply-btn:hover {
+  background: linear-gradient(135deg, #33f3ff 0%, #00e5ff 100%) !important;
+  box-shadow: 0 0 28px rgba(0, 240, 255, 0.6) !important;
+}
+
+/* Light Theme Promo Apply Button */
+[data-theme="light"] .promo-apply-btn,
+html.light .promo-apply-btn {
+  background: #0e5a6f !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  border: none !important;
+  box-shadow: 0 4px 10px rgba(14, 90, 111, 0.3) !important;
 }
