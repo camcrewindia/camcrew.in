@@ -624,6 +624,13 @@ html.light header #mobile-menu .mobile-nav-heading .material-symbols-outlined {
 /* Redesigned Mobile Nav Pills & Service Chips in Light Mode */
 .mobile-nav-pill,
 .mobile-service-chip {
+    min-height: 44px !important;
+    height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    border-radius: 1rem !important;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
