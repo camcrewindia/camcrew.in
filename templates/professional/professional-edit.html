@@ -269,6 +269,82 @@ select:-webkit-autofill {
 .pe-textarea { resize: vertical; min-height: 96px; line-height: 1.6; }
 .pe-select option { background: #1a1f28; color: #f1f5f9; }
 
+/* ── Light Theme Neumorphic Enhancements ───────────────────────────── */
+[data-theme="light"] input[type="text"],
+[data-theme="light"] input[type="url"],
+[data-theme="light"] input[type="email"],
+[data-theme="light"] input[type="tel"],
+[data-theme="light"] input[type="number"],
+[data-theme="light"] input[type="date"],
+[data-theme="light"] input[type="password"],
+[data-theme="light"] textarea,
+[data-theme="light"] select,
+[data-theme="light"] .pe-input,
+[data-theme="light"] .pe-textarea,
+[data-theme="light"] .pe-select,
+html.light input[type="text"],
+html.light input[type="url"],
+html.light input[type="email"],
+html.light input[type="tel"],
+html.light input[type="number"],
+html.light input[type="date"],
+html.light input[type="password"],
+html.light textarea,
+html.light select,
+html.light .pe-input,
+html.light .pe-textarea,
+html.light .pe-select {
+  background-color: #e4e9f0 !important;
+  box-shadow: inset 3px 3px 6px #c5cbd4, inset -3px -3px 6px #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .pe-chip, html.light .pe-chip {
+  background: #edf0f5 !important;
+  box-shadow: 3px 3px 7px #c5cbd4, -3px -3px 7px #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  color: #475569 !important;
+}
+[data-theme="light"] .pe-chip.active, html.light .pe-chip.active {
+  background: rgba(14, 106, 128, 0.12) !important;
+  box-shadow: inset 2px 2px 4px #c5cbd4, inset -2px -2px 4px #ffffff !important;
+  border-color: #0e6a80 !important;
+  color: #0e6a80 !important;
+}
+
+[data-theme="light"] .pe-service-card,
+[data-theme="light"] .pe-date-row,
+[data-theme="light"] .pe-toggle-row,
+html.light .pe-service-card,
+html.light .pe-date-row,
+html.light .pe-toggle-row {
+  background: #edf0f5 !important;
+  box-shadow: 4px 4px 10px #c5cbd4, -4px -4px 10px #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+}
+
+[data-theme="light"] .pe-form-block,
+[data-theme="light"] .pe-embed-block,
+[data-theme="light"] .pe-ical-block,
+html.light .pe-form-block,
+html.light .pe-embed-block,
+html.light .pe-ical-block {
+  background: #edf0f5 !important;
+  box-shadow: inset 2px 2px 5px #c5cbd4, inset -2px -2px 5px #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+}
+
+[data-theme="light"] .pe-btn-secondary, html.light .pe-btn-secondary {
+  background: #edf0f5 !important;
+  color: #0e6a80 !important;
+  border: 1px solid #0e6a80 !important;
+  box-shadow: 3px 3px 8px #c5cbd4, -3px -3px 8px #ffffff !important;
+}
+[data-theme="light"] .pe-btn-secondary:hover, html.light .pe-btn-secondary:hover {
+  box-shadow: inset 2px 2px 5px #c5cbd4, inset -2px -2px 5px #ffffff !important;
+}
+
 /* Input with leading icon */
 .pe-input-icon-wrap { position: relative; }
 .pe-input-icon-wrap .pe-icon-pre {

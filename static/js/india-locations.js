@@ -276,24 +276,24 @@ function createCascadingLocationSelector(options = {}) {
   } = options;
 
   const wrap = document.createElement('div');
-  wrap.className = 'grid grid-cols-1 md:grid-cols-3 gap-3 items-end w-full';
+  wrap.className = options.wrapClass || (showAddButton ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 items-end w-full' : 'grid grid-cols-1 md:grid-cols-3 gap-2.5 items-end w-full');
 
   // 1. State Dropdown
   const stateCol = document.createElement('div');
-  stateCol.className = 'flex flex-col gap-1.5';
+  stateCol.className = 'flex flex-col gap-1 w-full min-w-0';
   stateCol.innerHTML = `
-    <label for="${idPrefix}-state" class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">1. State / UT</label>
+    <label for="${idPrefix}-state" class="text-xs font-bold uppercase tracking-widest text-on-surface-variant truncate">1. State / UT</label>
     <select id="${idPrefix}-state" class="${selectClass}">
-      <option value="">-- Select State / UT --</option>
+      <option value="">-- Select State --</option>
       ${getIndianStates().map(s => `<option value="${s}">${s}</option>`).join('')}
     </select>
   `;
 
   // 2. District Dropdown
   const distCol = document.createElement('div');
-  distCol.className = 'flex flex-col gap-1.5';
+  distCol.className = 'flex flex-col gap-1 w-full min-w-0';
   distCol.innerHTML = `
-    <label for="${idPrefix}-district" class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">2. District</label>
+    <label for="${idPrefix}-district" class="text-xs font-bold uppercase tracking-widest text-on-surface-variant truncate">2. District</label>
     <select id="${idPrefix}-district" class="${selectClass}" disabled>
       <option value="">-- Select District --</option>
     </select>
@@ -301,24 +301,29 @@ function createCascadingLocationSelector(options = {}) {
 
   // 3. City / Area Dropdown
   const cityCol = document.createElement('div');
-  cityCol.className = 'flex flex-col gap-1.5';
+  cityCol.className = 'flex flex-col gap-1 w-full min-w-0';
   cityCol.innerHTML = `
-    <label for="${idPrefix}-city" class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">3. City / Town</label>
-    <div class="flex gap-2">
-      <select id="${idPrefix}-city" class="${selectClass}" disabled>
-        <option value="">-- Select City / Area --</option>
-      </select>
-      ${showAddButton ? `
-        <button id="${idPrefix}-add-btn" type="button" class="${buttonClass}">
-          ${addButtonLabel}
-        </button>
-      ` : ''}
-    </div>
+    <label for="${idPrefix}-city" class="text-xs font-bold uppercase tracking-widest text-on-surface-variant truncate">3. City / Town</label>
+    <select id="${idPrefix}-city" class="${selectClass}" disabled>
+      <option value="">-- Select City --</option>
+    </select>
   `;
 
   wrap.appendChild(stateCol);
   wrap.appendChild(distCol);
   wrap.appendChild(cityCol);
+
+  if (showAddButton) {
+    const btnCol = document.createElement('div');
+    btnCol.className = 'flex flex-col gap-1 w-full min-w-0';
+    btnCol.innerHTML = `
+      <label class="text-xs font-bold uppercase tracking-widest opacity-0 select-none pointer-events-none hidden lg:block">&nbsp;</label>
+      <button id="${idPrefix}-add-btn" type="button" class="${buttonClass} whitespace-nowrap w-full text-center">
+        ${addButtonLabel}
+      </button>
+    `;
+    wrap.appendChild(btnCol);
+  }
 
   // Wire event handlers after DOM insertion
   setTimeout(() => {
