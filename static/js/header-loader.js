@@ -43,7 +43,7 @@
   }[page];
 
   const ACTIVE_DESKTOP = 'text-primary font-bold border-b-2 border-primary';
-  const ACTIVE_MOBILE  = 'text-primary font-bold border-l-2 border-primary pl-3';
+  const ACTIVE_MOBILE  = 'mobile-nav-pill-active text-primary font-bold';
 
   if (activeKey) {
     document.querySelectorAll(`[data-nav-key="${activeKey}"]`).forEach((el, i) => {

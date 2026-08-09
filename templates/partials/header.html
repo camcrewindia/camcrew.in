@@ -127,60 +127,101 @@
         </nav>
 
         <!-- Mobile Menu Dropdown -->
-        <div id="mobile-menu" class="absolute top-full left-0 w-full mt-2 rounded-2xl bg-obsidian-base/65 backdrop-blur-xl border border-glass-stroke p-6 opacity-0 invisible translate-y-[-10px] transition-all duration-300 md:hidden z-[100] shadow-2xl">
-            <div class="flex flex-col gap-4 font-body-md text-on-surface-variant">
-                <a data-nav-key="home" href="index.html" class="hover:text-primary transition-colors py-2">Home</a>
-
-                <div class="flex flex-col">
-                    <a data-nav-key="services" href="services.html" class="font-bold py-2 mobile-nav-heading hover:text-primary transition-colors flex items-center justify-between">
-                        Services
-                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+        <div id="mobile-menu" class="absolute top-full left-0 w-full mt-2 rounded-3xl bg-obsidian-base/90 backdrop-blur-2xl border border-glass-stroke p-4 sm:p-5 opacity-0 invisible translate-y-[-10px] transition-all duration-300 md:hidden z-[100] shadow-2xl max-h-[calc(100vh-95px)] overflow-y-auto custom-scrollbar">
+            <div class="flex flex-col gap-3.5 font-body-md text-on-surface-variant">
+                
+                <!-- Top Primary Nav Links Grid -->
+                <div class="grid grid-cols-2 gap-2">
+                    <a data-nav-key="home" href="index.html" class="mobile-nav-pill flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-white/5 border border-glass-stroke text-xs font-bold hover:text-primary transition-all">
+                        <span class="material-symbols-outlined text-base">home</span> Home
                     </a>
-                    <div class="flex flex-col pl-4 border-l-2 border-glass-stroke mt-1 space-y-3 py-2 mobile-services-list">
-                        <a href="photographers.html" class="hover:text-primary transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-sm">photo_camera</span> Photographers</a>
-                        <a href="videographers.html" class="hover:text-primary transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-sm">videocam</span> Videographers</a>
-                        <a href="designers.html" class="hover:text-primary transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-sm">palette</span> Designers</a>
-                        <a href="developers.html" class="hover:text-primary transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-sm">code</span> Developers</a>
-                        <a href="organizers.html" class="hover:text-primary transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-sm">event</span> Organizers</a>
-                        <a href="caterers.html" class="hover:text-primary transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-sm">restaurant</span> Caterers</a>
+                    <a data-nav-key="rentals" href="rentals.html" class="mobile-nav-pill flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-white/5 border border-glass-stroke text-xs font-bold hover:text-primary transition-all">
+                        <span class="material-symbols-outlined text-base">photo_camera</span> Rentals
+                    </a>
+                    <a data-nav-key="sales" href="sales.html" class="mobile-nav-pill flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-white/5 border border-glass-stroke text-xs font-bold hover:text-primary transition-all">
+                        <span class="material-symbols-outlined text-base">shopping_bag</span> Sales
+                    </a>
+                    <a data-nav-key="about" href="about.html" class="mobile-nav-pill flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-white/5 border border-glass-stroke text-xs font-bold hover:text-primary transition-all">
+                        <span class="material-symbols-outlined text-base">info</span> About us
+                    </a>
+                </div>
+
+                <!-- Services Section (Compact 2-Column Grid) -->
+                <div class="flex flex-col pt-1">
+                    <a data-nav-key="services" href="services.html" class="flex items-center justify-between py-1.5 px-1 font-extrabold text-xs uppercase tracking-wider mobile-nav-heading hover:text-primary transition-colors">
+                        <span class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-primary text-base">grid_view</span> Services
+                        </span>
+                        <span class="material-symbols-outlined text-sm opacity-60">arrow_forward</span>
+                    </a>
+                    
+                    <div class="grid grid-cols-2 gap-2 mt-1.5 mobile-services-grid">
+                        <a href="photographers.html" class="mobile-service-chip flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-glass-stroke text-xs font-semibold hover:border-primary/40 transition-all">
+                            <span class="material-symbols-outlined text-primary text-base">photo_camera</span>
+                            <span class="truncate">Photographers</span>
+                        </a>
+                        <a href="videographers.html" class="mobile-service-chip flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-glass-stroke text-xs font-semibold hover:border-primary/40 transition-all">
+                            <span class="material-symbols-outlined text-primary text-base">videocam</span>
+                            <span class="truncate">Videographers</span>
+                        </a>
+                        <a href="designers.html" class="mobile-service-chip flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-glass-stroke text-xs font-semibold hover:border-primary/40 transition-all">
+                            <span class="material-symbols-outlined text-primary text-base">palette</span>
+                            <span class="truncate">Designers</span>
+                        </a>
+                        <a href="developers.html" class="mobile-service-chip flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-glass-stroke text-xs font-semibold hover:border-primary/40 transition-all">
+                            <span class="material-symbols-outlined text-primary text-base">code</span>
+                            <span class="truncate">Developers</span>
+                        </a>
+                        <a href="organizers.html" class="mobile-service-chip flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-glass-stroke text-xs font-semibold hover:border-primary/40 transition-all">
+                            <span class="material-symbols-outlined text-primary text-base">event</span>
+                            <span class="truncate">Organizers</span>
+                        </a>
+                        <a href="caterers.html" class="mobile-service-chip flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-glass-stroke text-xs font-semibold hover:border-primary/40 transition-all">
+                            <span class="material-symbols-outlined text-primary text-base">restaurant</span>
+                            <span class="truncate">Caterers</span>
+                        </a>
                     </div>
                 </div>
 
-                <a data-nav-key="rentals" href="rentals.html" class="hover:text-primary transition-colors py-2">Rentals</a>
-                <a data-nav-key="sales" href="sales.html" class="hover:text-primary transition-colors py-2">Sales</a>
-                <a data-nav-key="about" href="about.html" class="hover:text-primary transition-colors py-2">About us</a>
-                <a href="notifications.html" class="hover:text-primary transition-colors py-2 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sm">notifications</span> Notifications
+                <!-- Notifications link -->
+                <a href="notifications.html" class="mobile-nav-pill flex items-center justify-between py-2.5 px-3.5 rounded-2xl bg-white/5 border border-glass-stroke text-xs font-bold hover:text-primary transition-all">
+                    <span class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-base">notifications</span> Notifications
+                    </span>
+                    <span class="material-symbols-outlined text-sm opacity-60">chevron_right</span>
                 </a>
 
-                <hr class="border-glass-stroke my-2">
+                <hr class="border-glass-stroke my-0.5 opacity-40">
 
-                <!-- Mobile: logged-in -->
-                <div id="mobile-user-area" style="display:none" class="flex-col gap-3">
-                    <!-- Profile card -->
-                    <a href="profile.html" class="flex items-center gap-3 bg-white/5 border border-primary/20 rounded-2xl px-4 py-3 hover:border-primary/50 transition-all mobile-user-card">
-                        <span class="material-symbols-outlined text-primary text-[28px]">account_circle</span>
-                        <div class="flex flex-col min-w-0">
-                            <span id="mobile-user-email" class="font-bold text-sm truncate"></span>
-                            <span id="mobile-user-role" class="font-label-caps text-[10px] uppercase tracking-widest mt-0.5"></span>
-                        </div>
-                        <span class="material-symbols-outlined text-sm ml-auto">chevron_right</span>
-                    </a>
-                    <!-- Sign Out button -->
-                    <button onclick="signOut()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-full font-label-caps text-[11px] mobile-signout-btn transition-all">
-                        <span class="material-symbols-outlined text-[16px]">logout</span>
-                        Sign Out
-                    </button>
+                <!-- Mobile: logged-in user area -->
+                <div id="mobile-user-area" style="display:none" class="flex flex-col gap-2">
+                    <div class="flex items-center gap-2">
+                        <a href="profile.html" class="flex-1 flex items-center gap-2.5 bg-white/5 border border-primary/20 rounded-2xl px-3 py-2 hover:border-primary/50 transition-all mobile-user-card min-w-0">
+                            <span class="material-symbols-outlined text-primary text-xl flex-shrink-0">account_circle</span>
+                            <div class="flex flex-col min-w-0 flex-1">
+                                <span id="mobile-user-email" class="font-bold text-xs truncate"></span>
+                                <span id="mobile-user-role" class="font-label-caps text-[9px] uppercase tracking-widest mt-0.5 w-fit"></span>
+                            </div>
+                        </a>
+                        <button onclick="signOut()" class="px-3.5 py-2.5 rounded-2xl font-label-caps text-xs mobile-signout-btn transition-all flex items-center gap-1.5 flex-shrink-0" title="Sign Out">
+                            <span class="material-symbols-outlined text-base">logout</span>
+                            <span>Sign Out</span>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Mobile: logged-out -->
-                <div id="mobile-signout-area" class="flex items-center justify-between pt-1">
-                    <a href="profile.html" class="flex items-center gap-2 hover:text-primary transition-colors">
-                        <span class="material-symbols-outlined">account_circle</span>
+                <!-- Mobile: logged-out user area -->
+                <div id="mobile-signout-area" class="flex items-center justify-between gap-2.5 pt-0.5">
+                    <a href="profile.html" class="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl bg-white/5 border border-glass-stroke text-xs font-bold hover:text-primary transition-colors">
+                        <span class="material-symbols-outlined text-base">account_circle</span>
                         <span>Profile</span>
                     </a>
-                    <a href="signin.html" class="bg-primary-container text-on-primary font-bold py-2 px-6 rounded-full text-label-caps hover:scale-105 transition-transform">Sign In</a>
+                    <a href="signin.html" class="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl bg-primary-container text-on-primary text-xs font-bold hover:scale-105 transition-transform shadow-lg">
+                        <span class="material-symbols-outlined text-base">login</span>
+                        <span>Sign In</span>
+                    </a>
                 </div>
+
             </div>
         </div>
     </div>
