@@ -230,7 +230,7 @@
       </div>
     </div>
 
-    <div class="p-6 rounded-3xl bg-[var(--stat-card-bg)] shadow-[var(--stat-card-shadow)] w-full max-w-sm">
+    <div class="p-6 rounded-3xl bg-[var(--stat-card-bg)] shadow-[var(--stat-card-shadow)] w-full max-w-sm hidden md:block">
       <div class="grid grid-cols-2 gap-4 text-center">
         <div class="p-4 rounded-2xl bg-[var(--stat-card-bg)] shadow-[var(--stat-inner-shadow)]">
           <p class="text-2xl font-black text-[var(--accent-color)]" id="stat-count-hero">280+</p>
@@ -244,7 +244,16 @@
     </div>
   </section>
 
-  <section class="neu-filter-card">
+  <!-- Mobile Filter Trigger Button -->
+  <button type="button" onclick="toggleMobileFilter()" class="neu-btn-mobile-filter md:hidden flex items-center justify-between">
+    <span class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-base text-[var(--accent-color)]">tune</span>
+      Filter &amp; Location Options
+    </span>
+    <span id="mobile-filter-icon" class="material-symbols-outlined text-sm transition-transform">expand_more</span>
+  </button>
+
+  <section id="filter-card-section" class="neu-filter-card neu-filter-card-mobile-hidden md:block">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
       <div>
         <label class="neu-filter-label"><span class="material-symbols-outlined text-xs">map</span> State / UT</label>
@@ -287,7 +296,7 @@
     </div>
   </div>
 
-  <div id="grid-organisers" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+  <div id="grid-organisers" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
     <div class="skel-card"><div class="skel-shimmer"></div></div>
     <div class="skel-card"><div class="skel-shimmer"></div></div>
     <div class="skel-card"><div class="skel-shimmer"></div></div>
@@ -309,6 +318,15 @@
 <script src="/static/js/footer-loader.js"></script>
 
 <script>
+function toggleMobileFilter() {
+  const filterCard = document.getElementById('filter-card-section');
+  const icon = document.getElementById('mobile-filter-icon');
+  if (!filterCard) return;
+  filterCard.classList.toggle('neu-filter-card-mobile-hidden');
+  if (icon) {
+    icon.style.transform = filterCard.classList.contains('neu-filter-card-mobile-hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+  }
+}
 document.addEventListener('DOMContentLoaded', () => {
   const stateEl = document.getElementById('filter-state');
   if (stateEl && typeof INDIA_LOCATIONS !== 'undefined') {
