@@ -590,20 +590,93 @@ html.light header #mobile-menu,
 html.light header #notif-drawer {
     background: #e0e5ec !important;
     border: 1px solid rgba(255, 255, 255, 0.8) !important;
-    box-shadow: 8px 8px 22px #b8c2cc, -8px -8px 22px #ffffff !important;
-    color: #1e293b !important;
+    box-shadow: 10px 10px 30px #b8c2cc, -10px -10px 30px #ffffff !important;
+    color: #0f172a !important;
     backdrop-filter: none !important;
 }
 
 [data-theme="light"] header .glass-panel a,
 [data-theme="light"] header #mobile-menu a,
+[data-theme="light"] header #mobile-menu span,
+[data-theme="light"] header #mobile-menu div,
 [data-theme="light"] header #notif-drawer a,
 [data-theme="light"] header #notif-drawer h3,
 html.light header .glass-panel a,
 html.light header #mobile-menu a,
+html.light header #mobile-menu span,
+html.light header #mobile-menu div,
 html.light header #notif-drawer a,
 html.light header #notif-drawer h3 {
-    color: #1e293b !important;
+    color: #0f172a !important;
+}
+
+[data-theme="light"] header #mobile-menu .mobile-nav-heading,
+html.light header #mobile-menu .mobile-nav-heading {
+    color: #0f172a !important;
+    font-weight: 800 !important;
+    font-size: 1rem !important;
+}
+
+[data-theme="light"] header #mobile-menu .mobile-services-list,
+html.light header #mobile-menu .mobile-services-list {
+    border-color: #0e5a6f !important;
+}
+
+[data-theme="light"] header #mobile-menu .mobile-user-card,
+html.light header #mobile-menu .mobile-user-card {
+    background: #e0e5ec !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff !important;
+}
+
+[data-theme="light"] header #mobile-user-email,
+html.light header #mobile-user-email {
+    color: #0f172a !important;
+    font-weight: 800 !important;
+}
+
+[data-theme="light"] header #mobile-user-role,
+html.light header #mobile-user-role {
+    color: #0e5a6f !important;
+    background: rgba(14, 90, 111, 0.12) !important;
+    border: 1px solid rgba(14, 90, 111, 0.3) !important;
+    font-weight: 800 !important;
+    padding: 2px 8px !important;
+    border-radius: 9999px !important;
+    display: inline-block !important;
+}
+
+/* Mobile Sign Out Button in Light Mode */
+.mobile-signout-btn {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #dce4e5;
+}
+
+[data-theme="light"] header #mobile-menu .mobile-signout-btn,
+[data-theme="light"] header #mobile-menu .mobile-signout-btn *,
+html.light header #mobile-menu .mobile-signout-btn,
+html.light header #mobile-menu .mobile-signout-btn * {
+    color: #0f172a !important;
+    font-weight: 800 !important;
+}
+
+[data-theme="light"] header #mobile-menu .mobile-signout-btn,
+html.light header #mobile-menu .mobile-signout-btn {
+    background: #e0e5ec !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
+    transition: all 0.2s ease !important;
+}
+
+[data-theme="light"] header #mobile-menu .mobile-signout-btn:hover,
+html.light header #mobile-menu .mobile-signout-btn:hover {
+    box-shadow: 6px 6px 14px #b8c2cc, -6px -6px 14px #ffffff !important;
+    color: #b71c1c !important;
+}
+
+[data-theme="light"] header #mobile-menu .mobile-signout-btn:hover .material-symbols-outlined,
+html.light header #mobile-menu .mobile-signout-btn:hover .material-symbols-outlined {
+    color: #b71c1c !important;
 }
 
 [data-theme="light"] header .glass-panel a:hover,

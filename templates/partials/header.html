@@ -132,8 +132,8 @@
                 <a data-nav-key="home" href="index.html" class="hover:text-primary transition-colors py-2">Home</a>
 
                 <div class="flex flex-col">
-                    <span class="font-bold text-on-surface py-2">Services</span>
-                    <div class="flex flex-col pl-4 border-l-2 border-glass-stroke mt-1 space-y-3 py-2">
+                    <span class="font-bold py-2 mobile-nav-heading">Services</span>
+                    <div class="flex flex-col pl-4 border-l-2 border-glass-stroke mt-1 space-y-3 py-2 mobile-services-list">
                         <a href="photographers.html" class="hover:text-primary transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-sm">photo_camera</span> Photographers</a>
                         <a href="videographers.html" class="hover:text-primary transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-sm">videocam</span> Videographers</a>
                         <a href="designers.html" class="hover:text-primary transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-sm">palette</span> Designers</a>
@@ -155,16 +155,16 @@
                 <!-- Mobile: logged-in -->
                 <div id="mobile-user-area" style="display:none" class="flex-col gap-3">
                     <!-- Profile card -->
-                    <a href="profile.html" class="flex items-center gap-3 bg-white/5 border border-primary/20 rounded-2xl px-4 py-3 hover:border-primary/50 transition-all">
+                    <a href="profile.html" class="flex items-center gap-3 bg-white/5 border border-primary/20 rounded-2xl px-4 py-3 hover:border-primary/50 transition-all mobile-user-card">
                         <span class="material-symbols-outlined text-primary text-[28px]">account_circle</span>
                         <div class="flex flex-col min-w-0">
-                            <span id="mobile-user-email" class="text-on-surface font-bold text-sm truncate"></span>
-                            <span id="mobile-user-role" class="text-primary-fixed-dim font-label-caps text-[10px] uppercase tracking-widest mt-0.5"></span>
+                            <span id="mobile-user-email" class="font-bold text-sm truncate"></span>
+                            <span id="mobile-user-role" class="font-label-caps text-[10px] uppercase tracking-widest mt-0.5"></span>
                         </div>
-                        <span class="material-symbols-outlined text-on-surface-variant text-sm ml-auto">chevron_right</span>
+                        <span class="material-symbols-outlined text-sm ml-auto">chevron_right</span>
                     </a>
                     <!-- Sign Out button -->
-                    <button onclick="signOut()" class="w-full flex items-center justify-center gap-2 py-2.5 border border-glass-stroke rounded-full font-label-caps text-[11px] text-on-surface-variant hover:text-primary hover:border-primary/50 transition-all">
+                    <button onclick="signOut()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-full font-label-caps text-[11px] mobile-signout-btn transition-all">
                         <span class="material-symbols-outlined text-[16px]">logout</span>
                         Sign Out
                     </button>
