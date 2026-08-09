@@ -873,7 +873,8 @@
 
     <!-- Filter bar -->
     <div class="reveal mb-5">
-      <div class="filter-bar">
+      <!-- Desktop Filter Bar -->
+      <div class="filter-bar hidden md:flex">
         <button class="filter-btn active" data-cat="all" onclick="filterGear(this)">
           <span class="material-symbols-outlined">grid_view</span> All
         </button>
@@ -895,6 +896,22 @@
         <button class="filter-btn" data-cat="studio floor" onclick="filterGear(this)">
           <span class="material-symbols-outlined">domain</span> Studio Floors &amp; Soundstages
         </button>
+      </div>
+
+      <!-- Mobile Category Filter Dropdown -->
+      <div class="flex md:hidden items-center justify-between gap-2.5 w-full">
+        <div class="relative flex-1">
+          <select id="mobile-rentals-category" onchange="onMobileRentalCategoryChange(this.value)" class="w-full glass-panel px-4 py-2.5 rounded-full text-xs font-bold text-slate-200 appearance-none pr-8 cursor-pointer focus:outline-none" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+            <option value="all" style="background: #101012; color: #fff;">All Categories</option>
+            <option value="camera" style="background: #101012; color: #fff;">📷 Cameras</option>
+            <option value="lens" style="background: #101012; color: #fff;">🔍 Lenses</option>
+            <option value="lighting" style="background: #101012; color: #fff;">💡 Lighting</option>
+            <option value="stabilizer" style="background: #101012; color: #fff;">⚖️ Stabilizers</option>
+            <option value="audio" style="background: #101012; color: #fff;">🎙️ Audio</option>
+            <option value="studio floor" style="background: #101012; color: #fff;">🎬 Studio Floors &amp; Soundstages</option>
+          </select>
+          <span class="material-symbols-outlined text-sm absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-cyan-400">filter_list</span>
+        </div>
       </div>
     </div>
 
@@ -1539,6 +1556,19 @@ function filterGear(btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   activeFilter = btn.dataset.cat;
+  const mSelect = document.getElementById('mobile-rentals-category');
+  if (mSelect) mSelect.value = activeFilter;
+  const filtered = activeFilter === 'all'
+    ? allEquipment
+    : allEquipment.filter(e => catKey(e.category) === activeFilter);
+  renderGearGrid(filtered);
+}
+
+function onMobileRentalCategoryChange(val) {
+  activeFilter = val;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.cat === val);
+  });
   const filtered = activeFilter === 'all'
     ? allEquipment
     : allEquipment.filter(e => catKey(e.category) === activeFilter);

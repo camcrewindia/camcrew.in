@@ -402,29 +402,54 @@
         <p id="product-count" class="hidden md:block text-on-surface-variant text-sm">Loading…</p>
       </div>
 
-      <!-- Filter chips -->
-      <div class="flex flex-wrap items-center gap-3">
-        <button class="filter-chip active glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50" data-category="">
-          <span class="material-symbols-outlined text-sm">grid_view</span> All
-        </button>
-        <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Cameras">
-          <span class="material-symbols-outlined text-sm">camera</span> Cameras
-        </button>
-        <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Lighting">
-          <span class="material-symbols-outlined text-sm">light_mode</span> Lighting
-        </button>
-        <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Audio">
-          <span class="material-symbols-outlined text-sm">mic</span> Audio
-        </button>
-        <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Lenses">
-          <span class="material-symbols-outlined text-sm">lens</span> Lenses
-        </button>
-        <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Storage">
-          <span class="material-symbols-outlined text-sm">storage</span> Storage
-        </button>
-        <div class="ml-auto flex items-center gap-2">
-          <button id="sort-btn" class="glass-panel px-4 py-2 rounded-full flex items-center gap-2 border border-glass-stroke text-on-surface-variant hover:text-on-surface hover:border-primary-container/40 transition-all text-sm">
-            <span class="material-symbols-outlined text-sm">sort</span> <span id="sort-label">Price: High–Low</span>
+      <!-- Filter controls: Desktop Chips + Mobile Category Dropdown Row -->
+      <div class="w-full">
+        <!-- Desktop Filter Chips (hidden on mobile) -->
+        <div class="hidden md:flex flex-wrap items-center gap-3">
+          <button class="filter-chip active glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50" data-category="">
+            <span class="material-symbols-outlined text-sm">grid_view</span> All
+          </button>
+          <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Cameras">
+            <span class="material-symbols-outlined text-sm">camera</span> Cameras
+          </button>
+          <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Lighting">
+            <span class="material-symbols-outlined text-sm">light_mode</span> Lighting
+          </button>
+          <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Audio">
+            <span class="material-symbols-outlined text-sm">mic</span> Audio
+          </button>
+          <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Lenses">
+            <span class="material-symbols-outlined text-sm">lens</span> Lenses
+          </button>
+          <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Storage">
+            <span class="material-symbols-outlined text-sm">storage</span> Storage
+          </button>
+          <div class="ml-auto flex items-center gap-2">
+            <button id="sort-btn" class="glass-panel px-4 py-2 rounded-full flex items-center gap-2 border border-glass-stroke text-on-surface-variant hover:text-on-surface hover:border-primary-container/40 transition-all text-sm">
+              <span class="material-symbols-outlined text-sm">sort</span> <span id="sort-label">Price: High–Low</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Filter Toolbar (Category Dropdown + Sort Button in 1 compact row) -->
+        <div class="flex md:hidden items-center justify-between gap-2.5 w-full">
+          <!-- Category Filter Dropdown -->
+          <div class="relative flex-1">
+            <select id="mobile-category-select" class="w-full glass-panel px-4 py-2.5 rounded-full font-label-caps text-xs font-bold border border-glass-stroke text-on-surface appearance-none pr-8 cursor-pointer focus:outline-none" style="background-color: var(--chip-bg, rgba(255,255,255,0.05));">
+              <option value="" style="background: #1e293b; color: #fff;">All Categories</option>
+              <option value="Cameras" style="background: #1e293b; color: #fff;">📷 Cameras</option>
+              <option value="Lighting" style="background: #1e293b; color: #fff;">💡 Lighting</option>
+              <option value="Audio" style="background: #1e293b; color: #fff;">🎙️ Audio</option>
+              <option value="Lenses" style="background: #1e293b; color: #fff;">🔍 Lenses</option>
+              <option value="Storage" style="background: #1e293b; color: #fff;">💾 Storage</option>
+            </select>
+            <span class="material-symbols-outlined text-sm absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">filter_list</span>
+          </div>
+
+          <!-- Sort Button Next to Dropdown -->
+          <button id="mobile-sort-btn" class="glass-panel px-3.5 py-2.5 rounded-full flex items-center gap-1.5 border border-glass-stroke text-on-surface-variant text-xs font-bold shrink-0" style="background-color: var(--chip-bg, rgba(255,255,255,0.05));">
+            <span class="material-symbols-outlined text-sm">sort</span>
+            <span id="mobile-sort-label">Price: High–Low</span>
           </button>
         </div>
       </div>
@@ -598,24 +623,48 @@
       }
     }
 
-    /* Filter chips */
+    /* Filter chips & Mobile Category Dropdown */
     document.querySelectorAll('.filter-chip').forEach(chip => {
       chip.addEventListener('click', () => {
         document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
         chip.classList.add('active');
-        loadProducts(chip.dataset.category || '');
+        const cat = chip.dataset.category || '';
+        const mobileSelect = document.getElementById('mobile-category-select');
+        if (mobileSelect) mobileSelect.value = cat;
+        loadProducts(cat);
       });
     });
 
-    /* Sort toggle */
-    if (sortBtn) {
-      sortBtn.addEventListener('click', () => {
-        sortDir = sortDir === 'desc' ? 'asc' : 'desc';
-        sortLabel.textContent = sortDir === 'desc' ? 'Price: High–Low' : 'Price: Low–High';
-        filtered.sort((a, b) => sortDir === 'desc' ? b.price - a.price : a.price - b.price);
-        renderPage(true);
-        updateCount();
+    const mobileSelect = document.getElementById('mobile-category-select');
+    if (mobileSelect) {
+      mobileSelect.addEventListener('change', () => {
+        const cat = mobileSelect.value;
+        document.querySelectorAll('.filter-chip').forEach(c => {
+          c.classList.toggle('active', (c.dataset.category || '') === cat);
+        });
+        loadProducts(cat);
       });
+    }
+
+    /* Sort toggle helper */
+    function toggleSort() {
+      sortDir = sortDir === 'desc' ? 'asc' : 'desc';
+      const labelText = sortDir === 'desc' ? 'Price: High–Low' : 'Price: Low–High';
+      const dLabel = document.getElementById('sort-label');
+      const mLabel = document.getElementById('mobile-sort-label');
+      if (dLabel) dLabel.textContent = labelText;
+      if (mLabel) mLabel.textContent = labelText;
+      filtered.sort((a, b) => sortDir === 'desc' ? b.price - a.price : a.price - b.price);
+      renderPage(true);
+      updateCount();
+    }
+
+    if (sortBtn) {
+      sortBtn.addEventListener('click', toggleSort);
+    }
+    const mobileSortBtn = document.getElementById('mobile-sort-btn');
+    if (mobileSortBtn) {
+      mobileSortBtn.addEventListener('click', toggleSort);
     }
 
     /* Load more */
