@@ -885,4 +885,94 @@ html.light header #mobile-menu a:hover {
     height: 310px !important;
     border-radius: 20px !important;
   }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     Mobile Responsive Optimizations for Rentals & Sales Pages
+     (Compact 1/3 Hero, Packed Alignment, 2-Column Cards Grid)
+     ═══════════════════════════════════════════════════════════════════ */
+  .hero-section {
+    min-height: auto !important;
+    padding-top: 4.5rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+  .hero-content {
+    padding-top: 4rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+  .hero-title {
+    font-size: 1.4rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0.35rem !important;
+  }
+  .hero-sub {
+    font-size: 0.75rem !important;
+    line-height: 1.35 !important;
+    margin-bottom: 0.75rem !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .hero-eyebrow {
+    font-size: 0.65rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+  .stats-bar {
+    display: none !important;
+  }
+
+  /* Filter Bar Scroll & Compact Packing on Mobile */
+  .filter-bar {
+    width: 100% !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    flex-wrap: nowrap !important;
+    border-radius: 1rem !important;
+    padding: 0.3rem !important;
+    scrollbar-width: none !important;
+  }
+  .filter-bar::-webkit-scrollbar {
+    display: none !important;
+  }
+  .filter-btn, .filter-chip {
+    padding: 0.4rem 0.75rem !important;
+    font-size: 0.72rem !important;
+    white-space: nowrap !important;
+  }
+
+  /* Equipment Cards in Rentals Page (2-column layout) */
+  .gear-card {
+    border-radius: 18px !important;
+  }
+  .gear-img-wrap {
+    height: 155px !important;
+  }
+  .gear-body {
+    padding: 0.75rem 0.65rem 0.75rem !important;
+  }
+  .gear-name {
+    font-size: 0.85rem !important;
+    margin-bottom: 0.15rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .gear-spec {
+    font-size: 0.7rem !important;
+    margin-bottom: 0.4rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .gear-price-row {
+    margin-bottom: 0.4rem !important;
+  }
+  .gear-price {
+    font-size: 1.05rem !important;
+  }
+  .btn-reserve {
+    padding: 0.45rem 0.35rem !important;
+    font-size: 0.68rem !important;
+    border-radius: 999px !important;
+  }
 }
