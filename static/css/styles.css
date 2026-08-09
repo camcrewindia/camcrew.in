@@ -1321,6 +1321,57 @@ html.light body {
   color: #0f172a !important;
 }
 
+/* Hide shader canvas in Light Mode for clean sales-style neumorphic background */
+[data-theme="light"] #shader-canvas-ANIMATION_6,
+html.light #shader-canvas-ANIMATION_6 {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+[data-theme="light"] .float-wrap input,
+[data-theme="light"] .float-wrap select,
+[data-theme="light"] .coupon-row input,
+html.light .float-wrap input,
+html.light .float-wrap select,
+html.light .coupon-row input {
+  background: #e0e5ec !important;
+  color: #0f172a !important;
+  border: none !important;
+  box-shadow: inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff !important;
+}
+
+[data-theme="light"] .float-wrap label,
+html.light .float-wrap label {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .float-wrap input:focus ~ label,
+[data-theme="light"] .float-wrap input:not(:placeholder-shown) ~ label,
+[data-theme="light"] .float-wrap select:focus ~ label,
+[data-theme="light"] .float-wrap select:not([value=""]) ~ label,
+[data-theme="light"] .float-wrap.has-value label,
+html.light .float-wrap input:focus ~ label,
+html.light .float-wrap input:not(:placeholder-shown) ~ label,
+html.light .float-wrap select:focus ~ label,
+html.light .float-wrap select:not([value=""]) ~ label,
+html.light .float-wrap.has-value label {
+  color: #0e5a6f !important;
+}
+
+[data-theme="light"] .order-item-img,
+html.light .order-item-img {
+  background: #e0e5ec !important;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+
+[data-theme="light"] .coupon-btn,
+html.light .coupon-btn {
+  background: #0e5a6f !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 4px 10px rgba(14, 90, 111, 0.3) !important;
+}
+
 /* Headings in Light Mode */
 [data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4, [data-theme="light"] h5, [data-theme="light"] h6,
 html.light h1, html.light h2, html.light h3, html.light h4, html.light h5, html.light h6 {

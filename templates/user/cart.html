@@ -116,135 +116,149 @@ void main() {
 <!-- Navigation Header -->
 <div id="site-header"></div>
 <main class="pt-32 pb-stack-xl px-margin-mobile md:px-margin-desktop max-w-screen-2xl mx-auto">
-<!-- Page Title -->
-<header class="mb-stack-md flex flex-col md:flex-row md:items-end justify-between gap-4">
-<div>
-<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary tracking-tighter">Your Production Rig</h1>
-<p class="text-on-surface-variant mt-2 max-w-xl">Review your selected professional equipment. Items are saved to your account.</p>
-</div>
-<div class="flex items-center gap-2 text-primary-fixed-dim bg-primary/5 px-4 py-2 rounded-xl border border-primary/20">
-<span class="material-symbols-outlined text-[20px]">verified</span>
-<span class="font-label-caps text-label-caps">PRO GEAR PROTECTION INCLUDED</span>
-</div>
+<!-- Page Title & Header Banner -->
+<header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+  <div>
+    <div class="flex items-center gap-2 text-xs font-bold tracking-widest uppercase mb-1" style="color: var(--accent-color, #0e5a6f);">
+      <span class="material-symbols-outlined text-base">shopping_cart</span>
+      <span>Shopping Cart</span>
+    </div>
+    <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight" style="color: var(--text-main, #0f172a);">Your Equipment Cart</h1>
+    <p class="mt-1 text-sm max-w-xl" style="color: var(--text-muted, #475569);">Review your selected professional gear before proceeding to secure checkout.</p>
+  </div>
+  <div class="flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs shrink-0 shadow-sm" style="background: var(--chip-bg, #e0e5ec); color: var(--text-main, #0f172a); box-shadow: var(--chip-shadow, 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff);">
+    <span class="material-symbols-outlined text-base text-teal-600 dark:text-cyan-400">verified</span>
+    <span>PRO GEAR PROTECTION &amp; FREE EXPRESS SHIPPING</span>
+  </div>
 </header>
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
-<!-- Cart Items Column -->
-<div class="lg:col-span-8 space-y-gutter" id="cart-items-col">
-  <!-- Loading state -->
-  <div id="cart-loading" class="glass-panel rounded-xl p-12 flex flex-col items-center gap-4 text-on-surface-variant">
-    <span class="material-symbols-outlined text-[48px] text-primary" style="animation:spin 1s linear infinite">progress_activity</span>
-    <p class="font-label-caps text-label-caps">Loading your cart...</p>
-  </div>
-  <!-- Auth required state -->
-  <div id="cart-auth-required" class="hidden glass-panel rounded-xl p-12 flex flex-col items-center gap-6 text-center">
-    <span class="material-symbols-outlined text-[56px] text-primary-container">lock</span>
-    <div>
-      <h3 class="font-headline-md text-headline-md text-primary mb-2">Sign in to view your cart</h3>
-      <p class="text-on-surface-variant text-body-md">Your cart is saved to your account and synced across all devices.</p>
+
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <!-- Cart Items Column -->
+  <div class="lg:col-span-8 space-y-4" id="cart-items-col">
+    <!-- Loading state -->
+    <div id="cart-loading" class="glass-panel rounded-2xl p-12 flex flex-col items-center gap-4 text-center">
+      <span class="material-symbols-outlined text-4xl text-teal-600 dark:text-cyan-400 animate-spin">progress_activity</span>
+      <p class="font-bold text-xs tracking-wider uppercase">Loading your cart items...</p>
     </div>
-    <a href="signin.html" class="shimmer-effect px-8 py-4 bg-gradient-to-r from-primary-container to-primary-fixed-dim text-on-primary-fixed font-bold rounded-xl hover:scale-105 transition-transform duration-300">Sign In to Continue</a>
-  </div>
-  <!-- Empty cart state -->
-  <div id="cart-empty" class="hidden glass-panel rounded-xl p-12 flex flex-col items-center gap-6 text-center">
-    <span class="material-symbols-outlined text-[56px] text-on-surface-variant">shopping_cart</span>
-    <div>
-      <h3 class="font-headline-md text-headline-md text-primary mb-2">Your cart is empty</h3>
-      <p class="text-on-surface-variant text-body-md">Browse our selection of professional cinema gear.</p>
+    <!-- Auth required state -->
+    <div id="cart-auth-required" class="hidden glass-panel rounded-2xl p-12 flex flex-col items-center gap-6 text-center">
+      <span class="material-symbols-outlined text-5xl text-teal-600 dark:text-cyan-400">lock</span>
+      <div>
+        <h3 class="text-xl font-bold mb-2" style="color: var(--text-main, #0f172a);">Sign in to view your cart</h3>
+        <p class="text-sm max-w-md" style="color: var(--text-muted, #475569);">Your cart items are saved to your account and synced seamlessly across all devices.</p>
+      </div>
+      <a href="signin.html" class="px-8 py-3.5 bg-teal-700 hover:bg-teal-800 text-white font-bold text-sm rounded-full shadow-md hover:scale-105 transition-all">Sign In to Continue</a>
     </div>
-    <a href="sales.html" class="shimmer-effect px-8 py-4 bg-gradient-to-r from-primary-container to-primary-fixed-dim text-on-primary-fixed font-bold rounded-xl hover:scale-105 transition-transform duration-300">Shop Equipment</a>
+    <!-- Empty cart state -->
+    <div id="cart-empty" class="hidden glass-panel rounded-2xl p-12 flex flex-col items-center gap-6 text-center">
+      <span class="material-symbols-outlined text-5xl text-slate-400">shopping_cart</span>
+      <div>
+        <h3 class="text-xl font-bold mb-2" style="color: var(--text-main, #0f172a);">Your cart is empty</h3>
+        <p class="text-sm max-w-md" style="color: var(--text-muted, #475569);">Explore our sales marketplace &amp; rental catalogue for professional cinema gear.</p>
+      </div>
+      <a href="sales.html" class="px-8 py-3.5 bg-teal-700 hover:bg-teal-800 text-white font-bold text-sm rounded-full shadow-md hover:scale-105 transition-all">Browse Equipment</a>
+    </div>
+    <!-- Dynamic cart items injected here -->
+    <div id="cart-items-list" class="space-y-4"></div>
   </div>
-  <!-- Dynamic cart items injected here -->
-  <div id="cart-items-list" class="space-y-gutter"></div>
+
+  <!-- Order Summary Sidebar -->
+  <aside class="lg:col-span-4 space-y-6 sticky top-28">
+    <div class="glass-panel rounded-2xl p-6 md:p-7 shadow-lg">
+      <h2 class="text-xl font-extrabold mb-6 pb-3 border-b" style="color: var(--text-main, #0f172a); border-color: rgba(128,128,128,0.15);">Order Summary</h2>
+      
+      <!-- Promo Code Input -->
+      <div class="mb-6">
+        <label class="block text-xs font-bold tracking-wider uppercase mb-2" style="color: var(--text-muted, #475569);">Promo / Discount Code</label>
+        <div class="flex gap-2">
+          <input type="text" placeholder="ENTER CODE" class="w-full px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider focus:outline-none" style="background: var(--chip-bg, #e0e5ec); color: var(--text-main, #0f172a); border: 1px solid var(--border-color, rgba(0,0,0,0.1));" />
+          <button type="button" class="px-4 py-2.5 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-sm transition-all">Apply</button>
+        </div>
+      </div>
+
+      <div class="space-y-3.5 border-b pb-6 mb-6 text-sm" style="border-color: rgba(128,128,128,0.15);">
+        <div class="flex justify-between items-center">
+          <span style="color: var(--text-muted, #475569);" id="summary-item-count">Subtotal (0 items)</span>
+          <span class="font-bold" style="color: var(--text-main, #0f172a);" id="summary-subtotal">₹0.00</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span style="color: var(--text-muted, #475569);">Express Shipping</span>
+          <span class="font-bold text-emerald-600 dark:text-emerald-400">FREE</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span style="color: var(--text-muted, #475569);">Estimated GST (18%)</span>
+          <span class="font-bold" style="color: var(--text-main, #0f172a);" id="summary-tax">₹0.00</span>
+        </div>
+      </div>
+
+      <div class="flex justify-between items-end mb-6">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider block mb-1" style="color: var(--text-muted, #475569);">TOTAL AMOUNT</span>
+          <span class="text-2xl md:text-3xl font-extrabold tracking-tight" style="color: var(--accent-color, #0e5a6f);" id="summary-total">₹0.00</span>
+        </div>
+      </div>
+
+      <a href="checkout.html" id="checkout-btn" class="w-full py-4 bg-teal-700 hover:bg-teal-800 text-white font-extrabold text-sm tracking-wider uppercase rounded-full flex items-center justify-center gap-2 shadow-md hover:scale-[1.02] transition-all opacity-50 pointer-events-none">
+        Proceed to Checkout
+        <span class="material-symbols-outlined text-lg">arrow_forward</span>
+      </a>
+
+      <div class="mt-6 flex flex-col gap-3 text-center">
+        <p class="text-xs font-semibold" style="color: var(--text-muted, #64748b);">Flexible &amp; Secure Payment Options</p>
+        <div class="flex justify-center gap-4 opacity-70">
+          <span class="material-symbols-outlined text-2xl">payments</span>
+          <span class="material-symbols-outlined text-2xl">credit_card</span>
+          <span class="material-symbols-outlined text-2xl">account_balance</span>
+          <span class="material-symbols-outlined text-2xl">qr_code_2</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Expert Assistance Card -->
+    <div class="glass-panel rounded-2xl p-5 border-l-4 border-l-teal-600 flex items-center gap-4">
+      <div class="w-10 h-10 rounded-full bg-teal-600/10 flex items-center justify-center text-teal-600 shrink-0">
+        <span class="material-symbols-outlined">headset_mic</span>
+      </div>
+      <div>
+        <h4 class="text-xs font-bold uppercase tracking-wider" style="color: var(--text-main, #0f172a);">Need Technical Help?</h4>
+        <p class="text-xs mt-0.5" style="color: var(--text-muted, #64748b);">Our cinema gear specialists are online to assist your order.</p>
+      </div>
+    </div>
+  </aside>
 </div>
-<!-- Order Summary -->
-<aside class="lg:col-span-4 space-y-gutter sticky top-28">
-<div class="glass-panel rounded-xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-t-primary-fixed-dim/80">
-<h2 class="font-headline-md text-headline-md text-primary mb-6">Order Summary</h2>
-<div class="space-y-4 border-b border-glass-stroke pb-6 mb-6">
-<div class="flex justify-between items-center text-on-surface-variant">
-<span class="font-body-md" id="summary-item-count">Subtotal (0 items)</span>
-<span class="font-body-md text-primary" id="summary-subtotal">₹0.00</span>
-</div>
-<div class="flex justify-between items-center text-on-surface-variant">
-<span class="font-body-md">Expedited Shipping</span>
-<span class="font-body-md text-primary-fixed-dim">FREE</span>
-</div>
-<div class="flex justify-between items-center text-on-surface-variant">
-<span class="font-body-md">Estimated Tax (8.875%)</span>
-<span class="font-body-md text-primary" id="summary-tax">₹0.00</span>
-</div>
-</div>
-<div class="flex justify-between items-end mb-8">
-<div>
-<span class="font-label-caps text-label-caps text-on-surface-variant block mb-1">TOTAL</span>
-<span class="font-display-lg text-display-lg-mobile text-primary tracking-tighter" id="summary-total">₹0.00</span>
-</div>
-</div>
-<a href="checkout.html" id="checkout-btn" class="shimmer-effect w-full py-5 bg-gradient-to-r from-primary-container to-primary-fixed-dim text-on-primary-fixed font-bold text-body-lg rounded-xl flex items-center justify-center gap-3 hover:scale-105 transition-transform duration-300 shadow-[0_10px_30px_rgba(0,240,255,0.3)] opacity-50 pointer-events-none">
-                        Proceed to Checkout
-                        <span class="material-symbols-outlined">arrow_forward</span>
-</a>
-<div class="mt-6 flex flex-col gap-3">
-<p class="text-on-surface-variant text-[14px] text-center">Flexible payment options available</p>
-<div class="flex justify-center gap-4 opacity-50 grayscale hover:grayscale-0 transition-all cursor-pointer">
-<span class="material-symbols-outlined">payments</span>
-<span class="material-symbols-outlined">credit_card</span>
-<span class="material-symbols-outlined">account_balance</span>
-</div>
-</div>
-</div>
-<!-- Assistance Card -->
-<div class="glass-panel rounded-xl p-6 border-l-2 border-l-secondary">
-<h4 class="font-label-caps text-label-caps text-secondary mb-2">NEED HELP?</h4>
-<p class="text-on-surface-variant text-body-md mb-4">Our production experts are available for live consultation.</p>
-<button class="flex items-center gap-2 text-primary hover:text-primary-container transition-colors font-bold">
-<span class="material-symbols-outlined">headset_mic</span>
-                        Chat with an Expert
-                    </button>
-</div>
-</aside>
-</div>
+
 <!-- Recommended Section -->
-<section class="mt-stack-xl">
-<h3 class="font-headline-md text-headline-md text-primary mb-stack-md">Frequently Bundled Tools</h3>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
-<!-- Rec Item 1 -->
-<div class="glass-panel p-4 rounded-xl group cursor-pointer neon-glow-hover transition-all">
-<div class="h-40 bg-obsidian-base rounded-lg mb-4 overflow-hidden">
-<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A premium camera tripod made of carbon fiber, shot in a high-tech obsidian environment. The legs have glowing cyan accents near the joints. Atmospheric background with a thin layer of floor fog. Minimalist, sharp, and futuristic design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBm1jj4Aw3pikiDEwLQwQlY4IesRMP3sXP6GKSNCQ6mNSmTk8-JXt-zRA1wM5SpDlqQWKrEaphWG4G9NHLoI03OCMntdj0X8DpHA-z1kCzH178xusVsyMJzNNZsaCsbMWLHdl6nSZPtgTVPMWL3dVO48QuCVj7cGxGqA98tH6xw52ZBE0pFEwDlgy3GgGLTsjgStwp4tHewDuYi_mABidcu1xfHOeimle48flPkgVpZOP7JylaTcePn"/>
-</div>
-<h4 class="text-primary font-bold mb-1">Carbon Fiber Pro Tripod</h4>
-<p class="text-primary-fixed-dim font-bold">₹450.00</p>
-<button onclick="addCustomToCart('Carbon Fiber Pro Tripod', 450, this)" class="mt-4 w-full py-2 border border-primary/30 rounded-lg text-primary text-label-caps font-label-caps hover:bg-primary/10 transition-colors">ADD TO CART</button>
-</div>
-<!-- Rec Item 2 -->
-<div class="glass-panel p-4 rounded-xl group cursor-pointer neon-glow-hover transition-all">
-<div class="h-40 bg-obsidian-base rounded-lg mb-4 overflow-hidden">
-<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A 2TB high-speed CFexpress Type B memory card sitting on a sleek metallic surface. Cyan laser lines reflect off the card's surface. Dark, tech-focused studio lighting with a deep blue color palette and sharp shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0P6uk3vH5U4jNspTK-VUYC58DYrna8LKeGn3d5UfL8wFoQZ_5cbl3kX6cxAGofNf47PJvB7UqApXemjXQJn4_uCxKhYMPPlI4pgjhBYUnnrSvaA02-zb8EUZn4Lo-L4q5n6_ww0sgwQNzyW4yTbbDxpMGr7bvFUSVweUCoQmvn6Z8xX3oBRIrQgvopkWVUXXqroNz4VupIkFO541GjFY1Y6OeaM_vPYzBOt9aynZVBD6SJEBOl23q"/>
-</div>
-<h4 class="text-primary font-bold mb-1">2TB CFexpress Pro Card</h4>
-<p class="text-primary-fixed-dim font-bold">₹399.00</p>
-<button onclick="addCustomToCart('2TB CFexpress Pro Card', 399, this)" class="mt-4 w-full py-2 border border-primary/30 rounded-lg text-primary text-label-caps font-label-caps hover:bg-primary/10 transition-colors">ADD TO CART</button>
-</div>
-<!-- Rec Item 3 -->
-<div class="glass-panel p-4 rounded-xl group cursor-pointer neon-glow-hover transition-all">
-<div class="h-40 bg-obsidian-base rounded-lg mb-4 overflow-hidden">
-<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="High-end studio monitor headphones resting on a glass table. The earcups feature glowing circular lights in neon cyan. Dark, cinematic studio atmosphere with bokeh lights in the deep background. Professional audio equipment aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhPKpJPHqtlGZK-JFbmINz_tw3EpT55zKcFZ6lngXXv-FSTDFjNpHCj1l7iPO3Tm4aqy85Kfx2xSypN6_u49-WnWfMhHU_xTQEPgLQ1m3Ihdm4jDhPx6aDxs6CHHCXobOvi-4ZOto8JCO9JLORaaSREbzJmtmTWdwIg3V9ORROOU14fwbq58oZoWfADczQBDTI3BqSCDlRlNMGb0fdrpt5_oQIpLXFqHgPjT4ZrasQsQhDXU4BvAJS"/>
-</div>
-<h4 class="text-primary font-bold mb-1">C-100 Studio Headphones</h4>
-<p class="text-primary-fixed-dim font-bold">₹299.00</p>
-<button onclick="addCustomToCart('C-100 Studio Headphones', 299, this)" class="mt-4 w-full py-2 border border-primary/30 rounded-lg text-primary text-label-caps font-label-caps hover:bg-primary/10 transition-colors">ADD TO CART</button>
-</div>
-<!-- Rec Item 4 -->
-<div class="glass-panel p-4 rounded-xl group cursor-pointer neon-glow-hover transition-all">
-<div class="h-40 bg-obsidian-base rounded-lg mb-4 overflow-hidden">
-<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A handheld 3-axis camera gimbal stabilizer, displayed in a futuristic weapons-rack style setting. Glowing cyan energy lines pulse along the grip. High-contrast lighting, dark metallic textures, and a feeling of advanced technology." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsxap6dxCNkO4Ofn-ee-x3XDdN7ETiVCixEls4zt-or11FojALzMOBlIQT5e5SNCCwAayHi3w3fM6mEkxn4MrrfJrL5SsgUqDrai3Hwj5IWM4dEMbXoNTOn53OzKCw9jWZZNQdB03QnyeXqnIOsrLbqkypWk-1G8TnciuQFJb5ve_HE4h8eNCPcH4nWTmX3PVUIQJ-ahVo0v3J6wPVyXwhm59tcJQt6OjpdSUq4CKiF-TqKDg-w54C"/>
-</div>
-<h4 class="text-primary font-bold mb-1">Ronin RS 4 Pro Gimbal</h4>
-<p class="text-primary-fixed-dim font-bold">₹869.00</p>
-<button onclick="addCustomToCart('Ronin RS 4 Pro Gimbal', 869, this)" class="mt-4 w-full py-2 border border-primary/30 rounded-lg text-primary text-label-caps font-label-caps hover:bg-primary/10 transition-colors">ADD TO CART</button>
-</div>
-</div>
+<section class="mt-16">
+  <h3 class="text-xl font-extrabold mb-6" style="color: var(--text-main, #0f172a);">Frequently Bundled Accessories</h3>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Rec Item 1 -->
+    <div class="glass-panel p-4 rounded-2xl group cursor-pointer hover:scale-[1.02] transition-all">
+      <div class="h-36 rounded-xl mb-3 overflow-hidden flex items-center justify-center p-2" style="background: var(--chip-bg, rgba(255,255,255,0.04));">
+        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 rounded-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBm1jj4Aw3pikiDEwLQwQlY4IesRMP3sXP6GKSNCQ6mNSmTk8-JXt-zRA1wM5SpDlqQWKrEaphWG4G9NHLoI03OCMntdj0X8DpHA-z1kCzH178xusVsyMJzNNZsaCsbMWLHdl6nSZPtgTVPMWL3dVO48QuCVj7cGxGqA98tH6xw52ZBE0pFEwDlgy3GgGLTsjgStwp4tHewDuYi_mABidcu1xfHOeimle48flPkgVpZOP7JylaTcePn" alt="Carbon Fiber Tripod"/>
+      </div>
+      <h4 class="font-extrabold text-sm mb-1" style="color: var(--text-main, #0f172a);">Carbon Fiber Pro Tripod</h4>
+      <p class="font-extrabold text-sm" style="color: var(--accent-color, #0e5a6f);">₹450.00</p>
+      <button onclick="addCustomToCart('Carbon Fiber Pro Tripod', 450, this)" class="mt-3 w-full py-2 bg-teal-700 hover:bg-teal-800 text-white rounded-full text-xs font-bold shadow-sm transition-all">ADD TO CART</button>
+    </div>
+    <!-- Rec Item 2 -->
+    <div class="glass-panel p-4 rounded-2xl group cursor-pointer hover:scale-[1.02] transition-all">
+      <div class="h-36 rounded-xl mb-3 overflow-hidden flex items-center justify-center p-2" style="background: var(--chip-bg, rgba(255,255,255,0.04));">
+        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 rounded-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhPKpJPHqtlGZK-JFbmINz_tw3EpT55zKcFZ6lngXXv-FSTDFjNpHCj1l7iPO3Tm4aqy85Kfx2xSypN6_u49-WnWfMhHU_xTQEPgLQ1m3Ihdm4jDhPx6aDxs6CHHCXobOvi-4ZOto8JCO9JLORaaSREbzJmtmTWdwIg3V9ORROOU14fwbq58oZoWfADczQBDTI3BqSCDlRlNMGb0fdrpt5_oQIpLXFqHgPjT4ZrasQsQhDXU4BvAJS" alt="C-100 Headphones"/>
+      </div>
+      <h4 class="font-extrabold text-sm mb-1" style="color: var(--text-main, #0f172a);">C-100 Studio Headphones</h4>
+      <p class="font-extrabold text-sm" style="color: var(--accent-color, #0e5a6f);">₹299.00</p>
+      <button onclick="addCustomToCart('C-100 Studio Headphones', 299, this)" class="mt-3 w-full py-2 bg-teal-700 hover:bg-teal-800 text-white rounded-full text-xs font-bold shadow-sm transition-all">ADD TO CART</button>
+    </div>
+    <!-- Rec Item 3 -->
+    <div class="glass-panel p-4 rounded-2xl group cursor-pointer hover:scale-[1.02] transition-all">
+      <div class="h-36 rounded-xl mb-3 overflow-hidden flex items-center justify-center p-2" style="background: var(--chip-bg, rgba(255,255,255,0.04));">
+        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 rounded-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsxap6dxCNkO4Ofn-ee-x3XDdN7ETiVCixEls4zt-or11FojALzMOBlIQT5e5SNCCwAayHi3w3fM6mEkxn4MrrfJrL5SsgUqDrai3Hwj5IWM4dEMbXoNTOn53OzKCw9jWZZNQdB03QnyeXqnIOsrLbqkypWk-1G8TnciuQFJb5ve_HE4h8eNCPcH4nWTmX3PVUIQJ-ahVo0v3J6wPVyXwhm59tcJQt6OjpdSUq4CKiF-TqKDg-w54C" alt="Ronin RS 4 Pro Gimbal"/>
+      </div>
+      <h4 class="font-extrabold text-sm mb-1" style="color: var(--text-main, #0f172a);">Ronin RS 4 Pro Gimbal</h4>
+      <p class="font-extrabold text-sm" style="color: var(--accent-color, #0e5a6f);">₹869.00</p>
+      <button onclick="addCustomToCart('Ronin RS 4 Pro Gimbal', 869, this)" class="mt-3 w-full py-2 bg-teal-700 hover:bg-teal-800 text-white rounded-full text-xs font-bold shadow-sm transition-all">ADD TO CART</button>
+    </div>
+  </div>
 </section>
 </main>
 <!-- Footer -->
@@ -263,7 +277,7 @@ function fmt(n) {
 function updateSummary() {
   const count    = cartItems.reduce((s, i) => s + i.quantity, 0);
   const subtotal = cartItems.reduce((s, i) => s + i.price * i.quantity, 0);
-  const tax      = subtotal * 0.08875;
+  const tax      = subtotal * 0.18; // 18% GST
   const total    = subtotal + tax;
 
   document.getElementById('summary-item-count').textContent =
@@ -290,55 +304,57 @@ function renderItems() {
   cartItems.forEach(item => {
     const lineTotal = item.price * item.quantity;
     const img = item.image_url
-      ? `<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="${item.image_url}" alt="${item.name}">`
-      : `<div class="w-full h-full flex items-center justify-center text-on-surface-variant">
-           <span class="material-symbols-outlined text-[48px]">photo_camera</span>
+      ? `<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 rounded-lg" src="${item.image_url}" alt="${item.name}">`
+      : `<div class="w-full h-full flex items-center justify-center text-slate-400">
+           <span class="material-symbols-outlined text-[42px]">photo_camera</span>
          </div>`;
 
     const card = document.createElement('div');
-    card.className = 'glass-panel rounded-xl p-6 flex flex-col md:flex-row gap-6 hover:scale-[1.01] transition-transform duration-300 group neon-glow-hover';
+    card.className = 'glass-panel rounded-2xl p-5 md:p-6 flex flex-col md:flex-row items-center gap-6 transition-all duration-300 group shadow-sm';
     card.dataset.itemId = item.id;
     card.innerHTML = `
-      <div class="w-full md:w-48 h-48 bg-obsidian-base rounded-lg overflow-hidden border border-glass-stroke flex-shrink-0">
+      <div class="w-28 h-28 md:w-36 md:h-36 rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center p-2" style="background: var(--chip-bg, rgba(255,255,255,0.04)); border: 1px solid var(--border-color, rgba(255,255,255,0.1));">
         ${img}
       </div>
-      <div class="flex-grow flex flex-col justify-between py-2">
-        <div class="flex justify-between items-start">
+      <div class="flex-grow w-full flex flex-col justify-between gap-3">
+        <div class="flex flex-col md:flex-row justify-between md:items-start gap-2">
           <div>
-            <h3 class="font-headline-md text-headline-md text-primary mb-1">${item.name}</h3>
-            ${item.category ? `<p class="text-on-surface-variant text-body-md">${item.category}</p>` : ''}
-            <div class="flex items-center gap-4 mt-4 text-primary-fixed-dim">
-              <span class="flex items-center gap-1 text-label-caps font-label-caps">
-                <span class="material-symbols-outlined text-[16px]">check_circle</span> In Stock
+            <h3 class="font-extrabold text-base md:text-lg mb-1" style="color: var(--text-main, #0f172a);">${item.name}</h3>
+            ${item.category ? `<span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider mb-2" style="background: rgba(14, 90, 111, 0.1); color: #0e5a6f;">${item.category}</span>` : ''}
+            <div class="flex items-center gap-3 text-xs font-semibold" style="color: var(--text-muted, #64748b);">
+              <span class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+                <span class="material-symbols-outlined text-sm">check_circle</span> In Stock
               </span>
-              <span class="flex items-center gap-1 text-label-caps font-label-caps">
-                <span class="material-symbols-outlined text-[16px]">local_shipping</span> Ships in 24h
+              <span>•</span>
+              <span class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">local_shipping</span> Express Delivery
               </span>
             </div>
           </div>
-          <div class="text-right">
-            <span class="font-display-lg text-display-lg-mobile text-primary tracking-tight item-line-total">${fmt(lineTotal)}</span>
-            <p class="text-on-surface-variant text-[12px] mt-1">${fmt(item.price)} each</p>
+          <div class="text-left md:text-right">
+            <span class="font-extrabold text-lg md:text-xl item-line-total" style="color: var(--accent-color, #0e5a6f);">${fmt(lineTotal)}</span>
+            <p class="text-xs opacity-75 mt-0.5" style="color: var(--text-muted, #64748b);">${fmt(item.price)} each</p>
           </div>
         </div>
-        <div class="flex items-center justify-between mt-6">
-          <div class="flex items-center border border-glass-stroke rounded-full bg-obsidian-base/50 p-1">
+        <div class="flex items-center justify-between pt-2 border-t" style="border-color: rgba(128,128,128,0.15);">
+          <div class="flex items-center gap-1 rounded-full px-2 py-1" style="background: var(--chip-bg, #e0e5ec); box-shadow: var(--chip-shadow, 3px 3px 6px #b8c2cc, -3px -3px 6px #ffffff);">
             <button onclick="changeQty(${item.id}, ${item.quantity - 1})"
-              class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
-              <span class="material-symbols-outlined">remove</span>
+              class="w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm hover:text-teal-600 transition-colors">
+              <span class="material-symbols-outlined text-sm">remove</span>
             </button>
             <input type="number" value="${item.quantity}" min="1"
-              class="w-12 bg-transparent border-none text-center focus:ring-0 font-bold text-primary qty-input"
+              class="w-10 text-center border-none focus:ring-0 font-extrabold text-sm qty-input bg-transparent"
+              style="color: var(--text-main, #0f172a);"
               onchange="changeQty(${item.id}, parseInt(this.value) || 1)"/>
             <button onclick="changeQty(${item.id}, ${item.quantity + 1})"
-              class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
-              <span class="material-symbols-outlined">add</span>
+              class="w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm hover:text-teal-600 transition-colors">
+              <span class="material-symbols-outlined text-sm">add</span>
             </button>
           </div>
           <button onclick="removeItem(${item.id})"
-            class="flex items-center gap-2 text-on-surface-variant hover:text-error transition-colors">
-            <span class="material-symbols-outlined">delete</span>
-            <span class="font-label-caps text-label-caps">REMOVE</span>
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-rose-500 hover:bg-rose-500/10 transition-colors">
+            <span class="material-symbols-outlined text-sm">delete</span>
+            Remove
           </button>
         </div>
       </div>`;
