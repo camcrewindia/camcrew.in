@@ -3,720 +3,783 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>My Profile | CamCrew</title>
+<meta name="description" content="Manage your professional profile, portfolio, services, and share link on CamCrew — India's production marketplace."/>
+<title>Professional Profile | CamCrew</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="/static/js/tailwind-config.js"></script>
 <link rel="stylesheet" href="/static/css/styles.css"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 <style>
-  :root { --ac: #00dbe9; --ac2: #ebb2ff; }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-      background: #0A0A0B;
-      background-image: radial-gradient(circle at top right, rgba(0,219,233,0.03), transparent 40%), radial-gradient(circle at bottom left, rgba(235,178,255,0.03), transparent 40%);
-      background-attachment: fixed;
-    color: #dce4e5;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    min-height: 100vh;
-  }
-
-  /* ── Page wrapper ── */
-  .page-wrap {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 0 1rem 5rem;
-  }
-
-  /* ══════════════════════════════════════
-     COVER BANNER
-  ══════════════════════════════════════ */
-  .profile-banner { position: relative; height: 200px; background: rgba(0,0,0,0.3); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.08); overflow: hidden; border-radius: 0 0 1.25rem 1.25rem; }
-
-  @media (min-width: 640px) { .profile-banner { position: relative; height: 200px; background: rgba(0,0,0,0.3); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.08); overflow: hidden; border-radius: 0 0 1.25rem 1.25rem; } }
-
-  .banner-lines {
-    position: absolute; inset: 0; pointer-events: none;
-    background-image:
-      linear-gradient(rgba(0,219,233,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,219,233,0.04) 1px, transparent 1px);
-    background-size: 48px 48px;
-  }
-
-  .banner-glow-left {
-    position: absolute; top: -60px; left: -60px;
-    width: 300px; height: 300px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(0,219,233,0.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .banner-glow-right {
-    position: absolute; bottom: -80px; right: -40px;
-    width: 280px; height: 280px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(235,178,255,0.10) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .banner-actions {
-    position: absolute; top: 1rem; right: 1rem;
-    display: flex; gap: 0.5rem;
-  }
-
-  /* ══════════════════════════════════════
-     PROFILE IDENTITY BLOCK
-  ══════════════════════════════════════ */
-  .identity-block {
-    position: relative;
-    padding: 0 1.5rem 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .avatar-positioner {
-    display: flex;
-    align-items: flex-end;
-    gap: 1.25rem;
-    margin-top: -48px;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-  }
-
-  @media (min-width: 540px) { .avatar-positioner { margin-top: -56px; } }
-
-  .avatar-ring {
-    width: 104px; height: 104px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #00dbe9, #ebb2ff);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 2.6rem; font-weight: 900; color: #001f22;
-    border: 3px solid rgba(255,255,255,0.1);
-    box-shadow: 0 0 0 1px rgba(0,219,233,0.3), 0 8px 32px rgba(0,0,0,0.6);
-    overflow: hidden; position: relative; flex-shrink: 0;
-    transform: none !important; animation: none !important;
-  }
-
-  @media (min-width: 540px) {
-    .avatar-ring { width: 120px; height: 120px; font-size: 3rem; }
-  }
-
-  .avatar-ring img, .avatar-ring span {
-    transform: none !important; animation: none !important;
-  }
-
-  .avatar-ring img {
-    width: 100%; height: 100%; object-fit: cover;
-    position: absolute; inset: 0; border-radius: 50%;
-  }
-
-  .avatar-actions {
-    display: flex; gap: 0.5rem; flex-wrap: wrap;
-    align-items: center; padding-bottom: 0.5rem;
-    margin-left: auto;
-  }
-
-  /* ── Identity text ── */
-  .profile-name {
-    font-size: 1.65rem; font-weight: 900; color: #f0f6f7;
-    line-height: 1.15; margin-bottom: 0.2rem;
-    letter-spacing: -0.02em;
-  }
-
-  @media (min-width: 540px) { .profile-name { font-size: 2rem; } }
-
-  .profile-handle {
-    font-size: 0.82rem; font-weight: 600; color: #556669;
-    margin-bottom: 0.35rem; letter-spacing: 0.01em;
-  }
-
-  .profile-title {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    font-size: 0.88rem; font-weight: 700; color: var(--ac);
-    margin-bottom: 0.6rem;
-  }
-
-  .pro-badge {
-    display: inline-flex; align-items: center; gap: 0.3rem;
-    padding: 0.2rem 0.6rem; border-radius: 999px;
-    font-size: 0.68rem; font-weight: 800; letter-spacing: 0.07em;
-    text-transform: uppercase;
-    background: rgba(0,219,233,0.12);
-    border: 1px solid rgba(0,219,233,0.3);
-    color: var(--ac);
-    vertical-align: middle;
-  }
-
-  .profile-bio {
-    font-size: 0.88rem; color: #8fa8ab; line-height: 1.7;
-    max-width: 520px; margin-bottom: 1rem;
-    white-space: pre-wrap;
-  }
-
-  /* ── Meta row (website, member since, location) ── */
-  .meta-row {
-    display: flex; flex-wrap: wrap; gap: 0.9rem;
-    margin-bottom: 1rem; align-items: center;
-  }
-
-  .meta-item {
-    display: inline-flex; align-items: center; gap: 0.35rem;
-    font-size: 0.8rem; font-weight: 600; color: #556669;
-    text-decoration: none;
-  }
-
-  .meta-item.link { color: var(--ac); }
-  .meta-item.link:hover { text-decoration: underline; }
-  .meta-item .material-symbols-outlined { font-size: 0.95rem; }
-
-  /* ── Category / location chips ── */
-  .chips-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
-
-  .chip {
-    display: inline-flex; align-items: center; gap: 0.3rem;
-    padding: 0.3rem 0.8rem; border-radius: 999px;
-    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em;
-    background: rgba(0,219,233,0.08); color: #6fd8e0;
-    border: 1px solid rgba(0,219,233,0.18);
-    transition: border-color 0.2s;
-  }
-  .chip:hover { border-color: rgba(0,219,233,0.4); }
-
-  .chip-location {
-    background: rgba(235,178,255,0.08); color: #d9a8f5;
-    border: 1px solid rgba(235,178,255,0.18);
-  }
-  .chip-location:hover { border-color: rgba(235,178,255,0.4); }
-
-  /* ── Social links ── */
-  .socials-row { display: flex; gap: 0.55rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
-
-  .social-link {
-    display: inline-flex; align-items: center; gap: 0.35rem;
-    padding: 0.35rem 0.9rem; border-radius: 0.6rem;
-    font-size: 0.75rem; font-weight: 700;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    color: #849495; text-decoration: none;
-    transition: all 0.2s;
-  }
-  .social-link:hover {
-    color: var(--ac);
-    border-color: rgba(0,219,233,0.3);
-    background: rgba(0,219,233,0.06);
-  }
-  .social-link .material-symbols-outlined { font-size: 0.95rem; }
-
-  /* ══════════════════════════════════════
-     STATS STRIP
-  ══════════════════════════════════════ */
-  .stats-strip {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 1rem;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.06);
-    margin-bottom: 2rem;
-  }
-
-  .stat-cell { padding: 1rem 1.25rem; border-radius: 1rem; background: rgba(22, 22, 24, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-
-  .stat-num {
-    font-size: 1.5rem; font-weight: 900; color: #f0f6f7;
-    line-height: 1; letter-spacing: -0.03em;
-  }
-
-  .stat-lbl {
-    font-size: 0.68rem; font-weight: 700; color: #4a6466;
-    text-transform: uppercase; letter-spacing: 0.08em;
-  }
-
-  /* ══════════════════════════════════════
-     ACTION BUTTONS
-  ══════════════════════════════════════ */
-  .btn-primary {
-    display: inline-flex; align-items: center; gap: 0.45rem;
-    padding: 0.6rem 1.35rem; border-radius: 0.75rem;
-    font-size: 0.83rem; font-weight: 800; cursor: pointer; border: none;
-    background: linear-gradient(135deg, #00dbe9, #00b5c0);
-    color: #001f22; text-decoration: none;
-    transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif;
-    box-shadow: 0 4px 16px rgba(0,219,233,0.25);
-  }
-  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,219,233,0.38); }
-
-  .btn-ghost {
-    display: inline-flex; align-items: center; gap: 0.45rem;
-    padding: 0.58rem 1.15rem; border-radius: 0.75rem;
-    font-size: 0.83rem; font-weight: 700; cursor: pointer;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #b8cbce; text-decoration: none;
-    transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif;
-  }
-  .btn-ghost:hover {
-    background: rgba(255,255,255,0.08);
-    border-color: rgba(255,255,255,0.18);
-    color: #dce4e5;
-  }
-
-  .btn-icon {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 2.3rem; height: 2.3rem; border-radius: 0.65rem;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #849495; cursor: pointer; text-decoration: none;
-    transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif;
-  }
-  .btn-icon:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); color: #dce4e5; }
-  .btn-icon .material-symbols-outlined { font-size: 1rem; }
-
-  /* ══════════════════════════════════════
-     SECTION HEADINGS
-  ══════════════════════════════════════ */
-  .section-head {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 1rem; margin: 2.5rem 0 1.25rem;
-  }
-
-  .section-title {
-    font-size: 0.78rem; font-weight: 800; letter-spacing: 0.12em;
-    text-transform: uppercase; color: #556669;
-    display: flex; align-items: center; gap: 0.6rem;
-  }
-
-  .section-title::before {
-    content: '';
-    display: inline-block;
-    width: 3px; height: 14px; border-radius: 2px;
-    background: linear-gradient(to bottom, var(--ac), var(--ac2));
-    flex-shrink: 0;
-  }
-
-  /* ══════════════════════════════════════
-     PORTFOLIO GRID
-  ══════════════════════════════════════ */
-  /* ── Portfolio Grid & Card System ── */
-  .portfolio-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.25rem;
-  }
-
-  .portfolio-card {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 1rem;
-    overflow: visible;
-    position: relative;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    flex-direction: column;
-  }
-
-  .portfolio-card:hover {
-    border-color: rgba(0, 240, 255, 0.3);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.1);
-    transform: translateY(-3px);
-  }
-
-  .portfolio-media-wrap {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
-    background: rgba(0, 0, 0, 0.4);
-    cursor: pointer;
-  }
-
-  .portfolio-media-wrap img,
-  .portfolio-media-wrap video {
-    width: 100%; height: 100%;
-    object-fit: cover; display: block;
-    transition: transform 0.4s ease;
-  }
-
-  .portfolio-card:hover .portfolio-media-wrap img,
-  .portfolio-card:hover .portfolio-media-wrap video {
-    transform: scale(1.06);
-  }
-
-  .manage-menu-btn {
-    position: absolute;
-    top: 0.6rem; right: 0.6rem;
-    width: 2.2rem; height: 2.2rem;
-    border-radius: 50%;
-    background: rgba(11, 12, 16, 0.75);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #fff;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    z-index: 20;
-    transition: all 0.2s;
-  }
-
-  .manage-menu-btn:hover {
-    background: #00f0ff;
-    color: #0b0c10;
-    border-color: #00f0ff;
-    box-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
-  }
-
-  .manage-dropdown {
-    position: absolute;
-    top: 3.2rem; right: 0.6rem;
-    width: 165px;
-    background: rgba(18, 20, 26, 0.96);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 0.75rem;
-    padding: 0.35rem;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
-    z-index: 30;
-    display: none;
-    animation: menuFadeIn 0.15s ease-out;
-  }
-
-  .manage-dropdown.active {
-    display: block;
-  }
-
-  @keyframes menuFadeIn {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .manage-item {
-    display: flex; align-items: center; gap: 0.6rem;
-    width: 100%; padding: 0.5rem 0.65rem;
-    font-size: 0.78rem; font-weight: 600; color: #e2e8f0;
-    background: transparent; border: none; border-radius: 0.5rem;
-    cursor: pointer; transition: all 0.15s; text-align: left;
-    font-family: inherit;
-  }
-
-  .manage-item:hover {
-    background: rgba(0, 240, 255, 0.12);
-    color: #00f0ff;
-  }
-
-  .manage-item.danger:hover {
-    background: rgba(255, 77, 77, 0.15);
-    color: #ff4d4d;
-  }
-
-  .manage-item .material-symbols-outlined {
-    font-size: 1rem;
-  }
-
-  .portfolio-card-info {
-    padding: 0.7rem 0.85rem;
-    display: flex; align-items: center; justify-content: space-between;
-    background: rgba(255, 255, 255, 0.02);
-    border-bottom-left-radius: 1rem;
-    border-bottom-right-radius: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .portfolio-card-title {
-    font-size: 0.82rem; font-weight: 700; color: #fff;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-
-  .portfolio-card-badge {
-    font-size: 0.62rem; font-weight: 800; letter-spacing: 0.05em;
-    padding: 0.15rem 0.45rem; border-radius: 0.35rem;
-    background: rgba(0, 240, 255, 0.1); color: #00f0ff;
-    border: 1px solid rgba(0, 240, 255, 0.2); text-transform: uppercase;
-  }
-
-  /* ── Empty state ── */
-  .grid-empty {
-    grid-column: 1 / -1;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 0.75rem; padding: 4rem 2rem; text-align: center;
-    background: rgba(255,255,255,0.01);
-  }
-
-  .empty-icon-wrap {
-    width: 4.5rem; height: 4.5rem; border-radius: 1.25rem;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.07);
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 0.25rem;
-  }
-
-  /* ══════════════════════════════════════
-     SERVICES GRID
-  ══════════════════════════════════════ */
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-    gap: 1rem;
-  }
-
-  .service-card { background: rgba(22, 22, 24, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 1rem; padding: 1.5rem; display: flex; flex-direction: column; height: 100%; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
-  .service-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--ac), var(--ac2));
-    opacity: 0; transition: opacity 0.25s;
-  }
-  .service-card:hover { transform: translateY(-5px); border-color: rgba(0,219,233,0.4); background: rgba(30, 30, 34, 0.8); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-  .service-card:hover::before { opacity: 1; }
-
-  .service-icon {
-    width: 2.25rem; height: 2.25rem; border-radius: 0.65rem;
-    background: rgba(0,219,233,0.1); border: 1px solid rgba(0,219,233,0.15);
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 0.25rem;
-  }
-  .service-icon .material-symbols-outlined { font-size: 1.05rem; color: var(--ac); }
-
-  .service-name { font-size: 0.92rem; font-weight: 800; color: #e0ebec; }
-  .service-price {
-    font-size: 0.8rem; font-weight: 700; color: var(--ac);
-    display: inline-flex; align-items: center; gap: 0.25rem;
-  }
-  .service-desc { font-size: 0.78rem; color: #5a7a7d; line-height: 1.55; margin-top: 0.1rem; }
-
-  /* ══════════════════════════════════════
-     SHARE PROFILE CARD
-  ══════════════════════════════════════ */
-  .share-card {
-    background: rgba(0,219,233,0.04);
-    border: 1px solid rgba(0,219,233,0.12);
-    border-radius: 1rem;
-    padding: 1.4rem 1.6rem;
-    display: flex; flex-direction: column; gap: 1rem;
-  }
-
-  .share-card-top {
-    display: flex; align-items: flex-start; justify-content: space-between;
-    gap: 1rem; flex-wrap: wrap;
-  }
-
-  .share-title { font-size: 0.92rem; font-weight: 800; color: #dce4e5; margin-bottom: 0.2rem; }
-  .share-sub   { font-size: 0.78rem; color: #4d666a; }
-
-  .url-display {
-    display: flex; align-items: center; gap: 0.5rem;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(0,219,233,0.12);
-    border-radius: 0.65rem;
-    padding: 0.6rem 0.9rem;
-    overflow: hidden;
-  }
-  .url-display .material-symbols-outlined { font-size: 0.95rem; color: #4d666a; flex-shrink: 0; }
-  .url-text {
-    font-size: 0.8rem; color: var(--ac); font-weight: 700;
-    font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
-
-  /* ══════════════════════════════════════
-     LIGHTBOX
-  ══════════════════════════════════════ */
-  .lightbox-overlay {
-    position: fixed; inset: 0; z-index: 99999;
-    background: rgba(0,0,0,0.94); backdrop-filter: blur(12px);
-    display: none; align-items: center; justify-content: center;
-    padding: 1rem;
-  }
-  .lightbox-overlay.open { display: flex; }
-  .lightbox-inner { position: relative; max-width: 860px; width: 100%; }
-  .lightbox-inner img, .lightbox-inner video {
-    width: 100%; max-height: 82vh; object-fit: contain; border-radius: 0.85rem;
-    display: block;
-  }
-  .lightbox-close {
-    position: absolute; top: -3rem; right: 0;
-    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 0.5rem; color: #dce4e5; cursor: pointer;
-    font-size: 1.25rem; display: flex; align-items: center; justify-content: center;
-    width: 2.25rem; height: 2.25rem;
-    transition: background 0.2s;
-  }
-  .lightbox-close:hover { background: rgba(255,255,255,0.14); }
-
-  /* ══════════════════════════════════════
-     TOAST
-  ══════════════════════════════════════ */
-  #pp-toast {
-    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
-    background: rgba(20,20,20,0.96);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #dce4e5; border-radius: 999px; padding: 0.65rem 1.4rem;
-    font-size: 0.82rem; font-weight: 700;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-    z-index: 999999; opacity: 0; transition: opacity 0.25s;
-    white-space: nowrap;
-  }
-  #pp-toast.show { opacity: 1; }
-
-  /* ══════════════════════════════════════
-     SKELETON
-  ══════════════════════════════════════ */
-  @keyframes skeleton-pulse {
-    0%, 100% { opacity: 0.04; }
-    50%       { opacity: 0.09; }
-  }
-
-  .skel { background: rgba(22, 22, 24, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); animation: skel-pulse 1.5s ease-in-out infinite; }
-
-  .skel-banner { height: 200px; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.08); border-radius: 0 0 1.25rem 1.25rem; animation: skel-pulse 1.5s ease-in-out infinite; margin-bottom: 1.5rem; }
-
-  /* ══════════════════════════════════════
-     LIGHT MODE STYLES
-  ══════════════════════════════════════ */
-  [data-theme="light"] body,
-  html.light body {
-    background: #e0e5ec !important;
-    color: #0f172a !important;
-  }
-
-  [data-theme="light"] .profile-banner,
-  html.light .profile-banner {
-    background: #cbd5e1 !important;
-    border-bottom-color: rgba(0, 0, 0, 0.1) !important;
-  }
-
-  [data-theme="light"] .profile-name,
-  [data-theme="light"] .section-title,
-  [data-theme="light"] .stat-num,
-  [data-theme="light"] .service-name,
-  [data-theme="light"] .share-title,
-  [data-theme="light"] .portfolio-card-title,
-  html.light .profile-name,
-  html.light .section-title,
-  html.light .stat-num,
-  html.light .service-name,
-  html.light .share-title,
-  html.light .portfolio-card-title {
-    color: #0f172a !important;
-  }
-
-  [data-theme="light"] .profile-handle,
-  [data-theme="light"] .profile-bio,
-  [data-theme="light"] .meta-item,
-  [data-theme="light"] .stat-lbl,
-  [data-theme="light"] .service-desc,
-  [data-theme="light"] .share-sub,
-  html.light .profile-handle,
-  html.light .profile-bio,
-  html.light .meta-item,
-  html.light .stat-lbl,
-  html.light .service-desc,
-  html.light .share-sub {
-    color: #475569 !important;
-  }
-
-  [data-theme="light"] .stat-cell,
-  [data-theme="light"] .service-card,
-  [data-theme="light"] .share-card,
-  [data-theme="light"] .portfolio-card,
-  html.light .stat-cell,
-  html.light .service-card,
-  html.light .share-card,
-  html.light .portfolio-card {
-    background: #e0e5ec !important;
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
-    box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
-  }
-
-  [data-theme="light"] .btn-ghost,
-  [data-theme="light"] .btn-icon,
-  [data-theme="light"] .social-link,
-  html.light .btn-ghost,
-  html.light .btn-icon,
-  html.light .social-link {
-    background: #e0e5ec !important;
-    color: #0f172a !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
-    box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff !important;
-  }
-
-  [data-theme="light"] .btn-primary,
-  html.light .btn-primary {
-    background: #0e5a6f !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 14px rgba(14, 90, 111, 0.35) !important;
-  }
-
-  [data-theme="light"] .url-display,
-  html.light .url-display {
-    background: rgba(14, 90, 111, 0.08) !important;
-    border: 1px solid rgba(14, 90, 111, 0.2) !important;
-  }
-
-  [data-theme="light"] .url-text,
-  html.light .url-text {
-    color: #0e5a6f !important;
-  }
+/* ── Base & Theme System (Identical to public-profile.html) ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root,
+[data-theme="dark"],
+html.dark {
+  --pp-bg: #06080a;
+  --pp-text-main: #f8fafc;
+  --pp-text-muted: #94a3b8;
+  --pp-accent: #00f0ff;
+  --pp-card-bg: rgba(10, 13, 17, 0.95);
+  --pp-card-border: rgba(255, 255, 255, 0.08);
+  --pp-chip-bg: rgba(0, 240, 255, 0.08);
+  --pp-chip-text: #00f0ff;
+  --pp-btn-bg: linear-gradient(135deg, #00f0ff, #00b8d9);
+  --pp-btn-text: #001f22;
+}
+
+[data-theme="light"],
+html.light {
+  --pp-bg: #e0e5ec !important;
+  --pp-text-main: #0f172a !important;
+  --pp-text-muted: #475569 !important;
+  --pp-accent: #0e5a6f !important;
+  --pp-card-bg: #e0e5ec !important;
+  --pp-card-border: rgba(0, 0, 0, 0.08) !important;
+  --pp-chip-bg: rgba(14, 90, 111, 0.1) !important;
+  --pp-chip-text: #0e5a6f !important;
+  --pp-btn-bg: #0e5a6f !important;
+  --pp-btn-text: #ffffff !important;
+}
+
+body {
+  background: var(--pp-bg);
+  color: var(--pp-text-main);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Light Mode Overrides */
+[data-theme="light"] body,
+html.light body {
+  background-color: #e0e5ec !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .hero-cover,
+html.light .hero-cover {
+  background: linear-gradient(135deg, rgba(14, 90, 111, 0.15) 0%, #cbd5e1 50%, rgba(14, 90, 111, 0.1) 100%) !important;
+}
+
+[data-theme="light"] .hero-cover::after,
+html.light .hero-cover::after {
+  background: linear-gradient(to bottom, transparent, #e0e5ec) !important;
+}
+
+[data-theme="light"] .display-name-lg,
+[data-theme="light"] .stat-num,
+[data-theme="light"] .svc-name,
+[data-theme="light"] .sidebar-card-title,
+[data-theme="light"] .share-title,
+[data-theme="light"] .portfolio-card-title,
+html.light .display-name-lg,
+html.light .stat-num,
+html.light .svc-name,
+html.light .sidebar-card-title,
+html.light .share-title,
+html.light .portfolio-card-title {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .username-tag,
+[data-theme="light"] .profile-bio,
+[data-theme="light"] .stat-lbl,
+[data-theme="light"] .svc-desc,
+[data-theme="light"] .member-badge,
+[data-theme="light"] .share-sub,
+html.light .username-tag,
+html.light .profile-bio,
+html.light .stat-lbl,
+html.light .svc-desc,
+html.light .member-badge,
+html.light .share-sub {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .stats-bar,
+[data-theme="light"] .sidebar-card,
+[data-theme="light"] .svc-card,
+[data-theme="light"] .gear-card,
+[data-theme="light"] .share-card,
+[data-theme="light"] .portfolio-card,
+html.light .stats-bar,
+html.light .sidebar-card,
+html.light .svc-card,
+html.light .gear-card,
+html.light .share-card,
+html.light .portfolio-card {
+  background: #e0e5ec !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
+}
+
+[data-theme="light"] .btn-book-cta,
+html.light .btn-book-cta {
+  background: #0e5a6f !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 14px rgba(14, 90, 111, 0.35) !important;
+}
+
+[data-theme="light"] .btn-ghost,
+[data-theme="light"] .btn-icon,
+[data-theme="light"] .social-btn,
+html.light .btn-ghost,
+html.light .btn-icon,
+html.light .social-btn {
+  background: #e0e5ec !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff !important;
+}
+
+[data-theme="light"] .svc-price,
+[data-theme="light"] .website-link,
+[data-theme="light"] .pro-title-badge,
+[data-theme="light"] .url-text,
+html.light .svc-price,
+html.light .website-link,
+html.light .pro-title-badge,
+html.light .url-text {
+  color: #0e5a6f !important;
+}
+
+[data-theme="light"] .url-display,
+html.light .url-display {
+  background: rgba(14, 90, 111, 0.08) !important;
+  border: 1px solid rgba(14, 90, 111, 0.2) !important;
+}
+
+/* ── Ambient background ── */
+.ambient-bg {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+}
+.ambient-bg::before {
+  content: '';
+  position: absolute; top: -20%; left: -15%;
+  width: 65vw; height: 65vw; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,240,255,0.055) 0%, transparent 70%);
+  filter: blur(60px);
+}
+.ambient-bg::after {
+  content: '';
+  position: absolute; bottom: -10%; right: -10%;
+  width: 55vw; height: 55vw; border-radius: 50%;
+  background: radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 70%);
+  filter: blur(80px);
+}
+
+/* ── Hero cover ── */
+.hero-cover {
+  position: relative; z-index: 1;
+  height: 240px;
+  background: linear-gradient(135deg,
+    rgba(0,240,255,0.08) 0%,
+    rgba(10,13,17,0.5) 40%,
+    rgba(139,92,246,0.08) 100%);
+  overflow: hidden;
+}
+.hero-cover::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+}
+.hero-cover::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
+  background: linear-gradient(to bottom, transparent, var(--pp-bg));
+}
+.hero-cover-glow {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 600px; height: 300px; border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0,240,255,0.06) 0%, transparent 70%);
+  filter: blur(30px); pointer-events: none;
+}
+
+/* ── Profile avatar section ── */
+.profile-upper {
+  position: relative; z-index: 2;
+  max-width: 960px; margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.avatar-wrap {
+  position: relative;
+  margin-top: -4.5rem;
+  display: inline-block;
+}
+.avatar-outer {
+  width: 7.5rem; height: 7.5rem;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(135deg, #00f0ff 0%, #8b5cf6 100%);
+  box-shadow: 0 0 40px rgba(0,240,255,0.3), 0 0 80px rgba(0,240,255,0.12);
+}
+.avatar-inner {
+  width: 100%; height: 100%; border-radius: 50%;
+  background: linear-gradient(135deg, #0a1618, #0f1d20);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.8rem; font-weight: 900;
+  overflow: hidden; position: relative;
+}
+.avatar-inner img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; border-radius: 50%;
+}
+.verified-badge {
+  position: absolute; bottom: 2px; right: 2px;
+  width: 1.75rem; height: 1.75rem; border-radius: 50%;
+  background: linear-gradient(135deg, #00f0ff, #00b8d9);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 14px rgba(0,240,255,0.6);
+  border: 2.5px solid var(--pp-bg);
+  z-index: 10;
+}
+
+/* ── Action Buttons ── */
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  padding: 0.58rem 1.15rem; border-radius: 0.75rem;
+  font-size: 0.83rem; font-weight: 700; cursor: pointer;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--pp-text-main); text-decoration: none;
+  transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.btn-ghost:hover {
+  background: rgba(0,240,255,0.08);
+  border-color: var(--pp-chip-border);
+  color: var(--pp-accent);
+}
+
+/* ── Profile layout ── */
+.profile-grid {
+  max-width: 960px; margin: 0 auto;
+  padding: 0 1.5rem 5rem;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .profile-grid { grid-template-columns: 1fr; }
+  .profile-sidebar { order: -1; }
+}
+
+/* ── Name block ── */
+.display-name-lg {
+  font-size: 1.75rem; font-weight: 900; color: var(--pp-text-main);
+  letter-spacing: -0.02em; line-height: 1.1;
+}
+.username-tag {
+  font-size: 0.88rem; font-weight: 600; color: var(--pp-text-muted);
+  margin-top: 0.2rem;
+}
+.pro-title-badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.3rem 0.85rem; border-radius: 999px; margin-top: 0.75rem;
+  font-size: 0.75rem; font-weight: 800; letter-spacing: 0.04em;
+  background: var(--pp-chip-bg);
+  border: 1px solid var(--pp-chip-border);
+  color: var(--pp-chip-text);
+}
+
+/* ── Stats bar ── */
+.stats-bar {
+  display: flex; gap: 0; margin: 1.5rem 0;
+  border-radius: 1rem; overflow: hidden;
+  border: 1px solid var(--pp-card-border);
+  background: var(--pp-card-bg);
+  backdrop-filter: blur(10px);
+}
+.stat-cell {
+  flex: 1; padding: 1rem 0.5rem; text-align: center;
+  border-right: 1px solid var(--pp-card-border);
+  transition: background 0.2s;
+}
+.stat-cell:last-child { border-right: none; }
+.stat-cell:hover { background: rgba(0,240,255,0.03); }
+.stat-num { font-size: 1.4rem; font-weight: 900; color: var(--pp-text-main); display: block; line-height: 1; }
+.stat-lbl { font-size: 0.63rem; font-weight: 700; color: var(--pp-text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 0.3rem; display: block; }
+
+/* ── Bio ── */
+.profile-bio {
+  font-size: 0.9rem; color: var(--pp-text-muted); line-height: 1.75;
+  white-space: pre-wrap; max-width: 520px;
+}
+
+/* ── Chips ── */
+.chips-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.85rem 0; }
+.chip {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  padding: 0.28rem 0.75rem; border-radius: 999px;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em;
+  background: var(--pp-chip-bg);
+  border: 1px solid var(--pp-chip-border);
+  color: var(--pp-chip-text);
+}
+.chip-loc {
+  background: rgba(139,92,246,0.08);
+  border-color: rgba(139,92,246,0.22);
+  color: #c084fc;
+}
+
+/* ── Social links ── */
+.socials-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.85rem 0; }
+.social-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.4rem 0.9rem; border-radius: 0.6rem;
+  font-size: 0.75rem; font-weight: 700;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--pp-text-muted); text-decoration: none;
+  transition: all 0.2s;
+}
+.social-btn:hover {
+  background: var(--pp-chip-bg);
+  border-color: var(--pp-chip-border);
+  color: var(--pp-accent);
+  transform: translateY(-1px);
+}
+.social-btn .material-symbols-outlined { font-size: 0.88rem; }
+
+/* ── Website link ── */
+.website-link {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-size: 0.82rem; color: var(--pp-accent); font-weight: 700;
+  text-decoration: none; margin: 0.5rem 0 0;
+}
+.website-link:hover { text-decoration: underline; }
+
+/* ── Share Card ── */
+.share-card {
+  background: var(--pp-card-bg);
+  border: 1px solid var(--pp-card-border);
+  border-radius: 1rem;
+  padding: 1.4rem 1.6rem;
+  display: flex; flex-direction: column; gap: 1rem;
+  margin-top: 1rem;
+}
+.share-title { font-size: 0.92rem; font-weight: 800; color: var(--pp-text-main); margin-bottom: 0.2rem; }
+.share-sub   { font-size: 0.78rem; color: var(--pp-text-muted); }
+
+.url-display {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--pp-chip-border);
+  border-radius: 0.65rem;
+  padding: 0.6rem 0.9rem;
+  overflow: hidden;
+}
+.url-display .material-symbols-outlined { font-size: 0.95rem; color: var(--pp-text-muted); flex-shrink: 0; }
+.url-text {
+  font-size: 0.8rem; color: var(--pp-accent); font-weight: 700;
+  font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ── Book CTA button ── */
+.btn-book-cta {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.85rem 1.75rem; border-radius: 0.875rem;
+  font-size: 0.9rem; font-weight: 900; cursor: pointer; border: none;
+  background: var(--pp-btn-bg);
+  color: var(--pp-btn-text);
+  box-shadow: var(--pp-btn-shadow);
+  text-decoration: none; transition: all 0.25s;
+  letter-spacing: 0.01em;
+}
+.btn-book-cta:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+/* ── Sidebar card ── */
+.sidebar-card {
+  background: var(--pp-card-bg);
+  border: 1px solid var(--pp-card-border);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(16px);
+  position: sticky; top: 6rem;
+}
+.sidebar-card-title {
+  font-size: 0.65rem; font-weight: 800; letter-spacing: 0.09em;
+  text-transform: uppercase; color: var(--pp-text-muted);
+  margin-bottom: 1.25rem;
+}
+
+/* ── Section header ── */
+.section-head {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin: 2.5rem 0 1.25rem;
+}
+.section-head-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, var(--pp-card-border), transparent);
+}
+.section-head-title {
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--pp-text-muted);
+  white-space: nowrap;
+}
+.section-head-count {
+  font-size: 0.65rem; font-weight: 700;
+  background: var(--pp-chip-bg);
+  border: 1px solid var(--pp-chip-border);
+  color: var(--pp-chip-text); padding: 0.15rem 0.55rem; border-radius: 999px;
+}
+
+/* ── Portfolio Card with 3-Dot Manage Menu ── */
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.portfolio-card {
+  background: var(--pp-card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--pp-card-border);
+  border-radius: 1rem;
+  overflow: visible;
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.portfolio-card:hover {
+  border-color: var(--pp-chip-border);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  transform: translateY(-3px);
+}
+
+.portfolio-media-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  background: rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.portfolio-media-wrap img,
+.portfolio-media-wrap video {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform 0.4s ease;
+}
+
+.portfolio-card:hover .portfolio-media-wrap img,
+.portfolio-card:hover .portfolio-media-wrap video {
+  transform: scale(1.06);
+}
+
+.manage-menu-btn {
+  position: absolute;
+  top: 0.6rem; right: 0.6rem;
+  width: 2.2rem; height: 2.2rem;
+  border-radius: 50%;
+  background: rgba(11, 12, 16, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.2s;
+}
+
+.manage-menu-btn:hover {
+  background: var(--pp-accent);
+  color: #0b0c10;
+  border-color: var(--pp-accent);
+}
+
+.manage-dropdown {
+  position: absolute;
+  top: 3.2rem; right: 0.6rem;
+  width: 165px;
+  background: rgba(18, 20, 26, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.75rem;
+  padding: 0.35rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+  z-index: 30;
+  display: none;
+  animation: menuFadeIn 0.15s ease-out;
+}
+
+.manage-dropdown.active { display: block; }
+
+@keyframes menuFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.manage-item {
+  display: flex; align-items: center; gap: 0.6rem;
+  width: 100%; padding: 0.5rem 0.65rem;
+  font-size: 0.78rem; font-weight: 600; color: #e2e8f0;
+  background: transparent; border: none; border-radius: 0.5rem;
+  cursor: pointer; transition: all 0.15s; text-align: left;
+  font-family: inherit;
+}
+
+.manage-item:hover {
+  background: rgba(0, 240, 255, 0.12);
+  color: #00f0ff;
+}
+
+.manage-item.danger:hover {
+  background: rgba(255, 77, 77, 0.15);
+  color: #ff4d4d;
+}
+
+.manage-item .material-symbols-outlined { font-size: 1rem; }
+
+.portfolio-card-info {
+  padding: 0.7rem 0.85rem;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  border-top: 1px solid var(--pp-card-border);
+}
+
+.portfolio-card-title {
+  font-size: 0.82rem; font-weight: 700; color: var(--pp-text-main);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.portfolio-card-badge {
+  font-size: 0.62rem; font-weight: 800; letter-spacing: 0.05em;
+  padding: 0.15rem 0.45rem; border-radius: 0.35rem;
+  background: var(--pp-chip-bg); color: var(--pp-chip-text);
+  border: 1px solid var(--pp-chip-border); text-transform: uppercase;
+}
+
+/* ── Services grid ── */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+  gap: 1rem;
+}
+.svc-card {
+  background: var(--pp-card-bg);
+  border: 1px solid var(--pp-card-border);
+  border-radius: 1.1rem;
+  padding: 1.3rem 1.4rem;
+  transition: all 0.25s cubic-bezier(.4,0,.2,1);
+  position: relative; overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+.svc-card::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2.5px;
+  background: linear-gradient(to bottom, var(--pp-accent), rgba(0,240,255,0.2));
+  border-radius: 2px 0 0 2px;
+}
+.svc-card:hover {
+  border-color: var(--pp-chip-border);
+  transform: translateY(-3px);
+}
+.svc-icon {
+  width: 2.2rem; height: 2.2rem; border-radius: 0.65rem;
+  background: var(--pp-chip-bg); border: 1px solid var(--pp-chip-border);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 0.85rem;
+}
+.svc-name  { font-size: 0.9rem; font-weight: 800; color: var(--pp-text-main); margin-bottom: 0.3rem; }
+.svc-price { font-size: 0.82rem; font-weight: 700; color: var(--pp-accent); margin-bottom: 0.3rem; }
+.svc-desc  { font-size: 0.78rem; color: var(--pp-text-muted); line-height: 1.55; }
+
+/* ── Lightbox ── */
+.lb-overlay {
+  position: fixed; inset: 0; z-index: 99999;
+  background: rgba(0,0,0,0.93);
+  backdrop-filter: blur(16px);
+  display: none; align-items: center; justify-content: center; padding: 1.5rem;
+}
+.lb-overlay.open { display: flex; }
+.lb-inner { position: relative; max-width: 880px; width: 100%; }
+.lb-inner img, .lb-inner video {
+  width: 100%; max-height: 82vh; object-fit: contain;
+  border-radius: 1rem;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+}
+.lb-close {
+  position: absolute; top: -3rem; right: 0;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  color: #dce4e5; cursor: pointer;
+  width: 2.2rem; height: 2.2rem; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.lb-close:hover { background: rgba(255,255,255,0.15); }
+
+/* ── Toast ── */
+#pp-toast {
+  position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+  background: rgba(20,20,20,0.96);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #dce4e5; border-radius: 999px; padding: 0.65rem 1.4rem;
+  font-size: 0.82rem; font-weight: 700;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  z-index: 999999; opacity: 0; transition: opacity 0.25s;
+  white-space: nowrap;
+}
+#pp-toast.show { opacity: 1; }
+
+/* ── Shimmer skeleton ── */
+@keyframes shimmer { to { background-position: -200% center; } }
+.skel {
+  border-radius: 0.6rem;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.025) 25%,
+    rgba(255,255,255,0.06) 50%,
+    rgba(255,255,255,0.025) 75%);
+  background-size: 200%;
+  animation: shimmer 1.8s infinite;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 99px; }
 </style>
 </head>
 <body>
 
-<!-- ── CamCrew header ── -->
-<div id="site-header"></div>
-<script src="/static/js/header-loader.js"></script>
+<!-- Ambient bg -->
+<div class="ambient-bg"></div>
 
-<!-- ── Main ── -->
-<main id="profile-root">
+<!-- Shared site header -->
+<div id="site-header" style="position:relative;z-index:50;"></div>
 
-  <!-- Loading skeleton -->
-  <div id="skeleton">
-    <div class="skel-banner"></div>
-    <div class="fixed inset-0 z-[-1] pointer-events-none"><div class="hero-grid absolute inset-0 opacity-15"></div><div class="orb-1"></div><div class="orb-2"></div></div>
-    <div class="page-wrap relative z-10">
-      <div style="display:flex;align-items:flex-end;gap:1.25rem;margin-top:-52px;margin-bottom:1.25rem;flex-wrap:wrap;">
-        <div class="skel" style="width:110px;height:110px;border-radius:50%;flex-shrink:0;border:4px solid #0a0a0b;"></div>
-        <div style="flex:1;display:flex;flex-direction:column;gap:0.6rem;padding-bottom:0.5rem;">
-          <div class="skel" style="height:1.8rem;max-width:200px;"></div>
-          <div class="skel" style="height:0.9rem;max-width:140px;"></div>
+<!-- ── Hero cover ── -->
+<div class="hero-cover" style="position:relative;z-index:1;">
+  <div class="hero-cover-glow"></div>
+</div>
+
+<!-- ── Profile upper (avatar + quick actions) ── -->
+<div class="profile-upper" style="padding-top:0;">
+  <div id="skeleton-upper" style="display:flex;align-items:flex-end;gap:1.75rem;padding-top:0;margin-top:-4.5rem;padding-bottom:1.5rem;flex-wrap:wrap;">
+    <div class="skel" style="width:7.5rem;height:7.5rem;border-radius:50%;flex-shrink:0;margin-top:0;"></div>
+    <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:0.6rem;padding-bottom:0.5rem;">
+      <div class="skel" style="height:1.75rem;max-width:220px;"></div>
+      <div class="skel" style="height:1rem;max-width:140px;"></div>
+    </div>
+  </div>
+  <div id="profile-upper-content" style="display:none;">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding-bottom:0.5rem;">
+      <div style="display:flex;align-items:flex-end;gap:1.5rem;flex-wrap:wrap;">
+        <!-- Avatar -->
+        <div class="avatar-wrap">
+          <div class="avatar-outer">
+            <div class="avatar-inner" id="pp-avatar"></div>
+          </div>
+          <div class="verified-badge">
+            <span class="material-symbols-outlined" style="font-size:0.7rem;color:#001f22;font-variation-settings:'FILL' 1">check</span>
+          </div>
+        </div>
+        <!-- Name block -->
+        <div style="padding-bottom:0.25rem;">
+          <h1 class="display-name-lg" id="pp-name"></h1>
+          <p class="username-tag" id="pp-username"></p>
+          <div id="pp-title-wrap" style="display:none;">
+            <span class="pro-title-badge" id="pp-title">
+              <span class="material-symbols-outlined" style="font-size:0.7rem;font-variation-settings:'FILL' 1">star</span>
+            </span>
+          </div>
         </div>
       </div>
-      <div class="skel" style="height:3.5rem;border-radius:1rem;margin-bottom:2rem;"></div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;border-radius:1rem;overflow:hidden;">
-        <div class="skel" style="aspect-ratio:1;"></div>
-        <div class="skel" style="aspect-ratio:1;"></div>
-        <div class="skel" style="aspect-ratio:1;"></div>
-        <div class="skel" style="aspect-ratio:1;"></div>
-        <div class="skel" style="aspect-ratio:1;"></div>
-        <div class="skel" style="aspect-ratio:1;"></div>
+      <!-- Desktop Action Buttons -->
+      <div id="pp-cta-wrap" style="padding-bottom:0.5rem;display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;">
+        <a href="index.html" class="btn-ghost" title="Go to Home">
+          <span class="material-symbols-outlined" style="font-size:0.9rem;">home</span> Home
+        </a>
+        <a href="professional-dashboard.html" class="btn-ghost" title="Dashboard">
+          <span class="material-symbols-outlined" style="font-size:0.9rem;">dashboard</span> Dashboard
+        </a>
+        <a href="professional-edit.html" class="btn-book-cta" style="padding:0.65rem 1.25rem;">
+          <span class="material-symbols-outlined" style="font-size:0.9rem;">edit</span> Edit Profile
+        </a>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Content (hidden until loaded) -->
-  <div id="profile-content" style="display:none;"></div>
+<!-- ── Main profile grid ── -->
+<div class="profile-grid" id="profile-root">
 
-</main>
+  <!-- LEFT: Main content (skeleton) -->
+  <div id="skeleton" style="grid-column:1/-1;">
+    <div style="display:flex;gap:1.5rem;margin-bottom:2rem;">
+      <div class="skel" style="flex:1;height:5.5rem;border-radius:1rem;"></div>
+    </div>
+    <div class="skel" style="height:4rem;border-radius:0.75rem;margin-bottom:1rem;max-width:480px;"></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-radius:1.1rem;overflow:hidden;">
+      <div class="skel" style="aspect-ratio:1;"></div>
+      <div class="skel" style="aspect-ratio:1;"></div>
+      <div class="skel" style="aspect-ratio:1;"></div>
+      <div class="skel" style="aspect-ratio:1;"></div>
+      <div class="skel" style="aspect-ratio:1;"></div>
+      <div class="skel" style="aspect-ratio:1;"></div>
+    </div>
+  </div>
 
-<!-- ── Lightbox ── -->
-<div id="lightbox" class="lightbox-overlay" onclick="closeLightbox()">
-  <div class="lightbox-inner" onclick="event.stopPropagation()">
-    <button class="lightbox-close" onclick="closeLightbox()">
-      <span class="material-symbols-outlined">close</span>
+  <div id="profile-content" style="grid-column:1/-1;display:none;"></div>
+
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" class="lb-overlay" onclick="closeLightbox()">
+  <div class="lb-inner" onclick="event.stopPropagation()">
+    <button class="lb-close" onclick="closeLightbox()">
+      <span class="material-symbols-outlined" style="font-size:1rem;">close</span>
     </button>
     <div id="lightbox-content"></div>
   </div>
 </div>
 
-<!-- ── Toast ── -->
+<!-- Toast -->
 <div id="pp-toast"></div>
 
-<!-- ── Footer ── -->
+<!-- Edit Title Modal -->
+<div id="edit-title-modal" style="display:none;position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);align-items:center;justify-content:center;">
+  <div style="background:var(--pp-card-bg);border:1px solid var(--pp-card-border);border-radius:1rem;padding:1.5rem;width:90%;max-width:420px;box-shadow:0 20px 50px rgba(0,0,0,0.8);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <h3 style="font-size:1.1rem;font-weight:800;color:var(--pp-text-main);">Change Image Name</h3>
+      <button onclick="closeEditTitleModal()" style="background:none;border:none;color:var(--pp-text-muted);cursor:pointer;"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div style="margin-bottom:1.25rem;">
+      <label style="display:block;font-size:0.75rem;font-weight:700;color:var(--pp-text-muted);text-transform:uppercase;margin-bottom:0.4rem;">New Title / Name</label>
+      <input type="text" id="edit-title-input" class="cc-input" style="width:100%;padding:0.7rem 0.9rem;border-radius:0.6rem;background:rgba(255,255,255,0.04);border:1px solid var(--pp-card-border);color:var(--pp-text-main);font-size:0.9rem;" placeholder="Enter image title…"/>
+    </div>
+    <div style="display:flex;gap:0.75rem;justify-content:flex-end;">
+      <button onclick="closeEditTitleModal()" style="padding:0.6rem 1rem;border-radius:0.6rem;border:1px solid var(--pp-card-border);background:transparent;color:var(--pp-text-main);font-weight:700;cursor:pointer;">Cancel</button>
+      <button id="save-title-btn" onclick="savePortfolioTitle()" class="btn-book-cta" style="padding:0.6rem 1.25rem;">Save Name</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dynamic Site Footer -->
 <div id="site-footer"></div>
+<script src="/static/js/header-loader.js"></script>
 <script src="/static/js/footer-loader.js"></script>
 
 <script>
@@ -730,14 +793,13 @@ const S = { user: null, pro: null, username: null };
   const theme = localStorage.getItem('cc-theme') || 'dark';
   document.documentElement.className = theme;
 
-  // Load vault for portfolio count
+  // Load vault & jobs from local storage
   let vaultFiles = [];
   try {
     const v = JSON.parse(localStorage.getItem('pro_vault') || '{"files":[]}');
     vaultFiles = v.files || [];
   } catch (_) {}
 
-  // Load jobs for completed count
   let jobs = [];
   try { jobs = JSON.parse(localStorage.getItem('pro_jobs') || '[]'); } catch (_) {}
 
@@ -753,7 +815,7 @@ const S = { user: null, pro: null, username: null };
     }
   } catch (_) {}
 
-  // 2. Parallel Async API Fetching (50% Faster Load Time)
+  // 2. Parallel Async API Fetching
   try {
     const [meRes, proRes] = await Promise.all([
       fetch('/api/me', { credentials: 'include' }).catch(() => null),
@@ -788,8 +850,10 @@ const S = { user: null, pro: null, username: null };
    Render
 ═══════════════════════════════════════════════════════════════════ */
 function render(vaultFiles, jobs) {
-  const skeleton = document.getElementById('skeleton');
-  const content  = document.getElementById('profile-content');
+  const skeletonUpper = document.getElementById('skeleton-upper');
+  const upperContent   = document.getElementById('profile-upper-content');
+  const skeletonMain  = document.getElementById('skeleton');
+  const content        = document.getElementById('profile-content');
 
   const displayName  = S.user?.display_name || S.pro?.name || (S.user?.email?.split('@')[0]) || 'Professional';
   const title        = S.pro?.title        || '';
@@ -801,15 +865,38 @@ function render(vaultFiles, jobs) {
   const socials      = S.pro?.socials      || {};
   const website      = S.pro?.website      || '';
   const joinedAt     = S.user?.created_at  || S.pro?.savedAt || '';
+  const certifications = S.pro?.certifications || [];
+  const equipmentRoster = S.pro?.equipment_roster || [];
 
   const totalPortfolio = portfolio.length || vaultFiles.filter(f => ['image','video'].includes(f.type)).length;
   const completedJobs  = jobs.filter(j => j.status === 'completed').length;
   const initial        = displayName.charAt(0).toUpperCase();
+  const hue            = strHue(S.username || displayName);
 
   const avatarPhoto = S.pro?.avatar_url || S.pro?.avatarUrl || S.pro?.photo || S.user?.avatar_url || null;
-  const avatarHTML  = avatarPhoto
-    ? `<img src="${esc(avatarPhoto)}" alt="${esc(displayName)}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:2;border-radius:50%;" onerror="this.style.display='none';"/><span>${initial}</span>`
-    : `<span>${initial}</span>`;
+  const avatarEl    = document.getElementById('pp-avatar');
+  if (avatarPhoto && avatarPhoto.trim() !== '') {
+    avatarEl.innerHTML = `<img src="${esc(avatarPhoto)}" alt="${esc(displayName)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;inset:0;z-index:2;" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\\'position:relative;z-index:2;color:hsl(${hue},80%,72%);font-size:2.8rem;font-weight:900;\\'>${initial}</span>';this.parentElement.style.background='linear-gradient(135deg,hsl(${hue},50%,12%),hsl(${(hue+60)%360},60%,18%))';">`;
+    avatarEl.style.background = 'none';
+  } else {
+    avatarEl.innerHTML = `<span style="position:relative;z-index:2;color:hsl(${hue},80%,72%);font-size:2.8rem;font-weight:900;">${initial}</span>`;
+    avatarEl.style.background = `linear-gradient(135deg,hsl(${hue},50%,12%),hsl(${(hue+60)%360},60%,18%))`;
+  }
+
+  document.getElementById('pp-name').innerHTML = `${esc(displayName)} <span class="material-symbols-outlined" style="font-size:1.2rem;color:var(--pp-accent);vertical-align:middle;margin-left:0.2rem;" title="Official Verified Professional">verified</span>`;
+  if (S.username) {
+    document.getElementById('pp-username').textContent = `@${S.username}`;
+  }
+
+  if (title) {
+    const tw = document.getElementById('pp-title-wrap');
+    const tb = document.getElementById('pp-title');
+    tb.innerHTML = `<span class="material-symbols-outlined" style="font-size:0.7rem;font-variation-settings:'FILL' 1">star</span> ${esc(title)}`;
+    tw.style.display = 'block';
+  }
+
+  if (skeletonUpper) skeletonUpper.style.display = 'none';
+  if (upperContent)   upperContent.style.display   = 'block';
 
   const memberSince = joinedAt
     ? new Date(joinedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
@@ -827,7 +914,7 @@ function render(vaultFiles, jobs) {
         if (!url) {
           return `<div class="portfolio-card">
             <div class="portfolio-media-wrap">
-              <div class="cell-placeholder">
+              <div class="p-cell-placeholder">
                 <span class="material-symbols-outlined" style="font-size:1.75rem;color:rgba(255,255,255,0.15);">${isVideo ? 'movie' : 'image'}</span>
               </div>
             </div>
@@ -838,11 +925,9 @@ function render(vaultFiles, jobs) {
           <div class="portfolio-media-wrap" onclick="openLightbox(${i})">
             ${isVideo
               ? `<video src="${esc(url)}" muted playsinline preload="metadata" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0" onerror="this.parentElement.style.display='none'"></video>`
-              : `<img src="${esc(url)}" alt="${esc(title)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'cell-placeholder\\'><span class=\\'material-symbols-outlined\\' style=\\'font-size:1.75rem;color:rgba(255,255,255,0.15);\\'>image</span></div>'"/>`}
-            <div class="cell-overlay">
-              <div class="cell-overlay-icon">
-                <span class="material-symbols-outlined">${isVideo ? 'play_arrow' : 'zoom_in'}</span>
-              </div>
+              : `<img src="${esc(url)}" alt="${esc(title)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'p-cell-placeholder\\'><span class=\\'material-symbols-outlined\\' style=\\'font-size:1.75rem;color:rgba(255,255,255,0.15);\\'>image</span></div>'"/>`}
+            <div class="p-cell-overlay">
+              <span class="material-symbols-outlined" style="color:#fff;font-size:1.6rem;">${isVideo ? 'play_circle' : 'zoom_in'}</span>
             </div>
           </div>
 
@@ -874,129 +959,54 @@ function render(vaultFiles, jobs) {
         </div>`;
       }).join('')
     : `<div class="grid-empty">
-        <div class="empty-icon-wrap">
-          <span class="material-symbols-outlined" style="font-size:1.75rem;color:rgba(255,255,255,0.15);">photo_library</span>
-        </div>
-        <p style="color:#4d666a;font-size:0.85rem;font-weight:600;">No portfolio items yet.</p>
-        <a href="professional-edit.html" style="font-size:0.8rem;color:var(--ac);font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:0.3rem;">
-          Set up profile <span class="material-symbols-outlined" style="font-size:0.85rem;">arrow_forward</span>
+        <span class="material-symbols-outlined" style="font-size:3.5rem;color:rgba(255,255,255,0.07);">photo_library</span>
+        <p style="color:var(--pp-text-muted);font-size:0.88rem;">No portfolio items shared yet.</p>
+        <a href="professional-edit.html" style="font-size:0.8rem;color:var(--pp-accent);font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:0.3rem;">
+          Upload & Manage Portfolio <span class="material-symbols-outlined" style="font-size:0.85rem;">arrow_forward</span>
         </a>
       </div>`;
 
   /* ─ Services ─ */
-  const servicesHTML = services.length
-    ? `<div class="services-grid">
-        ${services.map(s => `
-          <div class="service-card">
-            <div class="service-icon">
-              <span class="material-symbols-outlined">camera</span>
-            </div>
-            <p class="service-name">${esc(s.name)}</p>
-            ${s.price ? `<p class="service-price"><span class="material-symbols-outlined" style="font-size:0.8rem;">currency_rupee</span>${fmtPrice(s)}</p>` : ''}
-            ${s.desc  ? `<p class="service-desc">${esc(s.desc)}</p>` : ''}
-          </div>`).join('')}
-       </div>`
-    : `<div style="padding:2rem 0;text-align:center;">
-        <p style="color:#4d666a;font-size:0.85rem;font-weight:600;">No services listed yet.</p>
-        <a href="professional-edit.html" style="font-size:0.8rem;color:var(--ac);font-weight:700;text-decoration:none;">Add services →</a>
-       </div>`;
-
-  /* ─ Social links ─ */
-  const socialDefs = [
-    { key: 'instagram', icon: 'camera_alt',  label: 'Instagram', prefix: 'https://instagram.com/' },
-    { key: 'facebook',  icon: 'thumb_up',    label: 'Facebook',  prefix: 'https://facebook.com/'  },
-    { key: 'tiktok',    icon: 'music_video', label: 'TikTok',    prefix: 'https://tiktok.com/@'   },
-  ];
-  const socialsHTML = socialDefs
-    .filter(d => socials[d.key])
-    .map(d => `
-      <a href="${socials[d.key].startsWith('http') ? esc(socials[d.key]) : esc(d.prefix + socials[d.key])}"
-         target="_blank" rel="noopener noreferrer" class="social-link">
-        <span class="material-symbols-outlined">${d.icon}</span>${d.label}
-      </a>`).join('');
-
-  /* ─ Meta row items ─ */
-  const metaItems = [];
-  if (website) {
-    const cleanUrl = website.startsWith('http') ? website : 'https://' + website;
-    metaItems.push(`<a href="${esc(cleanUrl)}" target="_blank" rel="noopener noreferrer" class="meta-item link">
-      <span class="material-symbols-outlined">link</span>
-      ${esc(website.replace(/^https?:\/\//, ''))}
-    </a>`);
-  }
-  if (memberSince) {
-    metaItems.push(`<span class="meta-item">
-      <span class="material-symbols-outlined">calendar_month</span>
-      Joined ${memberSince}
-    </span>`);
-  }
-
-  /* ─ Render ─ */
-  content.innerHTML = `
-    <!-- Cover Banner -->
-    <div class="profile-banner">
-      <div class="banner-lines"></div>
-      <div class="banner-glow-left"></div>
-      <div class="banner-glow-right"></div>
-      
-    </div>
-
-    <!-- Identity Block -->
-    <div class="fixed inset-0 z-[-1] pointer-events-none"><div class="hero-grid absolute inset-0 opacity-15"></div><div class="orb-1"></div><div class="orb-2"></div></div>
-    <div class="page-wrap relative z-10">
-      <div class="identity-block">
-        <!-- Avatar row -->
-        <div class="avatar-positioner">
-          <div class="avatar-ring">${avatarHTML}</div>
-          <div class="avatar-actions">
-              <a href="index.html" class="btn-ghost" style="font-size:0.78rem;padding:0.45rem 0.9rem;" title="Go to Home">
-                <span class="material-symbols-outlined" style="font-size:0.88rem;">home</span>
-                Home
-              </a>
-              <a href="professional-dashboard.html" class="btn-primary" style="padding:0.45rem 0.9rem;font-size:0.78rem;">
-                <span class="material-symbols-outlined" style="font-size:0.88rem;">dashboard</span>
-                Dashboard
-              </a>
-              <a href="professional-edit.html" class="btn-ghost" style="font-size:0.78rem;padding:0.45rem 0.9rem;">
-                <span class="material-symbols-outlined" style="font-size:0.88rem;">edit</span>
-                Edit Profile
-              </a>
-            </div>
+  const svcIcons = ['photo_camera','videocam','palette','mic','music_note','movie','star','edit'];
+  const svcHTML = services.length
+    ? `<div class="services-grid">${services.map((s, i) => `
+        <div class="svc-card">
+          <div class="svc-icon">
+            <span class="material-symbols-outlined" style="font-size:1rem;color:var(--pp-accent);">${svcIcons[i%svcIcons.length]}</span>
           </div>
+          <p class="svc-name">${esc(s.name)}</p>
+          ${s.price ? `<p class="svc-price">${fmtPrice(s)}</p>` : ''}
+          ${s.desc  ? `<p class="svc-desc">${esc(s.desc)}</p>`  : ''}
+        </div>`).join('')}</div>`
+    : `<div class="grid-empty"><span class="material-symbols-outlined" style="font-size:2.5rem;color:rgba(255,255,255,0.07);">work_outline</span>
+        <p style="color:var(--pp-text-muted);font-size:0.88rem;">No services listed yet.</p></div>`;
 
-        <!-- Name & title -->
-        <h1 class="profile-name">
-          ${esc(displayName)}
-          <span class="pro-badge" style="font-size:0.58rem;vertical-align:middle;margin-left:0.5rem;">
-            <span class="material-symbols-outlined" style="font-size:0.7rem;fill:1;">verified</span>
-            Pro
-          </span>
-        </h1>
-        ${S.username ? `<p class="profile-handle">@${esc(S.username)}</p>` : ''}
-        ${title ? `<p class="profile-title">
-          <span class="material-symbols-outlined" style="font-size:0.95rem;">photo_camera</span>
-          ${esc(title)}
-        </p>` : ''}
+  /* ─ Socials ─ */
+  const socialDefs = [
+    { key:'instagram', icon:'camera_alt',  label:'Instagram', base:'https://instagram.com/' },
+    { key:'facebook',  icon:'thumb_up',    label:'Facebook',  base:'https://facebook.com/'  },
+    { key:'tiktok',    icon:'music_video', label:'TikTok',    base:'https://tiktok.com/@'   },
+  ];
+  const socialsHTML = socialDefs.filter(d => socials[d.key]).map(d => `
+    <a href="${socials[d.key].startsWith('http') ? esc(socials[d.key]) : esc(d.base+socials[d.key])}"
+       target="_blank" rel="noopener noreferrer" class="social-btn">
+      <span class="material-symbols-outlined">${d.icon}</span>${d.label}
+    </a>`).join('');
 
-        ${bio ? `<p class="profile-bio">${esc(bio)}</p>` : ''}
+  /* ─ Share Profile Link ─ */
+  const publicShareUrl = S.username
+    ? `${window.location.origin}/@${S.username}`
+    : `${window.location.origin}/public-profile.html${(S.pro?.user_id || S.user?.id) ? '?id=' + (S.pro?.user_id || S.user?.id) : ''}`;
 
-        ${metaItems.length ? `<div class="meta-row">${metaItems.join('')}</div>` : ''}
+  /* ─ Render Grid Layout ─ */
+  if (skeletonMain) skeletonMain.style.display = 'none';
+  content.style.display = 'grid';
+  content.innerHTML = `
 
-        ${categories.length ? `<div class="chips-row">
-          ${categories.map(c => `<span class="chip">${esc(c)}</span>`).join('')}
-        </div>` : ''}
-
-        ${locations.length ? `<div class="chips-row">
-          ${locations.map(l => `<span class="chip chip-location">
-            <span class="material-symbols-outlined" style="font-size:0.75rem;">location_on</span>${esc(l)}
-          </span>`).join('')}
-        </div>` : ''}
-
-        ${socialsHTML ? `<div class="socials-row">${socialsHTML}</div>` : ''}
-      </div>
-
-      <!-- Stats Strip -->
-      <div class="stats-strip">
+    <!-- LEFT COLUMN: Main Content -->
+    <div>
+      <!-- Stats bar -->
+      <div class="stats-bar">
         <div class="stat-cell">
           <span class="stat-num">${totalPortfolio}</span>
           <span class="stat-lbl">Portfolio</span>
@@ -1015,81 +1025,170 @@ function render(vaultFiles, jobs) {
         </div>
       </div>
 
-      <!-- Portfolio -->
-      <div class="section-head">
-        <h2 class="section-title">Portfolio</h2>
-        ${allMedia.length ? `<span style="font-size:0.75rem;color:#4d666a;font-weight:600;">${allMedia.length} item${allMedia.length !== 1 ? 's' : ''}</span>` : ''}
-      </div>
-      <div class="portfolio-grid" id="portfolio-grid">${gridCells}</div>
+      <!-- Bio -->
+      ${bio ? `<p class="profile-bio">${esc(bio)}</p>` : ''}
 
-      <!-- Services -->
-      <div class="section-head">
-        <h2 class="section-title">Services</h2>
-      </div>
-      ${servicesHTML}
+      <!-- Website -->
+      ${website ? `<a href="${website.startsWith('http') ? esc(website) : 'https://'+esc(website)}"
+        target="_blank" rel="noopener noreferrer" class="website-link">
+        <span class="material-symbols-outlined" style="font-size:0.9rem;">open_in_new</span>
+        ${esc(website.replace(/^https?:\/\//,''))}
+      </a>` : ''}
 
-      <!-- Share Profile -->
+      <!-- Verified Certification Badges -->
+      ${(certifications && certifications.length) ? `<div class="chips-row mb-3">${certifications.map(c=>`
+        <span class="chip">
+          <span class="material-symbols-outlined" style="font-size:0.75rem;">verified</span>
+          ${esc(c)}
+        </span>`).join('')}</div>` : ''}
+
+      <!-- Categories chips -->
+      ${categories.length ? `<div class="chips-row">${categories.map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div>` : ''}
+
+      <!-- Location chips -->
+      ${locations.length ? `<div class="chips-row">${locations.map(l=>`
+        <span class="chip chip-loc">
+          <span class="material-symbols-outlined" style="font-size:0.7rem;">location_on</span>
+          ${esc(l)}
+        </span>`).join('')}</div>` : ''}
+
+      <!-- Equipment Roster section -->
+      ${(equipmentRoster && equipmentRoster.length) ? `
+        <div class="section-head">
+          <span class="section-head-title">Equipment Roster</span>
+          <span class="section-head-count">${equipmentRoster.length}</span>
+          <div class="section-head-line"></div>
+        </div>
+        <div class="flex flex-wrap gap-2 mb-6">
+          ${equipmentRoster.map(eq => `
+            <div class="gear-card" style="padding:0.5rem 0.8rem;border-radius:0.75rem;font-size:0.78rem;">
+              <span style="font-size:0.65rem;font-weight:800;color:var(--pp-accent);text-transform:uppercase;display:block;">[${esc(eq.category || 'Gear')}]</span>
+              <span style="font-weight:600;color:var(--pp-text-main);">${esc(eq.item || '')}</span>
+            </div>`).join('')}
+        </div>` : ''}
+
+      <!-- Social links -->
+      ${socialsHTML ? `<div class="socials-row">${socialsHTML}</div>` : ''}
+
+      <!-- Share Profile Card -->
       <div class="section-head">
-        <h2 class="section-title">Share Profile</h2>
+        <span class="section-head-title">Share Profile</span>
+        <div class="section-head-line"></div>
       </div>
       <div class="share-card">
-        <div class="share-card-top">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
           <div>
             <p class="share-title">Your public profile link</p>
             <p class="share-sub">Share with clients — no login required to view.</p>
           </div>
-          <button onclick="copyProfileLink()" style="
-            display:inline-flex;align-items:center;gap:0.45rem;
-            padding:0.55rem 1.15rem;border-radius:0.7rem;border:none;cursor:pointer;
-            background:rgba(0,219,233,0.14);color:var(--ac);font-weight:800;font-size:0.8rem;
-            font-family:'Plus Jakarta Sans',sans-serif;transition:background 0.2s;flex-shrink:0;"
-            onmouseover="this.style.background='rgba(0,219,233,0.24)'"
-            onmouseout="this.style.background='rgba(0,219,233,0.14)'">
+          <button onclick="copyProfileLink()" class="btn-book-cta" style="padding:0.55rem 1.15rem;font-size:0.8rem;">
             <span class="material-symbols-outlined" style="font-size:0.95rem;">content_copy</span>
             Copy Link
           </button>
         </div>
         <div class="url-display">
           <span class="material-symbols-outlined">link</span>
-          <span class="url-text">${esc(S.username ? (window.location.origin + '/@' + S.username) : (window.location.origin + '/public-profile.html' + ((S.pro?.user_id || S.user?.id) ? '?id=' + (S.pro?.user_id || S.user?.id) : '')))}</span>
+          <span class="url-text">${esc(publicShareUrl)}</span>
         </div>
       </div>
 
-    </div><!-- /page-wrap -->
+      <!-- Portfolio Section -->
+      <div class="section-head">
+        <span class="section-head-title">Portfolio</span>
+        ${allMedia.length ? `<span class="section-head-count">${allMedia.length}</span>` : ''}
+        <div class="section-head-line"></div>
+      </div>
+      <div class="portfolio-grid" id="portfolio-grid">${gridCells}</div>
+
+      <!-- Services Section -->
+      <div class="section-head">
+        <span class="section-head-title">Services</span>
+        ${services.length ? `<span class="section-head-count">${services.length}</span>` : ''}
+        <div class="section-head-line"></div>
+      </div>
+      ${svcHTML}
+    </div>
+
+    <!-- RIGHT COLUMN: Management Sidebar -->
+    <div class="profile-sidebar">
+      <div class="sidebar-card">
+        <p class="sidebar-card-title">Profile Management</p>
+
+        <!-- Mini avatar + name -->
+        <div style="display:flex;align-items:center;gap:0.85rem;margin-bottom:1.25rem;">
+          <div style="width:2.8rem;height:2.8rem;border-radius:50%;flex-shrink:0;overflow:hidden;background:linear-gradient(135deg,hsl(${hue},50%,12%),hsl(${(hue+60)%360},60%,18%));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.95rem;color:hsl(${hue},80%,72%);position:relative;">
+            ${avatarPhoto ? `<img src="${esc(avatarPhoto)}" alt="${esc(displayName)}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">` : initial}
+          </div>
+          <div style="min-width:0;">
+            <p style="font-weight:800;font-size:0.9rem;color:var(--pp-text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(displayName)}</p>
+            ${title ? `<p style="font-size:0.72rem;color:var(--pp-accent);font-weight:600;">${esc(title)}</p>` : ''}
+          </div>
+        </div>
+
+        <!-- Available services summary -->
+        ${services.length ? `
+        <div style="margin-bottom:1.25rem;">
+          <p style="font-size:0.63rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--pp-text-muted);margin-bottom:0.65rem;">Configured Services</p>
+          <div style="display:flex;flex-direction:column;gap:0.45rem;">
+            ${services.slice(0,4).map(s=>`
+            <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0.4rem 0;border-bottom:1px solid var(--pp-card-border);">
+              <span style="font-size:0.8rem;color:var(--pp-text-muted);font-weight:600;">${esc(s.name)}</span>
+              ${s.price ? `<span style="font-size:0.78rem;color:var(--pp-accent);font-weight:800;flex-shrink:0;margin-left:0.5rem;">₹${Number(s.price).toLocaleString('en-IN')}</span>` : ''}
+            </div>`).join('')}
+          </div>
+        </div>` : ''}
+
+        <!-- CTAs -->
+        <a href="professional-edit.html" class="btn-book-cta" style="width:100%;justify-content:center;margin-bottom:0.65rem;">
+          <span class="material-symbols-outlined" style="font-size:1rem;">tune</span>
+          Edit Profile Details
+        </a>
+
+        <a href="${esc(publicShareUrl)}" target="_blank" class="btn-ghost" style="width:100%;justify-content:center;font-size:0.82rem;padding:0.65rem 1rem;">
+          <span class="material-symbols-outlined" style="font-size:0.95rem;">open_in_new</span>
+          View Public Profile
+        </a>
+
+        <!-- Trust badge -->
+        <div style="display:flex;align-items:center;gap:0.4rem;margin-top:0.85rem;justify-content:center;">
+          <span class="material-symbols-outlined" style="font-size:0.82rem;color:var(--pp-text-muted);font-variation-settings:'FILL' 1">shield</span>
+          <p style="font-size:0.7rem;color:var(--pp-text-muted);">Verified Professional Account</p>
+        </div>
+      </div>
+    </div>
   `;
 
   window._lightboxMedia = allMedia;
-  skeleton.style.display = 'none';
-  content.style.display  = 'block';
 }
 
 /* ═══════════════════════════════════════════════════════════════════
    Lightbox
 ═══════════════════════════════════════════════════════════════════ */
-function openLightbox(idx) {
-  const media = (window._lightboxMedia || [])[idx];
-  if (!media || !media.url) return;
-  const url = media.url;
+function openLightbox(i) {
+  const item  = (window._lightboxMedia || [])[i];
+  if (!item) return;
+  const url = item.file_url || item.fileUrl || item.url || '';
+  if (!url) return;
+
   const isInstagram = url.includes('instagram.com');
   const isEmbed = url.includes('youtube.com/embed') || url.includes('player.vimeo.com') || isInstagram;
-  const isVideo = media.type === 'video' || media.isVideo;
-  const lb = document.getElementById('lightbox-content');
+  const isVid = item.file_type === 'video' || item.type === 'video' || item.isVideo;
+  const container = document.getElementById('lightbox-content');
+
   if (isEmbed) {
     if (isInstagram) {
-      // Instagram Reels are 9:16 vertical — use portrait aspect-ratio wrapper
-      lb.innerHTML = `
-        <div style="position:relative;width:min(340px,90vw);max-height:90vh;border-radius:0.85rem;overflow:hidden;">
+      container.innerHTML = `
+        <div style="position:relative;width:min(340px,90vw);max-height:90vh;border-radius:1rem;overflow:hidden;">
           <iframe src="${esc(url)}" frameborder="0" scrolling="no"
             allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
             allowfullscreen
-            style="position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:0.85rem;">
+            style="position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:1rem;">
           </iframe>
           <div style="padding-top:177.78%;"></div>
         </div>`;
     } else {
-      // YouTube / Vimeo — standard 16:9 landscape player
-      lb.innerHTML = `
-        <div style="position:relative;width:min(850px,90vw);border-radius:0.85rem;overflow:hidden;">
+      container.innerHTML = `
+        <div style="position:relative;width:min(850px,90vw);border-radius:1rem;overflow:hidden;">
           <iframe src="${esc(url)}" frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen
@@ -1098,11 +1197,12 @@ function openLightbox(idx) {
           <div style="padding-top:56.25%;"></div>
         </div>`;
     }
-  } else if (isVideo) {
-    lb.innerHTML = `<video src="${esc(url)}" controls autoplay style="width:100%;max-height:82vh;border-radius:0.85rem;"></video>`;
+  } else if (isVid) {
+    container.innerHTML = `<video src="${esc(url)}" controls autoplay style="width:100%;max-height:82vh;border-radius:1rem;"></video>`;
   } else {
-    lb.innerHTML = `<img src="${esc(url)}" alt="Portfolio" style="width:100%;max-height:82vh;object-fit:contain;border-radius:0.85rem;"/>`;
+    container.innerHTML = `<img src="${esc(url)}" alt="Portfolio" style="width:100%;max-height:82vh;object-fit:contain;border-radius:1rem;"/>`;
   }
+
   document.getElementById('lightbox').classList.add('open');
 }
 
@@ -1138,24 +1238,25 @@ function fmtPrice(s) {
   if (!s.price) return '';
   const unit = s.unit || 'project';
   const num  = Number(s.price).toLocaleString('en-IN');
-  return `${num} / ${unit}`;
+  return `₹${num} / ${unit}`;
+}
+
+function strHue(s) {
+  let h = 0;
+  for (let i = 0; i < (s || '').length; i++) h = (h * 31 + s.charCodeAt(i)) & 0xffffffff;
+  return Math.abs(h) % 360;
 }
 
 function showToast(msg) {
   const t = document.getElementById('pp-toast');
+  if (!t) return;
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-function toggleTheme() {
-  const next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-  document.documentElement.className = next;
-  localStorage.setItem('cc-theme', next);
-}
-
 /* ═══════════════════════════════════════════════════════════════════
-   Portfolio Item Deletion & Title Editing Handlers
+   Portfolio Item Management Handlers
 ═══════════════════════════════════════════════════════════════════ */
 function toggleManageMenu(index, event) {
   if (event) event.stopPropagation();
@@ -1275,25 +1376,5 @@ async function savePortfolioTitle() {
   }
 }
 </script>
-
-<!-- Edit Title Modal -->
-<div id="edit-title-modal" style="display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);align-items:center;justify-content:center;">
-  <div style="background:#12141a;border:1px solid rgba(255,255,255,0.15);border-radius:1rem;padding:1.5rem;width:90%;max-width:420px;box-shadow:0 20px 50px rgba(0,0,0,0.8);">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-      <h3 style="font-size:1.1rem;font-weight:800;color:#fff;">Change Image Name</h3>
-      <button onclick="closeEditTitleModal()" style="background:none;border:none;color:#849495;cursor:pointer;"><span class="material-symbols-outlined">close</span></button>
-    </div>
-    <div style="margin-bottom:1.25rem;">
-      <label style="display:block;font-size:0.75rem;font-weight:700;color:#849495;text-transform:uppercase;margin-bottom:0.4rem;">New Title / Name</label>
-      <input type="text" id="edit-title-input" class="cc-input" style="width:100%;padding:0.7rem 0.9rem;border-radius:0.6rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.15);color:#fff;font-size:0.9rem;" placeholder="Enter image title…"/>
-    </div>
-    <div style="display:flex;gap:0.75rem;justify-content:flex-end;">
-      <button onclick="closeEditTitleModal()" style="padding:0.6rem 1rem;border-radius:0.6rem;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#fff;font-weight:700;cursor:pointer;">Cancel</button>
-      <button id="save-title-btn" onclick="savePortfolioTitle()" style="padding:0.6rem 1.25rem;border-radius:0.6rem;border:none;background:#00f0ff;color:#0b0c10;font-weight:800;cursor:pointer;">Save Name</button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
-
