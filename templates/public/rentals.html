@@ -898,20 +898,24 @@
         </button>
       </div>
 
-      <!-- Mobile Category Filter Dropdown -->
+      <!-- Mobile Category Filter Toolbar (Dropdown + Reset Button in 1 compact row) -->
       <div class="flex md:hidden items-center justify-between gap-2.5 w-full">
         <div class="relative flex-1">
-          <select id="mobile-rentals-category" onchange="onMobileRentalCategoryChange(this.value)" class="w-full glass-panel px-4 py-2.5 rounded-full text-xs font-bold text-slate-200 appearance-none pr-8 cursor-pointer focus:outline-none" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-            <option value="all" style="background: #101012; color: #fff;">All Categories</option>
-            <option value="camera" style="background: #101012; color: #fff;">📷 Cameras</option>
-            <option value="lens" style="background: #101012; color: #fff;">🔍 Lenses</option>
-            <option value="lighting" style="background: #101012; color: #fff;">💡 Lighting</option>
-            <option value="stabilizer" style="background: #101012; color: #fff;">⚖️ Stabilizers</option>
-            <option value="audio" style="background: #101012; color: #fff;">🎙️ Audio</option>
-            <option value="studio floor" style="background: #101012; color: #fff;">🎬 Studio Floors &amp; Soundstages</option>
+          <select id="mobile-rentals-category" onchange="onMobileRentalCategoryChange(this.value)" class="w-full px-4 py-2.5 rounded-full text-xs font-bold appearance-none pr-8 cursor-pointer focus:outline-none">
+            <option value="all">All Categories</option>
+            <option value="camera">📷 Cameras</option>
+            <option value="lens">🔍 Lenses</option>
+            <option value="lighting">💡 Lighting</option>
+            <option value="stabilizer">⚖️ Stabilizers</option>
+            <option value="audio">🎙️ Audio</option>
+            <option value="studio floor">🎬 Studio Floors &amp; Soundstages</option>
           </select>
-          <span class="material-symbols-outlined text-sm absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-cyan-400">filter_list</span>
+          <span class="material-symbols-outlined text-sm absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-teal-600 dark:text-cyan-400">filter_list</span>
         </div>
+        <button type="button" onclick="onMobileRentalCategoryChange('all')" class="px-3.5 py-2.5 rounded-full flex items-center gap-1.5 text-xs font-bold shrink-0 shadow-sm" style="background: var(--chip-bg, #e0e5ec); color: var(--text-main, #0f172a); box-shadow: var(--chip-shadow, 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff);">
+          <span class="material-symbols-outlined text-sm">restart_alt</span>
+          Reset
+        </button>
       </div>
     </div>
 

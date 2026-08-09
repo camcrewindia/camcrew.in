@@ -1207,3 +1207,81 @@ html.dark .sales-order-btn,
     font-size: 0.75rem !important;
   }
 }
+
+/* ════════════════════════════════════════════════════════════════
+   RENTALS PAGE HIGH-CONTRAST DUAL THEME & LIGHT MODE STYLES
+════════════════════════════════════════════════════════════════ */
+
+#mobile-rentals-category {
+  background: var(--chip-bg, #e0e5ec) !important;
+  color: var(--text-main, #0f172a) !important;
+  font-weight: 800 !important;
+  border: none !important;
+  box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
+}
+
+#mobile-rentals-category option {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+html.dark #mobile-rentals-category,
+[data-theme="dark"] #mobile-rentals-category {
+  background: #181a1d !important;
+  color: #f8fafc !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.12) !important;
+}
+
+html.dark #mobile-rentals-category option,
+[data-theme="dark"] #mobile-rentals-category option {
+  background: #181a1d !important;
+  color: #f8fafc !important;
+}
+
+/* Light Theme Overrides for Rentals Page Filter Bar & Hero Elements */
+[data-theme="light"] .filter-bar,
+html.light .filter-bar {
+  background: #e0e5ec !important;
+  border: none !important;
+  box-shadow: inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff !important;
+}
+
+[data-theme="light"] .filter-btn,
+html.light .filter-btn {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .filter-btn:hover,
+html.light .filter-btn:hover {
+  color: #0e5a6f !important;
+  background: rgba(14, 90, 111, 0.1) !important;
+}
+
+[data-theme="light"] .filter-btn.active,
+html.light .filter-btn.active {
+  background: #0e5a6f !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(14, 90, 111, 0.35) !important;
+}
+
+[data-theme="light"] .hero-sub,
+html.light .hero-sub {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+
+[data-theme="light"] .cc-btn-ghost,
+html.light .cc-btn-ghost {
+  background: #e0e5ec !important;
+  border: none !important;
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
+}
+
+[data-theme="light"] .cc-btn-ghost:hover,
+html.light .cc-btn-ghost:hover {
+  color: #0e5a6f !important;
+  box-shadow: 6px 6px 14px #b8c2cc, -6px -6px 14px #ffffff !important;
+}
