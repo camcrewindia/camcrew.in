@@ -976,3 +976,234 @@ html.light header #mobile-menu a:hover {
     border-radius: 999px !important;
   }
 }
+
+/* ════════════════════════════════════════════════════════════════
+   EXACT MATCH SALES PRODUCT CARD DESIGN (User Reference Screenshot)
+════════════════════════════════════════════════════════════════ */
+
+.sales-card {
+  border-radius: 32px !important;
+  background: transparent !important;
+  box-shadow: 8px 8px 24px #b8c2cc, -8px -8px 24px #ffffff !important;
+  overflow: hidden !important;
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+html.dark .sales-card,
+[data-theme="dark"] .sales-card {
+  box-shadow: 0 20px 45px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.12) !important;
+}
+
+.sales-card-banner {
+  height: 240px !important;
+  border-radius: 32px 32px 0 0 !important;
+  position: relative !important;
+  overflow: hidden !important;
+  background: #1e293b !important;
+}
+
+/* Dark Pill Badge Top Right */
+.sales-card-badge {
+  position: absolute !important;
+  top: 14px !important;
+  right: 14px !important;
+  z-index: 3 !important;
+  background: rgba(45, 48, 52, 0.88) !important;
+  backdrop-filter: blur(8px) !important;
+  color: #ffffff !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  padding: 0.35rem 0.85rem !important;
+  border-radius: 999px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25) !important;
+  letter-spacing: 0.02em !important;
+}
+
+.sales-card-info {
+  margin-top: -24px !important;
+  position: relative !important;
+  z-index: 4 !important;
+  background: #e2e6ea !important;
+  border-radius: 24px !important;
+  padding: 1.25rem 1.1rem 1.1rem !important;
+  box-shadow: 2px 2px 6px #b8c2cc, -2px -2px 6px #ffffff !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+html.dark .sales-card-info,
+[data-theme="dark"] .sales-card-info {
+  background: #181a1d !important;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08) !important;
+}
+
+.sales-card-name {
+  font-size: 1.18rem !important;
+  font-weight: 900 !important;
+  color: #0f172a !important;
+  line-height: 1.2 !important;
+  margin: 0 0 0.15rem 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+html.dark .sales-card-name,
+[data-theme="dark"] .sales-card-name {
+  color: #ffffff !important;
+}
+
+.sales-card-category {
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  color: #64748b !important;
+  margin: 0 0 0.2rem 0 !important;
+}
+
+.sales-card-specs {
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  color: #475569 !important;
+  margin: 0 0 0.75rem 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+html.dark .sales-card-specs,
+[data-theme="dark"] .sales-card-specs {
+  color: #94a3b8 !important;
+}
+
+.sales-card-price {
+  font-size: 1.45rem !important;
+  font-weight: 900 !important;
+  color: #0e5a6f !important;
+  margin: 0 0 0.85rem 0 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1 !important;
+}
+
+html.dark .sales-card-price,
+[data-theme="dark"] .sales-card-price {
+  color: #00f0ff !important;
+}
+
+/* Actions Row: Round Neumorphic Cart Icon Button + Wide Order Now Pill Button */
+.sales-card-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.65rem !important;
+}
+
+.sales-cart-icon-btn {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  border-radius: 50% !important;
+  background: #e2e6ea !important;
+  box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff !important;
+  border: none !important;
+  color: #0f172a !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.sales-cart-icon-btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
+}
+
+.sales-cart-icon-btn:active {
+  box-shadow: inset 2px 2px 5px #b8c2cc, inset -2px -2px 5px #ffffff !important;
+}
+
+html.dark .sales-cart-icon-btn,
+[data-theme="dark"] .sales-cart-icon-btn {
+  background: #22252a !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1) !important;
+  color: #00f0ff !important;
+}
+
+.sales-cart-icon-btn .material-symbols-outlined {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+}
+
+.sales-order-btn {
+  flex: 1 !important;
+  height: 44px !important;
+  border-radius: 999px !important;
+  background: #0e5a6f !important;
+  color: #ffffff !important;
+  font-size: 0.88rem !important;
+  font-weight: 800 !important;
+  border: none !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 14px rgba(14,90,111,0.35) !important;
+  transition: all 0.2s ease !important;
+}
+
+.sales-order-btn:hover {
+  background: #084252 !important;
+  box-shadow: 0 6px 18px rgba(14,90,111,0.5) !important;
+  transform: translateY(-1px) !important;
+}
+
+.sales-order-btn:active {
+  transform: translateY(1px) !important;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.4) !important;
+}
+
+html.dark .sales-order-btn,
+[data-theme="dark"] .sales-order-btn {
+  background: linear-gradient(135deg, #00f0ff 0%, #00c8e0 100%) !important;
+  color: #001f22 !important;
+  font-weight: 900 !important;
+  box-shadow: 0 4px 16px rgba(0,240,255,0.35) !important;
+}
+
+@media (max-width: 767px) {
+  .sales-card-banner {
+    height: 175px !important;
+  }
+  .sales-card-info {
+    margin-top: -12px !important;
+    padding: 0.75rem 0.65rem 0.75rem !important;
+  }
+  .sales-card-name {
+    font-size: 0.88rem !important;
+  }
+  .sales-card-category {
+    font-size: 0.72rem !important;
+  }
+  .sales-card-specs {
+    font-size: 0.65rem !important;
+    margin-bottom: 0.4rem !important;
+  }
+  .sales-card-price {
+    font-size: 1.05rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  .sales-cart-icon-btn {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+  }
+  .sales-cart-icon-btn .material-symbols-outlined {
+    font-size: 1rem !important;
+  }
+  .sales-order-btn {
+    height: 36px !important;
+    font-size: 0.75rem !important;
+  }
+}

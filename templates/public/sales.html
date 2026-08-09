@@ -500,49 +500,39 @@
 
     /* Build one card */
     function cardHtml(p, delay) {
-      const price      = parseFloat(p.price) || 0;
+      const price          = parseFloat(p.price) || 0;
       const formattedPrice = `₹${price.toLocaleString('en-IN')}`;
-      const imgSrc     = p.image_url || 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800';
-      const loc        = p.location || 'Mumbai, Maharashtra';
+      const imgSrc         = p.image_url || 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800';
+      const badgeText      = p.badge || 'Best Seller';
+      const categoryText   = p.category || 'Camera';
+      const specsText      = p.specs || p.description || '42 MP | 42000 ISO | 1.2 f | 50 mm Lens';
 
       return `
         <div class="pro-card-wrap product-card" data-product-id="${p.id}" style="transition-delay:${delay}s">
-          <div class="pro-card">
+          <div class="pro-card sales-card">
 
             <!-- Top Photo Banner -->
-            <div class="pro-card-banner">
+            <div class="pro-card-banner sales-card-banner">
               <img src="${imgSrc}" alt="${esc(p.name)}" class="pro-card-img" onerror="this.src='https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800'"/>
-              ${p.badge ? `<span class="badge-intl">${esc(p.badge)}</span>` : ''}
-              <div class="badge-verified" title="Verified Seller Gear">
-                <span class="material-symbols-outlined text-sm text-teal-700 font-bold">verified</span>
-              </div>
+              <span class="sales-card-badge">${esc(badgeText)}</span>
             </div>
 
             <!-- Floating Info Card Overlay -->
-            <div class="pro-card-info">
-              <h3 class="pro-card-name" title="${esc(p.name)}">${esc(p.name)}</h3>
-              <p class="pro-card-title">${esc(p.category || 'Professional Gear')}</p>
-
-              <!-- Location Row with Red Pin Icon -->
-              <div class="pro-card-loc">
-                <div class="loc-pin-icon">
-                  <span class="material-symbols-outlined">navigation</span>
-                </div>
-                <span class="loc-text" title="${esc(loc)}">${esc(loc)}</span>
-              </div>
+            <div class="pro-card-info sales-card-info">
+              <h3 class="sales-card-name" title="${esc(p.name)}">${esc(p.name)}</h3>
+              <p class="sales-card-category">${esc(categoryText)}</p>
+              <p class="sales-card-specs" title="${esc(specsText)}">${esc(specsText)}</p>
 
               <!-- Price Display -->
-              <div class="pro-card-rate">
-                ${esc(formattedPrice)}
-              </div>
+              <div class="sales-card-price">${esc(formattedPrice)}</div>
 
-              <!-- Action Buttons Grid -->
-              <div class="pro-card-buttons">
-                <button type="button" class="btn-view-profile" data-cart-btn data-pid="${p.id}">
-                  Cart
+              <!-- Action Buttons Row: Cart Icon Button + Order Now Pill Button -->
+              <div class="sales-card-actions">
+                <button type="button" class="sales-cart-icon-btn" data-cart-btn data-pid="${p.id}" title="Add to Cart">
+                  <span class="material-symbols-outlined">shopping_cart</span>
                 </button>
-                <button type="button" class="btn-book-now" data-cart-btn data-pid="${p.id}">
-                  Buy Now
+                <button type="button" class="sales-order-btn" data-cart-btn data-pid="${p.id}">
+                  Order Now
                 </button>
               </div>
             </div>
