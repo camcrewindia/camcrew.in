@@ -39,7 +39,7 @@ html.light {
     --text-muted: #475569 !important;
     --accent-color: #0e5a6f !important;
     --chip-bg: #e0e5ec !important;
-    --chip-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
+    --chip-shadow: 4px 6px 16px rgba(0, 0, 0, 0.07) !important;
     --border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
@@ -875,7 +875,7 @@ html.light header #mobile-menu a:hover {
     margin-top: -12px !important;
     padding: 0.75rem 0.65rem 0.75rem !important;
     border-radius: 16px !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 2px 2px 6px #b8c2cc, -2px -2px 6px #ffffff !important;
   }
   html.dark .pro-card-info,
   [data-theme="dark"] .pro-card-info {
@@ -1056,7 +1056,7 @@ html.dark .sales-card,
   border-radius: 32px 32px 0 0 !important;
   position: relative !important;
   overflow: hidden !important;
-  background: transparent !important;
+  background: #1e293b !important;
 }
 
 /* Dark Pill Badge Top Right */
@@ -1081,9 +1081,9 @@ html.dark .sales-card,
   position: relative !important;
   z-index: 4 !important;
   background: #e2e6ea !important;
-  border-radius: 24px 24px 32px 32px !important;
+  border-radius: 24px !important;
   padding: 1.25rem 1.1rem 1.1rem !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 2px 2px 6px #b8c2cc, -2px -2px 6px #ffffff !important;
   display: flex !important;
   flex-direction: column !important;
 }
@@ -1754,8 +1754,8 @@ html.light .kit-card,
 html.light .gear-card,
 html.light .hero-mini-card {
   background: #e0e5ec !important;
-  border: 1px solid rgba(255, 255, 255, 0.8) !important;
-  box-shadow: 8px 8px 24px #b8c2cc, -8px -8px 24px #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 4px 6px 16px rgba(0, 0, 0, 0.07) !important;
   color: #0f172a !important;
   backdrop-filter: none !important;
 }
@@ -2280,7 +2280,7 @@ html.light circle[stroke="#00f0ff"] {
   stroke: #0e5a6f !important;
 }
 
-/* ── Remove White Neumorphic Shadow Glow from ALL Cards in Light Mode ── */
+/* ── Remove White Shadow Glow & White Borders from All Cards in Light Mode ── */
 [data-theme="light"] .glass-panel,
 [data-theme="light"] .glass-card,
 [data-theme="light"] .pro-card-info,
@@ -2298,9 +2298,10 @@ html.light circle[stroke="#00f0ff"] {
 [data-theme="light"] .hero-mini-card,
 [data-theme="light"] .brief-card,
 [data-theme="light"] .service-card,
+[data-theme="light"] .product-image,
 [data-theme="light"] .sales-card,
-[data-theme="light"] .product-card,
-[data-theme="light"] .rental-card,
+[data-theme="light"] .rentals-card,
+[data-theme="light"] .card,
 html.light .glass-panel,
 html.light .glass-card,
 html.light .pro-card-info,
@@ -2318,60 +2319,24 @@ html.light .gear-card,
 html.light .hero-mini-card,
 html.light .brief-card,
 html.light .service-card,
+html.light .product-image,
 html.light .sales-card,
-html.light .product-card,
-html.light .rental-card {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+html.light .rentals-card,
+html.light .card {
+  box-shadow: 4px 6px 16px rgba(0, 0, 0, 0.07) !important;
   border: 1px solid rgba(0, 0, 0, 0.06) !important;
 }
 
-[data-theme="light"] .pro-card-info,
-html.light .pro-card-info {
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
-  border: 1px solid rgba(0, 0, 0, 0.06) !important;
-}
-
-/* ── Universal Fix for Card Bottom-Corner Background Bleed ── */
-.pro-card,
-.pro-card-wrap,
-.sales-card,
-.product-card,
-.rental-card,
-[class*="pro-card"] {
-  overflow: hidden !important;
-  border-radius: 28px !important;
-  background: transparent !important;
-}
-
-.pro-card-banner,
-.sales-card-banner,
-[class*="pro-card-banner"] {
-  border-radius: 28px 28px 0 0 !important;
-  background: transparent !important;
-  overflow: hidden !important;
-}
-
-.pro-card-info,
-.sales-card-info,
-[class*="pro-card-info"] {
-  border-radius: 20px 20px 28px 28px !important;
-}
-
-html.light .pro-card,
-html.light .pro-card-wrap,
-html.light .sales-card,
-html.light .product-card,
-html.light .rental-card,
-html.light .pro-card-banner,
-html.light .sales-card-banner,
-[data-theme="light"] .pro-card,
-[data-theme="light"] .pro-card-wrap,
-[data-theme="light"] .sales-card,
-[data-theme="light"] .product-card,
-[data-theme="light"] .rental-card,
-[data-theme="light"] .pro-card-banner,
-[data-theme="light"] .sales-card-banner {
-  background: transparent !important;
+[data-theme="light"] .glass-card:hover,
+[data-theme="light"] .service-card:hover,
+[data-theme="light"] .product-image:hover,
+[data-theme="light"] .brief-card:hover,
+html.light .glass-card:hover,
+html.light .service-card:hover,
+html.light .product-image:hover,
+html.light .brief-card:hover {
+  box-shadow: 6px 10px 24px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
 
