@@ -33,11 +33,11 @@
     --page-bg: #05070a;
     --text-main: #dce4e5;
     --text-muted: #b9cacb;
-    --card-bg: #0f172a;
-    --card-shadow: 0 20px 45px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.12);
-    --border-color: rgba(255, 255, 255, 0.12);
+    --card-bg: #181a1d;
+    --card-shadow: 0 6px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
+    --border-color: rgba(255, 255, 255, 0.08);
     --accent: #00dbe9;
-    --buybox-bg: #0f172a;
+    --buybox-bg: #181a1d;
   }
   body {
     background-color: var(--page-bg) !important;
@@ -57,13 +57,13 @@
   html.dark .text-slate-500, html.dark .text-slate-400 {
     color: #94a3b8 !important;
   }
-  html.dark .offer-card, html.dark .buy-box {
-    background: rgba(15, 23, 42, 0.85) !important;
-    border-color: rgba(255, 255, 255, 0.12) !important;
-    box-shadow: 0 20px 45px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.12) !important;
+  .product-main-viewer {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
   }
   html.dark .thumb-btn {
-    background: rgba(15, 23, 42, 0.8) !important;
+    background: #181a1d !important;
   }
   html.dark .thumb-btn.active {
     border-color: #00dbe9 !important;
@@ -118,6 +118,17 @@
     border: 1px solid var(--border-color);
     box-shadow: var(--card-shadow);
     border-radius: 20px;
+  }
+  .spec-table {
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    box-shadow: var(--card-shadow);
+  }
+  .spec-row-even {
+    background: rgba(0, 0, 0, 0.02);
+  }
+  html.dark .spec-row-even {
+    background: rgba(255, 255, 255, 0.03);
   }
 </style>
 </head>
@@ -180,7 +191,7 @@
       </div>
 
       <!-- Main Viewer Box -->
-      <div class="flex-1 relative order-1 sm:order-2 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 flex flex-col items-center justify-center group min-h-[380px] sm:min-h-[460px] shadow-sm">
+      <div class="flex-1 relative order-1 sm:order-2 rounded-2xl overflow-hidden product-main-viewer p-4 flex flex-col items-center justify-center group min-h-[380px] sm:min-h-[460px]">
         
         <!-- Badges -->
         <div class="absolute top-4 left-4 z-10 flex flex-col gap-1.5 items-start">
@@ -309,8 +320,8 @@
       <!-- Technical Specifications Table -->
       <div>
         <h3 class="text-sm font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider mb-3">Technical Specifications</h3>
-        <div class="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 text-xs">
-          <div class="grid grid-cols-2 p-2.5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+        <div class="rounded-xl overflow-hidden spec-table text-xs">
+          <div class="grid grid-cols-2 p-2.5 spec-row-even border-b border-slate-200 dark:border-slate-800">
             <span class="font-bold text-slate-500 dark:text-slate-400">Compatible Mountings</span>
             <span id="spec-mount" class="font-semibold text-slate-800 dark:text-slate-200">Sony E-Mount</span>
           </div>
@@ -318,7 +329,7 @@
             <span class="font-bold text-slate-500 dark:text-slate-400">Photo Sensor Tech</span>
             <span id="spec-sensor" class="font-semibold text-slate-800 dark:text-slate-200">26.0 MP Exmor R CMOS</span>
           </div>
-          <div class="grid grid-cols-2 p-2.5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+          <div class="grid grid-cols-2 p-2.5 spec-row-even border-b border-slate-200 dark:border-slate-800">
             <span class="font-bold text-slate-500 dark:text-slate-400">Video Resolution</span>
             <span id="spec-video" class="font-semibold text-slate-800 dark:text-slate-200">4K 120p / 4K 60p Oversampled</span>
           </div>
@@ -326,7 +337,7 @@
             <span class="font-bold text-slate-500 dark:text-slate-400">Image Stabilization</span>
             <span id="spec-stabilization" class="font-semibold text-slate-800 dark:text-slate-200">5-Axis Sensor-Shift</span>
           </div>
-          <div class="grid grid-cols-2 p-2.5 bg-slate-50 dark:bg-slate-900">
+          <div class="grid grid-cols-2 p-2.5 spec-row-even">
             <span class="font-bold text-slate-500 dark:text-slate-400">Supported File Format</span>
             <span id="spec-format" class="font-semibold text-slate-800 dark:text-slate-200">RAW, HEIF, JPEG, XAVC S</span>
           </div>
