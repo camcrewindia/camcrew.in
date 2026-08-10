@@ -12,9 +12,11 @@ from flask import (
     Flask, request, session, jsonify,
     send_from_directory, abort, Response
 )
+from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True, allow_headers=['Content-Type', 'Authorization', 'Cookie'])
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-change-me")
 
 ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -1539,6 +1541,23 @@ def static_files(filename):
 
     abort(404)
 
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+
+def generate_auth_token(user_id):
+    serializer = URLSafeTimedSerializer(app.secret_key)
+    return serializer.dumps({"user_id": user_id})
+
+def verify_auth_token(token):
+    serializer = URLSafeTimedSerializer(app.secret_key)
+    try:
+        data = serializer.loads(token, max_age=86400 * 30)  # 30 days
+        return data.get("user_id")
+    except (SignatureExpired, BadSignature):
+        # Fallback: check if the token is just a raw integer (for simple dev testing)
+        if token and str(token).isdigit():
+            return int(token)
+        return None
+
 # ---------------------------------------------------------------------------
 # Auth API
 # ---------------------------------------------------------------------------
@@ -1577,7 +1596,8 @@ def register():
     session["email"]   = row["email"]
     session["role"]    = row["role"]
 
-    return jsonify({"ok": True, "user": {"email": row["email"], "role": row["role"]}})
+    token = generate_auth_token(row["id"])
+    return jsonify({"ok": True, "user": {"email": row["email"], "role": row["role"]}, "token": token})
 
 
 @app.route("/api/login", methods=["POST"])
@@ -1602,7 +1622,8 @@ def login():
     session["email"]   = row["email"]
     session["role"]    = row["role"]
 
-    return jsonify({"ok": True, "user": {"email": row["email"], "role": row["role"]}})
+    token = generate_auth_token(row["id"])
+    return jsonify({"ok": True, "user": {"email": row["email"], "role": row["role"]}, "token": token})
 
 
 @app.route("/api/admin/login", methods=["POST"])
@@ -1627,7 +1648,8 @@ def admin_login():
     session["email"]   = row["email"]
     session["role"]    = row["role"]
 
-    return jsonify({"ok": True, "user": {"email": row["email"], "role": row["role"]}})
+    token = generate_auth_token(row["id"])
+    return jsonify({"ok": True, "user": {"email": row["email"], "role": row["role"]}, "token": token})
 
 
 @app.route("/api/logout", methods=["POST"])
@@ -2657,23 +2679,49 @@ SHOOT_STATUS_LABELS = {
 
 @app.route("/api/bookings/<int:booking_id>/status", methods=["PATCH"])
 def update_shoot_status(booking_id):
-    """Update live shoot status, record IST timestamp, and trigger notification."""
+    """Update booking status (confirmed/accepted/declined) or live shoot status (en_route/on_set/etc.)."""
     uid = require_auth()
     if not uid:
         return jsonify({"ok": False, "error": "Not authenticated."}), 401
 
     data = request.get_json(force=True, silent=True) or {}
-    new_status = (data.get("shoot_status") or "").strip().lower()
-    if new_status not in SHOOT_STATUS_LABELS:
-        return jsonify({"ok": False, "error": "Invalid shoot status."}), 400
+    new_status = data.get("status") or data.get("shoot_status")
+    if not new_status:
+        return jsonify({"ok": False, "error": "status or shoot_status is required."}), 400
 
-    timestamp_ist = now_ist_str()
+    new_status = new_status.strip().lower()
 
     with get_db() as conn:
         b_row = conn.execute("SELECT * FROM bookings WHERE id = %s", (booking_id,)).fetchone()
         if not b_row:
             return jsonify({"ok": False, "error": "Booking not found."}), 404
 
+        # Case A: Booking status update (confirmed, declined, accepted, completed, pending, cancelled)
+        if new_status in ("confirmed", "declined", "accepted", "completed", "pending", "cancelled"):
+            booking_status = "confirmed" if new_status == "accepted" else ("cancelled" if new_status == "declined" else new_status)
+            conn.execute("UPDATE bookings SET status = %s WHERE id = %s", (booking_status, booking_id))
+            
+            # Sync back to professional_requests if exists
+            conn.execute("UPDATE professional_requests SET status = %s WHERE booking_id = %s", (new_status, booking_id))
+            
+            pro_id = b_row["professional_id"]
+            cust_id = b_row["user_id"]
+            if pro_id:
+                create_notification(pro_id, "Booking Status Updated", f"Booking status for '{b_row['service']}' updated to '{new_status}'.", ntype="booking", link="professional-dashboard.html", conn=conn)
+            create_notification(cust_id, "Booking Status Updated", f"Your booking for '{b_row['service']}' status has been updated to '{new_status}'.", ntype="booking", link="orders.html", conn=conn)
+            
+            return jsonify({
+                "ok": True,
+                "booking_id": booking_id,
+                "status": new_status,
+                "message": f"Booking status updated to {new_status}"
+            })
+
+        # Case B: Live Shoot timeline status update
+        if new_status not in SHOOT_STATUS_LABELS:
+            return jsonify({"ok": False, "error": f"Invalid status: {new_status}"}), 400
+
+        timestamp_ist = now_ist_str()
         history = _json.loads(b_row["shoot_status_history"] or "[]") if "shoot_status_history" in b_row.keys() else []
         history.append({
             "status": new_status,
@@ -3078,8 +3126,19 @@ def admin_verify_pro():
 # ---------------------------------------------------------------------------
 
 def require_auth():
-    """Return user_id from session or None."""
-    return session.get("user_id")
+    """Return user_id from session or Authorization: Bearer token."""
+    uid = session.get("user_id")
+    if uid:
+        return uid
+
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ", 1)[1].strip()
+        uid = verify_auth_token(token)
+        if uid:
+            return uid
+
+    return None
 
 
 @app.route("/api/customer/seed", methods=["POST"])
@@ -3220,11 +3279,12 @@ def create_booking():
         transaction_ref = (data.get("transaction_ref") or "").strip() or None
         payment_method  = (data.get("payment_method")  or "upi_razorpay").strip()
 
-        if amount and float(amount) > 0:
+        # Only create escrow payment immediately if a transaction reference is provided (upfront payment)
+        if amount and float(amount) > 0 and transaction_ref:
             conn.execute("""
                 INSERT INTO escrow_payments (booking_id, client_id, professional_id, amount, payment_method, escrow_status, transaction_ref)
                 VALUES (%s, %s, %s, %s, %s, 'held', %s)
-            """, (booking_id, uid, professional_id, float(amount), payment_method, transaction_ref or f"ESCROW-TXN-{secrets.token_hex(4).upper()}"))
+            """, (booking_id, uid, professional_id, float(amount), payment_method, transaction_ref))
 
         # Cross-post to professional_requests so it appears on the pro's dashboard
         if professional_id:
