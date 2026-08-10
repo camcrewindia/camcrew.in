@@ -1548,8 +1548,14 @@ function renderGearGrid(list) {
 
       </div>
     `;
+    const isLight = document.documentElement.classList.contains('light');
+    if (isLight) {
+      div.classList.add('active');
+    }
     grid.appendChild(div);
-    revealObs.observe(div);
+    if (!isLight) {
+      requestAnimationFrame(() => { revealObs.observe(div); });
+    }
   });
 }
 

@@ -260,6 +260,13 @@ body {
     transform: translateY(0);
 }
 
+/* Light theme: disable scroll reveal animations — show everything immediately */
+html.light .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+}
+
 /* ── Float Animation ─────────────────────────────────────────────── */
 @keyframes float {
     0%, 100% { transform: translateY(0px) rotate(0deg); }
