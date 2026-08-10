@@ -2182,4 +2182,74 @@ html.light .shipping-opt.border-primary-container\/40 {
   box-shadow: inset 2px 2px 5px #b8c2cc, inset -2px -2px 5px #ffffff !important;
 }
 
+/* ── Global Light Theme Accent Color Overrides (Cyan to Dark Teal #0e5a6f) ── */
+html.light .text-primary-container,
+html.light .text-primary-fixed-dim,
+html.light .text-primary-fixed,
+html.light .text-surface-tint,
+html.light .text-cyan-400,
+html.light .text-cyan-500,
+html.light .text-primary-container * {
+  color: #0e5a6f !important;
+}
+
+html.light .bg-primary-container,
+html.light .bg-primary-fixed-dim,
+html.light .bg-primary-fixed,
+html.light .bg-surface-tint,
+html.light .bg-cyan-400,
+html.light .bg-cyan-500 {
+  background-color: #0e5a6f !important;
+}
+
+html.light .border-primary-container,
+html.light .border-primary-fixed-dim,
+html.light .border-primary-fixed,
+html.light .border-surface-tint,
+html.light .border-cyan-400,
+html.light .border-cyan-500 {
+  border-color: #0e5a6f !important;
+}
+
+/* Inline Styles Overrides for Cyan Texts, Backgrounds, and Borders */
+html.light [style*="color:#00dbe9"],
+html.light [style*="color: #00dbe9"],
+html.light [style*="color:#00f0ff"],
+html.light [style*="color: #00f0ff"],
+html.light [style*="color:cyan"],
+html.light [style*="color: cyan"] {
+  color: #0e5a6f !important;
+}
+
+html.light [style*="background:#00dbe9"],
+html.light [style*="background: #00dbe9"],
+html.light [style*="background-color:#00dbe9"],
+html.light [style*="background-color: #00dbe9"] {
+  background-color: #0e5a6f !important;
+}
+
+html.light [style*="border-color:#00dbe9"],
+html.light [style*="border-color: #00dbe9"] {
+  border-color: #0e5a6f !important;
+}
+
+/* SVG Fill and Stroke Overrides for Cyan elements in Light Mode */
+html.light svg[fill="#00dbe9"],
+html.light svg[fill="#00f0ff"],
+html.light path[fill="#00dbe9"],
+html.light path[fill="#00f0ff"],
+html.light circle[fill="#00dbe9"],
+html.light circle[fill="#00f0ff"] {
+  fill: #0e5a6f !important;
+}
+
+html.light svg[stroke="#00dbe9"],
+html.light svg[stroke="#00f0ff"],
+html.light path[stroke="#00dbe9"],
+html.light path[stroke="#00f0ff"],
+html.light circle[stroke="#00dbe9"],
+html.light circle[stroke="#00f0ff"] {
+  stroke: #0e5a6f !important;
+}
+
 
