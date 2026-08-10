@@ -3911,9 +3911,7 @@ def list_rental_equipment():
         if category and category.lower() != "all":
             rows = conn.execute(
                 """SELECT re.*, 
-                          COALESCE(pp.full_name, u.display_name, 'CamCrew Partner') AS professional_name,
-                          COALESCE(pp.location, 'Mumbai, Maharashtra') AS location,
-                          pp.city, pp.state
+                          COALESCE(u.display_name, pp.username, 'CamCrew Partner') AS professional_name
                    FROM rental_equipment re
                    LEFT JOIN users u ON u.id = re.professional_id
                    LEFT JOIN professional_profiles pp ON pp.user_id = re.professional_id
@@ -3925,9 +3923,7 @@ def list_rental_equipment():
         else:
             rows = conn.execute(
                 """SELECT re.*, 
-                          COALESCE(pp.full_name, u.display_name, 'CamCrew Partner') AS professional_name,
-                          COALESCE(pp.location, 'Mumbai, Maharashtra') AS location,
-                          pp.city, pp.state
+                          COALESCE(u.display_name, pp.username, 'CamCrew Partner') AS professional_name
                    FROM rental_equipment re
                    LEFT JOIN users u ON u.id = re.professional_id
                    LEFT JOIN professional_profiles pp ON pp.user_id = re.professional_id
