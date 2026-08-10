@@ -572,6 +572,14 @@ def init_db():
         """)
         # Migrate: add seller_id to products for professional-listed items
         conn.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS seller_id INTEGER")
+        conn.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS mrp REAL")
+        conn.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS discount_pct INTEGER")
+        conn.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS spec_mount TEXT")
+        conn.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS spec_sensor TEXT")
+        conn.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS spec_video TEXT")
+        conn.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS spec_stabilization TEXT")
+        conn.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS spec_format TEXT")
+        conn.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS about_bullets TEXT")
 
 
 def seed_demo_data(user_id):
@@ -3746,11 +3754,22 @@ def create_product():
     image_url   = (data.get("image_url") or "").strip() or None
     badge       = (data.get("badge") or "").strip() or None
 
+    mrp                = float(data.get("mrp") or 0) if data.get("mrp") else None
+    discount_pct       = int(data.get("discount_pct") or 0) if data.get("discount_pct") else None
+    spec_mount         = (data.get("spec_mount") or "").strip() or None
+    spec_sensor        = (data.get("spec_sensor") or "").strip() or None
+    spec_video         = (data.get("spec_video") or "").strip() or None
+    spec_stabilization = (data.get("spec_stabilization") or "").strip() or None
+    spec_format        = (data.get("spec_format") or "").strip() or None
+    about_bullets      = (data.get("about_bullets") or "").strip() or None
+
     with get_db() as conn:
         conn.execute(
-            """INSERT INTO products (name, sku, category, price, stock, description, image_url, badge)
-               VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
-            (name, sku, category, price, stock, description, image_url, badge)
+            """INSERT INTO products (name, sku, category, price, stock, description, image_url, badge,
+                                     mrp, discount_pct, spec_mount, spec_sensor, spec_video, spec_stabilization, spec_format, about_bullets)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+            (name, sku, category, price, stock, description, image_url, badge,
+             mrp, discount_pct, spec_mount, spec_sensor, spec_video, spec_stabilization, spec_format, about_bullets)
         )
         conn.commit()
         product = conn.execute(
@@ -3786,8 +3805,10 @@ def update_product(product_id):
     if not user or user["role"] != "admin":
         return jsonify({"ok": False, "error": "Admin only."}), 403
 
-    data    = request.get_json(force=True, silent=True) or {}
-    allowed = ["name", "sku", "category", "price", "stock", "description", "image_url", "badge"]
+    allowed = [
+        "name", "sku", "category", "price", "stock", "description", "image_url", "badge",
+        "mrp", "discount_pct", "spec_mount", "spec_sensor", "spec_video", "spec_stabilization", "spec_format", "about_bullets"
+    ]
     sets    = []
     vals    = []
     for key in allowed:

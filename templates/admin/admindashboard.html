@@ -756,6 +756,76 @@
             </div>
           </div>
         </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;margin-top:0.9rem;">
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">M.R.P. Price <span style="color:#94a3b8;text-transform:none;letter-spacing:0;font-weight:400;">(optional)</span></label>
+            <div class="pf-field-wrap">
+              <span style="font-size:0.92rem;font-weight:800;color:#475569;flex-shrink:0;line-height:1;">₹</span>
+              <input id="pf-mrp" type="number" min="0" step="0.01" placeholder="Original Price" class="pf-input"/>
+            </div>
+          </div>
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Discount % <span style="color:#94a3b8;text-transform:none;letter-spacing:0;font-weight:400;">(optional)</span></label>
+            <div class="pf-field-wrap">
+              <span class="material-symbols-outlined pf-field-icon">percent</span>
+              <input id="pf-discount-pct" type="number" min="0" max="100" placeholder="e.g. 14" class="pf-input"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Technical Specifications -->
+      <div style="margin-bottom:1.25rem;">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
+          <span class="material-symbols-outlined" style="font-size:0.95rem;color:#0369a1;">settings_suggest</span>
+          <span style="font-size:0.68rem;font-weight:800;letter-spacing:0.12em;color:#0369a1;text-transform:uppercase;">Technical Specifications</span>
+          <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(3,105,161,0.25),transparent);"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;margin-bottom:0.9rem;">
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Compatible Mountings</label>
+            <div class="pf-field-wrap">
+              <span class="material-symbols-outlined pf-field-icon">hardware</span>
+              <input id="pf-spec-mount" type="text" placeholder="e.g. Sony E-Mount" class="pf-input"/>
+            </div>
+          </div>
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Photo Sensor Tech</label>
+            <div class="pf-field-wrap">
+              <span class="material-symbols-outlined pf-field-icon">photo_camera</span>
+              <input id="pf-spec-sensor" type="text" placeholder="e.g. 26.0 MP CMOS" class="pf-input"/>
+            </div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;margin-bottom:0.9rem;">
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Video Resolution</label>
+            <div class="pf-field-wrap">
+              <span class="material-symbols-outlined pf-field-icon">videocam</span>
+              <input id="pf-spec-video" type="text" placeholder="e.g. 4K 120p" class="pf-input"/>
+            </div>
+          </div>
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Image Stabilization</label>
+            <div class="pf-field-wrap">
+              <span class="material-symbols-outlined pf-field-icon">screen_rotation</span>
+              <input id="pf-spec-stabilization" type="text" placeholder="e.g. 5-Axis Shift" class="pf-input"/>
+            </div>
+          </div>
+        </div>
+        <div style="margin-bottom:0.9rem;">
+          <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Supported File Format</label>
+          <div class="pf-field-wrap">
+            <span class="material-symbols-outlined pf-field-icon">description</span>
+            <input id="pf-spec-format" type="text" placeholder="e.g. RAW, JPEG, XAVC S" class="pf-input"/>
+          </div>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">About This Item (One bullet per line)</label>
+          <div class="pf-field-wrap" style="align-items:flex-start;padding-top:0.7rem;">
+            <span class="material-symbols-outlined pf-field-icon" style="margin-top:1px;">list</span>
+            <textarea id="pf-about-bullets" rows="3" placeholder="Bullet feature 1&#10;Bullet feature 2&#10;Bullet feature 3" class="pf-input" style="resize:none;line-height:1.55;"></textarea>
+          </div>
+        </div>
       </div>
       <!-- Media & Meta -->
       <div style="margin-bottom:1.25rem;">
@@ -1053,17 +1123,25 @@ function pfResetBadgeChips(val) {
       subIcon.textContent  = 'add_box';
       subLbl.textContent   = 'Add Product';
     }
-    document.getElementById('pf-edit-id').value       = prefill ? prefill.id           : '';
-    document.getElementById('pf-name').value          = prefill ? prefill.name         : '';
-    document.getElementById('pf-category').value      = prefill ? (prefill.category || '') : '';
-    document.getElementById('pf-sku').value           = prefill ? (prefill.sku || '')  : '';
-    document.getElementById('pf-price').value         = prefill ? prefill.price        : '';
-    document.getElementById('pf-stock').value         = prefill ? prefill.stock        : '';
-    document.getElementById('pf-image-url').value     = prefill ? (prefill.image_url || '') : '';
-    document.getElementById('pf-description').value   = prefill ? (prefill.description || '') : '';
+    document.getElementById('pf-edit-id').value           = prefill ? prefill.id               : '';
+    document.getElementById('pf-name').value              = prefill ? prefill.name             : '';
+    document.getElementById('pf-category').value          = prefill ? (prefill.category || '') : '';
+    document.getElementById('pf-sku').value               = prefill ? (prefill.sku || '')      : '';
+    document.getElementById('pf-price').value             = prefill ? prefill.price            : '';
+    document.getElementById('pf-stock').value             = prefill ? prefill.stock            : '';
+    document.getElementById('pf-mrp').value               = prefill ? (prefill.mrp || '')      : '';
+    document.getElementById('pf-discount-pct').value      = prefill ? (prefill.discount_pct || '') : '';
+    document.getElementById('pf-spec-mount').value        = prefill ? (prefill.spec_mount || '') : '';
+    document.getElementById('pf-spec-sensor').value       = prefill ? (prefill.spec_sensor || '') : '';
+    document.getElementById('pf-spec-video').value        = prefill ? (prefill.spec_video || '') : '';
+    document.getElementById('pf-spec-stabilization').value = prefill ? (prefill.spec_stabilization || '') : '';
+    document.getElementById('pf-spec-format').value       = prefill ? (prefill.spec_format || '') : '';
+    document.getElementById('pf-about-bullets').value     = prefill ? (prefill.about_bullets || '') : '';
+    document.getElementById('pf-image-url').value         = prefill ? (prefill.image_url || '') : '';
+    document.getElementById('pf-description').value       = prefill ? (prefill.description || '') : '';
     pfResetBadgeChips(prefill ? (prefill.badge || '') : '');
     pfUpdatePreview(prefill ? (prefill.image_url || '') : '');
-    document.getElementById('pf-error').style.display = 'none';
+    document.getElementById('pf-error').style.display     = 'none';
     overlay.style.display = 'flex';
     requestAnimationFrame(() => {
       modal.style.transform = 'scale(1)';
@@ -1120,6 +1198,14 @@ function pfResetBadgeChips(val) {
       badge:       document.getElementById('pf-badge').value.trim(),
       image_url:   document.getElementById('pf-image-url').value.trim(),
       description: document.getElementById('pf-description').value.trim(),
+      mrp:         parseFloat(document.getElementById('pf-mrp').value) || null,
+      discount_pct: parseInt(document.getElementById('pf-discount-pct').value) || null,
+      spec_mount:  document.getElementById('pf-spec-mount').value.trim(),
+      spec_sensor: document.getElementById('pf-spec-sensor').value.trim(),
+      spec_video:  document.getElementById('pf-spec-video').value.trim(),
+      spec_stabilization: document.getElementById('pf-spec-stabilization').value.trim(),
+      spec_format: document.getElementById('pf-spec-format').value.trim(),
+      about_bullets: document.getElementById('pf-about-bullets').value.trim()
     };
     const btn      = document.getElementById('pf-submit-btn');
     const btnIcon  = document.getElementById('pf-submit-icon');

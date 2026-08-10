@@ -567,7 +567,7 @@
   function renderProductDetail(p) {
     const price = parseFloat(p.price) || 0;
     const formattedPrice = `₹${price.toLocaleString('en-IN')}`;
-    const mrp = Math.round(price * 1.16);
+    const mrp = p.mrp ? parseFloat(p.mrp) : Math.round(price * 1.16);
     const formattedMrp = `M.R.P.: ₹${mrp.toLocaleString('en-IN')}`;
     const defaultImg = p.image_url || 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800';
 
@@ -581,6 +581,10 @@
     document.getElementById('product-price').textContent = formattedPrice;
     document.getElementById('buybox-price').textContent = formattedPrice;
     document.getElementById('product-mrp').textContent = formattedMrp;
+
+    // Discount percentage
+    const discountPct = p.discount_pct || Math.round(((mrp - price) / mrp) * 100);
+    document.getElementById('discount-pct').textContent = `-${discountPct}%`;
 
     // Badges & Seller
     document.getElementById('product-badge').textContent = p.badge || 'Best Seller';
@@ -607,10 +611,43 @@
     `).join('');
 
     // Tech Specs Overrides
-    if (p.category && p.category.toLowerCase().includes('lens')) {
+    if (p.spec_mount) document.getElementById('spec-mount').textContent = p.spec_mount;
+    else if (p.category && p.category.toLowerCase().includes('lens')) {
       document.getElementById('spec-mount').textContent = 'PL / E-Mount';
+    } else {
+      document.getElementById('spec-mount').textContent = 'Sony E-Mount';
+    }
+
+    if (p.spec_sensor) document.getElementById('spec-sensor').textContent = p.spec_sensor;
+    else if (p.category && p.category.toLowerCase().includes('lens')) {
       document.getElementById('spec-sensor').textContent = 'Full Frame Optics';
+    } else {
+      document.getElementById('spec-sensor').textContent = '26.0 MP Exmor R CMOS';
+    }
+
+    if (p.spec_video) document.getElementById('spec-video').textContent = p.spec_video;
+    else if (p.category && p.category.toLowerCase().includes('lens')) {
       document.getElementById('spec-video').textContent = 'Cine-grade T1.5 Aperture';
+    } else {
+      document.getElementById('spec-video').textContent = '4K 120p / 4K 60p Oversampled';
+    }
+
+    if (p.spec_stabilization) document.getElementById('spec-stabilization').textContent = p.spec_stabilization;
+    else {
+      document.getElementById('spec-stabilization').textContent = '5-Axis Sensor-Shift';
+    }
+
+    if (p.spec_format) document.getElementById('spec-format').textContent = p.spec_format;
+    else {
+      document.getElementById('spec-format').textContent = 'RAW, HEIF, JPEG, XAVC S';
+    }
+
+    // Bullet points
+    if (p.about_bullets) {
+      const bullets = p.about_bullets.split('\n').map(b => b.trim()).filter(Boolean);
+      if (bullets.length) {
+        document.getElementById('about-bullets').innerHTML = bullets.map(b => `<li>${esc(b)}</li>`).join('');
+      }
     }
   }
 

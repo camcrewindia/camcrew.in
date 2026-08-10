@@ -522,6 +522,77 @@
             </div>
           </div>
         </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;margin-top:0.9rem;">
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">M.R.P. Price <span style="color:#94a3b8;text-transform:none;letter-spacing:0;font-weight:400;">(optional)</span></label>
+            <div class="pf-field-wrap">
+              <span style="font-size:0.92rem;font-weight:800;color:#475569;flex-shrink:0;line-height:1;">₹</span>
+              <input id="pf-mrp" type="number" min="0" step="0.01" placeholder="Original Price" class="pf-input"/>
+            </div>
+          </div>
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Discount % <span style="color:#94a3b8;text-transform:none;letter-spacing:0;font-weight:400;">(optional)</span></label>
+            <div class="pf-field-wrap">
+              <span class="material-symbols-outlined pf-field-icon">percent</span>
+              <input id="pf-discount-pct" type="number" min="0" max="100" placeholder="e.g. 14" class="pf-input"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION: Technical Specifications ── -->
+      <div style="margin-bottom:1.25rem;">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
+          <span class="material-symbols-outlined" style="font-size:0.95rem;color:#0369a1;">settings_suggest</span>
+          <span style="font-size:0.68rem;font-weight:800;letter-spacing:0.12em;color:#0369a1;text-transform:uppercase;">Technical Specifications</span>
+          <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(3,105,161,0.25),transparent);"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;margin-bottom:0.9rem;">
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Compatible Mountings</label>
+            <div class="pf-field-wrap">
+              <span class="material-symbols-outlined pf-field-icon">hardware</span>
+              <input id="pf-spec-mount" type="text" placeholder="e.g. Sony E-Mount" class="pf-input"/>
+            </div>
+          </div>
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Photo Sensor Tech</label>
+            <div class="pf-field-wrap">
+              <span class="material-symbols-outlined pf-field-icon">photo_camera</span>
+              <input id="pf-spec-sensor" type="text" placeholder="e.g. 26.0 MP CMOS" class="pf-input"/>
+            </div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;margin-bottom:0.9rem;">
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Video Resolution</label>
+            <div class="pf-field-wrap">
+              <span class="material-symbols-outlined pf-field-icon">videocam</span>
+              <input id="pf-spec-video" type="text" placeholder="e.g. 4K 120p" class="pf-input"/>
+            </div>
+          </div>
+          <div>
+            <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Image Stabilization</label>
+            <div class="pf-field-wrap">
+              <span class="material-symbols-outlined pf-field-icon">screen_rotation</span>
+              <input id="pf-spec-stabilization" type="text" placeholder="e.g. 5-Axis Shift" class="pf-input"/>
+            </div>
+          </div>
+        </div>
+        <div style="margin-bottom:0.9rem;">
+          <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">Supported File Format</label>
+          <div class="pf-field-wrap">
+            <span class="material-symbols-outlined pf-field-icon">description</span>
+            <input id="pf-spec-format" type="text" placeholder="e.g. RAW, JPEG, XAVC S" class="pf-input"/>
+          </div>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;color:#475569;text-transform:uppercase;margin-bottom:0.4rem;">About This Item (One bullet per line)</label>
+          <div class="pf-field-wrap" style="align-items:flex-start;padding-top:0.7rem;">
+            <span class="material-symbols-outlined pf-field-icon" style="margin-top:1px;">list</span>
+            <textarea id="pf-about-bullets" rows="3" placeholder="Bullet feature 1&#10;Bullet feature 2&#10;Bullet feature 3" class="pf-input" style="resize:none;line-height:1.55;"></textarea>
+          </div>
+        </div>
       </div>
 
       <!-- ── SECTION: Media & Meta ── -->
@@ -719,14 +790,22 @@ function pfResetBadgeChips(val) {
 
   /* Field shortcuts */
   const F = {
-    name:        () => document.getElementById('pf-name'),
-    sku:         () => document.getElementById('pf-sku'),
-    category:    () => document.getElementById('pf-category'),
-    stock:       () => document.getElementById('pf-stock'),
-    price:       () => document.getElementById('pf-price'),
-    description: () => document.getElementById('pf-description'),
-    image_url:   () => document.getElementById('pf-image-url'),
-    badge:       () => document.getElementById('pf-badge'),
+    name:              () => document.getElementById('pf-name'),
+    sku:               () => document.getElementById('pf-sku'),
+    category:          () => document.getElementById('pf-category'),
+    stock:             () => document.getElementById('pf-stock'),
+    price:             () => document.getElementById('pf-price'),
+    mrp:               () => document.getElementById('pf-mrp'),
+    discount_pct:      () => document.getElementById('pf-discount-pct'),
+    spec_mount:        () => document.getElementById('pf-spec-mount'),
+    spec_sensor:       () => document.getElementById('pf-spec-sensor'),
+    spec_video:        () => document.getElementById('pf-spec-video'),
+    spec_stabilization: () => document.getElementById('pf-spec-stabilization'),
+    spec_format:       () => document.getElementById('pf-spec-format'),
+    about_bullets:     () => document.getElementById('pf-about-bullets'),
+    description:       () => document.getElementById('pf-description'),
+    image_url:         () => document.getElementById('pf-image-url'),
+    badge:             () => document.getElementById('pf-badge'),
   };
 
   function openModal(prefill) {
@@ -737,14 +816,22 @@ function pfResetBadgeChips(val) {
       modalIcon.textContent   = 'edit';
       submitIcon.textContent  = 'save';
       submitLabel.textContent = 'Save Changes';
-      F.name().value        = prefill.name        || '';
-      F.sku().value         = prefill.sku         || '';
-      F.category().value    = prefill.category    || '';
-      F.stock().value       = prefill.stock       ?? '';
-      F.price().value       = prefill.price       ?? '';
-      F.description().value = prefill.description || '';
-      F.image_url().value   = prefill.image_url   || '';
-      F.badge().value       = prefill.badge       || '';
+      F.name().value              = prefill.name               || '';
+      F.sku().value               = prefill.sku                || '';
+      F.category().value          = prefill.category           || '';
+      F.stock().value             = prefill.stock              ?? '';
+      F.price().value             = prefill.price              ?? '';
+      F.mrp().value               = prefill.mrp                || '';
+      F.discount_pct().value      = prefill.discount_pct       || '';
+      F.spec_mount().value        = prefill.spec_mount         || '';
+      F.spec_sensor().value       = prefill.spec_sensor        || '';
+      F.spec_video().value        = prefill.spec_video         || '';
+      F.spec_stabilization().value = prefill.spec_stabilization || '';
+      F.spec_format().value       = prefill.spec_format        || '';
+      F.about_bullets().value     = prefill.about_bullets      || '';
+      F.description().value       = prefill.description        || '';
+      F.image_url().value         = prefill.image_url          || '';
+      F.badge().value             = prefill.badge              || '';
     } else {
       modalTitle.textContent  = 'Add New Product';
       modalSub.textContent    = 'Fill in the details below to add a new inventory item.';
@@ -796,13 +883,21 @@ function pfResetBadgeChips(val) {
     }
     const payload = {
       name,
-      sku:         F.sku()?.value.trim()         || '',
-      category:    F.category()?.value           || 'Other',
-      stock:       parseInt(F.stock()?.value)    || 0,
-      price:       parseFloat(F.price()?.value)  || 0,
-      description: F.description()?.value.trim() || '',
-      image_url:   F.image_url()?.value.trim()   || '',
-      badge:       F.badge()?.value              || '',
+      sku:                F.sku()?.value.trim()         || '',
+      category:           F.category()?.value           || 'Other',
+      stock:              parseInt(F.stock()?.value)    || 0,
+      price:              parseFloat(F.price()?.value)  || 0,
+      mrp:                parseFloat(F.mrp()?.value)    || null,
+      discount_pct:       parseInt(F.discount_pct()?.value) || null,
+      spec_mount:         F.spec_mount()?.value.trim()  || '',
+      spec_sensor:        F.spec_sensor()?.value.trim() || '',
+      spec_video:         F.spec_video()?.value.trim()  || '',
+      spec_stabilization: F.spec_stabilization()?.value.trim() || '',
+      spec_format:        F.spec_format()?.value.trim() || '',
+      about_bullets:      F.about_bullets()?.value.trim() || '',
+      description:        F.description()?.value.trim() || '',
+      image_url:          F.image_url()?.value.trim()   || '',
+      badge:              F.badge()?.value              || '',
     };
 
     submitBtn.disabled       = true;
