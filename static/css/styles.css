@@ -2331,4 +2331,47 @@ html.light .pro-card-info {
   border: 1px solid rgba(0, 0, 0, 0.06) !important;
 }
 
+/* ── Universal Fix for Card Bottom-Corner Background Bleed ── */
+.pro-card,
+.pro-card-wrap,
+.sales-card,
+.product-card,
+.rental-card,
+[class*="pro-card"] {
+  overflow: hidden !important;
+  border-radius: 28px !important;
+  background: transparent !important;
+}
+
+.pro-card-banner,
+.sales-card-banner,
+[class*="pro-card-banner"] {
+  border-radius: 28px 28px 0 0 !important;
+  background: transparent !important;
+  overflow: hidden !important;
+}
+
+.pro-card-info,
+.sales-card-info,
+[class*="pro-card-info"] {
+  border-radius: 20px 20px 28px 28px !important;
+}
+
+html.light .pro-card,
+html.light .pro-card-wrap,
+html.light .sales-card,
+html.light .product-card,
+html.light .rental-card,
+html.light .pro-card-banner,
+html.light .sales-card-banner,
+[data-theme="light"] .pro-card,
+[data-theme="light"] .pro-card-wrap,
+[data-theme="light"] .sales-card,
+[data-theme="light"] .product-card,
+[data-theme="light"] .rental-card,
+[data-theme="light"] .pro-card-banner,
+[data-theme="light"] .sales-card-banner {
+  background: transparent !important;
+}
+
 
