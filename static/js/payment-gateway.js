@@ -132,6 +132,7 @@
     const isLight = document.documentElement.classList.contains('light') || document.documentElement.getAttribute('data-theme') === 'light';
     document.querySelectorAll('.cc-pay-tab').forEach(b => {
       const isAct = b.dataset.tab === tabName;
+      b.classList.toggle('active', isAct);
       if (isLight) {
         b.style.background = isAct ? 'rgba(14, 90, 111, 0.15)' : 'transparent';
         b.style.color = isAct ? '#0e5a6f' : '#475569';

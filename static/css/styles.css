@@ -2158,8 +2158,17 @@ html.light #cc-payment-modal #upi-btn-bhim {
 
 /* ── Light Theme Shipping Options (Strokes / Borders Removed) ── */
 [data-theme="light"] .shipping-opt,
-html.light .shipping-opt {
+html.light .shipping-opt,
+[data-theme="light"] .shipping-opt:hover,
+html.light .shipping-opt:hover,
+[data-theme="light"] .shipping-opt:active,
+html.light .shipping-opt:active {
   border: none !important;
+  outline: none !important;
+}
+
+[data-theme="light"] .shipping-opt,
+html.light .shipping-opt {
   background: #e0e5ec !important;
   box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff !important;
 }
@@ -2168,6 +2177,7 @@ html.light .shipping-opt {
 [data-theme="light"] .shipping-opt.border-primary-container\/40,
 html.light .shipping-opt.bg-primary-container\/5,
 html.light .shipping-opt.border-primary-container\/40 {
+  border: none !important;
   background: rgba(14, 90, 111, 0.08) !important;
   box-shadow: inset 2px 2px 5px #b8c2cc, inset -2px -2px 5px #ffffff !important;
 }
