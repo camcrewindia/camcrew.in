@@ -124,7 +124,7 @@
     if (mobileSignoutArea) { mobileSignoutArea.style.display = 'none'; }
     const mobileEmail = document.getElementById('mobile-user-email');
     const mobileRole  = document.getElementById('mobile-user-role');
-    if (mobileEmail) mobileEmail.textContent = user.email;
+    if (mobileEmail) mobileEmail.textContent = user.email || user.name || 'User';
     if (mobileRole)  mobileRole.textContent  = roleLabel;
 
     // Point the mobile profile card link to the correct profile page
@@ -137,11 +137,46 @@
     document.dispatchEvent(new CustomEvent('camcrew:auth', { detail: { user } }));
   }
 
+  function showLoggedOut() {
+    const userArea    = document.getElementById('desktop-user-area');
+    const accountIcon = document.getElementById('desktop-account-icon');
+    const signinLink  = document.getElementById('desktop-signin-link');
+    if (userArea)    { userArea.style.display    = 'none'; }
+    if (accountIcon) { accountIcon.style.display = 'flex'; }
+    if (signinLink)  { signinLink.style.display  = 'inline-flex'; }
+
+    const mobileUserArea   = document.getElementById('mobile-user-area');
+    const mobileSignoutArea = document.getElementById('mobile-signout-area');
+    if (mobileUserArea)    { mobileUserArea.style.display    = 'none'; }
+    if (mobileSignoutArea) { mobileSignoutArea.style.display = 'flex'; }
+  }
+
+  // 1. Instantly check cached user in localStorage so header renders logged-in UI immediately without lag
   try {
-    const res  = await fetch('/api/me');
-    const data = await res.json();
-    if (data.ok) showLoggedIn(data.user);
-  } catch (_) { /* offline or network error — leave logged-out UI */ }
+    const cached = localStorage.getItem('cc_user');
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (parsed && (parsed.id || parsed.email)) showLoggedIn(parsed);
+    }
+  } catch (_) {}
+
+  // 2. Fetch /api/me to verify session
+  try {
+    const res  = await fetch('/api/me', { credentials: 'include' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.ok && data.user) {
+        showLoggedIn(data.user);
+        try { localStorage.setItem('cc_user', JSON.stringify(data.user)); } catch (_) {}
+      } else {
+        try { localStorage.removeItem('cc_user'); } catch (_) {}
+        showLoggedOut();
+      }
+    } else if (res.status === 401) {
+      try { localStorage.removeItem('cc_user'); } catch (_) {}
+      showLoggedOut();
+    }
+  } catch (_) { /* Keep cached UI if network fetch fails */ }
 
   // ── 5. Cart badge ────────────────────────────────────────────────────────
   function setCartBadge(count) {

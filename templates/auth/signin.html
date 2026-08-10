@@ -176,7 +176,9 @@
 
                 try {
                     localStorage.removeItem('cc_pro_profile');
-                    localStorage.removeItem('cc_user');
+                    if (data.user) {
+                        localStorage.setItem('cc_user', JSON.stringify(data.user));
+                    }
                 } catch(_) {}
 
                 setTimeout(() => {
