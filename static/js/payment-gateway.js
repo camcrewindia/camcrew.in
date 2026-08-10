@@ -9,7 +9,7 @@
 
     const modalHTML = `
     <div id="cc-payment-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(4,10,11,0.85);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:1rem;">
-      <div style="background:#0e1217;border:1px solid rgba(0,219,233,0.25);border-radius:1.5rem;padding:2rem;width:100%;max-width:480px;box-shadow:0 32px 80px rgba(0,0,0,0.8);position:relative;color:#dce4e5;font-family:'Plus Jakarta Sans',sans-serif;">
+      <div class="cc-payment-card" style="background:#0e1217;border:1px solid rgba(0,219,233,0.25);border-radius:1.5rem;padding:2rem;width:100%;max-width:480px;box-shadow:0 32px 80px rgba(0,0,0,0.8);position:relative;color:#dce4e5;font-family:'Plus Jakarta Sans',sans-serif;">
         
         <button type="button" onclick="window.closeCamCrewPaymentGateway()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#849495;font-size:1.2rem;cursor:pointer;line-height:1;">✕</button>
 
@@ -129,10 +129,16 @@
 
   window.switchCcPayTab = function(tabName) {
     activeMethod = tabName;
+    const isLight = document.documentElement.classList.contains('light') || document.documentElement.getAttribute('data-theme') === 'light';
     document.querySelectorAll('.cc-pay-tab').forEach(b => {
       const isAct = b.dataset.tab === tabName;
-      b.style.background = isAct ? 'rgba(0,219,233,0.2)' : 'transparent';
-      b.style.color = isAct ? '#00dbe9' : '#849495';
+      if (isLight) {
+        b.style.background = isAct ? 'rgba(14, 90, 111, 0.15)' : 'transparent';
+        b.style.color = isAct ? '#0e5a6f' : '#475569';
+      } else {
+        b.style.background = isAct ? 'rgba(0, 219, 233, 0.2)' : 'transparent';
+        b.style.color = isAct ? '#00dbe9' : '#849495';
+      }
     });
     document.querySelectorAll('.cc-pay-panel').forEach(p => p.style.display = 'none');
     const target = document.getElementById('cc-pay-panel-' + tabName);
@@ -148,11 +154,12 @@
     };
     const inp = document.getElementById('cc-upi-id');
     if (inp) inp.value = upiIds[appName] || 'customer@upi';
+    const isLight = document.documentElement.classList.contains('light') || document.documentElement.getAttribute('data-theme') === 'light';
     document.querySelectorAll('[id^="upi-btn-"]').forEach(btn => {
-      btn.style.borderColor = 'rgba(255,255,255,0.1)';
+      btn.style.borderColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
     });
     const sel = document.getElementById('upi-btn-' + appName);
-    if (sel) sel.style.borderColor = '#00dbe9';
+    if (sel) sel.style.borderColor = isLight ? '#0e5a6f' : '#00dbe9';
   };
 
   window.openCamCrewPaymentGateway = function(opts) {
@@ -160,12 +167,39 @@
     currentOptions = opts || {};
     const amount = Number(opts.amount || 0);
 
+    const isLight = document.documentElement.classList.contains('light') || document.documentElement.getAttribute('data-theme') === 'light';
+
     document.getElementById('cc-pay-title').textContent = opts.title || 'CamCrew Escrow Checkout';
     document.getElementById('cc-pay-subtitle').textContent = opts.subtitle || '100% Buyer Protection & Escrow Guarantee';
     document.getElementById('cc-pay-amount').textContent = `₹${amount.toLocaleString('en-IN')}`;
     document.getElementById('cc-pay-err').style.display = 'none';
-    document.getElementById('cc-pay-submit-btn').disabled = false;
+    
+    const btn = document.getElementById('cc-pay-submit-btn');
+    btn.disabled = false;
+
+    // Style submit button based on theme
+    if (isLight) {
+      btn.style.background = '#0e5a6f';
+      btn.style.color = '#ffffff';
+    } else {
+      btn.style.background = '#00dbe9';
+      btn.style.color = '#001f22';
+    }
+
     document.getElementById('cc-pay-submit-txt').textContent = `Pay ₹${amount.toLocaleString('en-IN')} & Lock Escrow`;
+
+    // Sync tab styles
+    window.switchCcPayTab(activeMethod);
+
+    // Sync default unselected/selected UPI borders
+    document.querySelectorAll('[id^="upi-btn-"]').forEach(button => {
+      button.style.borderColor = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
+    });
+    // Set active one
+    const activeUpiBtn = document.getElementById('upi-btn-gpay');
+    if (activeUpiBtn) {
+      activeUpiBtn.style.borderColor = isLight ? '#0e5a6f' : '#00dbe9';
+    }
 
     const modal = document.getElementById('cc-payment-modal');
     modal.style.display = 'flex';

@@ -2048,3 +2048,91 @@ html.light .promo-apply-btn {
   border: none !important;
   box-shadow: 0 4px 10px rgba(14, 90, 111, 0.3) !important;
 }
+
+/* ── Light Theme Webkit Autofill Overrides ── */
+[data-theme="light"] input:-webkit-autofill,
+[data-theme="light"] input:-webkit-autofill:hover,
+[data-theme="light"] input:-webkit-autofill:focus,
+[data-theme="light"] input:-webkit-autofill:active,
+html.light input:-webkit-autofill,
+html.light input:-webkit-autofill:hover,
+html.light input:-webkit-autofill:focus,
+html.light input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 9999px #e0e5ec inset !important;
+    box-shadow: 0 0 0 9999px #e0e5ec inset !important;
+    -webkit-text-fill-color: #0f172a !important;
+    caret-color: #0f172a !important;
+}
+
+/* ── Theme-aware Payment Modal Override (neutralize global html.light overrides) ── */
+#cc-payment-modal h3,
+#cc-payment-modal p,
+#cc-payment-modal label {
+  color: inherit !important;
+}
+
+/* Light Theme Payment Modal Elements */
+[data-theme="light"] #cc-payment-modal .cc-payment-card,
+html.light #cc-payment-modal .cc-payment-card {
+  background: #e0e5ec !important;
+  border-color: rgba(14, 90, 111, 0.25) !important;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.2), 10px 10px 30px #b8c2cc, -10px -10px 30px #ffffff !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] #cc-payment-modal #cc-pay-title,
+html.light #cc-payment-modal #cc-pay-title {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] #cc-payment-modal #cc-pay-subtitle,
+html.light #cc-payment-modal #cc-pay-subtitle {
+  color: #475569 !important;
+}
+
+[data-theme="light"] #cc-payment-modal #cc-pay-amount,
+html.light #cc-payment-modal #cc-pay-amount {
+  color: #0e5a6f !important;
+}
+
+[data-theme="light"] #cc-payment-modal .cc-pay-tab,
+html.light #cc-payment-modal .cc-pay-tab {
+  background: transparent !important;
+  color: #475569 !important;
+}
+
+[data-theme="light"] #cc-payment-modal .cc-pay-tab.active,
+html.light #cc-payment-modal .cc-pay-tab.active {
+  background: rgba(14, 90, 111, 0.15) !important;
+  color: #0e5a6f !important;
+}
+
+[data-theme="light"] #cc-payment-modal input,
+[data-theme="light"] #cc-payment-modal select,
+html.light #cc-payment-modal input,
+html.light #cc-payment-modal select {
+  background: #e0e5ec !important;
+  color: #0f172a !important;
+  border: none !important;
+  box-shadow: inset 2px 2px 5px #b8c2cc, inset -2px -2px 5px #ffffff !important;
+}
+
+[data-theme="light"] #cc-payment-modal label,
+html.light #cc-payment-modal label {
+  color: #475569 !important;
+}
+
+[data-theme="light"] #cc-payment-modal #upi-btn-gpay,
+[data-theme="light"] #cc-payment-modal #upi-btn-phonepe,
+[data-theme="light"] #cc-payment-modal #upi-btn-paytm,
+[data-theme="light"] #cc-payment-modal #upi-btn-bhim,
+html.light #cc-payment-modal #upi-btn-gpay,
+html.light #cc-payment-modal #upi-btn-phonepe,
+html.light #cc-payment-modal #upi-btn-paytm,
+html.light #cc-payment-modal #upi-btn-bhim {
+  background: #e0e5ec !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+  box-shadow: 3px 3px 6px #b8c2cc, -3px -3px 6px #ffffff !important;
+}
+
