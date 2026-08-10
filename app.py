@@ -14,10 +14,21 @@ from flask import (
 )
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
+import razorpay
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True, allow_headers=['Content-Type', 'Authorization', 'Cookie'])
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-change-me")
+
+RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "")
+RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "")
+
+razorpay_client = None
+if RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET:
+    try:
+        razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
+    except Exception as e:
+        print(f"[RAZORPAY] Initialization error: {e}")
 
 ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 UPLOAD_ROOT = os.path.join(ROOT_DIR, "uploads")
@@ -2028,6 +2039,98 @@ def add_portfolio_embed():
 # ---------------------------------------------------------------------------
 # Phase 1: Escrow Payments API
 # ---------------------------------------------------------------------------
+
+@app.route("/api/payments/create-order", methods=["POST"])
+def create_razorpay_order():
+    """Create a unique Razorpay Order ID for checkout."""
+    uid = require_auth()
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+        
+    data = request.get_json(force=True, silent=True) or {}
+    amount = float(data.get("amount") or 0)
+    booking_id = data.get("booking_id")
+    
+    if amount <= 0:
+        return jsonify({"ok": False, "error": "Invalid checkout details."}), 400
+
+    if not razorpay_client:
+        return jsonify({"ok": False, "error": "Razorpay client is not configured on the server."}), 500
+
+    try:
+        # Razorpay expects amounts in paise (1 INR = 100 Paise)
+        order_amount_paise = int(amount * 100)
+        
+        # Create Order on Razorpay
+        order_data = {
+            "amount": order_amount_paise,
+            "currency": "INR",
+            "receipt": f"receipt_booking_{booking_id or secrets.token_hex(4)}",
+            "payment_capture": 1 # Auto-capture payments
+        }
+        razorpay_order = razorpay_client.order.create(data=order_data)
+        
+        return jsonify({
+            "ok": True,
+            "order_id": razorpay_order["id"],
+            "amount": amount,
+            "key_id": RAZORPAY_KEY_ID
+        })
+    except Exception as e:
+        return jsonify({"ok": False, "error": f"Failed to generate order: {str(e)}"}), 500
+
+
+@app.route("/api/payments/verify-payment", methods=["POST"])
+def verify_payment():
+    """Verify Razorpay payment signature & update database."""
+    uid = require_auth()
+    if not uid:
+        return jsonify({"ok": False, "error": "Not authenticated."}), 401
+        
+    data = request.get_json(force=True, silent=True) or {}
+    razorpay_payment_id = data.get("razorpay_payment_id")
+    razorpay_order_id = data.get("razorpay_order_id")
+    razorpay_signature = data.get("razorpay_signature")
+    
+    booking_id = data.get("booking_id")
+    pro_id = data.get("professional_id")
+    amount = float(data.get("amount") or 0)
+    
+    if not razorpay_payment_id or not razorpay_order_id or not razorpay_signature or not pro_id:
+        return jsonify({"ok": False, "error": "Missing verification details."}), 400
+
+    if not razorpay_client:
+        return jsonify({"ok": False, "error": "Razorpay client is not configured on the server."}), 500
+
+    try:
+        params_dict = {
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_payment_id': razorpay_payment_id,
+            'razorpay_signature': razorpay_signature
+        }
+        # Verify payment signature
+        razorpay_client.utility.verify_payment_signature(params_dict)
+        
+        # Capture in DB (held in escrow)
+        with get_db() as conn:
+            conn.execute("""
+                INSERT INTO escrow_payments
+                (booking_id, client_id, professional_id, amount, payment_method, escrow_status, transaction_ref)
+                VALUES (%s, %s, %s, %s, 'razorpay', 'held_in_escrow', %s)
+            """, (booking_id, uid, pro_id, amount, razorpay_payment_id))
+            
+            if booking_id:
+                conn.execute("UPDATE bookings SET status='escrow_held' WHERE id=%s", (booking_id,))
+                
+        # Send alerts
+        create_notification(pro_id, "Payment Received!", f"₹{amount:,.0f} locked in Escrow! Ref: {razorpay_payment_id}", ntype="success")
+        create_notification(uid, "Payment Secured!", f"Your escrow payment of ₹{amount:,.0f} has been secured.", ntype="success")
+        
+        return jsonify({"ok": True, "message": "Payment verified & database updated successfully."})
+        
+    except Exception as e:
+        return jsonify({"ok": False, "error": f"Payment signature verification failed: {str(e)}"}), 400
+
 
 @app.route("/api/payments/checkout", methods=["POST"])
 def payment_checkout():

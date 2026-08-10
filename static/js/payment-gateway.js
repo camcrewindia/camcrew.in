@@ -178,6 +178,20 @@
     document.body.style.overflow = '';
   };
 
+  function loadRazorpayScript() {
+    return new Promise((resolve) => {
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.head.appendChild(script);
+    });
+  }
+
   window.submitCamCrewPayment = async function() {
     const btn = document.getElementById('cc-pay-submit-btn');
     const txt = document.getElementById('cc-pay-submit-txt');
@@ -185,35 +199,118 @@
 
     btn.disabled = true;
     err.style.display = 'none';
-    txt.innerHTML = `<span class="material-symbols-outlined" style="animation:spin 0.8s linear infinite;font-size:1rem;">progress_activity</span> Authorizing Payment…`;
+    txt.innerHTML = `<span class="material-symbols-outlined" style="animation:spin 0.8s linear infinite;font-size:1rem;">progress_activity</span> Opening Gateway…`;
 
-    let payDetails = {};
-    if (activeMethod === 'upi') {
-      payDetails.vpa = document.getElementById('cc-upi-id')?.value.trim() || 'customer@upi';
-    } else if (activeMethod === 'card') {
-      payDetails.card_no = document.getElementById('cc-card-no')?.value.trim() || '4532••••8910';
-    } else if (activeMethod === 'netbanking') {
-      payDetails.bank = document.getElementById('cc-netbank-select')?.value || 'HDFC Bank';
+    const loaded = await loadRazorpayScript();
+    if (!loaded) {
+      err.textContent = 'Failed to load Razorpay library. Check your internet connection.';
+      err.style.display = 'block';
+      btn.disabled = false;
+      txt.textContent = `Pay ₹${Number(currentOptions.amount||0).toLocaleString('en-IN')} & Lock Escrow`;
+      return;
     }
 
     try {
-      const res = await fetch('/api/payments/checkout', {
+      // 1. Create Razorpay Order on Backend
+      const orderRes = await fetch('/api/payments/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: currentOptions.amount,
-          payment_method: activeMethod,
-          payment_details: payDetails,
           booking_id: currentOptions.booking_id || null
         })
       });
-      const data = await res.json();
-      if (!data.ok) throw new Error(data.error || 'Payment authorization failed.');
-
-      window.closeCamCrewPaymentGateway();
-      if (currentOptions && typeof currentOptions.onSuccess === 'function') {
-        currentOptions.onSuccess(data);
+      const orderData = await orderRes.json();
+      
+      // Fallback: If Razorpay credentials are not configured, use mock checkout
+      if (!orderData.ok) {
+        if (orderData.error && orderData.error.includes("not configured")) {
+          console.warn("Razorpay credentials not found, falling back to mock payment...");
+          let payDetails = {};
+          if (activeMethod === 'upi') {
+            payDetails.vpa = document.getElementById('cc-upi-id')?.value.trim() || 'customer@upi';
+          } else if (activeMethod === 'card') {
+            payDetails.card_no = document.getElementById('cc-card-no')?.value.trim() || '4532••••8910';
+          } else if (activeMethod === 'netbanking') {
+            payDetails.bank = document.getElementById('cc-netbank-select')?.value || 'HDFC Bank';
+          }
+          const mockRes = await fetch('/api/payments/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              amount: currentOptions.amount,
+              payment_method: activeMethod,
+              payment_details: payDetails,
+              booking_id: currentOptions.booking_id || null
+            })
+          });
+          const mockData = await mockRes.json();
+          if (!mockData.ok) throw new Error(mockData.error || 'Payment authorization failed.');
+          
+          window.closeCamCrewPaymentGateway();
+          if (currentOptions && typeof currentOptions.onSuccess === 'function') {
+            currentOptions.onSuccess(mockData);
+          }
+          return;
+        }
+        throw new Error(orderData.error || 'Failed to initialize payment.');
       }
+
+      // 2. Configure Razorpay Options
+      const options = {
+        "key": orderData.key_id,
+        "amount": orderData.amount * 100, // in paise
+        "currency": "INR",
+        "name": "Camcrew Studio",
+        "description": currentOptions.title || "CamCrew Escrow Checkout",
+        "order_id": orderData.order_id,
+        "handler": async function (response) {
+          txt.innerHTML = `<span class="material-symbols-outlined" style="animation:spin 0.8s linear infinite;font-size:1rem;">progress_activity</span> Securing Funds…`;
+          try {
+            const verifyRes = await fetch('/api/payments/verify-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+                booking_id: currentOptions.booking_id || null,
+                professional_id: currentOptions.professional_id || null,
+                amount: currentOptions.amount
+              })
+            });
+            const verifyData = await verifyRes.json();
+            if (!verifyData.ok) throw new Error(verifyData.error || 'Signature verification failed.');
+
+            window.closeCamCrewPaymentGateway();
+            if (currentOptions && typeof currentOptions.onSuccess === 'function') {
+              currentOptions.onSuccess(verifyData);
+            }
+          } catch (e) {
+            err.textContent = e.message;
+            err.style.display = 'block';
+            btn.disabled = false;
+            txt.textContent = `Retry Payment`;
+          }
+        },
+        "prefill": {
+          "name": "",
+          "email": ""
+        },
+        "theme": {
+          "color": "#00dbe9"
+        },
+        "modal": {
+          "ondismiss": function() {
+            btn.disabled = false;
+            txt.textContent = `Pay ₹${Number(currentOptions.amount||0).toLocaleString('en-IN')} & Lock Escrow`;
+          }
+        }
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.open();
+
     } catch (e) {
       err.textContent = e.message;
       err.style.display = 'block';
