@@ -1689,9 +1689,37 @@ html.light .text-teal-400 {
 }
 
 /* Material Symbols Icons in Light Mode */
-[data-theme="light"] .material-symbols-outlined:not(.text-teal-700):not(.text-red-400):not(.text-red-500),
-html.light .material-symbols-outlined:not(.text-teal-700):not(.text-red-400):not(.text-red-500) {
+[data-theme="light"] .material-symbols-outlined:not(.text-teal-700):not(.text-red-400):not(.text-red-500):not(.text-white),
+html.light .material-symbols-outlined:not(.text-teal-700):not(.text-red-400):not(.text-red-500):not(.text-white) {
   color: #1e293b !important;
+}
+
+/* Force Icons in Colored / Primary Buttons to be White in Light Mode */
+[data-theme="light"] .cc-btn-primary .material-symbols-outlined,
+html.light .cc-btn-primary .material-symbols-outlined,
+[data-theme="light"] .btn-book-now .material-symbols-outlined,
+html.light .btn-book-now .material-symbols-outlined,
+[data-theme="light"] .btn-primary .material-symbols-outlined,
+html.light .btn-primary .material-symbols-outlined,
+[data-theme="light"] .sales-order-btn .material-symbols-outlined,
+html.light .sales-order-btn .material-symbols-outlined,
+[data-theme="light"] #checkout-btn .material-symbols-outlined,
+html.light #checkout-btn .material-symbols-outlined,
+[data-theme="light"] #complete-purchase-btn .material-symbols-outlined,
+html.light #complete-purchase-btn .material-symbols-outlined,
+[data-theme="light"] .promo-apply-btn .material-symbols-outlined,
+html.light .promo-apply-btn .material-symbols-outlined,
+[data-theme="light"] .text-white .material-symbols-outlined,
+html.light .text-white .material-symbols-outlined,
+[data-theme="light"] .text-white.material-symbols-outlined,
+html.light .text-white.material-symbols-outlined,
+[data-theme="light"] [class*="bg-[#0e5a6f]"] .material-symbols-outlined,
+html.light [class*="bg-[#0e5a6f]"] .material-symbols-outlined,
+[data-theme="light"] [style*="background:#0e5a6f"] .material-symbols-outlined,
+html.light [style*="background:#0e5a6f"] .material-symbols-outlined,
+[data-theme="light"] [style*="background: #0e5a6f"] .material-symbols-outlined,
+html.light [style*="background: #0e5a6f"] .material-symbols-outlined {
+  color: #ffffff !important;
 }
 
 /* Cards, Glass Panels, Hero Cards, Auth Cards, Modals in Light Mode */
