@@ -3906,31 +3906,32 @@ def clear_cart():
 @app.route("/api/rental-equipment", methods=["GET"])
 def list_rental_equipment():
     """Public: list all available rental equipment (optionally filter by category)."""
-    category = request.args.get("category", "").strip()
-    with get_db() as conn:
-        if category and category.lower() != "all":
-            rows = conn.execute(
-                """SELECT re.*, 
-                          COALESCE(u.display_name, pp.username, 'CamCrew Partner') AS professional_name
-                   FROM rental_equipment re
-                   LEFT JOIN users u ON u.id = re.professional_id
-                   LEFT JOIN professional_profiles pp ON pp.user_id = re.professional_id
-                   WHERE (re.available = TRUE OR re.available IS NULL)
-                     AND LOWER(re.category) = LOWER(%s)
-                   ORDER BY re.created_at DESC""",
-                (category,)
-            ).fetchall()
-        else:
-            rows = conn.execute(
-                """SELECT re.*, 
-                          COALESCE(u.display_name, pp.username, 'CamCrew Partner') AS professional_name
-                   FROM rental_equipment re
-                   LEFT JOIN users u ON u.id = re.professional_id
-                   LEFT JOIN professional_profiles pp ON pp.user_id = re.professional_id
-                   WHERE (re.available = TRUE OR re.available IS NULL)
-                   ORDER BY re.created_at DESC"""
-            ).fetchall()
-    return jsonify({"ok": True, "equipment": [dict(r) for r in rows]})
+    try:
+        category = request.args.get("category", "").strip()
+        with get_db() as conn:
+            if category and category.lower() != "all":
+                rows = conn.execute(
+                    """SELECT re.*, 
+                              COALESCE(u.display_name, 'CamCrew Partner') AS professional_name
+                       FROM rental_equipment re
+                       LEFT JOIN users u ON u.id = re.professional_id
+                       WHERE LOWER(re.category) = LOWER(%s)
+                       ORDER BY re.created_at DESC""",
+                    (category,)
+                ).fetchall()
+            else:
+                rows = conn.execute(
+                    """SELECT re.*, 
+                              COALESCE(u.display_name, 'CamCrew Partner') AS professional_name
+                       FROM rental_equipment re
+                       LEFT JOIN users u ON u.id = re.professional_id
+                       ORDER BY re.created_at DESC"""
+                ).fetchall()
+        return jsonify({"ok": True, "equipment": [dict(r) for r in rows]})
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"ok": False, "error": str(e), "equipment": []}), 500
 
 
 # ---------------------------------------------------------------------------

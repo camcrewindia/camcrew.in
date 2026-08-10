@@ -1581,33 +1581,53 @@ function onMobileRentalCategoryChange(val) {
 
 /* ── Load equipment & studio bays from API ──────────────────────────── */
 async function loadEquipment() {
+  let gear = [];
+  let bays = [];
+
+  // Fetch rental equipment
   try {
-    const [equipRes, baysRes] = await Promise.all([
-      fetch('/api/rental-equipment'),
-      fetch('/api/studios/bays')
-    ]);
+    const equipRes = await fetch('/api/rental-equipment');
     const equipData = await equipRes.json();
-    const baysData  = await baysRes.json();
-
-    const gear = equipData.equipment || [];
-    const bays = (baysData.bays || []).map(b => ({
-      id: 'bay_' + b.id,
-      bay_id: b.id,
-      name: b.name,
-      category: 'Studio Floor',
-      price_per_day: b.hourly_rate * 8,
-      hourly_rate: b.hourly_rate,
-      description: `${b.type} · ${b.dimensions} · ${b.city}, ${b.state}`,
-      included_equipment: b.included_equipment || [],
-      image_url: b.image_url,
-      is_bay: true
-    }));
-
-    allEquipment = [...gear, ...bays];
-    renderGearGrid(allEquipment);
+    if (equipData.ok) {
+      gear = equipData.equipment || [];
+    } else {
+      console.error('[Rentals] Equipment API error:', equipData.error);
+    }
   } catch (err) {
+    console.error('[Rentals] Equipment fetch failed:', err);
+  }
+
+  // Fetch studio bays
+  try {
+    const baysRes = await fetch('/api/studios/bays');
+    const baysData = await baysRes.json();
+    if (baysData.ok) {
+      bays = (baysData.bays || []).map(b => ({
+        id: 'bay_' + b.id,
+        bay_id: b.id,
+        name: b.name,
+        category: 'Studio Floor',
+        price_per_day: b.hourly_rate * 8,
+        hourly_rate: b.hourly_rate,
+        description: `${b.type} · ${b.dimensions} · ${b.city}, ${b.state}`,
+        included_equipment: b.included_equipment || [],
+        image_url: b.image_url,
+        is_bay: true
+      }));
+    } else {
+      console.error('[Rentals] Bays API error:', baysData.error);
+    }
+  } catch (err) {
+    console.error('[Rentals] Bays fetch failed:', err);
+  }
+
+  allEquipment = [...gear, ...bays];
+
+  if (allEquipment.length === 0) {
     const loading = document.getElementById('gear-loading');
-    if (loading) { loading.innerHTML = '<span style="color:#ff6b6b;">Failed to load inventory. Please refresh.</span>'; }
+    if (loading) { loading.innerHTML = '<span style="color:#849495;">No equipment listed yet. Check back soon!</span>'; }
+  } else {
+    renderGearGrid(allEquipment);
   }
 }
 loadEquipment();
