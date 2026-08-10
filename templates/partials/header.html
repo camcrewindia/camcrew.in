@@ -90,8 +90,9 @@
                     <span id="theme-toggle-icon" class="material-symbols-outlined text-xl">light_mode</span>
                 </button>
 
-                <!-- Logged-in: shown via JS (desktop only) -->
-                <div class="hidden md:block">
+                <!-- Desktop Auth Area (Hidden on Mobile, Visible on Desktop) -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Logged-in: shown via JS -->
                     <div id="desktop-user-area" style="display:none" class="items-center gap-3">
                         <a href="profile.html" class="flex items-center gap-2 glass-panel px-3 py-2 rounded-full border border-primary/40 hover:border-primary transition-all">
                             <span class="material-symbols-outlined text-primary text-[20px]">account_circle</span>
@@ -100,14 +101,14 @@
                         </a>
                         <button onclick="signOut()" class="font-label-caps text-[11px] text-on-surface-variant hover:text-primary transition-colors">Sign out</button>
                     </div>
-                </div>
 
-                <!-- Logged-out: shown by default -->
-                <a id="desktop-account-icon" href="profile.html" class="hidden md:flex items-center material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">account_circle</a>
-                <a id="desktop-signin-link" href="signin.html" class="hidden md:inline-flex header-signin-btn">
-                    <span class="material-symbols-outlined" style="font-size:15px;">login</span>
-                    Sign In
-                </a>
+                    <!-- Logged-out: shown by default -->
+                    <a id="desktop-account-icon" href="profile.html" class="items-center material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">account_circle</a>
+                    <a id="desktop-signin-link" href="signin.html" class="header-signin-btn">
+                        <span class="material-symbols-outlined" style="font-size:15px;">login</span>
+                        Sign In
+                    </a>
+                </div>
 
                 <!-- Mobile Notification Bell -->
                 <div class="md:hidden relative" id="notif-wrapper-mobile">
