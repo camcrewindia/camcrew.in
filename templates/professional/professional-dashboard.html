@@ -1140,6 +1140,10 @@
         <label class="fi-label">Description</label>
         <input id="rental-description" class="fi" type="text" placeholder="What's included, condition notes…" maxlength="140"/>
       </div>
+      <div>
+        <label class="fi-label">Image URL (Optional)</label>
+        <input id="rental-image-url" class="fi" type="url" placeholder="https://images.unsplash.com/photo-..."/>
+      </div>
       <div style="display:flex;align-items:center;gap:0.75rem;padding:0.65rem 0.85rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:0.75rem;">
         <input id="rental-available" type="checkbox" checked style="width:1.1rem;height:1.1rem;accent-color:var(--ac);cursor:pointer;"/>
         <label for="rental-available" style="font-size:0.85rem;font-weight:600;color:#1a2a2b;cursor:pointer;">Available for rent right now</label>
@@ -1817,8 +1821,8 @@ async function loadRentals() {
   switchRentalTab(S.rentalTab || 'equipment');
   try {
     const [eqRes, ordRes] = await Promise.all([
-      fetch('/api/professional/rental-equipment'),
-      fetch('/api/professional/rental-orders'),
+      fetch('/api/professional/rental-equipment', { credentials: 'include' }),
+      fetch('/api/professional/rental-orders', { credentials: 'include' }),
     ]);
     const eqData  = await eqRes.json();
     const ordData = await ordRes.json();
@@ -1928,6 +1932,7 @@ async function toggleEquipAvailability(id) {
     const res  = await fetch(`/api/professional/rental-equipment/${id}/availability`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ available: !eq.available }),
     });
     const data = await res.json();
@@ -1940,7 +1945,10 @@ async function toggleEquipAvailability(id) {
 async function removeEquipment(id) {
   if (!confirm('Remove this equipment listing?')) return;
   try {
-    const res  = await fetch(`/api/professional/rental-equipment/${id}`, { method: 'DELETE' });
+    const res  = await fetch(`/api/professional/rental-equipment/${id}`, { 
+      method: 'DELETE',
+      credentials: 'include',
+    });
     const data = await res.json();
     if (!data.ok) throw new Error(data.error);
     S.equipment = S.equipment.filter(e => e.id !== id);
@@ -1952,6 +1960,8 @@ async function removeEquipment(id) {
 function openAddEquipmentModal() {
   document.getElementById('rental-form').reset();
   document.getElementById('rental-equip-id').value = '';
+  const imgInput = document.getElementById('rental-image-url');
+  if (imgInput) imgInput.value = '';
   document.getElementById('rental-available').checked = true;
   document.getElementById('modal-rental-title').textContent = 'Add Equipment';
   document.getElementById('rental-err').classList.add('hidden');
@@ -1966,6 +1976,8 @@ function openEditEquipmentModal(id) {
   document.getElementById('rental-category').value       = e.category;
   document.getElementById('rental-description').value    = e.description || '';
   document.getElementById('rental-price').value          = e.pricePerDay;
+  const imgInput = document.getElementById('rental-image-url');
+  if (imgInput) imgInput.value                           = e.image_url || '';
   document.getElementById('rental-available').checked    = e.available;
   document.getElementById('modal-rental-title').textContent = 'Edit Equipment';
   document.getElementById('rental-err').classList.add('hidden');
@@ -1979,12 +1991,14 @@ async function submitEquipment(e) {
   const price  = parseFloat(document.getElementById('rental-price').value);
   if (!name) { showRentalErr('Equipment name is required.'); return; }
   if (!price || price <= 0) { showRentalErr('Enter a valid price per day.'); return; }
+  const imgInput = document.getElementById('rental-image-url');
   const payload = {
     name,
     category:      document.getElementById('rental-category').value,
     description:   document.getElementById('rental-description').value.trim(),
     price_per_day: price,
     available:     document.getElementById('rental-available').checked,
+    image_url:     imgInput ? imgInput.value.trim() : '',
   };
   try {
     let res, data;
@@ -1992,6 +2006,7 @@ async function submitEquipment(e) {
       res  = await fetch(`/api/professional/rental-equipment/${editId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(payload),
       });
       data = await res.json();
@@ -2001,6 +2016,7 @@ async function submitEquipment(e) {
       res  = await fetch('/api/professional/rental-equipment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(payload),
       });
       data = await res.json();

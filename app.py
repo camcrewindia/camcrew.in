@@ -3910,19 +3910,28 @@ def list_rental_equipment():
     with get_db() as conn:
         if category and category.lower() != "all":
             rows = conn.execute(
-                """SELECT re.*, u.display_name AS professional_name
+                """SELECT re.*, 
+                          COALESCE(pp.full_name, u.display_name, 'CamCrew Partner') AS professional_name,
+                          COALESCE(pp.location, 'Mumbai, Maharashtra') AS location,
+                          pp.city, pp.state
                    FROM rental_equipment re
-                   JOIN users u ON u.id = re.professional_id
-                   WHERE re.available = TRUE AND LOWER(re.category) = LOWER(%s)
+                   LEFT JOIN users u ON u.id = re.professional_id
+                   LEFT JOIN professional_profiles pp ON pp.user_id = re.professional_id
+                   WHERE (re.available = TRUE OR re.available IS NULL)
+                     AND LOWER(re.category) = LOWER(%s)
                    ORDER BY re.created_at DESC""",
                 (category,)
             ).fetchall()
         else:
             rows = conn.execute(
-                """SELECT re.*, u.display_name AS professional_name
+                """SELECT re.*, 
+                          COALESCE(pp.full_name, u.display_name, 'CamCrew Partner') AS professional_name,
+                          COALESCE(pp.location, 'Mumbai, Maharashtra') AS location,
+                          pp.city, pp.state
                    FROM rental_equipment re
-                   JOIN users u ON u.id = re.professional_id
-                   WHERE re.available = TRUE
+                   LEFT JOIN users u ON u.id = re.professional_id
+                   LEFT JOIN professional_profiles pp ON pp.user_id = re.professional_id
+                   WHERE (re.available = TRUE OR re.available IS NULL)
                    ORDER BY re.created_at DESC"""
             ).fetchall()
     return jsonify({"ok": True, "equipment": [dict(r) for r in rows]})
@@ -3933,13 +3942,13 @@ def list_rental_equipment():
 # ---------------------------------------------------------------------------
 
 def _require_professional():
-    """Return user_id if session user is a professional/studio/admin, else None."""
+    """Return user_id if session user is authenticated, else None."""
     uid = require_auth()
     if not uid:
         return None
     with get_db() as conn:
-        row = conn.execute("SELECT role FROM users WHERE id=%s", (uid,)).fetchone()
-    if row and row["role"] in ("professional", "studio", "admin"):
+        row = conn.execute("SELECT id FROM users WHERE id=%s", (uid,)).fetchone()
+    if row:
         return uid
     return None
 
