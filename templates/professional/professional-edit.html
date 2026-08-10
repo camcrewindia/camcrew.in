@@ -1375,6 +1375,7 @@ let avatarFile          = null;
 let removedPortfolioIds = [];
 let equipmentRoster     = [];
 let certifications      = [];
+let _mediaIdCounter     = 0;  // Bug 11 fix: integer counter avoids float precision issues
 window._isDirty         = false;
 
 /* ── Equipment Roster ──────────────────────────────────────────── */
@@ -1453,7 +1454,7 @@ function updateCharCount(el, countId, max) {
 document.getElementById('avatar-file').addEventListener('change', function() {
   const file = this.files[0];
   if (!file) return;
-  if (file.size > 8 * 1024 * 1024) { showToast('Photo must be under 8 MB', 'error_outline', '#ff6b6b'); return; }
+  if (file.size > 5 * 1024 * 1024) { showToast('Photo must be under 5 MB', 'error_outline', '#ff6b6b'); return; }
   avatarFile = file;
   const reader = new FileReader();
   reader.onload = (e) => { avatarUrl = e.target.result; showAvatarPreview(avatarUrl, file.name); markDirty(); };
@@ -1491,7 +1492,7 @@ function handlePortfolioFiles(files) {
   Array.from(files).forEach(file => {
     if (mediaFiles.length >= 12) { showToast('Max 12 files reached', 'warning', '#f59e0b'); return; }
     if (file.size > 50 * 1024 * 1024) { showToast('File must be under 50 MB', 'error_outline', '#ff6b6b'); return; }
-    const id = Date.now() + Math.random();
+    const id = ++_mediaIdCounter; // Bug 11 fix: safe integer ID
     const isVideo = file.type.startsWith('video');
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -1553,6 +1554,11 @@ function addService() {
   const category = catBtn ? catBtn.dataset.svcCat : '';
   if (!name)  { showToast('Enter a service name', 'error_outline', '#ff6b6b'); return; }
   if (!price) { showToast('Enter a rate', 'error_outline', '#ff6b6b'); return; }
+  // Bug 7 fix: prevent duplicate service names
+  if (services.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+    showToast('A service with this name already exists', 'info', 'var(--pe-text-sub)');
+    return;
+  }
   if (!category) {
     document.getElementById('svc-cat-error').style.display = 'block';
     showToast('Select a service category', 'error_outline', '#ff6b6b');
@@ -1686,9 +1692,9 @@ function prefillFromStorage(pro) {
   mediaFiles = [];
   document.getElementById('portfolio-grid').innerHTML = '';
   (pro.portfolio || []).forEach(item => {
-    const id = Date.now() + Math.random();
+    const id = ++_mediaIdCounter; // Bug 11 fix: safe integer ID
     mediaFiles.push({ id, itemId: item.id || null, url: item.url || item.file_url, type: item.type || item.file_type, file: null, name: item.name || '', isExisting: true });
-    appendThumb({ id, url: item.url, isVideo: item.type === 'video' });
+    appendThumb({ id, url: item.url || item.file_url, isVideo: (item.type || item.file_type) === 'video' }); // Bug 4 fix: use item.file_url fallback
   });
   updatePortfolioCount();
 
@@ -1763,30 +1769,42 @@ async function saveChanges() {
       if (deleteIds.length) form.append('remove_portfolio_ids', JSON.stringify(deleteIds));
       if (avatarFile) form.append('avatar', avatarFile, avatarFile.name);
       newFiles.forEach((m, idx) => form.append(`portfolio_file_${idx}`, m.file, m.name || `portfolio-${idx}`));
-      res = await fetch('/api/profile', { method: 'PATCH', body: form });
+      // Bug 2 fix: credentials on FormData branch
+      res = await fetch('/api/profile', { method: 'PATCH', credentials: 'include', body: form });
     } else {
       if (currentAvatarUrl) profileValues.avatar_url = currentAvatarUrl;
       if (deleteIds.length) profileValues.remove_portfolio_ids = deleteIds;
-      res = await fetch('/api/profile', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(profileValues) });
+      // Bug 2 fix: credentials on JSON branch
+      res = await fetch('/api/profile', { method: 'PATCH', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(profileValues) });
     }
     const data = await res.json();
     if (!data.ok) throw new Error(data.error || 'Unable to save profile.');
-  } catch(err) { console.error('Profile save error:', err); }
 
-  window._isDirty = false;
-  btn.disabled = false;
-  btn.innerHTML = `<span class="material-symbols-outlined">save</span> Save Changes`;
-  document.getElementById('save-bar-text').innerHTML = 'All changes saved';
-  document.getElementById('save-bar-text').classList.remove('dirty');
-  showToast('Profile saved successfully!', 'check_circle', 'var(--pe-accent)');
-  setTimeout(() => { window.location.href = 'professional-profile.html'; }, 1400);
+    // Bug 3 fix: success logic is INSIDE try — only runs when save truly succeeded
+    window._isDirty = false;
+    removedPortfolioIds = [];
+    btn.disabled = false;
+    btn.innerHTML = `<span class="material-symbols-outlined">save</span> Save Changes`;
+    document.getElementById('save-bar-text').innerHTML = 'All changes saved';
+    document.getElementById('save-bar-text').classList.remove('dirty');
+    showToast('Profile saved successfully!', 'check_circle', 'var(--pe-accent)');
+    setTimeout(() => { window.location.href = 'professional-profile.html'; }, 1400);
+
+  } catch(err) {
+    // Bug 3 + Bug 9 fix: show error toast and restore button state — never redirect on failure
+    console.error('Profile save error:', err);
+    showToast(err.message || 'Failed to save profile', 'error_outline', '#ff6b6b');
+    btn.disabled = false;
+    btn.innerHTML = `<span class="material-symbols-outlined">save</span> Save Changes`;
+  }
 }
 
 /* ── Boot ──────────────────────────────────────────────────────── */
 async function boot() {
   let apiProfile = null;
   try {
-    const res  = await fetch('/api/profile');
+    // Bug 1 fix: add credentials: 'include' so session cookies are sent
+    const res  = await fetch('/api/profile', { credentials: 'include' });
     const data = await res.json();
     if (!data.ok) {
       document.getElementById('auth-gate').classList.remove('hidden');
@@ -1804,9 +1822,9 @@ async function boot() {
   main.classList.remove('hidden');
   main.style.display = 'block';
 
-  document.getElementById('save-bar').classList.remove('hidden-bar');
+  // Bug 6 fix: do NOT un-hide save bar on boot — let markDirty() show it only when user edits
   document.getElementById('save-bar-text').textContent = 'All changes saved';
-  document.getElementById('inp-email').value = apiProfile.email;
+  document.getElementById('inp-email').value = apiProfile.email || '';
 
   const raw = localStorage.getItem('cc_pro_profile');
   prefillFromStorage(raw ? JSON.parse(raw) : apiProfile);
@@ -1834,11 +1852,22 @@ async function submitEmbedUrl() {
   const inp = document.getElementById('embed-url-inp');
   const url = inp ? inp.value.trim() : '';
   if (!url) { showToast('Please enter a video URL', 'error_outline', '#ff6b6b'); return; }
+  if (mediaFiles.length >= 12) { showToast('Max 12 files reached', 'warning', '#f59e0b'); return; }
   try {
-    const res  = await fetch('/api/portfolio/embed', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url }) });
+    // Bug 8 fix: add credentials; handle response to update grid immediately
+    const res  = await fetch('/api/portfolio/embed', { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url }) });
     const data = await res.json();
-    if (data.ok) { showToast('Video embedded!', 'check_circle', 'var(--pe-accent)'); if (inp) inp.value = ''; }
-    else { showToast(data.error || 'Failed to embed', 'error_outline', '#ff6b6b'); }
+    if (data.ok) {
+      showToast('Video embedded!', 'check_circle', 'var(--pe-accent)');
+      if (inp) inp.value = '';
+      // Bug 8 fix: add embed to grid immediately so it's visible without reload
+      const embedUrl = (data.item && (data.item.file_url || data.item.url)) || url;
+      const id = ++_mediaIdCounter;
+      mediaFiles.push({ id, itemId: (data.item && data.item.id) || null, url: embedUrl, type: 'video', file: null, name: (data.item && data.item.name) || 'Embedded Video', isExisting: true });
+      appendThumb({ id, url: embedUrl, isVideo: true });
+      updatePortfolioCount();
+      markDirty();
+    } else { showToast(data.error || 'Failed to embed', 'error_outline', '#ff6b6b'); }
   } catch(e) { showToast('Failed to embed video', 'error_outline', '#ff6b6b'); }
 }
 
@@ -1846,9 +1875,11 @@ async function submitEmbedUrl() {
 let _blockedDatesList = [];
 async function loadBlockedDates() {
   try {
-    const meData = await (await fetch('/api/me')).json();
+    // Bug 5 fix: credentials on /api/me
+    const meData = await (await fetch('/api/me', { credentials: 'include' })).json();
     if (!meData.ok || !meData.user) return;
-    const data = await (await fetch(`/api/calendar/blocked-dates/${meData.user.id}`)).json();
+    // Bug 5 fix: credentials on blocked-dates fetch
+    const data = await (await fetch(`/api/calendar/blocked-dates/${meData.user.id}`, { credentials: 'include' })).json();
     if (data.ok) { _blockedDatesList = data.blocked_dates || []; renderBlockedDates(); }
   } catch (e) { console.error('Error loading blocked dates:', e); }
 }
@@ -1862,12 +1893,14 @@ function renderBlockedDates() {
     return;
   }
   if (emptyEl) emptyEl.style.display = 'none';
+  // Bug 12 fix: format raw ISO date to human-readable (e.g. 15 Aug 2025)
+  const fmtDate = d => { try { return new Date(d + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); } catch(_) { return d; } };
   container.innerHTML = _blockedDatesList.map(b => `
     <div class="pe-date-row">
       <div class="pe-date-info">
         <span class="material-symbols-outlined">event_busy</span>
         <div>
-          <div class="pe-date-label">${b.blocked_date}</div>
+          <div class="pe-date-label">${fmtDate(b.blocked_date)}</div>
           ${b.reason ? `<div class="pe-date-reason">${b.reason}</div>` : ''}
         </div>
       </div>
@@ -1883,7 +1916,8 @@ async function addBlockedDate() {
   const reason = reasonInp ? reasonInp.value.trim() : '';
   if (!bdate) { showToast('Please select a date', 'error_outline', '#ff6b6b'); return; }
   try {
-    const data = await (await fetch('/api/calendar/block', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ blocked_date: bdate, reason }) })).json();
+    // Bug 5 fix: credentials on block POST
+    const data = await (await fetch('/api/calendar/block', { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ blocked_date: bdate, reason }) })).json();
     if (data.ok) { showToast(`${bdate} blocked!`, 'check_circle', 'var(--pe-accent)'); if (dateInp) dateInp.value = ''; if (reasonInp) reasonInp.value = ''; loadBlockedDates(); }
     else { showToast(data.error || 'Failed to block', 'error_outline', '#ff6b6b'); }
   } catch (e) { showToast('Failed to block date', 'error_outline', '#ff6b6b'); }
@@ -1891,7 +1925,8 @@ async function addBlockedDate() {
 async function deleteBlockedDate(id) {
   if (!confirm('Unblock this date?')) return;
   try {
-    const data = await (await fetch(`/api/calendar/block/${id}`, { method: 'DELETE' })).json();
+    // Bug 5 fix: credentials on block DELETE
+    const data = await (await fetch(`/api/calendar/block/${id}`, { method: 'DELETE', credentials: 'include' })).json();
     if (data.ok) { showToast('Date unblocked!', 'check_circle', 'var(--pe-accent)'); loadBlockedDates(); }
     else { showToast(data.error || 'Failed to unblock', 'error_outline', '#ff6b6b'); }
   } catch (e) { showToast('Failed to unblock date', 'error_outline', '#ff6b6b'); }
