@@ -875,7 +875,7 @@ html.light header #mobile-menu a:hover {
     margin-top: -12px !important;
     padding: 0.75rem 0.65rem 0.75rem !important;
     border-radius: 16px !important;
-    box-shadow: 2px 2px 6px #b8c2cc, -2px -2px 6px #ffffff !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
   }
   html.dark .pro-card-info,
   [data-theme="dark"] .pro-card-info {
@@ -2278,6 +2278,57 @@ html.light path[stroke="#00f0ff"],
 html.light circle[stroke="#00dbe9"],
 html.light circle[stroke="#00f0ff"] {
   stroke: #0e5a6f !important;
+}
+
+/* ── Remove White Neumorphic Shadow Glow from ALL Cards in Light Mode ── */
+[data-theme="light"] .glass-panel,
+[data-theme="light"] .glass-card,
+[data-theme="light"] .pro-card-info,
+[data-theme="light"] .hero-floating-card,
+[data-theme="light"] .step-card,
+[data-theme="light"] .auth-card,
+[data-theme="light"] .profile-card,
+[data-theme="light"] .dashboard-card,
+[data-theme="light"] .modal-content,
+[data-theme="light"] .stat-pill,
+[data-theme="light"] .stats-bar,
+[data-theme="light"] .trust-stat,
+[data-theme="light"] .kit-card,
+[data-theme="light"] .gear-card,
+[data-theme="light"] .hero-mini-card,
+[data-theme="light"] .brief-card,
+[data-theme="light"] .service-card,
+[data-theme="light"] .sales-card,
+[data-theme="light"] .product-card,
+[data-theme="light"] .rental-card,
+html.light .glass-panel,
+html.light .glass-card,
+html.light .pro-card-info,
+html.light .hero-floating-card,
+html.light .step-card,
+html.light .auth-card,
+html.light .profile-card,
+html.light .dashboard-card,
+html.light .modal-content,
+html.light .stat-pill,
+html.light .stats-bar,
+html.light .trust-stat,
+html.light .kit-card,
+html.light .gear-card,
+html.light .hero-mini-card,
+html.light .brief-card,
+html.light .service-card,
+html.light .sales-card,
+html.light .product-card,
+html.light .rental-card {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] .pro-card-info,
+html.light .pro-card-info {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
 }
 
 
