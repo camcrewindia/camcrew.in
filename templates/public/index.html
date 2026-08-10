@@ -47,6 +47,71 @@
     .scanline { background:linear-gradient(90deg,transparent,var(--cyan),transparent);animation:scan 4s ease-in-out infinite; }
     @keyframes scan { 0%,100%{transform:translateX(-100%);opacity:0} 35%,65%{opacity:.7} 80%{transform:translateX(100%);opacity:0} }
     @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+    /* ── Light Mode Styles & Scroll Animation Overrides for index.html ── */
+    html.light body,
+    [data-theme="light"] body {
+      background: #e0e5ec !important;
+      color: #0f172a !important;
+    }
+
+    /* Hide scroll-driven canvas background in Light Theme */
+    html.light #bg-canvas,
+    html.light #bg-overlay,
+    [data-theme="light"] #bg-canvas,
+    [data-theme="light"] #bg-overlay {
+      display: none !important;
+      opacity: 0 !important;
+    }
+
+    /* Disable scroll reveal animations in Light Theme so content is immediately static & visible */
+    html.light .reveal,
+    [data-theme="light"] .reveal {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+
+    /* Component Overrides in Light Theme */
+    html.light .hero-grid,
+    [data-theme="light"] .hero-grid {
+      opacity: 0.12 !important;
+    }
+
+    html.light .section-rule,
+    [data-theme="light"] .section-rule {
+      background: linear-gradient(90deg, rgba(14, 90, 111, 0.4), rgba(0, 0, 0, 0.1), transparent) !important;
+    }
+
+    html.light .brief-card,
+    [data-theme="light"] .brief-card {
+      background: #e0e5ec !important;
+      border: none !important;
+      box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
+      color: #0f172a !important;
+    }
+
+    html.light .brief-card:hover,
+    [data-theme="light"] .brief-card:hover {
+      background: rgba(14, 90, 111, 0.08) !important;
+      box-shadow: inset 2px 2px 5px #b8c2cc, inset -2px -2px 5px #ffffff !important;
+      transform: translateY(-2px) !important;
+    }
+
+    html.light .bg-obsidian-base,
+    [data-theme="light"] .bg-obsidian-base {
+      background: #d8e0e8 !important;
+    }
+
+    html.light section.border-y,
+    [data-theme="light"] section.border-y {
+      border-color: rgba(0, 0, 0, 0.08) !important;
+    }
+
+    html.light .scanline,
+    [data-theme="light"] .scanline {
+      display: none !important;
+    }
   </style>
 </head>
 <body class="font-body-md antialiased">
@@ -207,6 +272,7 @@
     var targetIdx   = 0;
 
     function paint() {
+      if (document.documentElement.classList.contains('light') || document.documentElement.getAttribute('data-theme') === 'light') return;
       var idx = targetIdx;
       if (!ready[idx]) {
         // find nearest loaded frame
