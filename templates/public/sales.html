@@ -537,14 +537,16 @@
           <div class="pro-card sales-card">
 
             <!-- Top Photo Banner -->
-            <div class="pro-card-banner sales-card-banner">
+            <a href="/product-detail.html?id=${p.id}" class="pro-card-banner sales-card-banner block cursor-pointer" title="View details of ${esc(p.name)}">
               <img src="${imgSrc}" alt="${esc(p.name)}" class="pro-card-img" onerror="this.src='https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800'"/>
               <span class="sales-card-badge">${esc(badgeText)}</span>
-            </div>
+            </a>
 
             <!-- Floating Info Card Overlay -->
             <div class="pro-card-info sales-card-info">
-              <h3 class="sales-card-name" title="${esc(p.name)}">${esc(p.name)}</h3>
+              <a href="/product-detail.html?id=${p.id}" class="no-underline block" title="View details of ${esc(p.name)}">
+                <h3 class="sales-card-name cursor-pointer hover:text-teal-600 dark:hover:text-cyan-400 transition-colors">${esc(p.name)}</h3>
+              </a>
               <p class="sales-card-category">${esc(categoryText)}</p>
               <p class="sales-card-specs" title="${esc(specsText)}">${esc(specsText)}</p>
 

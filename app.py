@@ -1373,6 +1373,8 @@ _TEMPLATE_MAP = {
     "organisers.html":           "templates/public",
     "organizers.html":           "templates/public",  # alias for US spelling -> same file
     "sales.html":                "templates/public",
+    "product-detail.html":       "templates/public",
+    "product.html":              "templates/public",
     "contact.html":              "templates/public",
     "privacy-policy.html":       "templates/public",
     "terms.html":                "templates/public",
@@ -1416,6 +1418,7 @@ _ALIAS_MAP = {
     "register.html":         "signup.html",
     "organizers.html":       "organisers.html",
     "terms-of-service.html": "terms.html",
+    "product.html":          "product-detail.html",
 }
 
 
@@ -3702,6 +3705,22 @@ def list_products():
                 "SELECT * FROM products ORDER BY created_at DESC"
             ).fetchall()
     return jsonify({"ok": True, "products": [dict(r) for r in rows]})
+
+
+@app.route("/api/products/<int:product_id>", methods=["GET"])
+def get_product_detail(product_id):
+    """Fetch single product detail by ID."""
+    with get_db() as conn:
+        row = conn.execute(
+            """SELECT p.*, COALESCE(u.display_name, 'CamCrew Official Store') AS seller_name
+               FROM products p
+               LEFT JOIN users u ON u.id = p.seller_id
+               WHERE p.id = %s""",
+            (product_id,)
+        ).fetchone()
+    if not row:
+        return jsonify({"ok": False, "error": "Product not found."}), 404
+    return jsonify({"ok": True, "product": dict(row)})
 
 
 @app.route("/api/products", methods=["POST"])
