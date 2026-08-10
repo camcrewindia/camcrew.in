@@ -34,7 +34,7 @@
         </div>
 
         <!-- Payment Tabs -->
-        <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:0.35rem;background:#14181f;border:1px solid rgba(255,255,255,0.08);border-radius:0.75rem;padding:0.3rem;margin-bottom:1.25rem;">
+        <div class="cc-pay-tabs-container" style="display:grid;grid-template-columns:repeat(4, 1fr);gap:0.35rem;background:#14181f;border:1px solid rgba(255,255,255,0.08);border-radius:0.75rem;padding:0.3rem;margin-bottom:1.25rem;">
           <button type="button" class="cc-pay-tab active" data-tab="upi" onclick="window.switchCcPayTab('upi')" style="padding:0.5rem 0.2rem;border:none;border-radius:0.5rem;font-size:0.72rem;font-weight:800;cursor:pointer;background:rgba(0,219,233,0.2);color:#00dbe9;">📱 UPI</button>
           <button type="button" class="cc-pay-tab" data-tab="card" onclick="window.switchCcPayTab('card')" style="padding:0.5rem 0.2rem;border:none;border-radius:0.5rem;font-size:0.72rem;font-weight:800;cursor:pointer;background:transparent;color:#849495;">💳 Card</button>
           <button type="button" class="cc-pay-tab" data-tab="netbanking" onclick="window.switchCcPayTab('netbanking')" style="padding:0.5rem 0.2rem;border:none;border-radius:0.5rem;font-size:0.72rem;font-weight:800;cursor:pointer;background:transparent;color:#849495;">🏦 NetBank</button>
