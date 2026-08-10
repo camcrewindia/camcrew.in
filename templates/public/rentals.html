@@ -19,17 +19,17 @@
     --hero-title-color:    #0f172a;
     --hero-desc-color:     #0f172a;
     --accent-color:        #0e5a6f;
-    --card-outer-shadow:   10px 10px 24px #b8c2cc, -10px -10px 24px #ffffff;
-    --card-outer-shadow-h: 14px 14px 32px #a8b3be, -14px -14px 32px #ffffff;
+    --card-outer-shadow:   4px 8px 24px rgba(0, 0, 0, 0.08);
+    --card-outer-shadow-h: 6px 14px 32px rgba(0, 0, 0, 0.14);
     
     --filter-card-bg:      #e0e5ec;
-    --filter-shadow:       8px 8px 18px #b8c2cc, -8px -8px 18px #ffffff;
+    --filter-shadow:       4px 8px 24px rgba(0, 0, 0, 0.08);
     --input-bg:            #e0e5ec;
-    --input-shadow:        inset 4px 4px 8px #b8c2cc, inset -4px -4px 8px #ffffff;
+    --input-shadow:        inset 2px 2px 5px #b8c2cc, inset -2px -2px 5px #ffffff;
     --input-text:          #0f172a;
     
     --chip-bg:             #e0e5ec;
-    --chip-shadow:         4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff;
+    --chip-shadow:         3px 4px 10px rgba(0, 0, 0, 0.06);
     --chip-active-shadow:  inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff;
     
     --info-bg:             #e0e5ec;
@@ -40,9 +40,9 @@
     --rate-color:          #0e5a6f;
     
     --btn-view-bg:         #e0e5ec;
-    --btn-view-shadow:     4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff;
-    --btn-view-shadow-h:   6px 6px 14px #b8c2cc, -6px -6px 14px #ffffff;
-    --btn-view-shadow-active: inset 4px 4px 8px #b8c2cc, inset -4px -4px 8px #ffffff;
+    --btn-view-shadow:     3px 4px 10px rgba(0, 0, 0, 0.06);
+    --btn-view-shadow-h:   4px 6px 14px rgba(0, 0, 0, 0.12);
+    --btn-view-shadow-active: inset 3px 3px 6px #b8c2cc;
     --btn-view-color:      #0f172a;
     
     --btn-book-bg:         #0f4c5c;
@@ -52,7 +52,7 @@
     --btn-book-shadow-active: inset 0 4px 8px rgba(0,0,0,0.4);
 
     --stat-card-bg:        #e0e5ec;
-    --stat-card-shadow:    8px 8px 18px #b8c2cc, -8px -8px 18px #ffffff;
+    --stat-card-shadow:    4px 8px 24px rgba(0, 0, 0, 0.08);
     --stat-inner-shadow:   inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff;
   }
 
@@ -1458,7 +1458,18 @@ function observeReveal() {
 }
 observeReveal();
 
-/* ── Category icon map ─────────────────────────────────────────────── */
+/* ── HTML Escape Helper ───────────────────────────────────────────── */
+function esc(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/* ── Category icon map & key normalizer ───────────────────────────── */
 const CAT_ICONS = {
   camera: 'movie_camera', Camera: 'movie_camera',
   lens: 'lens', Lens: 'lens',
@@ -1471,7 +1482,22 @@ function catIcon(cat) {
   return CAT_ICONS[cat] || CAT_ICONS[cat?.toLowerCase()] || 'videocam';
 }
 function catKey(cat) {
-  return (cat || '').toLowerCase();
+  let c = (cat || '').toLowerCase().trim();
+  if (c.startsWith('camera')) return 'camera';
+  if (c.startsWith('lens')) return 'lens';
+  if (c.startsWith('light')) return 'lighting';
+  if (c.startsWith('stabiliz') || c.startsWith('gimbal')) return 'stabilizer';
+  if (c.startsWith('audio') || c.startsWith('mic') || c.startsWith('sound')) return 'audio';
+  if (c.includes('studio') || c.includes('floor') || c.includes('soundstage')) return 'studio floor';
+  return c;
+}
+
+function getFallbackGearImg(category) {
+  const k = catKey(category);
+  if (k === 'camera') return 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800';
+  if (k === 'lens') return 'https://images.unsplash.com/photo-1617005082133-548c4dd27f35?w=800';
+  if (k === 'audio') return 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=800';
+  return 'https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=800';
 }
 
 /* ── Render equipment cards from API data ──────────────────────────── */
@@ -1482,27 +1508,30 @@ function renderGearGrid(list) {
   const loading = document.getElementById('gear-loading');
   const empty   = document.getElementById('gear-empty');
 
+  if (!grid) return;
+
   // Remove any previously injected dynamic cards
   grid.querySelectorAll('.gear-card-dynamic').forEach(el => el.remove());
 
   if (loading) loading.style.display = 'none';
 
-  if (!list.length) {
+  if (!list || !list.length) {
     if (empty) empty.style.display = 'block';
     return;
   }
   if (empty) empty.style.display = 'none';
 
   list.forEach(eq => {
-    const imgSrc = eq.image_url || 'https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=800';
+    const fallbackImg = getFallbackGearImg(eq.category);
+    const imgSrc = (eq.image_url && eq.image_url.trim()) ? eq.image_url.trim() : fallbackImg;
     const isBay  = !!eq.is_bay;
     const price  = isBay ? eq.hourly_rate : eq.price_per_day;
     const unit   = isBay ? '/hr' : '/day';
-    const priceDisplay = `₹${Number(price).toLocaleString('en-IN')}${unit}`;
+    const priceDisplay = `₹${Number(price).toLocaleString('en-IN')} ${unit}`;
     const loc    = eq.city ? `${eq.city}, ${eq.state||'India'}` : (eq.location || 'Mumbai, Maharashtra');
 
     const div = document.createElement('div');
-    div.className = 'pro-card-wrap gear-card-dynamic reveal';
+    div.className = 'pro-card-wrap gear-card-dynamic active';
     div.dataset.cat = catKey(eq.category);
     div.dataset.id  = eq.id;
     div.innerHTML = `
@@ -1510,8 +1539,8 @@ function renderGearGrid(list) {
 
         <!-- Top Photo Banner -->
         <div class="pro-card-banner">
-          <img src="${imgSrc}" alt="${esc(eq.name)}" class="pro-card-img" onerror="this.src='https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=800'"/>
-          <span class="badge-intl" style="background:${isBay ? '#0e5a6f' : 'rgba(15,23,42,0.8)'}">${isBay ? 'STUDIO BAY' : 'EQUIPMENT'}</span>
+          <img src="${imgSrc}" alt="${esc(eq.name)}" class="pro-card-img" onerror="this.onerror=null;this.src='${fallbackImg}';"/>
+          <span class="badge-intl" style="background:${isBay ? '#0e5a6f' : 'rgba(15,23,42,0.85)'}">${isBay ? 'STUDIO BAY' : 'EQUIPMENT'}</span>
           <div class="badge-verified" title="Available for Rental">
             <span class="material-symbols-outlined text-sm text-teal-700 font-bold">verified</span>
           </div>
@@ -1548,14 +1577,7 @@ function renderGearGrid(list) {
 
       </div>
     `;
-    const isLight = document.documentElement.classList.contains('light');
-    if (isLight) {
-      div.classList.add('active');
-    }
     grid.appendChild(div);
-    if (!isLight) {
-      requestAnimationFrame(() => { revealObs.observe(div); });
-    }
   });
 }
 
