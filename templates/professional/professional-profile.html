@@ -822,10 +822,12 @@ function fmtPrice(s) { return s.price ? `₹${parseInt(s.price).toLocaleString('
 
   let completedJobs = 0;
   try {
-    const cachedPro  = localStorage.getItem('cc_pro_profile');
     const cachedUser = localStorage.getItem('cc_user');
-    if (cachedPro)  S.pro  = JSON.parse(cachedPro);
     if (cachedUser) S.user = JSON.parse(cachedUser);
+    const userEmail = (S.user && S.user.email) ? S.user.email.trim().toLowerCase() : '';
+    const cacheKey = userEmail ? `cc_pro_profile_${userEmail}` : 'cc_pro_profile';
+    const cachedPro  = localStorage.getItem(cacheKey);
+    if (cachedPro)  S.pro  = JSON.parse(cachedPro);
     if (S.pro || S.user) {
       S.username = S.pro?.username || '';
       render(vaultFiles, completedJobs);
@@ -852,7 +854,9 @@ function fmtPrice(s) { return s.price ? `₹${parseInt(s.price).toLocaleString('
       if (proData.ok && proData.profile) {
         S.pro      = proData.profile;
         S.username = proData.profile.username || '';
-        try { localStorage.setItem('cc_pro_profile', JSON.stringify(proData.profile)); } catch (_) {}
+        const userEmail = proData.profile.email ? proData.profile.email.trim().toLowerCase() : '';
+        const cacheKey = userEmail ? `cc_pro_profile_${userEmail}` : 'cc_pro_profile';
+        try { localStorage.setItem(cacheKey, JSON.stringify(proData.profile)); } catch (_) {}
       }
     }
 
@@ -1375,7 +1379,11 @@ async function deletePortfolioItem(itemId, itemIndex) {
     const data = await res.json();
     if (data.ok) {
       if (card) card.remove();
-      try { localStorage.removeItem('cc_pro_profile'); } catch(_) {}
+      try {
+        const userEmail = (S.user && S.user.email) ? S.user.email.trim().toLowerCase() : '';
+        const cacheKey = userEmail ? `cc_pro_profile_${userEmail}` : 'cc_pro_profile';
+        localStorage.removeItem(cacheKey);
+      } catch(_) {}
       showToast('Portfolio item deleted successfully');
     } else {
       if (card) { card.style.opacity = '1'; card.style.pointerEvents = 'auto'; }

@@ -172,6 +172,18 @@
   // ── 6. Global sign-out ───────────────────────────────────────────────────
   window.signOut = async function () {
     await fetch('/api/logout', { method: 'POST' });
+    try {
+      localStorage.removeItem('cc_pro_profile');
+      localStorage.removeItem('cc_user');
+      // Also clear any email-scoped caches just in case
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.startsWith('cc_pro_profile_') || key.startsWith('cc_user_'))) {
+          localStorage.removeItem(key);
+          i--; // adjust index since we removed an item
+        }
+      }
+    } catch (_) {}
     window.location.href = 'signin.html';
   };
 

@@ -521,6 +521,10 @@
       }
 
       // Registered + auto-logged-in (Flask session set by /api/register)
+      try {
+        localStorage.removeItem('cc_pro_profile');
+        localStorage.removeItem('cc_user');
+      } catch(_) {}
       showToast('Studio account created. Welcome aboard!');
       setTimeout(() => { window.location.href = 'studioreq.html'; }, 1400);
 

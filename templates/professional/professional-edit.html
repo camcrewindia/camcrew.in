@@ -1753,7 +1753,9 @@ async function saveChanges() {
   if (currentAvatarUrl) profileValues.avatar_url = currentAvatarUrl;
 
   const portfolioState = mediaFiles.map(m => ({ url: m.url, type: m.type, name: m.name || '', itemId: m.itemId || null }));
-  try { localStorage.setItem('cc_pro_profile', JSON.stringify({ name, ...profileValues, avatarUrl: currentAvatarUrl, portfolio: portfolioState, savedAt: new Date().toISOString() })); } catch(_) {}
+  const emailVal = (document.getElementById('inp-email').value || '').trim().toLowerCase();
+  const cacheKey = emailVal ? `cc_pro_profile_${emailVal}` : 'cc_pro_profile';
+  try { localStorage.setItem(cacheKey, JSON.stringify({ email: emailVal, name, ...profileValues, avatarUrl: currentAvatarUrl, portfolio: portfolioState, savedAt: new Date().toISOString() })); } catch(_) {}
 
   let res;
   try {
@@ -1826,7 +1828,8 @@ async function boot() {
   document.getElementById('save-bar-text').textContent = 'All changes saved';
   document.getElementById('inp-email').value = apiProfile.email || '';
 
-  const raw = localStorage.getItem('cc_pro_profile');
+  const cacheKey = apiProfile.email ? `cc_pro_profile_${apiProfile.email.trim().toLowerCase()}` : 'cc_pro_profile';
+  const raw = localStorage.getItem(cacheKey);
   prefillFromStorage(raw ? JSON.parse(raw) : apiProfile);
 
   requestAnimationFrame(() => {

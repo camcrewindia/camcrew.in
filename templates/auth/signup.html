@@ -240,6 +240,10 @@
         });
         const data = await res.json().catch(() => ({}));
         if (res.ok && data.ok !== false) {
+          try {
+            localStorage.removeItem('cc_pro_profile');
+            localStorage.removeItem('cc_user');
+          } catch(_) {}
           showToast('Account created. Setting up your profile…');
           const dest = currentRole === 'professional'
             ? 'professional-edit.html'
@@ -254,6 +258,10 @@
         }
       } catch (_) {
         // demo-safe fallback
+        try {
+          localStorage.removeItem('cc_pro_profile');
+          localStorage.removeItem('cc_user');
+        } catch(_) {}
         showToast('Account created. Setting up your profile…');
         const dest = currentRole === 'professional'
           ? 'professional-edit.html'
