@@ -1358,11 +1358,24 @@ html.light #shader-canvas-ANIMATION_6 {
   opacity: 0 !important;
 }
 
+[data-theme="light"] .float-wrap,
+html.light .float-wrap {
+  background: #e0e5ec !important;
+  border-radius: 0.75rem;
+  box-shadow: inset 3px 3px 6px #b8c2cc, inset -3px -3px 6px #ffffff !important;
+}
+
 [data-theme="light"] .float-wrap input,
 [data-theme="light"] .float-wrap select,
-[data-theme="light"] .coupon-row input,
 html.light .float-wrap input,
-html.light .float-wrap select,
+html.light .float-wrap select {
+  background: transparent !important;
+  color: #0f172a !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+[data-theme="light"] .coupon-row input,
 html.light .coupon-row input {
   background: #e0e5ec !important;
   color: #0f172a !important;
@@ -2058,10 +2071,11 @@ html.light input:-webkit-autofill,
 html.light input:-webkit-autofill:hover,
 html.light input:-webkit-autofill:focus,
 html.light input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 9999px #e0e5ec inset !important;
-    box-shadow: 0 0 0 9999px #e0e5ec inset !important;
+    -webkit-box-shadow: 0 0 0 9999px transparent inset !important;
+    box-shadow: 0 0 0 9999px transparent inset !important;
     -webkit-text-fill-color: #0f172a !important;
     caret-color: #0f172a !important;
+    transition: background-color 50000s ease-in-out 0s;
 }
 
 /* ── Theme-aware Payment Modal Override (neutralize global html.light overrides) ── */
@@ -2135,4 +2149,21 @@ html.light #cc-payment-modal #upi-btn-bhim {
   color: #0f172a !important;
   box-shadow: 3px 3px 6px #b8c2cc, -3px -3px 6px #ffffff !important;
 }
+
+/* ── Light Theme Shipping Options (Strokes / Borders Removed) ── */
+[data-theme="light"] .shipping-opt,
+html.light .shipping-opt {
+  border: none !important;
+  background: #e0e5ec !important;
+  box-shadow: 3px 3px 8px #b8c2cc, -3px -3px 8px #ffffff !important;
+}
+
+[data-theme="light"] .shipping-opt.bg-primary-container\/5,
+[data-theme="light"] .shipping-opt.border-primary-container\/40,
+html.light .shipping-opt.bg-primary-container\/5,
+html.light .shipping-opt.border-primary-container\/40 {
+  background: rgba(14, 90, 111, 0.08) !important;
+  box-shadow: inset 2px 2px 5px #b8c2cc, inset -2px -2px 5px #ffffff !important;
+}
+
 
