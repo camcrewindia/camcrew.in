@@ -207,107 +207,167 @@
     <!-- ── 01 / The Roster ──────────────────────────────────────────────── -->
     <section class="px-5 md:px-20 py-24">
       <div class="max-w-screen-2xl mx-auto">
-        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-5 mb-10 reveal">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-5 mb-12 reveal">
           <div>
             <p class="eyebrow mb-4">01 / The roster</p>
             <h2 class="text-4xl md:text-6xl font-bold tracking-tight">Services with a point of view.</h2>
           </div>
           <a href="services.html" class="text-primary text-sm font-bold flex items-center gap-2">View all services <span class="material-symbols-outlined card-arrow">arrow_forward</span></a>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- Card 1: Photography -->
-          <a href="photographers.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-56 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCzDpAPP1bB_QwCK4ldXGMz1qpIlostwFdulhOJqdrNWFgTy9VmBfQIB_-u0FNhWFrDzmcaCwm3h8KAXzBJDFX6m_RBFTm1pijimVBf7qqa-yZjnkjOMzVikdHRWJiTHERnMzQ3wpsBud7Vyj1CQ2mM703xELE_oxrdDyuPtIjMASYxAqfdURAmGGB11fXVIiIUNZZ5OeTiG40lPq5aDp9wPBfK_zSFjESVrPpKyoMebfPTnOQbd_k" alt="Cinematic portrait photography">
-                <span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2.5 py-1 font-bold rounded">01 / CAPTURE</span>
-              </div>
-              <h3 class="font-bold text-xl text-on-surface">Photography</h3>
-              <p class="text-sm text-on-surface-variant mt-2 leading-relaxed">Portraits, campaigns, and stories with lasting visual weight.</p>
+          <a href="photographers.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-60 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCzDpAPP1bB_QwCK4ldXGMz1qpIlostwFdulhOJqdrNWFgTy9VmBfQIB_-u0FNhWFrDzmcaCwm3h8KAXzBJDFX6m_RBFTm1pijimVBf7qqa-yZjnkjOMzVikdHRWJiTHERnMzQ3wpsBud7Vyj1CQ2mM703xELE_oxrdDyuPtIjMASYxAqfdURAmGGB11fXVIiIUNZZ5OeTiG40lPq5aDp9wPBfK_zSFjESVrPpKyoMebfPTnOQbd_k" alt="Photography">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[11px] font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-md">Top Rated</span>
             </div>
-            <div class="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
-              <strong class="text-primary text-xl font-extrabold">from ₹1,200</strong>
-              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book service <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-6 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-xl font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Photography</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Camera Department</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">Portraits, fashion campaigns, and stories with lasting visual weight.</p>
+              </div>
+              <div class="mt-5 pt-3.5 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-2xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-3">from ₹1,200</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-10 h-10 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-lg">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2.5 px-4 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Book Service <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
 
           <!-- Card 2: Videography -->
-          <a href="videographers.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-56 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzfqBVdw3GW6HakvGisiIDK9lTIwzR9A06_cNYIRvMYekhe5RcBDUvtr_HkEXmF0rt0XL2Km_Hzgz_UXy4YKhgJOyr5IbumJDqAGAcB-ETEqs7FfqIxzb4pX9Ie3GjKDJz2O3dKgnzJLZbYs_Z6xdrx4mGtgidOtphEGG3nFjboroBLtZ-d_tlNew2fc598ljSO9Iq4uTGxwfHiTBKUDIgYw-BFdgeM6xgMjfugH57LKppg3dPDM60" alt="Cinema camera on production set">
-                <span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2.5 py-1 font-bold rounded">02 / MOTION</span>
-              </div>
-              <h3 class="font-bold text-xl text-on-surface">Videography</h3>
-              <p class="text-sm text-on-surface-variant mt-2 leading-relaxed">Commercials, music videos, and motion that holds attention.</p>
+          <a href="videographers.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-60 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzfqBVdw3GW6HakvGisiIDK9lTIwzR9A06_cNYIRvMYekhe5RcBDUvtr_HkEXmF0rt0XL2Km_Hzgz_UXy4YKhgJOyr5IbumJDqAGAcB-ETEqs7FfqIxzb4pX9Ie3GjKDJz2O3dKgnzJLZbYs_Z6xdrx4mGtgidOtphEGG3nFjboroBLtZ-d_tlNew2fc598ljSO9Iq4uTGxwfHiTBKUDIgYw-BFdgeM6xgMjfugH57LKppg3dPDM60" alt="Videography">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[11px] font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-md">Best Seller</span>
             </div>
-            <div class="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
-              <strong class="text-secondary text-xl font-extrabold">from ₹2,500</strong>
-              <span class="text-xs font-bold text-secondary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book service <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-6 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-xl font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Videography</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Motion & Cinema</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">Commercials, music videos, and motion that holds audience attention.</p>
+              </div>
+              <div class="mt-5 pt-3.5 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-2xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-3">from ₹2,500</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-10 h-10 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-lg">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2.5 px-4 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Book Service <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
 
           <!-- Card 3: Graphic Design -->
-          <a href="designers.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-56 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIEy-aTRHMYOrEd-4m9RuhOgAD3ZLyWT3gvoZW1fOHlBLwztzZE6Ni0f7-jvjfM1mLNXKy5qNAOWcw6g8jaA0BQEl_l3QDlY-ptLoPHoEGYKWFD2ct9AOSSuNMQvoa25ypBkeuNg4yFI2DwkEbqiQyKDqOiUfBSYUgyp4AVLhZeQd6ZZO8HSHoTwS5wKB74Eunz356XC7liB3p9cnCOCiUyOPIxjQ32cRZpHFATo3R2BTH0DHiGx1K" alt="Graphic design workspace">
-                <span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2.5 py-1 font-bold rounded">03 / DESIGN</span>
-              </div>
-              <h3 class="font-bold text-xl text-on-surface">Graphic design</h3>
-              <p class="text-sm text-on-surface-variant mt-2 leading-relaxed">Identity systems and worlds your audience can step into.</p>
+          <a href="designers.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-60 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIEy-aTRHMYOrEd-4m9RuhOgAD3ZLyWT3gvoZW1fOHlBLwztzZE6Ni0f7-jvjfM1mLNXKy5qNAOWcw6g8jaA0BQEl_l3QDlY-ptLoPHoEGYKWFD2ct9AOSSuNMQvoa25ypBkeuNg4yFI2DwkEbqiQyKDqOiUfBSYUgyp4AVLhZeQd6ZZO8HSHoTwS5wKB74Eunz356XC7liB3p9cnCOCiUyOPIxjQ32cRZpHFATo3R2BTH0DHiGx1K" alt="Graphic design">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[11px] font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-md">Featured</span>
             </div>
-            <div class="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
-              <strong class="text-primary text-xl font-extrabold">from ₹450</strong>
-              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explore <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-6 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-xl font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Graphic design</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Visual Identity</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">Identity systems and worlds your audience can step into.</p>
+              </div>
+              <div class="mt-5 pt-3.5 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-2xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-3">from ₹450</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-10 h-10 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-lg">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2.5 px-4 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Explore <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
 
           <!-- Card 4: Drone Cinematography -->
-          <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-56 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=600&auto=format&fit=crop&q=80" alt="Drone cinematography">
-                <span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2.5 py-1 font-bold rounded">04 / AERIAL</span>
-              </div>
-              <h3 class="font-bold text-xl text-on-surface">Drone cinematography</h3>
-              <p class="text-sm text-on-surface-variant mt-2 leading-relaxed">Aerial perspective, DGCA cleared and cinematic.</p>
+          <a href="services.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-60 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=600&auto=format&fit=crop&q=80" alt="Drone cinematography">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[11px] font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-md">DGCA Cleared</span>
             </div>
-            <div class="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
-              <strong class="text-primary text-xl font-extrabold">from ₹2,500</strong>
-              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-6 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-xl font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Drone cinematography</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Aerial Department</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">Aerial perspective, DGCA cleared and cinematic 4K shots.</p>
+              </div>
+              <div class="mt-5 pt-3.5 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-2xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-3">from ₹2,500</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-10 h-10 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-lg">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2.5 px-4 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Book Drone <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
 
           <!-- Card 5: Podcast Studios -->
-          <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-56 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=600&auto=format&fit=crop&q=80" alt="Podcast studios">
-                <span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2.5 py-1 font-bold rounded">05 / AUDIO</span>
-              </div>
-              <h3 class="font-bold text-xl text-on-surface">Podcast studios</h3>
-              <p class="text-sm text-on-surface-variant mt-2 leading-relaxed">Broadcast-ready sound, 4K picture, and set design.</p>
+          <a href="services.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-60 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=600&auto=format&fit=crop&q=80" alt="Podcast studios">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[11px] font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-md">Acoustic Pro</span>
             </div>
-            <div class="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
-              <strong class="text-primary text-xl font-extrabold">from ₹1,800</strong>
-              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book studio <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-6 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-xl font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Podcast studios</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Audio & Video Set</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">Broadcast-ready sound, 4K multi-cam, and set design.</p>
+              </div>
+              <div class="mt-5 pt-3.5 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-2xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-3">from ₹1,800</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-10 h-10 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-lg">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2.5 px-4 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Book Studio <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
 
           <!-- Card 6: Events -->
-          <a href="organizers.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-56 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&auto=format&fit=crop&q=80" alt="Event production">
-                <span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2.5 py-1 font-bold rounded">06 / EVENTS</span>
-              </div>
-              <h3 class="font-bold text-xl text-on-surface">Events & Shows</h3>
-              <p class="text-sm text-on-surface-variant mt-2 leading-relaxed">A production team that sees every moving part.</p>
+          <a href="organizers.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-60 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&auto=format&fit=crop&q=80" alt="Event production">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[11px] font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-md">Full Crew</span>
             </div>
-            <div class="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
-              <strong class="text-primary text-xl font-extrabold">from ₹3,000</strong>
-              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book team <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-6 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-xl font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Events & Shows</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Live Events</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">A production team that sees every moving part.</p>
+              </div>
+              <div class="mt-5 pt-3.5 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-2xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-3">from ₹3,000</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-10 h-10 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-lg">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2.5 px-4 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Book Team <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
         </div>
@@ -324,84 +384,134 @@
           </div>
           <a href="services.html" class="hidden md:flex text-primary text-sm font-bold items-center gap-2">View all briefs <span class="material-symbols-outlined">arrow_forward</span></a>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
           <!-- Card 1: Studio Portraits -->
-          <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-44 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80" alt="Studio portraits">
-                <span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2 py-1 font-bold rounded">PORTRAIT</span>
-              </div>
-              <h3 class="font-bold text-lg text-on-surface">Studio Portraits</h3>
-              <p class="text-xs text-on-surface-variant mt-1">Camera department / session</p>
+          <a href="services.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-48 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80" alt="Studio portraits">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">PORTRAIT</span>
             </div>
-            <div class="flex items-center justify-between mt-4 pt-3 border-t border-white/10">
-              <strong class="text-primary text-xl font-extrabold">₹1,200</strong>
-              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Studio Portraits</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Camera Session</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Headshots & editorial portraits.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">₹1,200</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Book <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
 
           <!-- Card 2: Drone Cinematography -->
-          <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-44 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=600&auto=format&fit=crop&q=80" alt="Drone cinematography">
-                <span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2 py-1 font-bold rounded">AERIAL</span>
-              </div>
-              <h3 class="font-bold text-lg text-on-surface">Drone Cinematography</h3>
-              <p class="text-xs text-on-surface-variant mt-1">Aerial unit / day shoot</p>
+          <a href="services.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-48 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=600&auto=format&fit=crop&q=80" alt="Drone cinematography">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">AERIAL</span>
             </div>
-            <div class="flex items-center justify-between mt-4 pt-3 border-t border-white/10">
-              <strong class="text-primary text-xl font-extrabold">₹2,500</strong>
-              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Drone Cinema</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Aerial Shoot</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">FPV 4K aerial camera crew.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">₹2,500</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Book <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
 
           <!-- Card 3: Brand Identity -->
-          <a href="designers.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-44 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&auto=format&fit=crop&q=80" alt="Brand identity">
-                <span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2 py-1 font-bold rounded">DESIGN</span>
-              </div>
-              <h3 class="font-bold text-lg text-on-surface">Brand Identity</h3>
-              <p class="text-xs text-on-surface-variant mt-1">Design system / package</p>
+          <a href="designers.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-48 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&auto=format&fit=crop&q=80" alt="Brand identity">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">DESIGN</span>
             </div>
-            <div class="flex items-center justify-between mt-4 pt-3 border-t border-white/10">
-              <strong class="text-primary text-xl font-extrabold">₹450</strong>
-              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explore <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Brand Identity</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Design System</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Visual systems & key arts.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">₹450</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Explore <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
 
           <!-- Card 4: Corporate Events -->
-          <a href="organizers.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-44 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&auto=format&fit=crop&q=80" alt="Corporate events">
-                <span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2 py-1 font-bold rounded">EVENTS</span>
-              </div>
-              <h3 class="font-bold text-lg text-on-surface">Corporate Events</h3>
-              <p class="text-xs text-on-surface-variant mt-1">Event production / day</p>
+          <a href="organizers.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-48 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&auto=format&fit=crop&q=80" alt="Corporate events">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">EVENTS</span>
             </div>
-            <div class="flex items-center justify-between mt-4 pt-3 border-t border-white/10">
-              <strong class="text-primary text-xl font-extrabold">₹3,000</strong>
-              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Corporate Events</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Live Event Crew</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">End-to-end production coverage.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">₹3,000</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Book <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
 
           <!-- Card 5: Music Videos -->
-          <a href="videographers.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-44 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80" alt="Music videos">
-                <span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2 py-1 font-bold rounded">VIDEO</span>
-              </div>
-              <h3 class="font-bold text-lg text-on-surface">Music Videos</h3>
-              <p class="text-xs text-on-surface-variant mt-1">Cinema video / project</p>
+          <a href="videographers.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-48 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80" alt="Music videos">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">VIDEO</span>
             </div>
-            <div class="flex items-center justify-between mt-4 pt-3 border-t border-white/10">
-              <strong class="text-primary text-xl font-extrabold">₹4,500</strong>
-              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Music Videos</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Cinema Production</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Full cinema video project crew.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">₹4,500</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Book <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
         </div>
@@ -418,11 +528,110 @@
           </div>
           <a href="rentals.html" class="hidden md:flex cc-btn-ghost !w-auto">Shop department <span class="material-symbols-outlined">arrow_outward</span></a>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <a href="rentals.html" class="glass-card rounded-2xl p-4 product-image reveal flex flex-col justify-between"><div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative"><img class="w-full h-full object-contain p-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeMdiokAUD8pj2r7un2TSGllJ5q_BGGFpUB7udNLMnnRXwKpDmu9lhLOBdLvV_K1OQcC43CxBYICmwB_uTDdO8FpA3JkPHD_om3_DPkiCiqMTEIV2OaJFU_XwMZ8sUJwa80vHrWdt2iirx47dUVtCY-BBDrOlY1WREu80HO-nwOCuEPqoC2Xljn-GiqUz55MC6Zu3OWHXy9X-Kpm3kjk9WWOg6RVwzFd9JDDtulla_VTWOkZIeifll" alt="RED V-RAPTOR 8K camera"><span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2 py-1 font-bold rounded">Rental</span></div><div><h3 class="font-bold mt-5 text-lg">RED V-RAPTOR 8K</h3><p class="text-xs text-on-surface-variant mt-1">Cinema camera / day</p><strong class="block text-primary text-xl mt-3">₹299</strong></div></a>
-          <a href="sales.html" class="glass-card rounded-2xl p-4 product-image reveal flex flex-col justify-between"><div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative"><img class="w-full h-full object-contain p-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3mTHuRyC8eoDn1s1V_T8eQphf4ciHFd1EU7-JlHjYR2OlNjfAfNKOxh78MUEFHSrzoqoKEvVRp_00wtL1ymhNWYFochrNsuBd1VsLSRbuK_mf_6SPR2UHuP724jr-6WWoEBReFY_ZQwmrQUV3LqNQg3eJCTbWlyXcyZH6xYGDAPIkOniUcRSb9ZaYfnIBlNTqZ4iy20sP71KiPEunQVwWt58VpogxZd-Q8M1qMzIRDqbP22gc82IO" alt="Carbon fiber pro stand"><span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2 py-1 font-bold rounded">For sale</span></div><div><h3 class="font-bold mt-5 text-lg">Carbon Fiber Pro Stand</h3><p class="text-xs text-on-surface-variant mt-1">Support / new item</p><strong class="block text-primary text-xl mt-3">₹850</strong></div></a>
-          <a href="rentals.html" class="glass-card rounded-2xl p-4 product-image reveal flex flex-col justify-between"><div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative"><img class="w-full h-full object-contain p-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk-gv6vveE8kR4WkzNRjKugHW3o8l4ON8cM3i-8cyjNZdFFyX-tkO8L77lXLK9U1QBvYsAefgm-yLTvXGq0Yz0_JCft6Wy9qEGT8IdW7FgITkMJIVvc2J2_Y0KYI7jc2vsFm_RZED2rXzBwWlqCDgVqWsqqeCbGZwr_1PvgnhMTgdPFcpUz-kbjZepLmTUfDH0taPPFwJX_aLpASyIbxTB12ANSiaDWb2KAV9KHurFq_rmjrqY-Ysm" alt="Aputure 600d Pro light"><span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2 py-1 font-bold rounded">Rental</span></div><div><h3 class="font-bold mt-5 text-lg">Aputure 600d Pro</h3><p class="text-xs text-on-surface-variant mt-1">Lighting / day</p><strong class="block text-primary text-xl mt-3">₹120</strong></div></a>
-          <a href="sales.html" class="glass-card rounded-2xl p-4 product-image reveal flex flex-col justify-between"><div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative"><img class="w-full h-full object-contain p-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCt_3gNYbj8VIaj-URxsZeMISynJrFGCnrNuAkPuGkaXomPavkrOXDeTFc3idRnE0j9QGnysaJQe4fL5IdNtixjJZNjvZ6df89ONm2FR7EgJdndY8hBLdEf7SpS5stjHSXO2mtUh4gkgTSf7u2ClsK9uizmjE9G0hb0XzQQu_HSLmPiSGFChHYpjNpCjnGn7yEseBGXH2Dcr4J6kfHCyDZND5c-tCtUej4UGukMv6rPudMXeMKobfS" alt="Sony a7S III camera"><span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2 py-1 font-bold rounded">For sale</span></div><div><h3 class="font-bold mt-5 text-lg">Sony a7S III</h3><p class="text-xs text-on-surface-variant mt-1">Refurbished / body</p><strong class="block text-primary text-xl mt-3">₹3,100</strong></div></a>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <!-- Item 1: RED V-RAPTOR 8K -->
+          <a href="rentals.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-52 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeMdiokAUD8pj2r7un2TSGllJ5q_BGGFpUB7udNLMnnRXwKpDmu9lhLOBdLvV_K1OQcC43CxBYICmwB_uTDdO8FpA3JkPHD_om3_DPkiCiqMTEIV2OaJFU_XwMZ8sUJwa80vHrWdt2iirx47dUVtCY-BBDrOlY1WREu80HO-nwOCuEPqoC2Xljn-GiqUz55MC6Zu3OWHXy9X-Kpm3kjk9WWOg6RVwzFd9JDDtulla_VTWOkZIeifll" alt="RED V-RAPTOR 8K camera">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">RENTAL</span>
+            </div>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">RED V-RAPTOR 8K</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Cinema Camera</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">8K VV 120fps Cinema sensor body.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">₹299 / day</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Rent Now <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- Item 2: Carbon Fiber Pro Stand -->
+          <a href="sales.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-52 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3mTHuRyC8eoDn1s1V_T8eQphf4ciHFd1EU7-JlHjYR2OlNjfAfNKOxh78MUEFHSrzoqoKEvVRp_00wtL1ymhNWYFochrNsuBd1VsLSRbuK_mf_6SPR2UHuP724jr-6WWoEBReFY_ZQwmrQUV3LqNQg3eJCTbWlyXcyZH6xYGDAPIkOniUcRSb9ZaYfnIBlNTqZ4iy20sP71KiPEunQVwWt58VpogxZd-Q8M1qMzIRDqbP22gc82IO" alt="Carbon fiber pro stand">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">FOR SALE</span>
+            </div>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Carbon Pro Stand</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Support Rig</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Ultra-light heavy duty carbon support.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">₹850</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Buy Now <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- Item 3: Aputure 600d Pro -->
+          <a href="rentals.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-52 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk-gv6vveE8kR4WkzNRjKugHW3o8l4ON8cM3i-8cyjNZdFFyX-tkO8L77lXLK9U1QBvYsAefgm-yLTvXGq0Yz0_JCft6Wy9qEGT8IdW7FgITkMJIVvc2J2_Y0KYI7jc2vsFm_RZED2rXzBwWlqCDgVqWsqqeCbGZwr_1PvgnhMTgdPFcpUz-kbjZepLmTUfDH0taPPFwJX_aLpASyIbxTB12ANSiaDWb2KAV9KHurFq_rmjrqY-Ysm" alt="Aputure 600d Pro light">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">RENTAL</span>
+            </div>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Aputure 600d Pro</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Lighting Fixture</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Weatherproof 600W daylight COB LED.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">₹120 / day</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Rent Now <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- Item 4: Sony a7S III -->
+          <a href="sales.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-52 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCt_3gNYbj8VIaj-URxsZeMISynJrFGCnrNuAkPuGkaXomPavkrOXDeTFc3idRnE0j9QGnysaJQe4fL5IdNtixjJZNjvZ6df89ONm2FR7EgJdndY8hBLdEf7SpS5stjHSXO2mtUh4gkgTSf7u2ClsK9uizmjE9G0hb0XzQQu_HSLmPiSGFChHYpjNpCjnGn7yEseBGXH2Dcr4J6kfHCyDZND5c-tCtUej4UGukMv6rPudMXeMKobfS" alt="Sony a7S III camera">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">FOR SALE</span>
+            </div>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Sony a7S III</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Refurbished Body</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">4K 120p 10-bit 4:2:2 full-frame camera.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">₹3,100</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Buy Body <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
         </div>
       </div>
     </section>
@@ -437,68 +646,108 @@
           </div>
           <a href="services.html" class="text-primary text-sm font-bold flex items-center gap-2">View all new services <span class="material-symbols-outlined">arrow_forward</span></a>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Product Card 1: 360° Virtual Tours -->
-          <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=600&auto=format&fit=crop&q=80" alt="360° Virtual Tours">
-                <span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2.5 py-1 font-bold rounded">JUST LANDED</span>
-              </div>
-              <h3 class="text-xl font-bold text-on-surface">360° Virtual Tours</h3>
-              <p class="text-xs text-on-surface-variant mt-2 leading-relaxed">Immersive 3D space captures for luxury real estate, venues, and hospitality.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <!-- Card 1: 360° Virtual Tours -->
+          <a href="services.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-48 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=600&auto=format&fit=crop&q=80" alt="360° Virtual Tours">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">JUST LANDED</span>
             </div>
-            <div class="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
-              <strong class="text-primary text-xl font-extrabold">from ₹4,999</strong>
-              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explore <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">360° Virtual Tours</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">3D Space Capture</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Immersive spaces for luxury venues.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">from ₹4,999</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Explore <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
 
-          <!-- Product Card 2: AI Color Grading -->
-          <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&auto=format&fit=crop&q=80" alt="AI Color Grading">
-                <span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2.5 py-1 font-bold rounded">NEW TECH</span>
-              </div>
-              <h3 class="text-xl font-bold text-on-surface">AI Color Grading</h3>
-              <p class="text-xs text-on-surface-variant mt-2 leading-relaxed">A considered cinematic first pass. More room for your taste, less wait time.</p>
+          <!-- Card 2: AI Color Grading -->
+          <a href="services.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-48 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&auto=format&fit=crop&q=80" alt="AI Color Grading">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">NEW TECH</span>
             </div>
-            <div class="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
-              <strong class="text-secondary text-xl font-extrabold">from ₹1,999</strong>
-              <span class="text-xs font-bold text-secondary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explore <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">AI Color Grading</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Post Production</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Considered cinematic first pass.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">from ₹1,999</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Explore <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
 
-          <!-- Product Card 3: Virtual Production Volume -->
-          <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80" alt="Virtual Production Volume">
-                <span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2.5 py-1 font-bold rounded">VFX STUDIO</span>
-              </div>
-              <h3 class="text-xl font-bold text-on-surface">LED Virtual Wall</h3>
-              <p class="text-xs text-on-surface-variant mt-2 leading-relaxed">Real-time camera tracking LED backdrop for live film & commercial sets.</p>
+          <!-- Card 3: LED Virtual Wall -->
+          <a href="services.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-48 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80" alt="LED Virtual Wall">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">VFX STUDIO</span>
             </div>
-            <div class="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
-              <strong class="text-primary text-xl font-extrabold">from ₹8,500</strong>
-              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explore <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">LED Virtual Wall</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Virtual Studio</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Real-time camera tracking backdrop.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">from ₹8,500</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Explore <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
 
-          <!-- Product Card 4: Motion Capture Rigging -->
-          <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop&q=80" alt="Motion Capture Rigging">
-                <span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2.5 py-1 font-bold rounded">3D MOTION</span>
-              </div>
-              <h3 class="text-xl font-bold text-on-surface">3D Motion Capture</h3>
-              <p class="text-xs text-on-surface-variant mt-2 leading-relaxed">Full body & facial suit motion tracking for animation & gaming productions.</p>
+          <!-- Card 4: 3D Motion Capture -->
+          <a href="services.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-48 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&auto=format&fit=crop&q=80" alt="3D Motion Capture">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">3D MOTION</span>
             </div>
-            <div class="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
-              <strong class="text-secondary text-xl font-extrabold">from ₹6,200</strong>
-              <span class="text-xs font-bold text-secondary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explore <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">3D Motion Capture</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Animation Rig</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Full body & facial suit tracking.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">from ₹6,200</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Explore <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
         </div>
@@ -515,68 +764,108 @@
           </div>
           <a href="services.html" class="text-primary text-sm font-bold flex items-center gap-2">View popular bookings <span class="material-symbols-outlined">arrow_forward</span></a>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Product Card 1: Podcast Studio -->
-          <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByVo7zJHfPyxt3gbOoCxO0I4V4fD-D_0qs2yL4FvHB6g16aB3RSMPPBr4_fC5C_vCmsRoLKG-1VlND133w499PMxpGJl4YdTGzjW4GcYWxZsEsIHU4ZfSVytpj9MfBczN5kLaAVIt5pzTmJfwNL3aEZ_Vmin4IJSl3POQJDUsvUrfOEInnGpWNpiNIkQAfuQDWUYlbuEhNRJVzFa65dIIvKYYgu4fnPM7ufgcnx7lSBjcrOwUiIlZN" alt="Podcast studio">
-                <span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2.5 py-1 font-bold rounded flex items-center gap-1"><span class="material-symbols-outlined text-xs">star</span> 4.9 (120+ Bookings)</span>
-              </div>
-              <h3 class="font-bold text-xl text-on-surface">Podcast Studio</h3>
-              <p class="text-xs text-on-surface-variant mt-2 leading-relaxed">Broadcast-ready sound, 4K multi-cam & acoustic lighting set.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <!-- Card 1: Podcast Studio -->
+          <a href="services.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-48 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByVo7zJHfPyxt3gbOoCxO0I4V4fD-D_0qs2yL4FvHB6g16aB3RSMPPBr4_fC5C_vCmsRoLKG-1VlND133w499PMxpGJl4YdTGzjW4GcYWxZsEsIHU4ZfSVytpj9MfBczN5kLaAVIt5pzTmJfwNL3aEZ_Vmin4IJSl3POQJDUsvUrfOEInnGpWNpiNIkQAfuQDWUYlbuEhNRJVzFa65dIIvKYYgu4fnPM7ufgcnx7lSBjcrOwUiIlZN" alt="Podcast studio">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">★ 4.9 (120+)</span>
             </div>
-            <div class="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
-              <strong class="text-primary text-xl font-extrabold">₹1,800 / hr</strong>
-              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book studio <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Podcast Studio</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Broadcast Floor</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Broadcast sound & 4K multi-cam.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">₹1,800 / hr</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Book Studio <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
 
-          <!-- Product Card 2: Fashion Lookbooks -->
-          <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4LIkEk85MQYlHUzoEvs_SlNGPJVNfLtNujIxde6wh_BH2iMxO4RxvUC2rlFOj8OtymAxroY8SZcZK9wm5PZGCJoGLy1_8IFjFLtDTpJZ94pzuPbdbAO9MwaLd9QV2uvq2bcF1C87OAJseHKX3v4aMemfzauPGms-QlXbujUiYqv8NPEWqBNRjoc2XxU4FzEf_qT2gM7SQ3oemwrHkUAlSRWq-vU3gTN4CNLMxWbr72Mi0bs2WQ1M5" alt="Fashion lookbooks">
-                <span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2.5 py-1 font-bold rounded flex items-center gap-1"><span class="material-symbols-outlined text-xs">star</span> 5.0 (85+ Bookings)</span>
-              </div>
-              <h3 class="font-bold text-xl text-on-surface">Fashion Lookbooks</h3>
-              <p class="text-xs text-on-surface-variant mt-2 leading-relaxed">Studio & location editorial fashion campaign shoot.</p>
+          <!-- Card 2: Fashion Lookbooks -->
+          <a href="services.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-48 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4LIkEk85MQYlHUzoEvs_SlNGPJVNfLtNujIxde6wh_BH2iMxO4RxvUC2rlFOj8OtymAxroY8SZcZK9wm5PZGCJoGLy1_8IFjFLtDTpJZ94pzuPbdbAO9MwaLd9QV2uvq2bcF1C87OAJseHKX3v4aMemfzauPGms-QlXbujUiYqv8NPEWqBNRjoc2XxU4FzEf_qT2gM7SQ3oemwrHkUAlSRWq-vU3gTN4CNLMxWbr72Mi0bs2WQ1M5" alt="Fashion lookbooks">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">★ 5.0 (85+)</span>
             </div>
-            <div class="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
-              <strong class="text-primary text-xl font-extrabold">₹3,500 / day</strong>
-              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book shoot <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Fashion Lookbooks</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Editorial Shoot</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Studio & location editorial campaign.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">₹3,500 / day</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Book Shoot <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
 
-          <!-- Product Card 3: Acoustic Soundstage A -->
-          <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=600&auto=format&fit=crop&q=80" alt="Acoustic Soundstage A">
-                <span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2.5 py-1 font-bold rounded flex items-center gap-1"><span class="material-symbols-outlined text-xs">star</span> 4.9 (200+ Bookings)</span>
-              </div>
-              <h3 class="font-bold text-xl text-on-surface">Soundstage Bay A</h3>
-              <p class="text-xs text-on-surface-variant mt-2 leading-relaxed">50ft x 40ft soundproof floor with pre-rigged lighting truss.</p>
+          <!-- Card 3: Soundstage Bay A -->
+          <a href="services.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-48 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=600&auto=format&fit=crop&q=80" alt="Soundstage Bay A">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">★ 4.9 (200+)</span>
             </div>
-            <div class="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
-              <strong class="text-primary text-xl font-extrabold">₹2,500 / hr</strong>
-              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book floor <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Soundstage Bay A</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Film Soundstage</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">50ft x 40ft soundproof floor.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">₹2,500 / hr</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Book Floor <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
 
-          <!-- Product Card 4: Daylight Photo Floor -->
-          <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
-            <div>
-              <div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80" alt="Daylight Photo Floor">
-                <span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2.5 py-1 font-bold rounded flex items-center gap-1"><span class="material-symbols-outlined text-xs">star</span> 4.8 (95+ Bookings)</span>
-              </div>
-              <h3 class="font-bold text-xl text-on-surface">Daylight Photo Bay</h3>
-              <p class="text-xs text-on-surface-variant mt-2 leading-relaxed">North-facing natural skylights & Profoto strobes equipped.</p>
+          <!-- Card 4: Daylight Photo Bay -->
+          <a href="services.html" class="pro-card group flex flex-col justify-between reveal transition-all duration-300">
+            <div class="pro-card-banner h-48 w-full rounded-t-[32px] overflow-hidden relative bg-obsidian-base">
+              <img class="pro-card-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80" alt="Daylight Photo Bay">
+              <span class="badge-intl absolute top-3.5 right-3.5 bg-slate-900/85 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">★ 4.8 (95+)</span>
             </div>
-            <div class="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
-              <strong class="text-primary text-xl font-extrabold">₹1,200 / hr</strong>
-              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book bay <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            <div class="pro-card-info -mt-6 relative z-10 bg-[#e0e5ec] dark:bg-[#161618] rounded-[28px] p-5 flex flex-col justify-between flex-grow shadow-[0_10px_25px_rgba(0,0,0,0.08)] border border-white/60 dark:border-white/10">
+              <div>
+                <h3 class="pro-card-name text-lg font-extrabold text-[#0f172a] dark:text-white tracking-tight group-hover:text-primary transition-colors">Daylight Photo Bay</h3>
+                <p class="pro-card-title text-xs font-bold text-[#007d8e] dark:text-[#00f0ff] mt-1">Photo Studio</p>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Natural skylights & Profoto strobes.</p>
+              </div>
+              <div class="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
+                <strong class="pro-card-rate block text-xl font-black text-[#007d8e] dark:text-[#00f0ff] mb-2.5">₹1,200 / hr</strong>
+                <div class="flex items-center gap-2">
+                  <span class="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 text-[#0f172a] dark:text-white shrink-0 shadow-sm group-hover:bg-[#007d8e] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  </span>
+                  <span class="btn-book-now flex-1 rounded-full py-2 px-3 text-xs font-extrabold text-center flex items-center justify-center gap-1 shadow-md bg-[#0f4c5c] text-white">
+                    Book Bay <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </a>
         </div>
