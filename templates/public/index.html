@@ -55,6 +55,12 @@
       color: #0f172a !important;
     }
 
+    /* Ensure all section backgrounds seamlessly match body background in Light Theme */
+    html.light section,
+    [data-theme="light"] section {
+      background-color: transparent !important;
+    }
+
     /* Hide scroll-driven canvas background in Light Theme */
     html.light #bg-canvas,
     html.light #bg-overlay,
@@ -83,19 +89,67 @@
       background: linear-gradient(90deg, rgba(14, 90, 111, 0.4), rgba(0, 0, 0, 0.1), transparent) !important;
     }
 
+    /* Crisp High-Contrast Neumorphic Cards in Light Theme */
+    html.light .glass-card,
     html.light .brief-card,
-    [data-theme="light"] .brief-card {
+    html.light .service-card,
+    html.light .product-card,
+    html.light .glass-panel,
+    [data-theme="light"] .glass-card,
+    [data-theme="light"] .brief-card,
+    [data-theme="light"] .service-card,
+    [data-theme="light"] .product-card,
+    [data-theme="light"] .glass-panel {
       background: #e0e5ec !important;
       border: none !important;
-      box-shadow: 4px 4px 10px #b8c2cc, -4px -4px 10px #ffffff !important;
+      box-shadow: 6px 6px 14px #b8c2cc, -6px -6px 14px #ffffff !important;
       color: #0f172a !important;
     }
 
+    html.light .glass-card:hover,
     html.light .brief-card:hover,
-    [data-theme="light"] .brief-card:hover {
-      background: rgba(14, 90, 111, 0.08) !important;
-      box-shadow: inset 2px 2px 5px #b8c2cc, inset -2px -2px 5px #ffffff !important;
-      transform: translateY(-2px) !important;
+    html.light .service-card:hover,
+    html.light .product-card:hover,
+    html.light .glass-panel:hover,
+    [data-theme="light"] .glass-card:hover,
+    [data-theme="light"] .brief-card:hover,
+    [data-theme="light"] .service-card:hover,
+    [data-theme="light"] .product-card:hover,
+    [data-theme="light"] .glass-panel:hover {
+      background: #e0e5ec !important;
+      box-shadow: 8px 8px 18px #a8b2bc, -8px -8px 18px #ffffff !important;
+      transform: translateY(-4px) !important;
+    }
+
+    /* High-Contrast Gradient Text & Eyebrow Visibility Fix for Light Theme */
+    html.light .gradient-text,
+    [data-theme="light"] .gradient-text {
+      background: linear-gradient(135deg, #007d8e, #a855f7) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+    }
+
+    html.light .text-gradient,
+    [data-theme="light"] .text-gradient {
+      background: linear-gradient(135deg, #007d8e, #0284c7) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+    }
+
+    html.light .eyebrow,
+    [data-theme="light"] .eyebrow {
+      color: #007d8e !important;
+      font-weight: 800 !important;
+    }
+
+    html.light .text-on-surface-variant,
+    [data-theme="light"] .text-on-surface-variant {
+      color: #334155 !important;
+    }
+
+    html.light h1, html.light h2, html.light h3, html.light h4, html.light h5, html.light h6,
+    [data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, [data-theme="light"] h4, [data-theme="light"] h5, [data-theme="light"] h6 {
+      color: #0f172a !important;
     }
 
     html.light .bg-obsidian-base,
@@ -164,20 +218,196 @@
       </div>
     </section>
 
-    <section class="px-5 md:px-20 py-24 bg-charcoal-surface/40">
-      <div class="max-w-screen-2xl mx-auto"><div class="flex items-end justify-between mb-10 reveal"><div><p class="eyebrow mb-4">02 / Explore by brief</p><h2 class="text-4xl md:text-5xl font-bold">Start with the shot.</h2></div></div><div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-        <a href="services.html" class="brief-card p-5 min-h-44 flex flex-col justify-between reveal transition-all duration-300"><span class="material-symbols-outlined text-primary">photo_camera</span><span class="font-bold">Studio portraits</span></a><a href="services.html" class="brief-card p-5 min-h-44 flex flex-col justify-between reveal transition-all duration-300"><span class="material-symbols-outlined text-secondary">flight</span><span class="font-bold">Drone cinematography</span></a><a href="designers.html" class="brief-card p-5 min-h-44 flex flex-col justify-between reveal transition-all duration-300"><span class="material-symbols-outlined text-primary">draw</span><span class="font-bold">Brand identity</span></a><a href="organizers.html" class="brief-card p-5 min-h-44 flex flex-col justify-between reveal transition-all duration-300"><span class="material-symbols-outlined text-secondary">event</span><span class="font-bold">Corporate events</span></a><a href="videographers.html" class="brief-card p-5 min-h-44 flex flex-col justify-between reveal transition-all duration-300"><span class="material-symbols-outlined text-primary">music_video</span><span class="font-bold">Music videos</span></a>
-      </div></div>
+    <section class="px-5 md:px-20 py-24">
+      <div class="max-w-screen-2xl mx-auto">
+        <div class="flex items-end justify-between mb-10 reveal">
+          <div>
+            <p class="eyebrow mb-4">02 / Explore by brief</p>
+            <h2 class="text-4xl md:text-5xl font-bold">Start with the shot.</h2>
+          </div>
+          <a href="services.html" class="hidden md:flex text-primary text-sm font-bold items-center gap-2">View all briefs <span class="material-symbols-outlined">arrow_forward</span></a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <!-- Card 1: Studio Portraits -->
+          <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
+            <div>
+              <div class="h-44 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
+                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80" alt="Studio portraits">
+                <span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2 py-1 font-bold rounded">PORTRAIT</span>
+              </div>
+              <h3 class="font-bold text-lg text-on-surface">Studio Portraits</h3>
+              <p class="text-xs text-on-surface-variant mt-1">Camera department / session</p>
+            </div>
+            <div class="flex items-center justify-between mt-4 pt-3 border-t border-white/10">
+              <strong class="text-primary text-xl font-extrabold">₹1,200</strong>
+              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            </div>
+          </a>
+
+          <!-- Card 2: Drone Cinematography -->
+          <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
+            <div>
+              <div class="h-44 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
+                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=600&auto=format&fit=crop&q=80" alt="Drone cinematography">
+                <span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2 py-1 font-bold rounded">AERIAL</span>
+              </div>
+              <h3 class="font-bold text-lg text-on-surface">Drone Cinematography</h3>
+              <p class="text-xs text-on-surface-variant mt-1">Aerial unit / day shoot</p>
+            </div>
+            <div class="flex items-center justify-between mt-4 pt-3 border-t border-white/10">
+              <strong class="text-primary text-xl font-extrabold">₹2,500</strong>
+              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            </div>
+          </a>
+
+          <!-- Card 3: Brand Identity -->
+          <a href="designers.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
+            <div>
+              <div class="h-44 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
+                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&auto=format&fit=crop&q=80" alt="Brand identity">
+                <span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2 py-1 font-bold rounded">DESIGN</span>
+              </div>
+              <h3 class="font-bold text-lg text-on-surface">Brand Identity</h3>
+              <p class="text-xs text-on-surface-variant mt-1">Design system / package</p>
+            </div>
+            <div class="flex items-center justify-between mt-4 pt-3 border-t border-white/10">
+              <strong class="text-primary text-xl font-extrabold">₹450</strong>
+              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explore <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            </div>
+          </a>
+
+          <!-- Card 4: Corporate Events -->
+          <a href="organizers.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
+            <div>
+              <div class="h-44 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
+                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&auto=format&fit=crop&q=80" alt="Corporate events">
+                <span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2 py-1 font-bold rounded">EVENTS</span>
+              </div>
+              <h3 class="font-bold text-lg text-on-surface">Corporate Events</h3>
+              <p class="text-xs text-on-surface-variant mt-1">Event production / day</p>
+            </div>
+            <div class="flex items-center justify-between mt-4 pt-3 border-t border-white/10">
+              <strong class="text-primary text-xl font-extrabold">₹3,000</strong>
+              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            </div>
+          </a>
+
+          <!-- Card 5: Music Videos -->
+          <a href="videographers.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group flex flex-col justify-between">
+            <div>
+              <div class="h-44 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
+                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80" alt="Music videos">
+                <span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2 py-1 font-bold rounded">VIDEO</span>
+              </div>
+              <h3 class="font-bold text-lg text-on-surface">Music Videos</h3>
+              <p class="text-xs text-on-surface-variant mt-1">Cinema video / project</p>
+            </div>
+            <div class="flex items-center justify-between mt-4 pt-3 border-t border-white/10">
+              <strong class="text-primary text-xl font-extrabold">₹4,500</strong>
+              <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            </div>
+          </a>
+        </div>
+      </div>
     </section>
 
-    <section class="px-5 md:px-20 py-28"><div class="max-w-screen-2xl mx-auto"><div class="flex justify-between items-end mb-10 reveal"><div><p class="eyebrow mb-4">03 / Camera department</p><h2 class="text-4xl md:text-6xl font-bold">The right tool<br><span class="text-on-surface-variant">changes everything.</span></h2></div><a href="rentals.html" class="hidden md:flex cc-btn-ghost !w-auto">Shop department <span class="material-symbols-outlined">arrow_outward</span></a></div><div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-      <a href="rentals.html" class="glass-card rounded-2xl p-4 product-image reveal"><div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative"><img class="w-full h-full object-contain p-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeMdiokAUD8pj2r7un2TSGllJ5q_BGGFpUB7udNLMnnRXwKpDmu9lhLOBdLvV_K1OQcC43CxBYICmwB_uTDdO8FpA3JkPHD_om3_DPkiCiqMTEIV2OaJFU_XwMZ8sUJwa80vHrWdt2iirx47dUVtCY-BBDrOlY1WREu80HO-nwOCuEPqoC2Xljn-GiqUz55MC6Zu3OWHXy9X-Kpm3kjk9WWOg6RVwzFd9JDDtulla_VTWOkZIeifll" alt="RED V-RAPTOR 8K camera"><span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2 py-1">Rental</span></div><h3 class="font-bold mt-5">RED V-RAPTOR 8K</h3><p class="text-xs text-on-surface-variant mt-1">Cinema camera / day</p><strong class="block text-primary text-xl mt-3">₹299</strong></a>
-      <a href="sales.html" class="glass-card rounded-2xl p-4 product-image reveal"><div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative"><img class="w-full h-full object-contain p-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3mTHuRyC8eoDn1s1V_T8eQphf4ciHFd1EU7-JlHjYR2OlNjfAfNKOxh78MUEFHSrzoqoKEvVRp_00wtL1ymhNWYFochrNsuBd1VsLSRbuK_mf_6SPR2UHuP724jr-6WWoEBReFY_ZQwmrQUV3LqNQg3eJCTbWlyXcyZH6xYGDAPIkOniUcRSb9ZaYfnIBlNTqZ4iy20sP71KiPEunQVwWt58VpogxZd-Q8M1qMzIRDqbP22gc82IO" alt="Carbon fiber pro stand"><span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2 py-1">For sale</span></div><h3 class="font-bold mt-5">Carbon Fiber Pro Stand</h3><p class="text-xs text-on-surface-variant mt-1">Support / new item</p><strong class="block text-primary text-xl mt-3">₹850</strong></a>
-      <a href="rentals.html" class="glass-card rounded-2xl p-4 product-image reveal"><div class="h-48 rounded-xl bg-obsidian-base overflow-hidden"><img class="w-full h-full object-contain p-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk-gv6vveE8kR4WkzNRjKugHW3o8l4ON8cM3i-8cyjNZdFFyX-tkO8L77lXLK9U1QBvYsAefgm-yLTvXGq0Yz0_JCft6Wy9qEGT8IdW7FgITkMJIVvc2J2_Y0KYI7jc2vsFm_RZED2rXzBwWlqCDgVqWsqqeCbGZwr_1PvgnhMTgdPFcpUz-kbjZepLmTUfDH0taPPFwJX_aLpASyIbxTB12ANSiaDWb2KAV9KHurFq_rmjrqY-Ysm" alt="Aputure 600d Pro light"></div><h3 class="font-bold mt-5">Aputure 600d Pro</h3><p class="text-xs text-on-surface-variant mt-1">Lighting / day</p><strong class="block text-primary text-xl mt-3">₹120</strong></a>
-      <a href="sales.html" class="glass-card rounded-2xl p-4 product-image reveal"><div class="h-48 rounded-xl bg-obsidian-base overflow-hidden"><img class="w-full h-full object-contain p-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCt_3gNYbj8VIaj-URxsZeMISynJrFGCnrNuAkPuGkaXomPavkrOXDeTFc3idRnE0j9QGnysaJQe4fL5IdNtixjJZNjvZ6df89ONm2FR7EgJdndY8hBLdEf7SpS5stjHSXO2mtUh4gkgTSf7u2ClsK9uizmjE9G0hb0XzQQu_HSLmPiSGFChHYpjNpCjnGn7yEseBGXH2Dcr4J6kfHCyDZND5c-tCtUej4UGukMv6rPudMXeMKobfS" alt="Sony a7S III camera"></div><h3 class="font-bold mt-5">Sony a7S III</h3><p class="text-xs text-on-surface-variant mt-1">Refurbished / body</p><strong class="block text-primary text-xl mt-3">₹3,100</strong></a>
-    </div></div></section>
+    <section class="px-5 md:px-20 py-28">
+      <div class="max-w-screen-2xl mx-auto">
+        <div class="flex justify-between items-end mb-10 reveal">
+          <div>
+            <p class="eyebrow mb-4">03 / Camera department</p>
+            <h2 class="text-4xl md:text-6xl font-bold">The right tool<br><span class="text-on-surface-variant">changes everything.</span></h2>
+          </div>
+          <a href="rentals.html" class="hidden md:flex cc-btn-ghost !w-auto">Shop department <span class="material-symbols-outlined">arrow_outward</span></a>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <a href="rentals.html" class="glass-card rounded-2xl p-4 product-image reveal flex flex-col justify-between"><div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative"><img class="w-full h-full object-contain p-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeMdiokAUD8pj2r7un2TSGllJ5q_BGGFpUB7udNLMnnRXwKpDmu9lhLOBdLvV_K1OQcC43CxBYICmwB_uTDdO8FpA3JkPHD_om3_DPkiCiqMTEIV2OaJFU_XwMZ8sUJwa80vHrWdt2iirx47dUVtCY-BBDrOlY1WREu80HO-nwOCuEPqoC2Xljn-GiqUz55MC6Zu3OWHXy9X-Kpm3kjk9WWOg6RVwzFd9JDDtulla_VTWOkZIeifll" alt="RED V-RAPTOR 8K camera"><span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2 py-1 font-bold rounded">Rental</span></div><div><h3 class="font-bold mt-5 text-lg">RED V-RAPTOR 8K</h3><p class="text-xs text-on-surface-variant mt-1">Cinema camera / day</p><strong class="block text-primary text-xl mt-3">₹299</strong></div></a>
+          <a href="sales.html" class="glass-card rounded-2xl p-4 product-image reveal flex flex-col justify-between"><div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative"><img class="w-full h-full object-contain p-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3mTHuRyC8eoDn1s1V_T8eQphf4ciHFd1EU7-JlHjYR2OlNjfAfNKOxh78MUEFHSrzoqoKEvVRp_00wtL1ymhNWYFochrNsuBd1VsLSRbuK_mf_6SPR2UHuP724jr-6WWoEBReFY_ZQwmrQUV3LqNQg3eJCTbWlyXcyZH6xYGDAPIkOniUcRSb9ZaYfnIBlNTqZ4iy20sP71KiPEunQVwWt58VpogxZd-Q8M1qMzIRDqbP22gc82IO" alt="Carbon fiber pro stand"><span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2 py-1 font-bold rounded">For sale</span></div><div><h3 class="font-bold mt-5 text-lg">Carbon Fiber Pro Stand</h3><p class="text-xs text-on-surface-variant mt-1">Support / new item</p><strong class="block text-primary text-xl mt-3">₹850</strong></div></a>
+          <a href="rentals.html" class="glass-card rounded-2xl p-4 product-image reveal flex flex-col justify-between"><div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative"><img class="w-full h-full object-contain p-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk-gv6vveE8kR4WkzNRjKugHW3o8l4ON8cM3i-8cyjNZdFFyX-tkO8L77lXLK9U1QBvYsAefgm-yLTvXGq0Yz0_JCft6Wy9qEGT8IdW7FgITkMJIVvc2J2_Y0KYI7jc2vsFm_RZED2rXzBwWlqCDgVqWsqqeCbGZwr_1PvgnhMTgdPFcpUz-kbjZepLmTUfDH0taPPFwJX_aLpASyIbxTB12ANSiaDWb2KAV9KHurFq_rmjrqY-Ysm" alt="Aputure 600d Pro light"><span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2 py-1 font-bold rounded">Rental</span></div><div><h3 class="font-bold mt-5 text-lg">Aputure 600d Pro</h3><p class="text-xs text-on-surface-variant mt-1">Lighting / day</p><strong class="block text-primary text-xl mt-3">₹120</strong></div></a>
+          <a href="sales.html" class="glass-card rounded-2xl p-4 product-image reveal flex flex-col justify-between"><div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative"><img class="w-full h-full object-contain p-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCt_3gNYbj8VIaj-URxsZeMISynJrFGCnrNuAkPuGkaXomPavkrOXDeTFc3idRnE0j9QGnysaJQe4fL5IdNtixjJZNjvZ6df89ONm2FR7EgJdndY8hBLdEf7SpS5stjHSXO2mtUh4gkgTSf7u2ClsK9uizmjE9G0hb0XzQQu_HSLmPiSGFChHYpjNpCjnGn7yEseBGXH2Dcr4J6kfHCyDZND5c-tCtUej4UGukMv6rPudMXeMKobfS" alt="Sony a7S III camera"><span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2 py-1 font-bold rounded">For sale</span></div><div><h3 class="font-bold mt-5 text-lg">Sony a7S III</h3><p class="text-xs text-on-surface-variant mt-1">Refurbished / body</p><strong class="block text-primary text-xl mt-3">₹3,100</strong></div></a>
+        </div>
+      </div>
+    </section>
 
-    <section class="px-5 md:px-20 py-24 bg-charcoal-surface/35"><div class="max-w-screen-2xl mx-auto grid lg:grid-cols-12 gap-6"><div class="lg:col-span-7 reveal"><p class="eyebrow mb-4">04 / Signal boost</p><h2 class="text-4xl md:text-6xl font-bold">New on the<br><span class="gradient-text">call sheet.</span></h2><div class="grid md:grid-cols-2 gap-4 mt-10"><div class="glass-card rounded-2xl p-7"><span class="eyebrow">Just landed</span><h3 class="text-2xl font-bold mt-12">360° Virtual Tours</h3><p class="text-on-surface-variant mt-3">Immersive spaces for properties, hospitality, and the places people remember.</p><a href="services.html" class="text-primary text-sm font-bold mt-7 inline-flex items-center gap-2">Explore <span class="material-symbols-outlined">arrow_forward</span></a></div><div class="glass-card rounded-2xl p-7"><span class="eyebrow text-secondary">Just landed</span><h3 class="text-2xl font-bold mt-12">AI Color Grading</h3><p class="text-on-surface-variant mt-3">A considered first pass. More room for your taste, less time in the queue.</p><a href="services.html" class="text-primary text-sm font-bold mt-7 inline-flex items-center gap-2">Explore <span class="material-symbols-outlined">arrow_forward</span></a></div></div></div><div class="lg:col-span-5 reveal"><p class="eyebrow mb-4">05 / Booked on repeat</p><h2 class="text-4xl font-bold mb-7">Proof of work.</h2><div class="space-y-3"><a href="services.html" class="glass-card rounded-2xl p-4 flex gap-4 items-center group"><img class="w-24 h-24 rounded-xl object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByVo7zJHfPyxt3gbOoCxO0I4V4fD-D_0qs2yL4FvHB6g16aB3RSMPPBr4_fC5C_vCmsRoLKG-1VlND133w499PMxpGJl4YdTGzjW4GcYWxZsEsIHU4ZfSVytpj9MfBczN5kLaAVIt5pzTmJfwNL3aEZ_Vmin4IJSl3POQJDUsvUrfOEInnGpWNpiNIkQAfuQDWUYlbuEhNRJVzFa65dIIvKYYgu4fnPM7ufgcnx7lSBjcrOwUiIlZN" alt="Podcast studio"><div><h3 class="font-bold">Podcast Studio</h3><p class="text-primary text-sm mt-2"><span class="material-symbols-outlined text-sm">star</span> 4.9 <span class="text-on-surface-variant">/ 120+ bookings</span></p></div></a><a href="services.html" class="glass-card rounded-2xl p-4 flex gap-4 items-center group"><img class="w-24 h-24 rounded-xl object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4LIkEk85MQYlHUzoEvs_SlNGPJVNfLtNujIxde6wh_BH2iMxO4RxvUC2rlFOj8OtymAxroY8SZcZK9wm5PZGCJoGLy1_8IFjFLtDTpJZ94pzuPbdbAO9MwaLd9QV2uvq2bcF1C87OAJseHKX3v4aMemfzauPGms-QlXbujUiYqv8NPEWqBNRjoc2XxU4FzEf_qT2gM7SQ3oemwrHkUAlSRWq-vU3gTN4CNLMxWbr72Mi0bs2WQ1M5" alt="Fashion lookbook"><div><h3 class="font-bold">Fashion Lookbooks</h3><p class="text-primary text-sm mt-2"><span class="material-symbols-outlined text-sm">star</span> 5.0 <span class="text-on-surface-variant">/ 85+ bookings</span></p></div></a></div></div></div></section>
+    <section class="px-5 md:px-20 py-24">
+      <div class="max-w-screen-2xl mx-auto grid lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-7 reveal">
+          <p class="eyebrow mb-4">04 / Signal boost</p>
+          <h2 class="text-4xl md:text-6xl font-bold">New on the<br><span class="gradient-text">call sheet.</span></h2>
+          <div class="grid md:grid-cols-2 gap-4 mt-8">
+            <!-- Product Card 1: 360° Virtual Tours -->
+            <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group block flex flex-col justify-between">
+              <div>
+                <div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
+                  <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=600&auto=format&fit=crop&q=80" alt="360° Virtual Tours">
+                  <span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2.5 py-1 font-bold rounded">JUST LANDED</span>
+                </div>
+                <h3 class="text-xl font-bold text-on-surface">360° Virtual Tours</h3>
+                <p class="text-xs text-on-surface-variant mt-2 leading-relaxed">Immersive 3D space captures for luxury real estate, venues, and hospitality.</p>
+              </div>
+              <div class="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
+                <strong class="text-primary text-xl font-extrabold">from ₹4,999</strong>
+                <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explore <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+              </div>
+            </a>
+
+            <!-- Product Card 2: AI Color Grading -->
+            <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group block flex flex-col justify-between">
+              <div>
+                <div class="h-48 rounded-xl bg-obsidian-base overflow-hidden relative mb-4">
+                  <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&auto=format&fit=crop&q=80" alt="AI Color Grading">
+                  <span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2.5 py-1 font-bold rounded">NEW TECH</span>
+                </div>
+                <h3 class="text-xl font-bold text-on-surface">AI Color Grading</h3>
+                <p class="text-xs text-on-surface-variant mt-2 leading-relaxed">A considered cinematic first pass. More room for your taste, less wait time.</p>
+              </div>
+              <div class="flex items-center justify-between mt-5 pt-3 border-t border-white/10">
+                <strong class="text-secondary text-xl font-extrabold">from ₹1,999</strong>
+                <span class="text-xs font-bold text-secondary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Explore <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 reveal">
+          <p class="eyebrow mb-4">05 / Booked on repeat</p>
+          <h2 class="text-4xl font-bold mb-7">Proof of work.</h2>
+          <div class="space-y-4">
+            <!-- Product Card 1: Podcast Studio -->
+            <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group block flex flex-col justify-between">
+              <div>
+                <div class="h-44 rounded-xl bg-obsidian-base overflow-hidden relative mb-3">
+                  <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByVo7zJHfPyxt3gbOoCxO0I4V4fD-D_0qs2yL4FvHB6g16aB3RSMPPBr4_fC5C_vCmsRoLKG-1VlND133w499PMxpGJl4YdTGzjW4GcYWxZsEsIHU4ZfSVytpj9MfBczN5kLaAVIt5pzTmJfwNL3aEZ_Vmin4IJSl3POQJDUsvUrfOEInnGpWNpiNIkQAfuQDWUYlbuEhNRJVzFa65dIIvKYYgu4fnPM7ufgcnx7lSBjcrOwUiIlZN" alt="Podcast studio">
+                  <span class="absolute top-3 right-3 eyebrow bg-secondary text-obsidian-base px-2.5 py-1 font-bold rounded flex items-center gap-1"><span class="material-symbols-outlined text-xs">star</span> 4.9 (120+ Bookings)</span>
+                </div>
+                <h3 class="font-bold text-lg text-on-surface">Podcast Studio</h3>
+                <p class="text-xs text-on-surface-variant mt-1">Broadcast-ready sound, 4K multi-cam & lighting set</p>
+              </div>
+              <div class="flex items-center justify-between mt-3 pt-2 border-t border-white/10">
+                <strong class="text-primary text-xl font-extrabold">₹1,800 / hr</strong>
+                <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book studio <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+              </div>
+            </a>
+
+            <!-- Product Card 2: Fashion Lookbooks -->
+            <a href="services.html" class="glass-card rounded-2xl p-4 product-image reveal transition-all duration-300 group block flex flex-col justify-between">
+              <div>
+                <div class="h-44 rounded-xl bg-obsidian-base overflow-hidden relative mb-3">
+                  <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4LIkEk85MQYlHUzoEvs_SlNGPJVNfLtNujIxde6wh_BH2iMxO4RxvUC2rlFOj8OtymAxroY8SZcZK9wm5PZGCJoGLy1_8IFjFLtDTpJZ94pzuPbdbAO9MwaLd9QV2uvq2bcF1C87OAJseHKX3v4aMemfzauPGms-QlXbujUiYqv8NPEWqBNRjoc2XxU4FzEf_qT2gM7SQ3oemwrHkUAlSRWq-vU3gTN4CNLMxWbr72Mi0bs2WQ1M5" alt="Fashion lookbooks">
+                  <span class="absolute top-3 right-3 eyebrow bg-primary text-obsidian-base px-2.5 py-1 font-bold rounded flex items-center gap-1"><span class="material-symbols-outlined text-xs">star</span> 5.0 (85+ Bookings)</span>
+                </div>
+                <h3 class="font-bold text-lg text-on-surface">Fashion Lookbooks</h3>
+                <p class="text-xs text-on-surface-variant mt-1">Studio & location editorial fashion campaign shoot</p>
+              </div>
+              <div class="flex items-center justify-between mt-3 pt-2 border-t border-white/10">
+                <strong class="text-primary text-xl font-extrabold">₹3,500 / day</strong>
+                <span class="text-xs font-bold text-primary flex items-center gap-1 group-hover:translate-x-1 transition-transform">Book shoot <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section class="px-5 md:px-20 py-28"><div class="max-w-4xl mx-auto text-center reveal"><p class="eyebrow mb-7">06 / Built on trust</p><blockquote class="text-3xl md:text-5xl font-bold leading-tight">“CamCrew gave our launch the same care we put into the product. Every detail showed up.”</blockquote><p class="mt-7 text-on-surface-variant">Mara Ellis / Creative Director, Northline</p><div class="section-rule mt-16"></div><div class="grid grid-cols-3 gap-5 mt-10 text-left"><div><strong class="text-3xl text-primary font-extrabold block" id="stat-avg-exp" style="color:#00dbe9;font-weight:800;font-size:2.25rem;">4.9/5</strong><p class="text-xs text-on-surface-variant mt-2 uppercase tracking-widest">average experience</p></div><div><strong class="text-3xl text-primary font-extrabold block" id="stat-creatives" style="color:#00dbe9;font-weight:800;font-size:2.25rem;">2,400+</strong><p class="text-xs text-on-surface-variant mt-2 uppercase tracking-widest">creatives onboard</p></div><div><strong class="text-3xl text-primary font-extrabold block" id="stat-avg-resp" style="color:#00dbe9;font-weight:800;font-size:2.25rem;">48 hrs</strong><p class="text-xs text-on-surface-variant mt-2 uppercase tracking-widest">average response</p></div></div></div></section>
 
