@@ -232,7 +232,32 @@
 
   <div id="site-header"></div>
   <main class="relative z-10">
-    <section class="relative min-h-[90vh] flex items-center px-5 md:px-20 pt-28 pb-20 overflow-hidden">
+
+    <!-- ── Mobile Search & Category Chips Row (Inspired by Reference Design) ── -->
+    <div class="md:hidden px-4 pt-24 pb-2">
+      <!-- Search Input Pill + Dark Filter Button -->
+      <div class="flex items-center gap-2 mb-4">
+        <div class="flex-1 flex items-center gap-2.5 px-4 py-3 rounded-full bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700/60 shadow-sm">
+          <span class="material-symbols-outlined text-zinc-400 text-lg">search</span>
+          <input type="text" placeholder="Search creatives, gear, services..." class="bg-transparent text-sm w-full outline-none text-zinc-800 dark:text-zinc-100 placeholder-zinc-400">
+        </div>
+        <a href="services.html" class="flex items-center gap-1.5 px-4 py-3 rounded-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-xs font-bold shadow-md hover:scale-105 transition-all">
+          <span class="material-symbols-outlined text-sm">tune</span>
+          <span>Filter</span>
+        </a>
+      </div>
+
+      <!-- Horizontal Scrollable Category Chips -->
+      <div class="flex items-center gap-2.5 overflow-x-auto custom-scrollbar pb-1">
+        <a href="index.html" class="px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-amber-500 text-white shadow-md shadow-amber-500/25">Trending</a>
+        <a href="photographers.html" class="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Photographers</a>
+        <a href="videographers.html" class="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Videographers</a>
+        <a href="rentals.html" class="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Gear Rentals</a>
+        <a href="sales.html" class="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Sales</a>
+      </div>
+    </div>
+
+    <section class="relative min-h-[90vh] flex items-center px-5 md:px-20 pt-8 md:pt-28 pb-20 overflow-hidden">
       <div class="hero-grid absolute inset-0 pointer-events-none"></div>
       <div class="absolute right-[8%] top-1/4 hidden lg:block w-px h-72 bg-gradient-to-b from-transparent via-primary/60 to-transparent"><span class="absolute -left-1.5 top-1/2 w-3 h-3 rounded-full bg-primary neon-glow-blue"></span></div>
       <div class="max-w-screen-2xl mx-auto w-full relative">
