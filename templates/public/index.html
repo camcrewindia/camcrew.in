@@ -89,36 +89,83 @@
       background: linear-gradient(90deg, rgba(14, 90, 111, 0.4), rgba(0, 0, 0, 0.1), transparent) !important;
     }
 
-    /* Crisp High-Contrast Neumorphic Cards in Light Theme */
-    html.light .glass-card,
-    html.light .brief-card,
-    html.light .service-card,
+    /* Authentic Neumorphism Effect for Main Outer Card Containers in Light Theme */
+    html.light .pro-card,
     html.light .product-card,
-    html.light .glass-panel,
-    [data-theme="light"] .glass-card,
-    [data-theme="light"] .brief-card,
-    [data-theme="light"] .service-card,
+    html.light .service-card,
+    html.light .brief-card,
+    html.light .glass-card,
+    html.light .cat-card,
+    [data-theme="light"] .pro-card,
     [data-theme="light"] .product-card,
-    [data-theme="light"] .glass-panel {
+    [data-theme="light"] .service-card,
+    [data-theme="light"] .brief-card,
+    [data-theme="light"] .glass-card,
+    [data-theme="light"] .cat-card {
       background: #e0e5ec !important;
-      border: none !important;
-      box-shadow: 6px 6px 14px #b8c2cc, -6px -6px 14px #ffffff !important;
+      border: 1px solid rgba(255, 255, 255, 0.7) !important;
+      box-shadow: 10px 10px 24px #b8c2cc, -10px -10px 24px #ffffff !important;
+      border-radius: 32px !important;
       color: #0f172a !important;
+      transition: transform 0.3s ease, box-shadow 0.3s ease !important;
     }
 
-    html.light .glass-card:hover,
-    html.light .brief-card:hover,
-    html.light .service-card:hover,
+    html.light .pro-card:hover,
     html.light .product-card:hover,
-    html.light .glass-panel:hover,
-    [data-theme="light"] .glass-card:hover,
-    [data-theme="light"] .brief-card:hover,
-    [data-theme="light"] .service-card:hover,
+    html.light .service-card:hover,
+    html.light .brief-card:hover,
+    html.light .glass-card:hover,
+    html.light .cat-card:hover,
+    [data-theme="light"] .pro-card:hover,
     [data-theme="light"] .product-card:hover,
-    [data-theme="light"] .glass-panel:hover {
+    [data-theme="light"] .service-card:hover,
+    [data-theme="light"] .brief-card:hover,
+    [data-theme="light"] .glass-card:hover,
+    [data-theme="light"] .cat-card:hover {
       background: #e0e5ec !important;
-      box-shadow: 8px 8px 18px #a8b2bc, -8px -8px 18px #ffffff !important;
-      transform: translateY(-4px) !important;
+      box-shadow: 14px 14px 32px #a8b3be, -14px -14px 32px #ffffff !important;
+      transform: translateY(-6px) !important;
+    }
+
+    /* Authentic Neumorphism Effect for Main Outer Card Containers in Dark Theme */
+    html.dark .pro-card,
+    html.dark .product-card,
+    html.dark .service-card,
+    html.dark .brief-card,
+    html.dark .glass-card,
+    html.dark .cat-card,
+    [data-theme="dark"] .pro-card,
+    [data-theme="dark"] .product-card,
+    [data-theme="dark"] .service-card,
+    [data-theme="dark"] .brief-card,
+    [data-theme="dark"] .glass-card,
+    [data-theme="dark"] .cat-card {
+      background: #161618 !important;
+      border-radius: 32px !important;
+      box-shadow: 8px 8px 24px #05070a, -6px -6px 20px #1c1d22 !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    }
+
+    html.dark .pro-card:hover,
+    html.dark .product-card:hover,
+    html.dark .service-card:hover,
+    html.dark .brief-card:hover,
+    html.dark .glass-card:hover,
+    html.dark .cat-card:hover,
+    [data-theme="dark"] .pro-card:hover,
+    [data-theme="dark"] .product-card:hover,
+    [data-theme="dark"] .service-card:hover,
+    [data-theme="dark"] .brief-card:hover,
+    [data-theme="dark"] .glass-card:hover,
+    [data-theme="dark"] .cat-card:hover {
+      box-shadow: 0 24px 50px rgba(0,0,0,0.9), 0 0 0 1px rgba(0,240,255,0.3) !important;
+      transform: translateY(-6px) !important;
+    }
+
+    /* Strip secondary inner shadows so neumorphism belongs ONLY to the main outer container */
+    .pro-card-info, .sales-card-info, .pro-card-info * {
+      box-shadow: none !important;
     }
 
     /* High-Contrast Gradient Text & Eyebrow Visibility Fix for Light Theme */
