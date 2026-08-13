@@ -14,3 +14,7 @@ zipFile.zip
 
 # Replit cache
 .cache/
+
+# Workspace files
+*.code-workspace
+

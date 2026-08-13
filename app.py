@@ -1442,6 +1442,16 @@ def _serve_template(filename):
     abort(404)
 
 
+@app.route("/manifest.json")
+def manifest_json():
+    return send_from_directory(os.path.join(ROOT_DIR, "static"), "manifest.json", mimetype="application/manifest+json")
+
+
+@app.route("/sw.js")
+def sw_js():
+    return send_from_directory(os.path.join(ROOT_DIR, "static"), "sw.js", mimetype="application/javascript")
+
+
 @app.route("/robots.txt")
 def robots_txt():
     content = """User-agent: *

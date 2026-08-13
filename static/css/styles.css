@@ -2346,4 +2346,32 @@ html.light .brief-card:hover {
   border: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   Mobile-First Web App PWA & Bottom Navigation Bar Styles
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* Light Theme overrides for Mobile Bottom Navigation */
+[data-theme="light"] #mobile-bottom-nav,
+html.light #mobile-bottom-nav {
+  background: rgba(240, 243, 248, 0.95) !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="light"] .mobile-bottom-tab,
+html.light .mobile-bottom-tab {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .mobile-bottom-tab.text-primary,
+html.light .mobile-bottom-tab.text-primary {
+  color: #0e5a6f !important;
+}
+
+
 

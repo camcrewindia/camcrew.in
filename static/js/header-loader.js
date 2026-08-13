@@ -47,8 +47,12 @@
 
   if (activeKey) {
     document.querySelectorAll(`[data-nav-key="${activeKey}"]`).forEach((el, i) => {
-      // first hit = desktop link, second = mobile link
-      el.classList.add(...(i === 0 ? ACTIVE_DESKTOP : ACTIVE_MOBILE).split(' '));
+      if (el.classList.contains('mobile-bottom-tab')) {
+        el.classList.add('text-primary', 'font-bold');
+        el.classList.remove('text-on-surface-variant');
+      } else {
+        el.classList.add(...(i === 0 ? ACTIVE_DESKTOP : ACTIVE_MOBILE).split(' '));
+      }
     });
   }
 
@@ -127,11 +131,13 @@
     if (mobileEmail) mobileEmail.textContent = user.email || user.name || 'User';
     if (mobileRole)  mobileRole.textContent  = roleLabel;
 
-    // Point the mobile profile card link to the correct profile page
+    // Point the mobile profile card link & bottom tab bar to the correct profile page
     if (mobileUserArea) {
       const mobileProfileLink = mobileUserArea.querySelector('a[href]');
       if (mobileProfileLink) mobileProfileLink.href = profileHref;
     }
+    const bottomProfileTab = document.querySelector('.mobile-bottom-tab[data-nav-key="profile"]');
+    if (bottomProfileTab) bottomProfileTab.href = profileHref;
 
     // Dispatch event so page scripts can react
     document.dispatchEvent(new CustomEvent('camcrew:auth', { detail: { user } }));
@@ -180,7 +186,7 @@
 
   // ── 5. Cart badge ────────────────────────────────────────────────────────
   function setCartBadge(count) {
-    ['cart-badge', 'cart-badge-mobile'].forEach(id => {
+    ['cart-badge', 'cart-badge-mobile', 'cart-badge-bottom'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
       if (count > 0) {
@@ -254,5 +260,13 @@
   // Initial theme sync: default to Light Theme across all pages unless saved otherwise
   const savedTheme = localStorage.getItem('camcrew-theme') || 'light';
   applyTheme(savedTheme);
+
+  // Dynamically load PWA Registration Script
+  if (!document.getElementById('pwa-register-script')) {
+    const pwaScript = document.createElement('script');
+    pwaScript.id = 'pwa-register-script';
+    pwaScript.src = '/static/js/pwa-register.js';
+    document.head.appendChild(pwaScript);
+  }
 
 })();
