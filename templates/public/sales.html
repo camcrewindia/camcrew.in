@@ -314,7 +314,7 @@
        HERO SECTION WITH FEATURED BANNER
   ═══════════════════════════════════════ -->
   <section class="hero-section pt-28 pb-10 md:pt-36 md:pb-12 px-5 md:px-20">
-    <div class="max-w-7xl mx-auto">
+    <div class="max-w-screen-2xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         
         <!-- Left Copy -->
@@ -388,99 +388,97 @@
   <!-- ═══════════════════════════════════════
        PRODUCT LISTINGS
   ═══════════════════════════════════════ -->
-  <section class="px-margin-mobile md:px-margin-desktop py-8 relative" id="product-listings">
-    <!-- Section divider -->
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-glass-stroke to-transparent"></div>
+  <section class="px-5 md:px-20 py-12 relative" id="product-listings">
+    <div class="max-w-screen-2xl mx-auto">
+      <!-- Section divider -->
+      <div class="w-full h-[1px] bg-gradient-to-r from-transparent via-glass-stroke to-transparent mb-8"></div>
 
-    <!-- Header + Filters -->
-    <div class="flex flex-col gap-6 mb-12 reveal">
-      <div class="flex justify-between items-end">
-        <div>
-          <p class="font-label-caps text-label-caps text-primary-container uppercase tracking-widest mb-2">The full catalogue</p>
-          <h2 class="font-display-lg text-display-lg-mobile md:text-[40px] text-on-surface font-bold">Browse Professional Gear</h2>
+      <!-- Header + Filters -->
+      <div class="flex flex-col gap-6 mb-12 reveal">
+        <div class="flex justify-between items-end">
+          <div>
+            <p class="font-label-caps text-label-caps text-primary-container uppercase tracking-widest mb-2">The full catalogue</p>
+            <h2 class="font-display-lg text-display-lg-mobile md:text-[40px] text-on-surface font-bold">Browse Professional Gear</h2>
+          </div>
+          <p id="product-count" class="hidden md:block text-on-surface-variant text-sm">Loading…</p>
         </div>
-        <p id="product-count" class="hidden md:block text-on-surface-variant text-sm">Loading…</p>
-      </div>
 
-      <!-- Filter controls: Desktop Chips + Mobile Category Dropdown Row -->
-      <div class="w-full">
-        <!-- Desktop Filter Chips (hidden on mobile) -->
-        <div class="hidden md:flex flex-wrap items-center gap-3">
-          <button class="filter-chip active glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50" data-category="">
-            <span class="material-symbols-outlined text-sm">grid_view</span> All
-          </button>
-          <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Cameras">
-            <span class="material-symbols-outlined text-sm">camera</span> Cameras
-          </button>
-          <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Lighting">
-            <span class="material-symbols-outlined text-sm">light_mode</span> Lighting
-          </button>
-          <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Audio">
-            <span class="material-symbols-outlined text-sm">mic</span> Audio
-          </button>
-          <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Lenses">
-            <span class="material-symbols-outlined text-sm">lens</span> Lenses
-          </button>
-          <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Storage">
-            <span class="material-symbols-outlined text-sm">storage</span> Storage
-          </button>
-          <div class="ml-auto flex items-center gap-2">
-            <button id="sort-btn" class="glass-panel px-4 py-2 rounded-full flex items-center gap-2 border border-glass-stroke text-on-surface-variant hover:text-on-surface hover:border-primary-container/40 transition-all text-sm">
-              <span class="material-symbols-outlined text-sm">sort</span> <span id="sort-label">Price: High–Low</span>
+        <!-- Filter controls: Desktop Chips + Mobile Category Dropdown Row -->
+        <div class="w-full">
+          <!-- Desktop Filter Chips (hidden on mobile) -->
+          <div class="hidden md:flex flex-wrap items-center gap-3">
+            <button class="filter-chip active glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50" data-category="">
+              <span class="material-symbols-outlined text-sm">grid_view</span> All
+            </button>
+            <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Cameras">
+              <span class="material-symbols-outlined text-sm">camera</span> Cameras
+            </button>
+            <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Lighting">
+              <span class="material-symbols-outlined text-sm">light_mode</span> Lighting
+            </button>
+            <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Audio">
+              <span class="material-symbols-outlined text-sm">mic</span> Audio
+            </button>
+            <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Lenses">
+              <span class="material-symbols-outlined text-sm">lens</span> Lenses
+            </button>
+            <button class="filter-chip glass-panel px-5 py-2 rounded-full font-label-caps text-label-caps text-sm flex items-center gap-2 border border-glass-stroke transition-all hover:border-primary-container/50 text-on-surface-variant hover:text-on-surface" data-category="Storage">
+              <span class="material-symbols-outlined text-sm">storage</span> Storage
+            </button>
+            <div class="ml-auto flex items-center gap-2">
+              <button id="sort-btn" class="glass-panel px-4 py-2 rounded-full flex items-center gap-2 border border-glass-stroke text-on-surface-variant hover:text-on-surface hover:border-primary-container/40 transition-all text-sm">
+                <span class="material-symbols-outlined text-sm">sort</span> <span id="sort-label">Price: High–Low</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Mobile Filter Toolbar (Category Dropdown + Sort Button in 1 compact row) -->
+          <div class="flex md:hidden items-center justify-between gap-2.5 w-full">
+            <!-- Category Filter Dropdown -->
+            <div class="relative flex-1">
+              <select id="mobile-category-select" class="w-full glass-panel px-4 py-2.5 rounded-full font-label-caps text-xs font-bold border border-glass-stroke text-on-surface appearance-none pr-8 cursor-pointer focus:outline-none" style="background-color: var(--chip-bg, rgba(255,255,255,0.05));">
+                <option value="" style="background: #1e293b; color: #fff;">All Categories</option>
+                <option value="Cameras" style="background: #1e293b; color: #fff;">📷 Cameras</option>
+                <option value="Lighting" style="background: #1e293b; color: #fff;">💡 Lighting</option>
+                <option value="Audio" style="background: #1e293b; color: #fff;">🎙️ Audio</option>
+                <option value="Lenses" style="background: #1e293b; color: #fff;">🔍 Lenses</option>
+                <option value="Storage" style="background: #1e293b; color: #fff;">💾 Storage</option>
+              </select>
+              <span class="material-symbols-outlined text-sm absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">filter_list</span>
+            </div>
+
+            <!-- Sort Button Next to Dropdown -->
+            <button id="mobile-sort-btn" class="glass-panel px-3.5 py-2.5 rounded-full flex items-center gap-1.5 border border-glass-stroke text-on-surface-variant text-xs font-bold shrink-0" style="background-color: var(--chip-bg, rgba(255,255,255,0.05));">
+              <span class="material-symbols-outlined text-sm">sort</span>
+              <span id="mobile-sort-label">Price: High–Low</span>
             </button>
           </div>
         </div>
-
-        <!-- Mobile Filter Toolbar (Category Dropdown + Sort Button in 1 compact row) -->
-        <div class="flex md:hidden items-center justify-between gap-2.5 w-full">
-          <!-- Category Filter Dropdown -->
-          <div class="relative flex-1">
-            <select id="mobile-category-select" class="w-full glass-panel px-4 py-2.5 rounded-full font-label-caps text-xs font-bold border border-glass-stroke text-on-surface appearance-none pr-8 cursor-pointer focus:outline-none" style="background-color: var(--chip-bg, rgba(255,255,255,0.05));">
-              <option value="" style="background: #1e293b; color: #fff;">All Categories</option>
-              <option value="Cameras" style="background: #1e293b; color: #fff;">📷 Cameras</option>
-              <option value="Lighting" style="background: #1e293b; color: #fff;">💡 Lighting</option>
-              <option value="Audio" style="background: #1e293b; color: #fff;">🎙️ Audio</option>
-              <option value="Lenses" style="background: #1e293b; color: #fff;">🔍 Lenses</option>
-              <option value="Storage" style="background: #1e293b; color: #fff;">💾 Storage</option>
-            </select>
-            <span class="material-symbols-outlined text-sm absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">filter_list</span>
-          </div>
-
-          <!-- Sort Button Next to Dropdown -->
-          <button id="mobile-sort-btn" class="glass-panel px-3.5 py-2.5 rounded-full flex items-center gap-1.5 border border-glass-stroke text-on-surface-variant text-xs font-bold shrink-0" style="background-color: var(--chip-bg, rgba(255,255,255,0.05));">
-            <span class="material-symbols-outlined text-sm">sort</span>
-            <span id="mobile-sort-label">Price: High–Low</span>
-          </button>
-        </div>
       </div>
-    </div>
 
-    <!-- Product Grid -->
-    <div id="product-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-      <!-- Skeleton loaders -->
-      <div class="glass-panel rounded-2xl overflow-hidden animate-pulse"><div class="h-60 bg-surface-container-high"></div><div class="p-5 space-y-3"><div class="h-3 bg-surface-container-high rounded w-3/4"></div><div class="h-4 bg-surface-container-high rounded w-1/2"></div></div></div>
-      <div class="glass-panel rounded-2xl overflow-hidden animate-pulse"><div class="h-60 bg-surface-container-high"></div><div class="p-5 space-y-3"><div class="h-3 bg-surface-container-high rounded w-3/4"></div><div class="h-4 bg-surface-container-high rounded w-1/2"></div></div></div>
-      <div class="glass-panel rounded-2xl overflow-hidden animate-pulse"><div class="h-60 bg-surface-container-high"></div><div class="p-5 space-y-3"><div class="h-3 bg-surface-container-high rounded w-3/4"></div><div class="h-4 bg-surface-container-high rounded w-1/2"></div></div></div>
-      <div class="glass-panel rounded-2xl overflow-hidden animate-pulse"><div class="h-60 bg-surface-container-high"></div><div class="p-5 space-y-3"><div class="h-3 bg-surface-container-high rounded w-3/4"></div><div class="h-4 bg-surface-container-high rounded w-1/2"></div></div></div>
-    </div>
+      <!-- Product Grid -->
+      <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <!-- Skeleton loaders -->
+        <div class="glass-panel rounded-2xl overflow-hidden animate-pulse"><div class="h-60 bg-surface-container-high"></div><div class="p-5 space-y-3"><div class="h-3 bg-surface-container-high rounded w-3/4"></div><div class="h-4 bg-surface-container-high rounded w-1/2"></div></div></div>
+        <div class="glass-panel rounded-2xl overflow-hidden animate-pulse"><div class="h-60 bg-surface-container-high"></div><div class="p-5 space-y-3"><div class="h-3 bg-surface-container-high rounded w-3/4"></div><div class="h-4 bg-surface-container-high rounded w-1/2"></div></div></div>
+        <div class="glass-panel rounded-2xl overflow-hidden animate-pulse"><div class="h-60 bg-surface-container-high"></div><div class="p-5 space-y-3"><div class="h-3 bg-surface-container-high rounded w-3/4"></div><div class="h-4 bg-surface-container-high rounded w-1/2"></div></div></div>
+        <div class="glass-panel rounded-2xl overflow-hidden animate-pulse"><div class="h-60 bg-surface-container-high"></div><div class="p-5 space-y-3"><div class="h-3 bg-surface-container-high rounded w-3/4"></div><div class="h-4 bg-surface-container-high rounded w-1/2"></div></div></div>
+      </div>
 
-    <!-- Empty state (hidden by default) -->
-    <div id="empty-state" class="hidden text-center py-24">
-      <span class="material-symbols-outlined text-on-surface-variant text-6xl mb-4 block">inventory_2</span>
-      <p class="text-on-surface-variant text-lg font-semibold">No products found</p>
-      <p class="text-on-surface-variant text-sm mt-1">The admin hasn't added any products in this category yet.</p>
-    </div>
+      <!-- Empty state (hidden by default) -->
+      <div id="empty-state" class="hidden text-center py-24">
+        <span class="material-symbols-outlined text-on-surface-variant text-6xl mb-4 block">inventory_2</span>
+        <p class="text-on-surface-variant text-lg font-semibold">No products found</p>
+        <p class="text-on-surface-variant text-sm mt-1">The admin hasn't added any products in this category yet.</p>
+      </div>
 
-    <!-- dynamic cards end -->
-
-    </div>
-
-    <!-- Load more -->
-    <div id="load-more-wrap" class="mt-16 text-center hidden">
-      <button id="load-more-btn" class="shimmer-btn glass-panel px-14 py-4 rounded-full font-label-caps text-label-caps text-on-surface hover:border-primary-container/40 hover:text-primary-container transition-colors inline-flex items-center gap-2">
-        <span class="material-symbols-outlined text-sm">expand_more</span>
-        Load More Products
-      </button>
+      <!-- Load more wrap -->
+      <div id="load-more-wrap" class="mt-16 text-center hidden">
+        <button id="load-more-btn" class="shimmer-btn glass-panel px-14 py-4 rounded-full font-label-caps text-label-caps text-on-surface hover:border-primary-container/40 hover:text-primary-container transition-colors inline-flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">expand_more</span>
+          Load More Products
+        </button>
+      </div>
     </div>
   </section>
 
@@ -737,14 +735,14 @@
   <!-- ═══════════════════════════════════════
        FEATURED PRODUCT SPOTLIGHT
   ═══════════════════════════════════════ -->
-  <section class="py-8 relative overflow-hidden" id="featured-spotlight">
+  <section class="px-5 md:px-20 py-16 relative overflow-hidden" id="featured-spotlight">
     <!-- Ambient glow behind section -->
     <div class="absolute inset-0 pointer-events-none">
-      <div class="absolute right-0 top-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary-container/6 blur-[120px]"></div>
-      <div class="absolute left-0 top-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-secondary-container/6 blur-[100px]"></div>
+      <div class="absolute right-0 top-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-teal-500/5 blur-[120px]"></div>
+      <div class="absolute left-0 top-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-cyan-500/5 blur-[100px]"></div>
     </div>
 
-    <div class="max-w-[1440px] mx-auto md:px-margin-desktop relative" id="featured-inner">
+    <div class="max-w-screen-2xl mx-auto relative" id="featured-inner">
       <!-- Populated dynamically from /api/products -->
     </div>
   </section>
@@ -760,7 +758,6 @@
           document.getElementById('featured-spotlight').style.display = 'none';
           return;
         }
-        // Pick the highest-priced product as featured
         const p = [...products].sort((a, b) => b.price - a.price)[0];
         const price = parseFloat(p.price) || 0;
         const imgStyle = p.image_url
@@ -770,36 +767,33 @@
         const desc  = p.description || `Premium ${p.category || 'gear'} for professional creators. Added to our catalogue and available for immediate purchase.`;
 
         document.getElementById('featured-inner').innerHTML = `
-          <div class="grid grid-cols-1 md:grid-cols-2 bg-charcoal-surface rounded-3xl overflow-hidden border border-glass-stroke shadow-2xl">
+          <div class="grid grid-cols-1 md:grid-cols-2 glass-card rounded-[32px] overflow-hidden border border-white/60 dark:border-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
             <!-- Image side -->
-            <div class="relative h-[480px] md:h-auto overflow-hidden">
+            <div class="relative h-[360px] md:h-full overflow-hidden bg-obsidian-base min-h-[340px]">
               <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105" style="${imgStyle}"></div>
-              <div class="absolute inset-0 bg-gradient-to-r from-charcoal-surface/60 via-transparent to-transparent"></div>
-              <div class="absolute top-8 left-8 badge-sale border font-label-caps text-[11px] tracking-widest px-3 py-1.5 rounded-full uppercase backdrop-blur-sm">
-                ${p.stock <= 3 ? 'Low Stock' : 'Featured'}
+              <div class="absolute top-6 left-6 bg-slate-900/85 backdrop-blur-md text-white font-extrabold text-xs px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md z-10">
+                ${p.stock <= 3 ? 'Low Stock' : 'FEATURED'}
               </div>
             </div>
             <!-- Content side -->
-            <div class="p-8 md:p-16 flex flex-col justify-center relative">
-              <div class="spotlight-line w-24 mb-8"></div>
-              <span class="font-label-caps text-label-caps text-primary-container mb-3 tracking-widest uppercase">${badge} — ${p.category || 'Equipment'}</span>
-              <h2 class="font-display-lg text-display-lg-mobile md:text-[44px] text-on-surface font-black mb-6 leading-tight" style="letter-spacing:-0.02em">
+            <div class="p-8 md:p-14 flex flex-col justify-center relative bg-[#e0e5ec] dark:bg-[#161618]">
+              <span class="text-xs font-extrabold text-[#007d8e] dark:text-[#00f0ff] mb-2.5 tracking-widest uppercase">${badge} — ${p.category || 'Equipment'}</span>
+              <h2 class="text-3xl md:text-5xl font-black text-[#0f172a] dark:text-white mb-4 leading-tight tracking-tight">
                 ${p.name}
               </h2>
-              <p class="font-body-lg text-body-lg text-on-surface-variant mb-8 leading-relaxed">${desc}</p>
-              <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <button data-cart-btn data-pid="${p.id}" class="shimmer-btn bg-primary-container text-on-primary-fixed font-label-caps text-label-caps px-10 py-4 rounded-full hover:scale-105 transition-transform active:scale-95 flex items-center gap-2">
-                  <span class="material-symbols-outlined text-sm">add_shopping_cart</span> Add to Cart
-                </button>
-                <div class="text-center sm:text-left">
-                  <div class="font-label-caps text-label-caps text-on-surface-variant">${p.sku ? 'SKU: ' + p.sku : 'In stock'}</div>
-                  <div class="font-display-lg text-[32px] font-black gradient-text leading-tight">$${price.toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+              <p class="text-sm md:text-base text-slate-700 dark:text-slate-300 mb-8 leading-relaxed">${desc}</p>
+              <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-6 border-t border-black/5 dark:border-white/10">
+                <div>
+                  <div class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">${p.sku ? 'SKU: ' + p.sku : 'In stock'}</div>
+                  <div class="text-3xl md:text-4xl font-black text-[#0f172a] dark:text-[#00f0ff] leading-none">₹${price.toLocaleString('en-IN')}</div>
                 </div>
+                <button data-cart-btn data-pid="${p.id}" class="w-full sm:w-auto bg-[#0f4c5c] text-white hover:bg-[#093542] px-8 py-3.5 rounded-full font-extrabold flex items-center justify-center gap-2 shadow-lg transition-transform hover:scale-105 active:scale-95">
+                  <span class="material-symbols-outlined text-base">shopping_cart</span> Add to Cart
+                </button>
               </div>
             </div>
           </div>`;
 
-        // Wire up Add to Cart for the featured product
         const btn = document.getElementById('featured-inner').querySelector('[data-cart-btn]');
         if (btn) {
           btn.addEventListener('click', async function () {
@@ -828,47 +822,39 @@
   <!-- ═══════════════════════════════════════
        PROFESSIONAL GUARANTEE
   ═══════════════════════════════════════ -->
-  <section class="px-margin-mobile md:px-margin-desktop py-8 relative">
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-glass-stroke to-transparent"></div>
+  <section class="px-5 md:px-20 py-16 relative">
+    <div class="max-w-screen-2xl mx-auto">
+      <div class="w-full h-[1px] bg-gradient-to-r from-transparent via-glass-stroke to-transparent mb-12"></div>
 
-    <div class="text-center mb-12 reveal">
-      <p class="font-label-caps text-label-caps text-primary-container uppercase tracking-widest mb-2">Our commitment</p>
-      <h2 class="font-display-lg text-display-lg-mobile md:text-[40px] text-on-surface font-bold">The Professional Guarantee</h2>
-    </div>
-
-    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-gutter">
-      <div class="glass-panel rounded-2xl p-8 text-center group hover:border-primary-container/30 hover:-translate-y-2 transition-all duration-300 shimmer-card reveal" style="transition-delay:.05s">
-        <div class="relative w-16 h-16 mx-auto mb-6">
-          <div class="absolute inset-0 rounded-full bg-primary-container/10 group-hover:bg-primary-container/20 transition-colors border border-primary-container/20 group-hover:border-primary-container/50"></div>
-          <div class="absolute inset-0 rounded-full bg-primary-container/5 blur-xl group-hover:opacity-100 opacity-0 transition-opacity"></div>
-          <div class="relative flex items-center justify-center w-full h-full">
-            <span class="material-symbols-outlined text-primary-container text-2xl" style="font-variation-settings:'FILL' 1">verified</span>
-          </div>
-        </div>
-        <h4 class="font-headline-md text-headline-md text-on-surface mb-3">Rigorous Inspection</h4>
-        <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">Every item is fully inspected and every digital asset is clean-coded for peak performance.</p>
+      <div class="text-center mb-12 reveal">
+        <p class="font-label-caps text-label-caps text-[#007d8e] dark:text-[#00f0ff] uppercase tracking-widest mb-2 font-bold">Our commitment</p>
+        <h2 class="font-display-lg text-display-lg-mobile md:text-[40px] text-[#0f172a] dark:text-white font-bold">The Professional Guarantee</h2>
       </div>
 
-      <div class="glass-panel rounded-2xl p-8 text-center group hover:border-primary-container/30 hover:-translate-y-2 transition-all duration-300 shimmer-card reveal" style="transition-delay:.1s">
-        <div class="relative w-16 h-16 mx-auto mb-6">
-          <div class="absolute inset-0 rounded-full bg-primary-container/10 group-hover:bg-primary-container/20 transition-colors border border-primary-container/20 group-hover:border-primary-container/50"></div>
-          <div class="relative flex items-center justify-center w-full h-full">
-            <span class="material-symbols-outlined text-primary-container text-2xl" style="font-variation-settings:'FILL' 1">gavel</span>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass-card rounded-3xl p-8 text-center border border-white/60 dark:border-white/10 shadow-lg reveal">
+          <div class="relative w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-full bg-[#0f4c5c]/10 text-[#0f4c5c] dark:text-[#00f0ff]">
+            <span class="material-symbols-outlined text-3xl">verified</span>
           </div>
+          <h3 class="text-xl font-bold text-[#0f172a] dark:text-white mb-3">Rigorous Inspection</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Every item is fully inspected by our technical team for peak performance.</p>
         </div>
-        <h4 class="font-headline-md text-headline-md text-on-surface mb-3">Professional Warranty</h4>
-        <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">1-year warranty on all professional gear. We stand behind the tools that power your creativity.</p>
-      </div>
 
-      <div class="glass-panel rounded-2xl p-8 text-center group hover:border-primary-container/30 hover:-translate-y-2 transition-all duration-300 shimmer-card reveal" style="transition-delay:.15s">
-        <div class="relative w-16 h-16 mx-auto mb-6">
-          <div class="absolute inset-0 rounded-full bg-primary-container/10 group-hover:bg-primary-container/20 transition-colors border border-primary-container/20 group-hover:border-primary-container/50"></div>
-          <div class="relative flex items-center justify-center w-full h-full">
-            <span class="material-symbols-outlined text-primary-container text-2xl" style="font-variation-settings:'FILL' 1">local_shipping</span>
+        <div class="glass-card rounded-3xl p-8 text-center border border-white/60 dark:border-white/10 shadow-lg reveal">
+          <div class="relative w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-full bg-[#0f4c5c]/10 text-[#0f4c5c] dark:text-[#00f0ff]">
+            <span class="material-symbols-outlined text-3xl">gavel</span>
           </div>
+          <h3 class="text-xl font-bold text-[#0f172a] dark:text-white mb-3">Professional Warranty</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">1-year warranty on all professional gear. We stand behind the tools that power your creativity.</p>
         </div>
-        <h4 class="font-headline-md text-headline-md text-on-surface mb-3">Insured Shipping</h4>
-        <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">Fast, insured shipping directly to your studio. Global logistics handled with white-glove care.</p>
+
+        <div class="glass-card rounded-3xl p-8 text-center border border-white/60 dark:border-white/10 shadow-lg reveal">
+          <div class="relative w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-full bg-[#0f4c5c]/10 text-[#0f4c5c] dark:text-[#00f0ff]">
+            <span class="material-symbols-outlined text-3xl">local_shipping</span>
+          </div>
+          <h3 class="text-xl font-bold text-[#0f172a] dark:text-white mb-3">Insured Shipping</h3>
+          <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">Fast, insured shipping directly to your studio with white-glove logistics care.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -876,37 +862,35 @@
   <!-- ═══════════════════════════════════════
        NEWSLETTER CTA
   ═══════════════════════════════════════ -->
-  <section class="px-margin-mobile md:px-margin-desktop pt-6 pb-12">
-    <div class="glass-panel rounded-[40px] relative overflow-hidden">
-      <!-- Background orbs -->
-      <div class="absolute -top-32 -right-32 w-80 h-80 bg-secondary-container/20 rounded-full blur-[100px] pointer-events-none"></div>
-      <div class="absolute -bottom-32 -left-32 w-80 h-80 bg-primary-container/15 rounded-full blur-[100px] pointer-events-none"></div>
-      <!-- Grid overlay -->
-      <div class="absolute inset-0 hero-grid opacity-40 pointer-events-none"></div>
+  <section class="px-5 md:px-20 pt-6 pb-20">
+    <div class="max-w-screen-2xl mx-auto glass-card rounded-[40px] border border-white/60 dark:border-white/10 shadow-xl relative overflow-hidden">
+      <!-- Background glow -->
+      <div class="absolute -top-32 -right-32 w-80 h-80 bg-teal-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+      <div class="absolute -bottom-32 -left-32 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-      <div class="relative z-10 p-12 md:p-20 text-center">
-        <div class="inline-flex items-center gap-2 bg-surface-container-high border border-glass-stroke rounded-full px-4 py-2 mb-6">
-          <span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
-          <span class="font-label-caps text-label-caps text-primary-container tracking-widest uppercase">Exclusive access</span>
+      <div class="relative z-10 p-10 md:p-20 text-center">
+        <div class="inline-flex items-center gap-2 bg-[#0f4c5c]/10 border border-[#0f4c5c]/20 rounded-full px-4 py-2 mb-6">
+          <span class="w-2 h-2 rounded-full bg-[#0f4c5c] dark:bg-[#00f0ff] animate-pulse"></span>
+          <span class="text-xs font-extrabold text-[#007d8e] dark:text-[#00f0ff] tracking-widest uppercase">Exclusive access</span>
         </div>
-        <h2 class="font-display-lg text-display-lg-mobile md:text-[56px] text-on-surface font-black mb-4" style="letter-spacing:-0.02em">Join the Orbit.</h2>
-        <p class="font-body-lg text-body-lg text-on-surface-variant mb-10 max-w-xl mx-auto leading-relaxed">
-          Get exclusive access to new hardware drops and premium UI kits before they hit the public market.
+        <h2 class="text-3xl md:text-5xl font-black text-[#0f172a] dark:text-white mb-4 tracking-tight">Join the Orbit.</h2>
+        <p class="text-base text-slate-600 dark:text-slate-400 mb-10 max-w-xl mx-auto leading-relaxed">
+          Get exclusive access to new hardware drops and premium studio gear before they hit the public market.
         </p>
         <form class="flex flex-col md:flex-row items-center justify-center gap-3 max-w-lg mx-auto">
           <input
-            class="w-full bg-surface-container-high border border-glass-stroke rounded-full px-6 py-4 focus:ring-2 focus:ring-primary-container focus:border-transparent outline-none transition-all text-on-surface placeholder:text-on-surface-variant"
+            class="w-full bg-white/80 dark:bg-white/10 border border-slate-300 dark:border-white/20 rounded-full px-6 py-4 outline-none text-[#0f172a] dark:text-white placeholder:text-slate-400 font-medium"
             placeholder="Enter your studio email"
             type="email"
           >
           <button
-            class="shimmer-btn w-full md:w-auto bg-primary-container text-on-primary-fixed px-8 py-4 rounded-full font-label-caps text-label-caps whitespace-nowrap hover:scale-105 transition-transform active:scale-95 shadow-lg"
+            class="w-full md:w-auto bg-[#0f4c5c] text-white hover:bg-[#093542] px-8 py-4 rounded-full font-extrabold whitespace-nowrap shadow-lg transition-transform hover:scale-105 active:scale-95"
             type="submit"
           >
             Subscribe Now
           </button>
         </form>
-        <p class="text-on-surface-variant text-sm mt-4">No spam. Unsubscribe anytime. Pro members only.</p>
+        <p class="text-slate-500 text-xs mt-4">No spam. Unsubscribe anytime. Pro members only.</p>
       </div>
     </div>
   </section>
